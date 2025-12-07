@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type { UiAIResponse, UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
@@ -18,6 +18,43 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
     throw new Error(text || res.statusText);
   }
   return (await res.json()) as T;
+}
+
+// Retry wrapper with exponential backoff for transient failures
+async function fetchWithRetry<T>(
+  url: string,
+  options?: RequestInit,
+  maxRetries = 3
+): Promise<T> {
+  let lastError: Error | null = null;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fetchJson<T>(url, options);
+    } catch (err) {
+      lastError = err as Error;
+      // Only retry on network errors or 5xx, not on 4xx client errors
+      const isRetryable = lastError.message.includes('fetch') ||
+        lastError.message.includes('5') ||
+        lastError.message.includes('network');
+      if (!isRetryable || attempt === maxRetries - 1) {
+        throw lastError;
+      }
+      // Exponential backoff: 1s, 2s, 4s
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+    }
+  }
+  throw lastError;
+}
+
+interface AgentHealth {
+  conversationStatus: string;
+  hasPendingChanges: boolean;
+  git: {
+    isRepo: boolean;
+    branch?: string;
+    isClean?: boolean;
+  };
+  canAcceptChanges: boolean;
 }
 
 interface BundleResponse {
@@ -96,6 +133,30 @@ export function AppShell() {
   // Agent state
   const [conversation, setConversation] = useState<ConversationState>({ status: 'idle', messages: [] });
   const [showAgentPanel, setShowAgentPanel] = useState(true);
+
+  // Git health state for mid-conversation monitoring
+  const [gitHealth, setGitHealth] = useState<AgentHealth | null>(null);
+  const [networkError, setNetworkError] = useState<string | null>(null);
+
+  // Poll agent health when conversation is active
+  const pollHealth = useCallback(async () => {
+    if (conversation.status === 'idle') return;
+    try {
+      const health = await fetchJson<AgentHealth>(`/agent/health?bundleDir=${encodeURIComponent(bundleDir)}`);
+      setGitHealth(health);
+      setNetworkError(null);
+    } catch (err) {
+      setNetworkError((err as Error).message);
+    }
+  }, [conversation.status, bundleDir]);
+
+  useEffect(() => {
+    if (conversation.status !== 'idle') {
+      pollHealth();
+      const interval = setInterval(pollHealth, 5000); // Poll every 5 seconds
+      return () => clearInterval(interval);
+    }
+  }, [conversation.status, pollHealth]);
 
   // Poll agent status on mount
   useEffect(() => {
@@ -290,6 +351,34 @@ export function AppShell() {
 
   return (
     <div className={`app-shell ${showAgentPanel ? 'with-agent-panel' : ''}`}>
+      {/* Git dirty state warning */}
+      {gitHealth && gitHealth.git.isClean === false && conversation.status !== 'idle' && (
+        <div className="warning-banner git-dirty-warning" data-testid="git-dirty-warning">
+          ⚠️ Git working tree has uncommitted changes. You cannot accept agent changes until the working tree is clean.
+          <button
+            type="button"
+            className="btn btn-sm"
+            onClick={pollHealth}
+          >
+            🔄 Refresh
+          </button>
+        </div>
+      )}
+
+      {/* Network error indicator */}
+      {networkError && (
+        <div className="warning-banner network-error-warning" data-testid="network-error-warning">
+          ⚠️ Connection issue: {networkError}
+          <button
+            type="button"
+            className="btn btn-sm"
+            onClick={pollHealth}
+          >
+            🔄 Retry
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <header className="app-header">
         <div className="header-left">

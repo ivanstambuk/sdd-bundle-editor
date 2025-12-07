@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
+import { assertCleanNonMainBranch, getGitStatus } from '@sdd-bundle-editor/git-utils';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { AgentService } from '../services/agent/AgentService';
@@ -59,6 +59,36 @@ export async function agentRoutes(fastify: FastifyInstance) {
         const state = await getBackend().getStatus();
         const config = AgentService.getInstance().getConfig();
         return reply.send({ state, config });
+    });
+
+    // Health endpoint for mid-conversation monitoring
+    // Returns conversation state + Git status for detecting dirty state
+    fastify.get('/agent/health', async (request, reply) => {
+        try {
+            const query = request.query as { bundleDir?: string };
+            const state = await getBackend().getStatus();
+
+            let gitStatus: { isRepo: boolean; branch?: string; isClean?: boolean } = { isRepo: false };
+            if (query.bundleDir) {
+                gitStatus = await getGitStatus(query.bundleDir);
+            }
+
+            const hasPendingChanges = (state.pendingChanges?.length ?? 0) > 0;
+
+            return reply.send({
+                conversationStatus: state.status,
+                hasPendingChanges,
+                git: {
+                    isRepo: gitStatus.isRepo,
+                    branch: gitStatus.branch,
+                    isClean: gitStatus.isClean,
+                },
+                canAcceptChanges: state.status === 'active' && hasPendingChanges && gitStatus.isClean === true,
+            });
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send({ error: (err as Error).message });
+        }
     });
 
     fastify.post('/agent/config', async (request, reply) => {
@@ -186,8 +216,47 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/abort', async (_request, reply) => {
-        const state = await getBackend().abortConversation();
-        return reply.send({ state });
+    fastify.post('/agent/abort', async (request, reply) => {
+        try {
+            const body = (request.body as { bundleDir?: string }) || {};
+
+            // If there are pending changes and a bundleDir, revert any uncommitted files
+            const currentStatus = await getBackend().getStatus();
+            let revertedFiles: string[] = [];
+
+            if (body.bundleDir && currentStatus.pendingChanges && currentStatus.pendingChanges.length > 0) {
+                const { execFile } = await import('node:child_process');
+                const util = await import('node:util');
+                const execFileAsync = util.promisify(execFile);
+
+                try {
+                    // Get list of modified files in working tree
+                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: body.bundleDir });
+                    const modifiedFiles = stdout.toString().trim().split('\n')
+                        .filter(line => line.trim())
+                        .map(line => line.substring(3)); // Remove status prefix (e.g., " M ")
+
+                    if (modifiedFiles.length > 0) {
+                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: body.bundleDir });
+                        revertedFiles = modifiedFiles;
+                    }
+                } catch (gitErr) {
+                    fastify.log.warn(`Failed to revert files during abort: ${(gitErr as Error).message}`);
+                    // Continue with abort even if revert fails
+                }
+            }
+
+            const state = await getBackend().abortConversation();
+            return reply.send({
+                state,
+                revertedFiles,
+                message: revertedFiles.length > 0
+                    ? `Aborted conversation and reverted ${revertedFiles.length} file(s).`
+                    : 'Aborted conversation.'
+            });
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(400).send({ error: (err as Error).message });
+        }
     });
 }

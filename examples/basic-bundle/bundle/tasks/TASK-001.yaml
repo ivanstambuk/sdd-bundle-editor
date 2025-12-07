@@ -1,0 +1,8 @@
+id: TASK-001
+title: Implement basic requirement
+status: planned
+requirementIds:
+  - REQ-001
+featureIds:
+  - FEAT-001
+

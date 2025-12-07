@@ -1,0 +1,34 @@
+{
+  "$id": "https://example.com/sdd/Requirement.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Requirement",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^REQ-[0-9]{3}$",
+      "x-idTemplate": "REQ-{000}",
+      "x-entityType": "Requirement",
+      "x-idScope": "bundle"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+    "description": {
+      "type": "string"
+    },
+    "featureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-refTargets": ["Feature"]
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
+

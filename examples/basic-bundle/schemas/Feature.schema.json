@@ -1,0 +1,30 @@
+{
+  "$id": "https://example.com/sdd/Feature.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^FEAT-[0-9]{3}$",
+      "x-idTemplate": "FEAT-{000}",
+      "x-entityType": "Feature",
+      "x-idScope": "bundle"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
+

@@ -1,0 +1,6 @@
+id: REQ-001
+title: Basic Requirement One
+description: The system shall support a basic requirement for the demo feature.
+featureIds:
+  - FEAT-001
+

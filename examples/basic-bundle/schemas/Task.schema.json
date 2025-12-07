@@ -1,0 +1,44 @@
+{
+  "$id": "https://example.com/sdd/Task.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Task",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^TASK-[0-9]{3}$",
+      "x-idTemplate": "TASK-{000}",
+      "x-entityType": "Task",
+      "x-idScope": "bundle"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "in-progress", "done"]
+    },
+    "requirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-refTargets": ["Requirement"]
+      },
+      "uniqueItems": true
+    },
+    "featureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-refTargets": ["Feature"]
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
+

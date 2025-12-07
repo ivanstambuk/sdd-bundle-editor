@@ -1,0 +1,12 @@
+{
+  "name": "@sdd-bundle-editor/core-lint",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
+  }
+}

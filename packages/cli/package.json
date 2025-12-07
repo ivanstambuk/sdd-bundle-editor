@@ -1,0 +1,21 @@
+{
+  "name": "@sdd-bundle-editor/cli",
+  "version": "0.0.0",
+  "private": true,
+  "bin": {
+    "sdd-bundle": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
+  },
+  "dependencies": {
+    "@sdd-bundle-editor/git-utils": "workspace:*",
+    "@sdd-bundle-editor/core-ai": "workspace:*",
+    "@sdd-bundle-editor/core-model": "workspace:*",
+    "commander": "^12.0.0"
+  }
+}

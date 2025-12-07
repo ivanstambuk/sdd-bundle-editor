@@ -1,0 +1,31 @@
+# Node / pnpm
+node_modules
+.pnpm-store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist
+packages/*/dist
+apps/*/dist
+
+# Test coverage / reports
+coverage
+*.lcov
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Editor / IDE
+.DS_Store
+.vscode
+.idea
+
+# Misc
+*.log
+*.tmp
+*.swp

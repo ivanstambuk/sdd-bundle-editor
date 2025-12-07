@@ -67,7 +67,17 @@ function computeBundleDiff(
 
 const DEFAULT_BUNDLE_DIR = 'examples/basic-bundle';
 
+function getInitialBundleDir() {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const dir = params.get('bundleDir');
+    if (dir) return dir;
+  }
+  return DEFAULT_BUNDLE_DIR;
+}
+
 export function AppShell() {
+  const [bundleDir] = useState(getInitialBundleDir);
   const [bundle, setBundle] = useState<UiBundleSnapshot | null>(null);
   const [diagnostics, setDiagnostics] = useState<UiDiagnostic[]>([]);
   const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
@@ -96,7 +106,7 @@ export function AppShell() {
 
   useEffect(() => {
     setLoading(true);
-    fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(DEFAULT_BUNDLE_DIR)}`)
+    fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}`)
       .then((data) => {
         setBundle(data.bundle);
         setDiagnostics(data.diagnostics);
@@ -114,7 +124,7 @@ export function AppShell() {
     try {
       const data = await fetchJson<{ diagnostics: UiDiagnostic[] }>('/bundle/validate', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR }),
+        body: JSON.stringify({ bundleDir: bundleDir }),
       });
       setDiagnostics(data.diagnostics);
     } catch (err) {
@@ -130,7 +140,7 @@ export function AppShell() {
     try {
       const data = await fetchJson<{ response: UiAIResponse }>('/ai/generate', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR }),
+        body: JSON.stringify({ bundleDir: bundleDir }),
       });
       const notes = data.response.notes ?? [];
       setAiLog((prev: string[]) => [...prev, ...notes]);
@@ -165,7 +175,7 @@ export function AppShell() {
     try {
       const data = await fetchJson<{ diagnostics: UiDiagnostic[] }>('/bundle/validate', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR }),
+        body: JSON.stringify({ bundleDir: bundleDir }),
       });
       setDiagnostics(data.diagnostics);
     } catch (err) {
@@ -184,7 +194,7 @@ export function AppShell() {
       const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
         method: 'POST',
         body: JSON.stringify({
-          bundleDir: DEFAULT_BUNDLE_DIR,
+          bundleDir: bundleDir,
           readOnly: isReadOnly  // Pass read-only mode to backend for sandbox control
         }),
       });
@@ -208,7 +218,7 @@ export function AppShell() {
 
       const data = await fetchJson<{ state: ConversationState }>('/agent/message', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR, message }),
+        body: JSON.stringify({ bundleDir: bundleDir, message }),
       });
       setConversation(data.state);
     } catch (err) {
@@ -230,14 +240,14 @@ export function AppShell() {
 
   const handleAgentAccept = async () => {
     try {
-      const data = await fetchJson<{ state: ConversationState }>('/agent/accept', {
+      const data = await fetchJson<{ state: ConversationState }>(`/agent/accept?bundleDir=${encodeURIComponent(bundleDir)}`, {
         method: 'POST',
         body: JSON.stringify({ changes: conversation.pendingChanges || [] }),
       });
       setConversation(data.state);
       // Refresh bundle after changes
       setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(DEFAULT_BUNDLE_DIR)}`)
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}`)
         .then((data) => {
           setBundle(data.bundle);
           setDiagnostics(data.diagnostics);
@@ -316,7 +326,7 @@ export function AppShell() {
             ✨ AI Generate
           </button>
           <div className="bundle-path">
-            {DEFAULT_BUNDLE_DIR}
+            {bundleDir}
           </div>
         </div>
       </header>

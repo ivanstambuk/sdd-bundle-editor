@@ -434,3 +434,6 @@ export type {
   RefEdge,
   RefGraph,
 } from './types';
+
+export * from './write';
+export type { ProposedChange } from './types';

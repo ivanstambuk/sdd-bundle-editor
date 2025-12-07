@@ -44,18 +44,47 @@ export class MockAgentBackend implements AgentBackend {
         };
         this.state.messages.push(userMsg);
 
-        const agentMsg: ConversationMessage = {
-            id: (Date.now() + 1).toString(),
-            role: 'agent',
-            content: `Echo: ${message}`,
-            timestamp: Date.now() + 1
-        };
-        this.state.messages.push(agentMsg);
+        if (message.includes('propose change')) {
+            console.log('MockAgentBackend: Triggering proposal logic for message:', message);
+            const change: ProposedChange = {
+                entityId: 'PROF-BASIC',
+                entityType: 'Profile',
+                fieldPath: 'title',
+                originalValue: 'Basic SDD Profile',
+                newValue: 'Updated User Profile',
+                rationale: 'User requested update via mock agent.'
+            };
+            this.state.pendingChanges = [change];
+            this.state.status = 'pending_changes';
+
+            this.state.messages.push({
+                id: (Date.now() + 1).toString(),
+                role: 'agent',
+                content: 'I have proposed a change to update the profile title.',
+                timestamp: Date.now() + 1
+            });
+        } else {
+            const agentMsg: ConversationMessage = {
+                id: (Date.now() + 1).toString(),
+                role: 'agent',
+                content: `Echo: ${message}`,
+                timestamp: Date.now() + 1
+            };
+            this.state.messages.push(agentMsg);
+        }
 
         return this.state;
     }
 
     async applyChanges(changes: ProposedChange[]): Promise<ConversationState> {
+        this.state.status = 'committed';
+        this.state.pendingChanges = undefined;
+        this.state.messages.push({
+            id: Date.now().toString(),
+            role: 'agent',
+            content: 'Changes applied successfully.',
+            timestamp: Date.now()
+        });
         return this.state;
     }
 

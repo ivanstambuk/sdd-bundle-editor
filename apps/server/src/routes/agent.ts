@@ -5,7 +5,10 @@ import * as fs from 'node:fs/promises';
 import { AgentService } from '../services/agent/AgentService';
 
 async function resolveBundleDir(queryDir?: string): Promise<string> {
-    const baseDir = queryDir ? path.resolve(queryDir) : process.cwd();
+    if (!queryDir) {
+        throw new Error('bundleDir parameter is required for agent operations.');
+    }
+    const baseDir = path.resolve(queryDir);
     const manifestPath = path.join(baseDir, 'sdd-bundle.yaml');
     try {
         await fs.access(manifestPath);
@@ -79,7 +82,8 @@ export async function agentRoutes(fastify: FastifyInstance) {
         try {
             const body = (request.body as { changes?: any[] }) || {};
             // Ensure git is clean before applying changes
-            const bundleDir = await resolveBundleDir(); // Resolves to CWD by default if no arg
+            const query = request.query as { bundleDir?: string };
+            const bundleDir = await resolveBundleDir(query.bundleDir); // Resolves to CWD by default if no arg
             await assertCleanNonMainBranch(bundleDir);
 
             let changes = body.changes || [];
@@ -94,8 +98,73 @@ export async function agentRoutes(fastify: FastifyInstance) {
                 }
             }
 
+            // 1. Load current bundle
+            const { loadBundleWithSchemaValidation, saveEntity, applyChange } = await import('@sdd-bundle-editor/core-model');
+            const { commitChanges } = await import('@sdd-bundle-editor/git-utils');
+            const { execFile } = await import('node:child_process');
+            const util = await import('node:util');
+            const execFileAsync = util.promisify(execFile);
+
+            const { bundle } = await loadBundleWithSchemaValidation(bundleDir);
+
+            // 2. Apply changes to in-memory bundle and track modified files
+            const modifiedFiles = new Set<string>();
+            const modifiedEntities = new Set<string>();
+
+            for (const change of changes) {
+                try {
+                    applyChange(bundle, change);
+                    const entityMap = bundle.entities.get(change.entityType);
+                    const entity = entityMap?.get(change.entityId);
+                    if (entity && entity.filePath) {
+                        modifiedFiles.add(entity.filePath);
+                        modifiedEntities.add(`${change.entityType}:${change.entityId}`);
+                        // 3. Write modified entity to disk
+                        await saveEntity(entity);
+                    }
+                } catch (err) {
+                    // If application fails in-memory, we should probably stop and revert?
+                    // Since we haven't committed, and we track files, we can revert.
+                    const message = err instanceof Error ? err.message : String(err);
+                    return reply.status(400).send({ error: `Failed to apply change: ${message}` });
+                }
+            }
+
+            if (modifiedFiles.size === 0) {
+                return reply.status(400).send({ error: 'No files were modified by the proposed changes.' });
+            }
+
+            // 4. Validate changes
+            const { diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
+            const hasErrors = diagnostics.some(d => d.severity === 'error');
+
+            if (hasErrors) {
+                // Revert changes
+                const filesToRevert = Array.from(modifiedFiles);
+                await execFileAsync('git', ['checkout', '--', ...filesToRevert], { cwd: bundleDir });
+
+                return reply.status(400).send({
+                    error: 'Validation failed after applying changes. Changes have been reverted.',
+                    diagnostics
+                });
+            }
+
+            // 5. Commit changes
+            const filesToCommit = Array.from(modifiedFiles);
+            // We use relative paths for git commit generally, or absolute? 
+            // git-utils commitChanges runs in cwd, so relative is best?
+            // saveEntity uses absolute paths. 
+            // Let's pass absolute paths to commitChanges, git usually handles it or we make relative.
+            // git-utils implementation: `args.push(...files)`.
+            // If we are in the repo root, absolute paths *might* work but safer to make relative.
+            const relativeFiles = filesToCommit.map(f => path.relative(bundleDir, f));
+
+            await commitChanges(bundleDir, 'Applied changes via Agent', relativeFiles);
+
+            // 6. Notify backend
             const state = await getBackend().applyChanges(changes);
-            return reply.send({ state });
+
+            return reply.send({ state, commited: true });
         } catch (err) {
             fastify.log.error(err);
             return reply.status(400).send({ error: (err as Error).message });

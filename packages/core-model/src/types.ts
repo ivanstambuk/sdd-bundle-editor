@@ -67,7 +67,7 @@ export interface Diagnostic {
   entityType?: EntityType;
   filePath?: string;
   path?: string;
-   // 'schema' for JSON Schema validation, 'lint' for lint rules, 'gate' for higher-level gates.
+  // 'schema' for JSON Schema validation, 'lint' for lint rules, 'gate' for higher-level gates.
   source?: 'schema' | 'lint' | 'gate';
   code?: string;
 }
@@ -103,4 +103,13 @@ export interface BundleTypeDefinition {
   version: string;
   entities: BundleTypeEntityConfig[];
   relations?: BundleTypeRelationConfig[];
+}
+
+export interface ProposedChange {
+  entityId: EntityId;
+  entityType: EntityType;
+  fieldPath: string;
+  originalValue: unknown;
+  newValue: unknown;
+  rationale?: string;
 }

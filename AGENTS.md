@@ -232,3 +232,90 @@ ls -la artifacts/*.png
 - Ask the user to test manually without running E2E tests first
 - Skip visual verification on UI changes
 
+---
+
+### Testing & Debugging Best Practices
+
+**1. Explicit Context is Mandatory**
+- The backend server is stateless regarding "active bundle".
+- **Rule**: Every API call to `/agent/*` or `/bundle/*` MUST include `?bundleDir=...` or pass `bundleDir` in the body.
+- **Why**: E2E tests run on temporary directories, not `process.cwd()`. Omitting this causes silent failures or 400 errors.
+
+**2. E2E Debugging**
+- **Unified Logs**: When debugging E2E test failures, always capture output to a file to see server logs side-by-side with test results:
+  ```bash
+  pnpm test:e2e e2e/target.spec.ts > debug_log.txt 2>&1
+  ```
+- **Workflows**: See `.agent/workflows/debug-e2e.md` for detailed instructions.
+- **Console Listeners**: Ensure your test file listens to browser console logs:
+  ```typescript
+  page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
+  ```
+
+**3. Entity IDs in Tests**
+- **Do NOT Assume IDs**: When testing against `examples/basic-bundle`, verify the entity IDs first (e.g., `PROF-BASIC`, not `user`).
+- **Best Practice**: Use `list_dir` or `view_file` to confirm IDs before hardcoding them in test expectations.
+
+---
+
+### Session Handover / Handoff Protocol
+
+When the user says "session handover", you must perform two distinct actions:
+
+1.  **Generate the Handover Summary**: Use the template below to provide high-signal context for the next agent.
+2.  **Conduct a Retrospective**: Reflect on the session and propose improvements.
+    *   Draft these proposals as a numbered list **after** the code block.
+    *   **DO NOT implement them yet**. Wait for user approval.
+
+#### Handoff Template
+
+```markdown
+# Session Handoff
+
+## 1. Core Context
+- **Project**: SDD Bundle Editor (Monorepo: React UI, Fastify Backend, TypeScript Core)
+- **Goal**: [Current high-level goal, e.g. "Polishing Agent Panel UI"]
+- **Repository State**: `[Clean/Dirty]` (Branch: `[main/feature]`)
+- **Context Source**: Read @[AGENTS.md] for protocols and `IMPLEMENTATION_TRACKER.md` for backlog.
+
+## 2. Recent Changes (This Session)
+- **Implemented**:
+  - [Feature A]: [Brief description]
+  - [Feature B]: [Brief description]
+- **Fixed**:
+  - [Bug X]: [Description]
+- **Verified**:
+  - [Test Suite]: `pnpm test` [Pass/Fail]
+  - [E2E Tests]: `pnpm test:e2e` [Pass/Fail]
+  - [Visuals]: Screenshots in `artifacts/` [Check/Skip]
+
+## 3. Current State & Pending Scope
+- **Active Task**: [What was in progress?]
+- **Pending / Next Up**:
+  - [Task 1]
+  - [Task 2]
+- **Known Issues**:
+  - [Issue Description]
+
+## 4. Operational Notes (For Next Agent)
+- **Environment**: Node 18+, pnpm, Linux.
+- **Gotchas**:
+  - [e.g. "Do not use browser_subagent"]
+  - [e.g. "AppShell requires fixed height"]
+- **Wasted Time / Lessons**:
+  - [e.g. "Spent time debugging X, solution was Y"]
+
+## 5. Immediate Action Items
+1. [First command to run]
+2. [First file to check]
+```
+
+#### Retrospective & Process Improvements (Proposals)
+
+After generating the code block above, strictly outside of it, you must conduct a retrospective. Reflect on the session and propose improvements to workflows, documentation, or code.
+
+*Format:*
+*In this session, I noticed [X] caused friction. I propose:*
+1.  **[Improvement Name]**: [Description]
+2.  **[Improvement Name]**: [Description]
+

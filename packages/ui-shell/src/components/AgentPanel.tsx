@@ -132,8 +132,8 @@ export function AgentPanel({
     if (status === 'idle') {
         const isEcho = activeCommand === 'echo';
         const isAllowed = !isEcho || isDebug;
-        // Basically configured if not mock AND allowed
-        const isConfigured = currentBackendType !== 'mock' && isAllowed;
+        // Basically configured if not mock AND allowed (or debug mode allows mock)
+        const isConfigured = (currentBackendType !== 'mock' || isDebug) && isAllowed;
 
         let warningMsg = '⚠️ Agent is not configured. Please select a provider.';
         if (currentBackendType !== 'mock' && !isAllowed) {

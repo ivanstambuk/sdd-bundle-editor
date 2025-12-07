@@ -1,4 +1,4 @@
-import type { Bundle } from '@sdd-bundle-editor/core-model';
+import type { Bundle, ProposedChange } from '@sdd-bundle-editor/core-model';
 
 export type ProviderKind = 'cli' | 'http';
 
@@ -54,14 +54,8 @@ export interface ConversationMessage {
 
 export type ConversationStatus = 'idle' | 'active' | 'pending_changes' | 'linting' | 'committed' | 'error';
 
-export interface ProposedChange {
-  entityId: string;
-  entityType: string;
-  fieldPath: string;
-  originalValue: unknown;
-  newValue: unknown;
-  rationale: string;
-}
+
+export { ProposedChange };
 
 export interface DecisionOption {
   id: string;

@@ -1,6 +1,6 @@
 import Form from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
-import type { UiBundleSnapshot, UiEntity } from '../types';
+import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { SddRefWidget } from './SddRefWidget';
 
 interface EntityDetailsProps {
@@ -9,9 +9,11 @@ interface EntityDetailsProps {
   readOnly?: boolean;
   onNavigate?: (entityType: string, entityId: string) => void;
   onEditRequest?: () => void;
+  diagnostics?: UiDiagnostic[];
+  onFixDiagnostics?: (entity: UiEntity, diagnostics: UiDiagnostic[]) => void;
 }
 
-export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequest }: EntityDetailsProps) {
+export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequest, diagnostics = [], onFixDiagnostics }: EntityDetailsProps) {
   if (!bundle || !entity) {
     // ... empty state ...
     return (
@@ -24,6 +26,10 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
       </div>
     );
   }
+
+  const hasDiagnostics = diagnostics.length > 0;
+  const errorCount = diagnostics.filter(d => d.severity === 'error').length;
+  const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
 
   // ... schema and graph logic ...
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
@@ -83,15 +89,27 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
           </span>
           <span className="entity-id">{entity.id}</span>
         </div>
-        {readOnly && onEditRequest && (
-          <button
-            className="btn btn-sm btn-secondary"
-            onClick={onEditRequest}
-            title="Ask the agent to modify this entity"
-          >
-            Edit via Agent
-          </button>
-        )}
+        <div className="entity-header-actions">
+          {hasDiagnostics && onFixDiagnostics && (
+            <button
+              className="btn btn-sm btn-warning"
+              onClick={() => onFixDiagnostics(entity, diagnostics)}
+              title={`Ask agent to fix ${errorCount} errors, ${warningCount} warnings`}
+              data-testid="fix-with-agent-btn"
+            >
+              🪄 Fix with Agent
+            </button>
+          )}
+          {readOnly && onEditRequest && (
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={onEditRequest}
+              title="Ask the agent to modify this entity"
+            >
+              Edit via Agent
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="entity-details-body">

@@ -364,6 +364,47 @@ export function AppShell() {
     }
   };
 
+  const currentEntityDiagnostics = selectedEntity
+    ? diagnostics.filter(d =>
+      d.entityType === selectedEntity.entityType &&
+      d.entityId === selectedEntity.id
+    )
+    : [];
+
+  const handleFixDiagnostics = (entity: UiEntity, curDiagnostics: UiDiagnostic[]) => {
+    const errorCount = curDiagnostics.filter(d => d.severity === 'error').length;
+    const warningCount = curDiagnostics.filter(d => d.severity === 'warning').length;
+    const summary = `${errorCount} errors, ${warningCount} warnings`;
+
+    // 1. Open Agent Panel
+    setShowAgentPanel(true);
+
+    // 2. Identify issues
+    // We limit to top 5 issues to keep prompt concise
+    const issues = curDiagnostics
+      .slice(0, 5)
+      .map(d => `- [${d.severity}] ${d.message}`)
+      .join('\n');
+
+    const prompt = `Fix the following issues for ${entity.entityType} ${entity.id} (${summary}):\n\n${issues}\n\n${curDiagnostics.length > 5 ? '(and more...)' : ''}`;
+
+    // 3. Send message
+    handleAgentMessage(prompt);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Ctrl+J (or Command+J on Mac)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'j') {
+        e.preventDefault();
+        setShowAgentPanel(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className={`app-shell ${showAgentPanel ? 'with-agent-panel' : ''}`}>
       {/* Git dirty state warning */}
@@ -420,6 +461,7 @@ export function AppShell() {
             type="button"
             className={`btn ${showAgentPanel ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setShowAgentPanel(!showAgentPanel)}
+            title="Toggle Agent Panel (Ctrl+J)"
           >
             🤖 Agent
           </button>
@@ -493,6 +535,8 @@ export function AppShell() {
               readOnly={isReadOnly}
               onNavigate={handleNavigate}
               onEditRequest={handleEditRequest}
+              diagnostics={currentEntityDiagnostics}
+              onFixDiagnostics={handleFixDiagnostics}
             />
           )}
 

@@ -362,8 +362,8 @@ export function AgentPanel({
                 <button onClick={onAbortConversation} className="abort-btn">Abort</button>
             </div>
             <div className="messages-list">
-                {messages.map((msg) => (
-                    <div key={msg.id} className={`message role-${msg.role}`}>
+                {messages.map((msg, idx) => (
+                    <div key={msg.id} className={`message role-${msg.role}`} data-testid={`chat-message-${msg.role}-${idx}`}>
                         <div className="message-meta">
                             <span className="message-role">{msg.role}</span>
                             <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>

@@ -73,6 +73,11 @@ This:
 
 If you add new packages, make sure their `build` scripts succeed under `pnpm -r build` before leaving changes.
 
+### CRITICAL: Build on Interface Change
+If you modify any `types.ts` or interface definition in a core package (e.g., `packages/core-ai/src/types.ts`, `packages/core-model/src/types.ts`), you **MUST** run `pnpm build` immediately.
+- Dependent packages (like `apps/server` or `packages/ui-shell`) consume the *built* declaration files (`dist/*.d.ts`), not the source `src/`.
+- Consumers will NOT see your changes (and linter will error) until you build the core package.
+
 ---
 
 ### CLI validation against the sample bundle
@@ -262,7 +267,7 @@ ls -la artifacts/*.png
 
 When the user says "session handover", you must perform two distinct actions:
 
-1.  **Generate the Handover Summary**: Use the template below to provide high-signal context for the next agent.
+1.  **Generate the Handover Summary**: Use the template below to provide high-signal context for the next agent. **IMPORTANT**: Output this as a single Markdown code block in your final chat message. Do **NOT** create a `session_handover.md` file.
 2.  **Conduct a Retrospective**: Reflect on the session and propose improvements.
     *   Draft these proposals as a numbered list **after** the code block.
     *   **DO NOT implement them yet**. Wait for user approval.
@@ -302,6 +307,10 @@ When the user says "session handover", you must perform two distinct actions:
 - **Gotchas**:
   - [e.g. "Do not use browser_subagent"]
   - [e.g. "AppShell requires fixed height"]
+- **Testing Contextual Actions**:
+  - **Regex Locators**: When verifying AI messages or multi-line text, ALWAYS use regex locators (e.g. `getByText(/Fix the following issues/)`) instead of strict string matching. This handles whitespace variations and avoids brittle tests.
+  - **Test IDs**: Use the standard `data-testid` attributes (e.g. `chat-message-user-0`) for selecting specific elements.
+  - **Timing**: Optimistic updates in React state can sometimes race with DOM assertions. Ensure you wait for specific element visibility before asserting content.
 - **Wasted Time / Lessons**:
   - [e.g. "Spent time debugging X, solution was Y"]
 

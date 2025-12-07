@@ -158,12 +158,12 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 - [x] Add "Edit via Agent" call-to-action:
   - [x] Button/link that focuses agent panel
-  - [ ] Contextual prompts like "Fix diagnostics for this entity"
+  - [x] Contextual prompts like "Fix diagnostics for this entity"
 
 - [x] Add conversation panel to layout:
   - [x] Right panel design with collapsible state
   - [x] Integrated into AppShell layout
-  - [ ] Keyboard shortcut to open agent panel
+  - [x] Keyboard shortcut to open agent panel
 
 ---
 

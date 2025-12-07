@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ConversationMessage, ConversationStatus, ProposedChange, AgentDecision, DecisionOption, AgentBackendConfig } from '@sdd-bundle-editor/core-ai';
+import ReactMarkdown from 'react-markdown';
 
 export interface AgentPanelProps {
     messages: ConversationMessage[];
@@ -346,7 +347,9 @@ export function AgentPanel({
                             <span className="message-role">{msg.role}</span>
                             <span className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                         </div>
-                        <div className="message-content">{msg.content}</div>
+                        <div className="message-content markdown-body">
+                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
                     </div>
                 ))}
 

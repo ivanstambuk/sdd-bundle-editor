@@ -96,7 +96,10 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
             <></>
           </AnyForm>
         ) : (
-          <pre>{JSON.stringify(entity.data, null, 2)}</pre>
+          <div className="entity-no-schema">
+            <p className="text-muted">Schema not found for entity type "{entity.entityType}".</p>
+            <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
+          </div>
         )}
 
         <div className="references-section">

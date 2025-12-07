@@ -32,6 +32,9 @@
   --color-feature: #8b5cf6;
   --color-requirement: #06b6d4;
   --color-task: #f97316;
+  --color-adr: #10b981;
+  --color-profile: #ec4899;
+  --color-fixture: #f59e0b;
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -331,6 +334,18 @@ body {
   background: var(--color-task);
 }
 
+.entity-group[data-type="ADR"] .entity-group-header::before {
+  background: var(--color-adr);
+}
+
+.entity-group[data-type="Profile"] .entity-group-header::before {
+  background: var(--color-profile);
+}
+
+.entity-group[data-type="Fixture"] .entity-group-header::before {
+  background: var(--color-fixture);
+}
+
 .entity-list {
   list-style: none;
 }
@@ -407,6 +422,21 @@ body {
 .entity-type-badge[data-type="Task"] {
   background: rgba(249, 115, 22, 0.2);
   color: var(--color-task);
+}
+
+.entity-type-badge[data-type="ADR"] {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-adr);
+}
+
+.entity-type-badge[data-type="Profile"] {
+  background: rgba(236, 72, 153, 0.2);
+  color: var(--color-profile);
+}
+
+.entity-type-badge[data-type="Fixture"] {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--color-fixture);
 }
 
 .entity-id {

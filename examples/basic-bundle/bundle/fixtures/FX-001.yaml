@@ -1,0 +1,16 @@
+id: FX-001
+title: Sample requirement fixture
+description: |
+  Example fixture demonstrating a valid requirement structure.
+  Used for testing the validation pipeline.
+featureIds:
+  - FEAT-001
+requirementIds:
+  - REQ-001
+data:
+  exampleInput:
+    title: "Test Requirement"
+    description: "This is a sample requirement for testing"
+  expectedOutput:
+    valid: true
+    diagnostics: []

@@ -1,0 +1,7 @@
+id: PROF-BASIC
+title: Basic SDD Profile
+description: |
+  A minimal profile that requires only the core feature set.
+  Suitable for simple projects with basic requirement tracking.
+requiresFeatures:
+  - FEAT-001

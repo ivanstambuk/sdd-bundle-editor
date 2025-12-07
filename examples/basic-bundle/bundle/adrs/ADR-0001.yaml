@@ -1,0 +1,17 @@
+id: ADR-0001
+title: Use JSON Schema for entity validation
+status: accepted
+context: |
+  We need a standardized way to validate entity YAML files against their expected structure.
+  Options considered: custom validation code, JSON Schema, Zod schemas, TypeBox.
+decision: |
+  Use JSON Schema (Draft 2020-12) with Ajv for validation. This provides:
+  - Industry-standard schema format
+  - Schema-driven UI form generation via RJSF
+  - Custom format extensions (sdd-ref) for reference validation
+consequences: |
+  - All entity types require a JSON Schema
+  - Custom extensions (x-refTargets, x-idTemplate) must be registered with Ajv
+  - Schema changes require bundle-type version updates
+featureIds:
+  - FEAT-001

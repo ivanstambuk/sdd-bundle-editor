@@ -1,0 +1,54 @@
+{
+    "$id": "https://example.com/sdd/Fixture.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Fixture",
+    "description": "Test fixture or example data",
+    "type": "object",
+    "required": [
+        "id",
+        "title"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "pattern": "^FX-[0-9]{3}$",
+            "x-idTemplate": "FX-{000}",
+            "x-entityType": "Fixture",
+            "x-idScope": "bundle"
+        },
+        "title": {
+            "type": "string",
+            "minLength": 3
+        },
+        "description": {
+            "type": "string"
+        },
+        "featureIds": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "Feature"
+                ]
+            },
+            "uniqueItems": true
+        },
+        "requirementIds": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "Requirement"
+                ]
+            },
+            "uniqueItems": true
+        },
+        "data": {
+            "type": "object",
+            "description": "The actual fixture data (schema-free)"
+        }
+    },
+    "additionalProperties": false
+}

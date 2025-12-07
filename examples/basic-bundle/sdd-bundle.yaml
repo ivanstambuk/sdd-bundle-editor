@@ -13,6 +13,9 @@ spec:
       Feature: schemas/Feature.schema.json
       Requirement: schemas/Requirement.schema.json
       Task: schemas/Task.schema.json
+      ADR: schemas/ADR.schema.json
+      Profile: schemas/Profile.schema.json
+      Fixture: schemas/Fixture.schema.json
 
   layout:
     documents:
@@ -25,10 +28,18 @@ spec:
       Task:
         dir: bundle/tasks
         filePattern: "{id}.yaml"
+      ADR:
+        dir: bundle/adrs
+        filePattern: "{id}.yaml"
+      Profile:
+        dir: bundle/profiles
+        filePattern: "{id}.yaml"
+      Fixture:
+        dir: bundle/fixtures
+        filePattern: "{id}.yaml"
 
   domainKnowledge:
     path: domain/domain-knowledge.md
 
   lintConfig:
     path: config/sdd-lint.yaml
-

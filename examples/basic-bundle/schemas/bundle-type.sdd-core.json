@@ -23,6 +23,27 @@
       "schemaPath": "schemas/Task.schema.json",
       "directory": "bundle/tasks",
       "filePattern": "{id}.yaml"
+    },
+    {
+      "entityType": "ADR",
+      "idField": "id",
+      "schemaPath": "schemas/ADR.schema.json",
+      "directory": "bundle/adrs",
+      "filePattern": "{id}.yaml"
+    },
+    {
+      "entityType": "Profile",
+      "idField": "id",
+      "schemaPath": "schemas/Profile.schema.json",
+      "directory": "bundle/profiles",
+      "filePattern": "{id}.yaml"
+    },
+    {
+      "entityType": "Fixture",
+      "idField": "id",
+      "schemaPath": "schemas/Fixture.schema.json",
+      "directory": "bundle/fixtures",
+      "filePattern": "{id}.yaml"
     }
   ],
   "relations": [
@@ -39,7 +60,55 @@
       "fromField": "requirementIds",
       "toEntity": "Requirement",
       "multiplicity": "many"
+    },
+    {
+      "name": "TaskBelongsToFeature",
+      "fromEntity": "Task",
+      "fromField": "featureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRBelongsToFeature",
+      "fromEntity": "ADR",
+      "fromField": "featureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRSupersedesADR",
+      "fromEntity": "ADR",
+      "fromField": "supersedes",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProfileRequiresFeature",
+      "fromEntity": "Profile",
+      "fromField": "requiresFeatures",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProfileOptionalFeature",
+      "fromEntity": "Profile",
+      "fromField": "optionalFeatures",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FixtureBelongsToFeature",
+      "fromEntity": "Fixture",
+      "fromField": "featureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FixtureTestsRequirement",
+      "fromEntity": "Fixture",
+      "fromField": "requirementIds",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
     }
   ]
 }
-

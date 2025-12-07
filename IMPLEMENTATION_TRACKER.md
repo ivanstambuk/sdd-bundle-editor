@@ -45,7 +45,7 @@ Tasks to bring the implementation into full compliance with `sdd-bundle-editor-s
 
 ### Expanded Example Bundle
 - [x] Add full `bundle-type.json` with entities and relations arrays *(already present)*
-- [ ] Add more entity types: ADR, Profile, Fixture (schema + sample entities)
+- [x] Add more entity types: ADR, Profile, Fixture (schema + sample entities)
 - [ ] Add lint configuration with feature-based rules
 - [x] Add sample `domain-knowledge.md` file *(already present)*
 

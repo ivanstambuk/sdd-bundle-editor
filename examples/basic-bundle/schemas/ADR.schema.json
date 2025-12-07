@@ -1,0 +1,69 @@
+{
+    "$id": "https://example.com/sdd/ADR.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ADR",
+    "description": "Architecture Decision Record",
+    "type": "object",
+    "required": [
+        "id",
+        "title",
+        "status"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "pattern": "^ADR-[0-9]{4}$",
+            "x-idTemplate": "ADR-{0000}",
+            "x-entityType": "ADR",
+            "x-idScope": "bundle"
+        },
+        "title": {
+            "type": "string",
+            "minLength": 5
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "proposed",
+                "accepted",
+                "rejected",
+                "superseded"
+            ]
+        },
+        "context": {
+            "type": "string",
+            "description": "The context and problem statement"
+        },
+        "decision": {
+            "type": "string",
+            "description": "The decision that was made"
+        },
+        "consequences": {
+            "type": "string",
+            "description": "The consequences of this decision"
+        },
+        "supersedes": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "ADR"
+                ]
+            },
+            "uniqueItems": true
+        },
+        "featureIds": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "Feature"
+                ]
+            },
+            "uniqueItems": true
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,52 @@
+{
+    "$id": "https://example.com/sdd/Profile.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Profile",
+    "description": "Protocol or capability profile definition",
+    "type": "object",
+    "required": [
+        "id",
+        "title"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "pattern": "^PROF-[A-Z0-9-]+$",
+            "x-idTemplate": "PROF-{ID}",
+            "x-entityType": "Profile",
+            "x-idScope": "bundle"
+        },
+        "title": {
+            "type": "string",
+            "minLength": 3
+        },
+        "description": {
+            "type": "string"
+        },
+        "requiresFeatures": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "Feature"
+                ]
+            },
+            "uniqueItems": true,
+            "description": "Features that must be implemented for this profile"
+        },
+        "optionalFeatures": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "sdd-ref",
+                "x-refTargets": [
+                    "Feature"
+                ]
+            },
+            "uniqueItems": true,
+            "description": "Features that may optionally be implemented"
+        }
+    },
+    "additionalProperties": false
+}

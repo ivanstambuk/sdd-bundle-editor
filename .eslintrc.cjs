@@ -10,7 +10,7 @@ module.exports = {
     project: ["./tsconfig.base.json"],
     sourceType: "module"
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "react-hooks"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -18,6 +18,9 @@ module.exports = {
     "prettier"
   ],
   ignorePatterns: ["dist", "node_modules"],
-  rules: {}
+  rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
 };
 

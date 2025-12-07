@@ -7,6 +7,9 @@ import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
 import { AgentPanel } from './components/AgentPanel';
 import { ReadOnlyToggle } from './components/ReadOnlyToggle';
 import type { ConversationState } from '@sdd-bundle-editor/core-ai';
+import { createLogger } from './utils/logger';
+
+const log = createLogger('AppShell');
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -162,7 +165,7 @@ export function AppShell() {
   useEffect(() => {
     fetchJson<{ state: ConversationState }>('/agent/status')
       .then((data) => setConversation(data.state))
-      .catch((err) => console.error('Failed to fetch agent status', err));
+      .catch((err) => log.error('Failed to fetch agent status', err));
   }, []);
 
   useEffect(() => {
@@ -185,18 +188,28 @@ export function AppShell() {
       const entities = bundle.entities[selectedEntity.entityType] ?? [];
       const freshEntity = entities.find(e => e.id === selectedEntity.id);
 
-      console.log('[AppShell] Checking for fresh entity:', {
+      log.debug('Checking for fresh entity:', {
         type: selectedEntity.entityType,
         id: selectedEntity.id,
-        found: !!freshEntity
+        found: !!freshEntity,
+        currentTitle: (selectedEntity.data as any).title,
+        newTitle: freshEntity ? (freshEntity.data as any).title : 'N/A'
       });
 
       if (freshEntity) {
-        console.log('[AppShell] Updating selectedEntity with fresh data');
-        setSelectedEntity(freshEntity);
+        // Only update if data actually changed to avoid loop (if we add selectedEntity to deps)
+        // or if successful refresh is needed.
+        // We use JSON stringify for deep comparison to be safe, or just trust the new object reference.
+        // Since freshEntity comes from a new bundle fetch, reference should differ.
+        if (JSON.stringify(freshEntity.data) !== JSON.stringify(selectedEntity.data)) {
+          log.info('Entity data changed, updating selection.');
+          setSelectedEntity(freshEntity);
+        } else {
+          log.debug('Entity data is identical, skipping update.');
+        }
       }
     }
-  }, [bundle]);
+  }, [bundle, selectedEntity]);
 
   const handleCompile = async () => {
     if (!bundle) return;
@@ -270,7 +283,7 @@ export function AppShell() {
   };
 
   const handleAgentStart = async () => {
-    console.log('handleAgentStart called, readOnly:', isReadOnly);
+    log.debug('handleAgentStart called', { readOnly: isReadOnly });
     try {
       const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
         method: 'POST',
@@ -281,7 +294,7 @@ export function AppShell() {
       });
       setConversation(data.state);
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
       setError((err as Error).message);
     }
   };
@@ -303,7 +316,7 @@ export function AppShell() {
       });
       setConversation(data.state);
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
       setError((err as Error).message);
     }
   };
@@ -315,7 +328,7 @@ export function AppShell() {
       });
       setConversation(data.state);
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
     }
   };
 
@@ -330,14 +343,14 @@ export function AppShell() {
       setLoading(true);
       fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
         .then((data) => {
-          console.log('[AppShell] Bundle refreshed:', Object.keys(data.bundle.entities));
+          log.info('Bundle refreshed after accept', { entityTypes: Object.keys(data.bundle.entities) });
           setBundle(data.bundle);
           setDiagnostics(data.diagnostics);
         })
         .finally(() => setLoading(false));
 
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
       setError((err as Error).message);
     }
   };
@@ -349,8 +362,8 @@ export function AppShell() {
         body: JSON.stringify({ bundleDir: bundleDir }),
       });
       setConversation(data.state);
-      // Show rollback message as info (could add a toast in the future)
-      console.log('Rollback:', data.message);
+      // Show rollback message
+      log.info('Rollback completed', { message: data.message });
 
       // Also refresh bundle
       setLoading(true);
@@ -362,7 +375,7 @@ export function AppShell() {
         .finally(() => setLoading(false));
 
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
       setError((err as Error).message);
     }
   };
@@ -375,7 +388,7 @@ export function AppShell() {
       });
       setConversation(data.state);
     } catch (err) {
-      console.error(err);
+      log.error('Operation failed', err);
       setError((err as Error).message);
     }
   };

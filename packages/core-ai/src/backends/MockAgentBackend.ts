@@ -47,12 +47,12 @@ export class MockAgentBackend implements AgentBackend {
         if (message.includes('propose change')) {
             console.log('MockAgentBackend: Triggering proposal logic for message:', message);
             const change: ProposedChange = {
-                entityId: 'root',
-                entityType: 'Bundle',
-                fieldPath: 'metadata.name',
-                originalValue: 'basic-sample-bundle',
-                newValue: 'Updated Bundle Name by Agent',
-                rationale: 'User requested update via mock agent.'
+                entityId: 'FEAT-001',
+                entityType: 'Feature',
+                fieldPath: 'title',
+                originalValue: 'Basic Demo Feature',
+                newValue: 'Updated Demo Feature Title',
+                rationale: 'User requested title update via mock agent.'
             };
             this.state.pendingChanges = [change];
             this.state.status = 'pending_changes';
@@ -60,7 +60,7 @@ export class MockAgentBackend implements AgentBackend {
             this.state.messages.push({
                 id: (Date.now() + 1).toString(),
                 role: 'agent',
-                content: 'I have proposed a change to update the profile title.',
+                content: 'I have proposed a change to update the feature title.',
                 timestamp: Date.now() + 1
             });
         } else {

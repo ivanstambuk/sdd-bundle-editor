@@ -259,7 +259,7 @@ export function AgentPanel({
                                                         break;
                                                     case 'deepseek':
                                                         baseURL = 'https://api.deepseek.com';
-                                                        model = 'deepseek-coder';
+                                                        model = 'deepseek-chat';
                                                         break;
                                                     case 'openrouter':
                                                         baseURL = 'https://openrouter.ai/api/v1';

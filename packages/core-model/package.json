@@ -12,6 +12,7 @@
   "dependencies": {
     "@sdd-bundle-editor/core-schema": "workspace:*",
     "@sdd-bundle-editor/core-lint": "workspace:*",
+    "@sdd-bundle-editor/shared-types": "workspace:*",
     "yaml": "^2.5.0"
   }
 }

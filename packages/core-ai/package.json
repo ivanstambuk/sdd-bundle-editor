@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@sdd-bundle-editor/core-model": "workspace:*",
+    "@sdd-bundle-editor/shared-types": "workspace:*",
     "openai": "^6.10.0"
   }
 }

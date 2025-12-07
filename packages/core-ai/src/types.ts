@@ -1,4 +1,22 @@
-import type { Bundle, ProposedChange } from '@sdd-bundle-editor/core-model';
+import type { Bundle } from '@sdd-bundle-editor/core-model';
+
+// Re-export shared types for backward compatibility
+export {
+  ProposedChange,
+  ConversationRole,
+  ConversationMessage,
+  ConversationStatus,
+  DecisionOption,
+  AgentDecision,
+  ConversationState,
+  AgentBackendConfig,
+} from '@sdd-bundle-editor/shared-types';
+
+// Import types locally for use in this file
+import type {
+  ProposedChange,
+  ConversationState,
+} from '@sdd-bundle-editor/shared-types';
 
 export type ProviderKind = 'cli' | 'http';
 
@@ -43,48 +61,14 @@ export interface AIProvider {
   run(request: AIRequest): Promise<AIResponse>;
 }
 
-export type ConversationRole = 'user' | 'agent' | 'system';
-
-export interface ConversationMessage {
-  id: string;
-  role: ConversationRole;
-  content: string;
-  timestamp: number;
-}
-
-export type ConversationStatus = 'idle' | 'active' | 'pending_changes' | 'linting' | 'committed' | 'error';
-
-
-export { ProposedChange };
-
-export interface DecisionOption {
-  id: string;
-  label: string;
-  description?: string;
-  pros?: string[];
-  cons?: string[];
-}
-
-export interface AgentDecision {
-  id: string;
-  question: string;
-  options: DecisionOption[];
-  status: 'open' | 'resolved';
-  context?: string;
-}
-
-export interface ConversationState {
-  status: ConversationStatus;
-  messages: ConversationMessage[];
-  pendingChanges?: ProposedChange[];
-  activeDecision?: AgentDecision;
-  lastError?: string;
-}
-
-export interface AgentBackendConfig {
-  type: 'vscode' | 'cli' | 'http' | 'mcp' | 'mock';
-  options?: Record<string, unknown>;
-}
+// Import additional types for local use in this file
+import type {
+  ConversationStatus,
+  ConversationMessage,
+  DecisionOption,
+  AgentDecision,
+  AgentBackendConfig,
+} from '@sdd-bundle-editor/shared-types';
 
 export interface AgentContext {
   bundleDir: string;

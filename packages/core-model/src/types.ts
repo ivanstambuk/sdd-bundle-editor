@@ -105,11 +105,5 @@ export interface BundleTypeDefinition {
   relations?: BundleTypeRelationConfig[];
 }
 
-export interface ProposedChange {
-  entityId: EntityId;
-  entityType: EntityType;
-  fieldPath: string;
-  originalValue: unknown;
-  newValue: unknown;
-  rationale?: string;
-}
+// Re-export ProposedChange from shared-types for backward compatibility
+export { ProposedChange } from '@sdd-bundle-editor/shared-types';

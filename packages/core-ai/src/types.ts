@@ -92,7 +92,7 @@ export interface AgentBackend {
   initialize(config: AgentBackendConfig): Promise<void>;
   startConversation(context: AgentContext): Promise<ConversationState>;
   sendMessage(message: string): Promise<ConversationState>;
-  applyChanges(changes: ProposedChange[]): Promise<ConversationState>;
+  applyChanges(changes: ProposedChange[], updatedBundle?: BundleSnapshot): Promise<ConversationState>;
   resolveDecision(decisionId: string, optionId: string): Promise<ConversationState>;
   abortConversation(): Promise<ConversationState>;
   /** Clear pending changes but keep conversation active (for rollback/retry scenarios) */

@@ -118,18 +118,20 @@ node apps/server/dist/index.js
 
 Key endpoints (default base URL: `http://localhost:3000`):
 
-- `GET /bundle` – returns `{ bundle, diagnostics }` snapshot for the current `sdd-bundle.yaml` directory.
-- `POST /bundle/validate` – returns `{ diagnostics }`.
-- `POST /bundle/save` – runs validation and, if clean, returns `{ saved: true, diagnostics, bundle }`.
-- `POST /ai/generate` / `POST /ai/fix-errors` – stub AI routes calling the no‑op provider.
+- `GET /bundle` – returns `{ bundle, diagnostics }` snapshot.
+- `GET /agent/status` – current conversation state and git status.
+- `POST /agent/start` – initialize conversation (requires clean git state).
+- `POST /agent/message` – send message to agent.
+- `POST /agent/accept` – apply proposed changes, lint, and commit.
+- `POST /agent/rollback` – revert uncommitted changes from the current session.
 
-> AI routes enforce Git discipline: they require a Git repo, non‑protected branch (not `main`/`master`), and a clean working tree.
+> **Git Discipline**: The server enforces a strict "Clean Working Tree" policy. You cannot start an agent conversation if there are uncommitted changes.
 
 ---
 
 ## Web UI
 
-The web app lives in `apps/web` and consumes the server’s HTTP API.
+The web app lives in `apps/web` and implements the **Agent-First Editing Workflow**.
 
 To run in development:
 
@@ -138,31 +140,39 @@ cd apps/web
 pnpm dev
 ```
 
-This starts a webpack dev server (default `http://localhost:5173`) with a dev proxy to the backend (`http://localhost:3000`).
+### Agent-First Workflow
 
-The UI currently supports:
+The editor is designed to be a **Read-Only Viewer** by default. You cannot directly edit fields in the forms. Instead, you interact with an AI Agent to modify the bundle.
 
-- Loading a bundle via `/bundle`.
-- Navigating entities by type.
-- Viewing entities in schema‑driven forms (read‑only).
-- Inspecting incoming/outgoing references.
-- Viewing diagnostics with severity/entity‑type filters.
-- Clicking “Compile Spec” to re‑run validation via `/bundle/validate`.
-- Running a stub “AI Generate” flow and seeing diffs/notes (no real changes without a provider).
+1.  **View & Navigate**: Browse entities, references, and diagnostics in read-only mode.
+2.  **Open Agent**: Press **`Ctrl+J`** or click the **"Edit via Agent"** button.
+3.  **Chat**: Describe your intent (e.g., "Add a requirement for login").
+4.  **Review**: The agent proposes changes. Review the diffs.
+5.  **Accept**: Click "Apply Changes". The agent applies edits, runs linter, and **automatically commits** if successful.
+
+### Features
+
+- **Read-Only Forms**: Prevents accidental drift between UI and files.
+- **Contextual Actions**: "Fix with Agent" buttons on diagnostic errors.
+- **Error Recovery**: Network handling and "Discard Changes" (rollback) capability.
+- **Diagnostics**: Real-time validation and linting feedback.
 
 ---
 
 ## Status and next work
 
-The MVP skeleton is functionally wired end‑to‑end but still needs:
+The project has transitioned to the **Agent-First** architecture (Phase 8).
 
-- Real AI provider integration in `core-ai` and corresponding workflows.
-- Additional lint rules and bundle types as the SDD ecosystem grows.
-- Richer example bundles:
-  - SDD requirements bundles at scale.
-  - Protocol spec bundles (e.g. EC‑OPRF/FHE‑style).
-  - Feature‑based project bundles (e.g. Feature 006‑like).
-- Persistence of edits from the UI back to YAML.
+**Completed:**
+- ✅ Core Agent Protocol (Start/Message/Accept/Abort).
+- ✅ Change Application Service with automatic Git commits.
+- ✅ Read-Only UI with `Ctrl+J` agent panel toggle.
+- ✅ Error Recovery and Rollback (`/agent/rollback`).
 
-Use `IMPLEMENTATION_TRACKER.md` to track and coordinate further work. The tracker mirrors the spec’s phases and is up‑to‑date with the current implementation.
+**In Progress / Planned:**
+- Real AI Provider integration (currently using a stub/mock).
+- Enhanced standard library of bundle types.
+- VS Code extension integration.
+
+Use `IMPLEMENTATION_TRACKER.md` to track and coordinate further work.
 

@@ -191,14 +191,14 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [x] Accepting changes and verifying commit – `agent-change-application.spec.ts`
   - [x] Aborting conversation – `agent-editing.spec.ts`
 - [x] Update `AGENTS.md` with agent-first editing workflow documentation
-- [ ] Update README with new usage patterns
+- [x] Update README with new usage patterns
 
 ---
 
 ## Future / Stretch Work
 
-- [ ] Replace the no-op AI provider with real `http` or `cli` provider in `core-ai`  
-  *(Foundational for Phase 8.2 agent backends)*
+- [x] Replace the no-op AI provider with real `http` or `cli` provider in `core-ai`  
+  *(Implemented DeepSeek v3 provider with Tool Calling)*
 
 - [ ] Add richer example bundles:
   - [ ] Protocol spec bundle (e.g., EC-OPRF/FHE-style)

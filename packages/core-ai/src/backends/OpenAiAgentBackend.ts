@@ -9,6 +9,34 @@ import {
     ConversationMessage
 } from '../types';
 
+const PROPOSE_CHANGES_TOOL = {
+    type: 'function' as const,
+    function: {
+        name: 'propose_changes',
+        description: 'Propose modifications to the bundle. Use this to create, update, or link entities.',
+        parameters: {
+            type: 'object',
+            properties: {
+                changes: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            entityId: { type: 'string', description: 'ID of the entity to modify (e.g. FEAT-001). For new entities, propose a unique ID.' },
+                            entityType: { type: 'string', description: 'The type of the entity (e.g. Feature, Requirement). Strongly recommended even for existing entities.' },
+                            field: { type: 'string', description: 'The field name to modify (e.g. title, status, description).' },
+                            newValue: { description: 'The new value for the field. Can be string, array, or object.' },
+                            rationale: { type: 'string', description: 'Explanation of why this change is being made.' }
+                        },
+                        required: ['entityId', 'field', 'newValue']
+                    }
+                }
+            },
+            required: ['changes']
+        }
+    }
+};
+
 export class OpenAiAgentBackend implements AgentBackend {
     private client?: OpenAI;
     private model: string = 'deepseek-chat';
@@ -17,6 +45,7 @@ export class OpenAiAgentBackend implements AgentBackend {
         messages: []
     };
     private context?: AgentContext;
+    private systemPrompt: string = '';
 
     async initialize(config: AgentBackendConfig): Promise<void> {
         const apiKey = process.env.DEEPSEEK_API_KEY || config.options?.apiKey as string;
@@ -24,7 +53,7 @@ export class OpenAiAgentBackend implements AgentBackend {
         this.model = config.options?.model as string || 'deepseek-chat';
 
         if (!apiKey) {
-            throw new Error('API Key required for OpenAI/DeepSeek provider');
+            throw new Error('API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY env var.');
         }
 
         this.client = new OpenAI({
@@ -39,6 +68,7 @@ export class OpenAiAgentBackend implements AgentBackend {
             status: 'active',
             messages: [],
         };
+        this.systemPrompt = this.buildSystemPrompt();
         return this.state;
     }
 
@@ -53,13 +83,12 @@ export class OpenAiAgentBackend implements AgentBackend {
             timestamp: Date.now()
         };
         this.state.messages.push(userMsg);
+        // Status remains 'active' while waiting
 
-        // Build system prompt from context
-        const systemPrompt = this.buildSystemPrompt();
         const apiMessages = [
-            { role: 'system' as const, content: systemPrompt },
+            { role: 'system' as const, content: this.systemPrompt },
             ...this.state.messages.map(m => ({
-                role: m.role as 'user' | 'assistant' | 'system',
+                role: (m.role === 'agent' ? 'assistant' : m.role) as 'user' | 'assistant' | 'system',
                 content: m.content
             }))
         ];
@@ -68,19 +97,92 @@ export class OpenAiAgentBackend implements AgentBackend {
             const completion = await this.client.chat.completions.create({
                 messages: apiMessages,
                 model: this.model,
+                tools: [PROPOSE_CHANGES_TOOL],
+                tool_choice: 'auto',
             });
 
-            const responseContent = completion.choices[0]?.message?.content || '';
+            const choice = completion.choices[0];
+            const responseMsg = choice?.message;
 
+            if (!responseMsg) {
+                throw new Error('No response from AI provider');
+            }
+
+            const content = responseMsg.content || '';
+            const toolCalls = responseMsg.tool_calls;
+
+            // Add agent message
             const agentMsg: ConversationMessage = {
                 id: (Date.now() + 1).toString(),
                 role: 'agent',
-                content: responseContent,
+                content: content, // Can be null if only tool calls, but we store string
                 timestamp: Date.now()
             };
             this.state.messages.push(agentMsg);
 
+            // Handle tool calls
+            if (toolCalls && toolCalls.length > 0) {
+                const changes: ProposedChange[] = [];
+
+                // Use any cast to bypass strict OpenAI SDK types vs our usage
+                for (const toolCall of toolCalls as any[]) {
+                    if (toolCall.function?.name === 'propose_changes') {
+                        try {
+                            const args = JSON.parse(toolCall.function.arguments);
+                            if (Array.isArray(args.changes)) {
+                                const mappedChanges = args.changes.map((c: any) => {
+                                    let entityType = c.entityType;
+
+                                    // If entityType is missing or partial, try to resolve it from the bundle context
+                                    if ((!entityType || entityType === 'Unknown') && c.entityId && this.context?.bundle?.bundle) {
+                                        // The Bundle interface has an idRegistry map
+                                        const registryEntry = this.context.bundle.bundle.idRegistry.get(c.entityId);
+                                        if (registryEntry) {
+                                            entityType = registryEntry.entityType;
+                                        }
+                                    }
+
+                                    // Resolve original value from bundle if possible
+                                    let originalValue = null;
+                                    if (entityType && entityType !== 'Unknown' && c.entityId && this.context?.bundle?.bundle) {
+                                        const entityMap = this.context.bundle.bundle.entities.get(entityType);
+                                        const entity = entityMap?.get(c.entityId);
+                                        if (entity && entity.data) {
+                                            // Simple top-level field access for now. 
+                                            // TODO: Support nested path access if 'field' contains dots
+                                            originalValue = (entity.data as any)[c.field];
+                                        }
+                                    }
+
+                                    return {
+                                        entityId: c.entityId,
+                                        entityType: entityType || 'Unknown',
+                                        fieldPath: c.field,
+                                        newValue: c.newValue,
+                                        originalValue: originalValue,
+                                        rationale: c.rationale
+                                    };
+                                });
+                                changes.push(...mappedChanges);
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse tool arguments:', e);
+                        }
+                    }
+                }
+
+                if (changes.length > 0) {
+                    this.state.pendingChanges = changes;
+                    this.state.status = 'pending_changes';
+                } else {
+                    this.state.status = 'active';
+                }
+            } else {
+                this.state.status = 'active';
+            }
+
         } catch (err) {
+            console.error('AI Provider Error:', err);
             this.state.lastError = (err as Error).message;
             this.state.status = 'error';
         }
@@ -88,8 +190,28 @@ export class OpenAiAgentBackend implements AgentBackend {
         return this.state;
     }
 
-    async applyChanges(changes: ProposedChange[]): Promise<ConversationState> {
-        // No-op for now
+    async applyChanges(changes: ProposedChange[], updatedBundle?: any): Promise<ConversationState> {
+        // In this architecture, applyChanges is handled by the server/service layer
+        // The backend just proposes them.
+        // We assume successful application moves us back to 'active' or 'committed'
+        this.state.pendingChanges = undefined;
+        this.state.status = 'active';
+
+        if (updatedBundle && this.context) {
+            this.context.bundle = updatedBundle;
+            this.systemPrompt = this.buildSystemPrompt();
+            // Optionally, add a system message to confirm context update
+        }
+
+        // Add a system message indicating changes were applied
+        // So the LLM knows for the next turn
+        this.state.messages.push({
+            id: Date.now().toString(),
+            role: 'system', // or user 'system' equivalent
+            content: 'Changes have been successfully applied to the bundle. The system prompt has been updated with the latest bundle context.',
+            timestamp: Date.now()
+        });
+
         return this.state;
     }
 
@@ -99,9 +221,7 @@ export class OpenAiAgentBackend implements AgentBackend {
 
     async clearPendingChanges(): Promise<ConversationState> {
         this.state.pendingChanges = undefined;
-        if (this.state.status === 'pending_changes' || this.state.status === 'linting') {
-            this.state.status = 'active';
-        }
+        this.state.status = 'active';
         return this.state;
     }
 
@@ -115,11 +235,40 @@ export class OpenAiAgentBackend implements AgentBackend {
     }
 
     private buildSystemPrompt(): string {
-        return `You are an expert SDD Bundle Editor assistant.
-    Current Bundle Directory: ${this.context?.bundleDir}
-    
-    You help the user edit the specification bundle.
-    Focus on the entity they are currently viewing if any.
-    `;
+        // Serialize the bundle context for the LLM
+        // We use JSON for simplicity
+        let prompt = `You are an intelligent SDD (Spec-Driven Development) Bundle Editor assistant.
+Your goal is to help the user evolve the specification bundle.
+
+You have access to a tool 'propose_changes' which you MUST use to modify the bundle.
+When the user asks to rename, create, or update entities, call this tool.
+Do not ask for permission to use the tool; just use it if the user's intent is clear.
+
+CURRENT BUNDLE CONTEXT:
+`;
+
+        if (this.context?.bundle?.bundle) {
+            // Flatten the nested Map<EntityType, Map<EntityId, Entity>> structure
+            const allEntities: any[] = [];
+            for (const typeMap of this.context.bundle.bundle.entities.values()) {
+                for (const entity of typeMap.values()) {
+                    allEntities.push({
+                        id: entity.id,
+                        type: entity.entityType, // use entityType prop from Entity interface
+                        data: entity.data
+                    });
+                }
+            }
+
+            const bundleSummary = {
+                manifest: this.context.bundle.bundle.manifest,
+                entities: allEntities
+            };
+            prompt += JSON.stringify(bundleSummary, null, 2);
+        } else {
+            prompt += "(No bundle loaded or empty context)";
+        }
+
+        return prompt;
     }
 }

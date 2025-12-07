@@ -178,6 +178,26 @@ export function AppShell() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Refresh selected entity when bundle data updates (e.g. after Agent edit)
+  // Refresh selected entity when bundle data updates (e.g. after Agent edit)
+  useEffect(() => {
+    if (bundle && selectedEntity) {
+      const entities = bundle.entities[selectedEntity.entityType] ?? [];
+      const freshEntity = entities.find(e => e.id === selectedEntity.id);
+
+      console.log('[AppShell] Checking for fresh entity:', {
+        type: selectedEntity.entityType,
+        id: selectedEntity.id,
+        found: !!freshEntity
+      });
+
+      if (freshEntity) {
+        console.log('[AppShell] Updating selectedEntity with fresh data');
+        setSelectedEntity(freshEntity);
+      }
+    }
+  }, [bundle]);
+
   const handleCompile = async () => {
     if (!bundle) return;
     setLoading(true);
@@ -308,8 +328,9 @@ export function AppShell() {
       setConversation(data.state);
       // Refresh bundle after changes
       setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}`)
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
         .then((data) => {
+          console.log('[AppShell] Bundle refreshed:', Object.keys(data.bundle.entities));
           setBundle(data.bundle);
           setDiagnostics(data.diagnostics);
         })
@@ -330,6 +351,16 @@ export function AppShell() {
       setConversation(data.state);
       // Show rollback message as info (could add a toast in the future)
       console.log('Rollback:', data.message);
+
+      // Also refresh bundle
+      setLoading(true);
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
+        .then((data) => {
+          setBundle(data.bundle);
+          setDiagnostics(data.diagnostics);
+        })
+        .finally(() => setLoading(false));
+
     } catch (err) {
       console.error(err);
       setError((err as Error).message);

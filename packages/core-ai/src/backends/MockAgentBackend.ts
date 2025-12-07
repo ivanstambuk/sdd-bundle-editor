@@ -76,7 +76,7 @@ export class MockAgentBackend implements AgentBackend {
         return this.state;
     }
 
-    async applyChanges(changes: ProposedChange[]): Promise<ConversationState> {
+    async applyChanges(changes: ProposedChange[], updatedBundle?: any): Promise<ConversationState> {
         this.state.status = 'committed';
         this.state.pendingChanges = undefined;
         this.state.messages.push({

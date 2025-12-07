@@ -27,11 +27,15 @@ export async function agentRoutes(fastify: FastifyInstance) {
             const body = (request.body as { bundleDir?: string; readOnly?: boolean }) || {};
             const bundleDir = await resolveBundleDir(body.bundleDir);
 
+            // Load bundle to provide context to agent
+            const { loadBundleWithSchemaValidation } = await import('@sdd-bundle-editor/core-model');
+            const { bundle } = await loadBundleWithSchemaValidation(bundleDir);
+
             // Git check deferred to accept (write) time
             const state = await getBackend().startConversation({
                 bundleDir,
-                readOnly: body.readOnly ?? true, // Default to read-only for safety
-                // We'll populate other context fields (bundle, diagnostics) later as needed
+                bundle: { bundle },
+                readOnly: body.readOnly ?? true,
             });
             return reply.send({ state });
         } catch (err) {
@@ -165,7 +169,7 @@ export async function agentRoutes(fastify: FastifyInstance) {
             }
 
             // 4. Validate changes
-            const { diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
+            const { bundle: updatedBundle, diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
             const hasErrors = diagnostics.some(d => d.severity === 'error');
 
             if (hasErrors) {
@@ -192,7 +196,7 @@ export async function agentRoutes(fastify: FastifyInstance) {
             await commitChanges(bundleDir, 'Applied changes via Agent', relativeFiles);
 
             // 6. Notify backend
-            const state = await getBackend().applyChanges(changes);
+            const state = await getBackend().applyChanges(changes, { bundle: updatedBundle });
 
             return reply.send({ state, commited: true });
         } catch (err) {

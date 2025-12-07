@@ -1,10 +1,8 @@
 id: FEAT-001
-title: Basic Demo Feature
+title: Basic Demo Feature 11
 description: Basic feature used for end-to-end testing.
 tags:
   - demo
   - sample
-
-
 adrIds:
   - ADR-0001

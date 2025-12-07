@@ -308,7 +308,7 @@ export function AgentPanel({
                     ) : (
                         <div className="placeholder-actions">
                             {!isConfigured && (
-                                <div className="config-warning" style={{ marginBottom: '1rem', color: 'orange' }}>
+                                <div className="config-warning">
                                     ⚠️ Agent is not configured. Please select a provider.
                                 </div>
                             )}
@@ -349,6 +349,19 @@ export function AgentPanel({
                         <div className="message-content">{msg.content}</div>
                     </div>
                 ))}
+
+                {isSending && (
+                    <div className="message role-agent">
+                        <div className="message-meta">
+                            <span className="message-role">agent</span>
+                        </div>
+                        <div className="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                )}
 
                 {activeDecision && (
                     <div className="decision-block">

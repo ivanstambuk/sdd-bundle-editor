@@ -78,23 +78,23 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ### 8.1 – Conversational Agent Interface
 
-- [ ] Design and implement a chat/prompt panel in the UI:
-  - [ ] Text input for user prompts
-  - [ ] Conversation history display (user messages, agent responses)
-  - [ ] "Start conversation" action that validates Git status first
-  - [ ] Visual indicators for conversation state (idle, awaiting response, changes pending, linting, committed)
+- [x] Design and implement a chat/prompt panel in the UI:
+  - [x] Text input for user prompts
+  - [x] Conversation history display (user messages, agent responses)
+  - [x] "Start conversation" action that validates Git status first
+  - [x] Visual indicators for conversation state (idle, awaiting response, changes pending, linting, committed)
 
-- [ ] Implement conversation protocol types:
-  - [ ] `ConversationMessage` (role: user | agent, content, timestamp)
-  - [ ] `ConversationState` (idle | active | pendingChanges | linting | committed | error)
-  - [ ] `ProposedChange` (entity, field, oldValue, newValue, rationale)
+- [x] Implement conversation protocol types:
+  - [x] `ConversationMessage` (role: user | agent, content, timestamp)
+  - [x] `ConversationState` (idle | active | pendingChanges | linting | committed | error)
+  - [x] `ProposedChange` (entity, field, oldValue, newValue, rationale)
 
-- [ ] Add conversation management to backend:
-  - [ ] `POST /agent/start` – Initialize conversation (checks Git clean status)
-  - [ ] `POST /agent/message` – Send user message, get agent response
-  - [ ] `POST /agent/accept` – Accept proposed changes, apply, lint, commit
-  - [ ] `POST /agent/abort` – Abort conversation without applying changes
-  - [ ] `GET /agent/status` – Current conversation state
+- [x] Add conversation management to backend:
+  - [x] `POST /agent/start` – Initialize conversation (checks Git clean status)
+  - [x] `POST /agent/message` – Send user message, get agent response
+  - [x] `POST /agent/accept` – Accept proposed changes, apply, lint, commit
+  - [x] `POST /agent/abort` – Abort conversation without applying changes
+  - [x] `GET /agent/status` – Current conversation state
 
 ---
 

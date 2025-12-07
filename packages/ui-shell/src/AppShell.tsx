@@ -279,7 +279,7 @@ export function AppShell() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${showAgentPanel ? 'with-agent-panel' : ''}`}>
       {/* Header */}
       <header className="app-header">
         <div className="header-left">

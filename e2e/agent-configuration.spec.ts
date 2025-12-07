@@ -37,12 +37,15 @@ test.describe.serial('Agent Configuration', () => {
         await expect(typeSelect).toBeVisible();
         await typeSelect.selectOption({ label: 'Local CLI Tool' });
 
+        // Wait for the UI to update and show CLI-specific fields
+        await expect(page.getByText('Preset:')).toBeVisible({ timeout: 5000 });
+
         // Screenshot 3: CLI preset selection
         await page.screenshot({ path: 'artifacts/agent_step3_cli_presets.png' });
 
         // 4. Select Custom Preset (to allow editing) - use 2nd select within agent-settings
         const presetSelect = page.locator('.agent-settings select').nth(1);
-        await expect(presetSelect).toBeVisible();
+        await expect(presetSelect).toBeVisible({ timeout: 5000 });
         await presetSelect.selectOption('custom');
 
         // 5. Enter Command "echo"

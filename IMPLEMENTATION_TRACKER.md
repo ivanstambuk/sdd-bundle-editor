@@ -201,3 +201,13 @@ This phase introduces a fundamental change: **all modifications happen through c
 - [ ] Investigate MCP integration for standardized agent communication
 
 - [ ] Explore VS Code extension for tighter agent integration than web UI
+
+- [ ] **AI Self-Critique Loop**: Iterative spec refinement workflow where:
+  1. AI reviews the current bundle/spec and identifies issues or improvements
+  2. AI proposes changes with explanations
+  3. Human reviews and approves/rejects each change
+  4. Loop continues until AI is satisfied (no further suggestions)
+  5. All approved changes are committed as a batch
+  
+  *This enables "polish until done" workflows where AI drives the refinement process.*
+

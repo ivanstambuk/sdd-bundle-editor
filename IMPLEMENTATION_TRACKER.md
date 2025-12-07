@@ -169,14 +169,16 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ### 8.5 – Error Recovery and Edge Cases
 
-- [ ] Handle conversation interruptions:
-  - [ ] Dirty Git state detected mid-conversation
-  - [ ] Network/backend failures during agent communication
+- [x] Handle conversation interruptions:
+  - [x] Dirty Git state detected mid-conversation (health endpoint + UI warning banner)
+  - [x] Network/backend failures during agent communication (fetchWithRetry + error indicator)
   - [ ] User closes browser/editor during pending changes
 
-- [ ] Implement rollback capability:
-  - [ ] If lint fails repeatedly, offer to abort and leave files unchanged
-  - [ ] Clear in-memory pending changes on abort
+- [~] Implement rollback capability:
+  - [x] If lint fails repeatedly, offer to abort and leave files unchanged (via enhanced /agent/abort)
+  - [x] Clear in-memory pending changes on abort
+  - [ ] Add POST /agent/rollback endpoint
+  - [ ] Add "Discard All Changes" button in UI
 
 - [ ] Add conversation persistence (optional):
   - [ ] Store conversation history locally for review

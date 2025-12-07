@@ -212,6 +212,20 @@ export async function loadBundle(
     }
   }
 
+  // Add the Bundle manifest itself as an entity so it can be targeted by agents
+  const bundleEntity: Entity = {
+    id: 'root',
+    entityType: 'Bundle',
+    data: manifest as unknown as Record<string, unknown>,
+    filePath: manifestPath
+  };
+
+  if (!entities.has('Bundle')) {
+    entities.set('Bundle', new Map());
+  }
+  entities.get('Bundle')?.set('root', bundleEntity);
+  idRegistry.set('root', { entityType: 'Bundle', id: 'root', filePath: manifestPath });
+
   const bundle: Bundle = {
     manifest,
     bundleTypeDefinition,
@@ -317,6 +331,9 @@ export async function loadBundleWithSchemaValidation(
 
   if (compiled) {
     for (const [entityType, byId] of bundle.entities.entries()) {
+      // Skip schema validation for the Bundle manifest itself as it's handled separately
+      if (entityType === 'Bundle') continue;
+
       for (const entity of byId.values()) {
         const schemaDiagnostics = validateEntityWithSchemas(compiled, entity);
         for (const sd of schemaDiagnostics) {

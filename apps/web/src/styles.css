@@ -1727,4 +1727,84 @@ input:checked+.slider:before {
 .option-cons ul {
   margin: 0;
   padding-left: var(--spacing-md);
+}/* Agent Panel Diff Styles */
+.change-item {
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.change-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.change-type {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  background: var(--surface-3);
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.change-diff {
+  display: flex;
+  gap: 1rem;
+  background: var(--surface-1);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.diff-old,
+.diff-new {
+  flex: 1;
+  min-width: 0; /* Prevent overflow */
+}
+
+.diff-old label,
+.diff-new label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  color: var(--text-tertiary);
+}
+
+.diff-old pre {
+  background: #3e1b1b;
+  color: #ffcccc;
+  border-left: 3px solid #ff4444;
+  padding: 0.4rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-radius: 0 4px 4px 0;
+}
+
+.diff-new pre {
+  background: #1b3e20;
+  color: #ccffcc;
+  border-left: 3px solid #00cc44;
+  padding: 0.4rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-radius: 0 4px 4px 0;
+}
+
+.change-rationale {
+  margin-top: 0.5rem;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.25rem;
 }

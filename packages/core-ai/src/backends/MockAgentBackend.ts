@@ -47,11 +47,11 @@ export class MockAgentBackend implements AgentBackend {
         if (message.includes('propose change')) {
             console.log('MockAgentBackend: Triggering proposal logic for message:', message);
             const change: ProposedChange = {
-                entityId: 'PROF-BASIC',
-                entityType: 'Profile',
-                fieldPath: 'title',
-                originalValue: 'Basic SDD Profile',
-                newValue: 'Updated User Profile',
+                entityId: 'root',
+                entityType: 'Bundle',
+                fieldPath: 'metadata.name',
+                originalValue: 'basic-sample-bundle',
+                newValue: 'Updated Bundle Name by Agent',
                 rationale: 'User requested update via mock agent.'
             };
             this.state.pendingChanges = [change];

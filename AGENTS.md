@@ -306,8 +306,7 @@ When the user says "session handover", you must perform two distinct actions:
   - [e.g. "Spent time debugging X, solution was Y"]
 
 ## 5. Immediate Action Items
-1. [First command to run]
-2. [First file to check]
+1. [First file to check]
 ```
 
 #### Retrospective & Process Improvements (Proposals)

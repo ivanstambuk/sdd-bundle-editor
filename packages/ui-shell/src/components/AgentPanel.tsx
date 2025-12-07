@@ -163,6 +163,8 @@ export function AgentPanel({
                                 >
                                     <option value="http">AI Provider (HTTP)</option>
                                     <option value="cli">Local CLI Tool</option>
+                                    {/* Enable Mock Agent for testing/dev */}
+                                    <option value="mock">Mock Agent (Debug)</option>
                                 </select>
                             </div>
 
@@ -417,20 +419,50 @@ export function AgentPanel({
                     </div>
                 )}
 
-                {status === 'pending_changes' && pendingChanges && (
+                {(status === 'pending_changes' || status === 'linting') && pendingChanges && (
                     <div className="pending-changes-block">
                         <h4>Proposed Changes ({pendingChanges.length})</h4>
                         <ul className="changes-list">
-                            {pendingChanges.map((change, idx) => (
-                                <li key={idx} className="change-item">
-                                    <span className="change-type">{change.entityType}</span>
-                                    <span className="change-path">{change.fieldPath}</span>
-                                </li>
-                            ))}
+                            {pendingChanges.map((change, idx) => {
+                                const originalStr = typeof change.originalValue === 'string' ? change.originalValue : JSON.stringify(change.originalValue, null, 2);
+                                const newStr = typeof change.newValue === 'string' ? change.newValue : JSON.stringify(change.newValue, null, 2);
+
+                                return (
+                                    <li key={idx} className="change-item">
+                                        <div className="change-header">
+                                            <span className="change-type">{change.entityType}</span>
+                                            <span className="change-path">{change.fieldPath}</span>
+                                        </div>
+                                        <div className="change-diff">
+                                            <div className="diff-old">
+                                                <label>Original:</label>
+                                                <pre>{originalStr ?? 'undefined'}</pre>
+                                            </div>
+                                            <div className="diff-new">
+                                                <label>New:</label>
+                                                <pre>{newStr}</pre>
+                                            </div>
+                                        </div>
+                                        {change.rationale && <div className="change-rationale">{change.rationale}</div>}
+                                    </li>
+                                );
+                            })}
                         </ul>
                         <div className="change-actions">
-                            <button onClick={onAcceptChanges} className="btn btn-success btn-sm">Accept & Apply</button>
-                            <button onClick={onAbortConversation} className="btn btn-secondary btn-sm">Decline</button>
+                            <button
+                                onClick={onAcceptChanges}
+                                className="btn btn-success btn-sm"
+                                disabled={status === 'linting'}
+                            >
+                                {status === 'linting' ? '⏳ Applying & Linting...' : 'Accept & Apply'}
+                            </button>
+                            <button
+                                onClick={onAbortConversation}
+                                className="btn btn-secondary btn-sm"
+                                disabled={status === 'linting'}
+                            >
+                                Decline
+                            </button>
                         </div>
                     </div>
                 )}

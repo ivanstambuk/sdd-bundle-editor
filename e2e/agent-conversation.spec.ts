@@ -2,7 +2,8 @@
 import { test, expect } from '@playwright/test';
 import * as path from 'path';
 
-test.describe('Agent Conversation', () => {
+// Run agent tests serially since they share backend server state
+test.describe.serial('Agent Conversation', () => {
     test('should start conversation and send message', async ({ page }) => {
         page.on('console', msg => console.log(`[BROWSER] ${msg.text()}`));
         page.on('pageerror', err => console.log(`[BROWSER ERROR] ${err}`));
@@ -13,6 +14,23 @@ test.describe('Agent Conversation', () => {
 
         // 1. Navigate to the app
         await page.goto('/');
+
+        // Reset state and configure echo backend
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+            await fetch('/agent/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'cli',
+                    options: { command: 'echo', args: [] }
+                })
+            });
+        });
+        await page.reload();
+
+        // Wait for idle state
+        await page.waitForSelector('.agent-placeholder', { timeout: 5000 });
 
         try {
 
@@ -37,8 +55,8 @@ test.describe('Agent Conversation', () => {
             await inputArea.fill('Test message from E2E');
             await page.locator('button.send-btn').click();
 
-            // 5. Verify message appears in history
-            await expect(page.locator('.message-content').getByText('Test message from E2E')).toBeVisible();
+            // 5. Verify message appears in history (use first() since echo response also contains the text)
+            await expect(page.locator('.message-content').getByText('Test message from E2E').first()).toBeVisible();
 
         } finally {
             // 6. Capture screenshot

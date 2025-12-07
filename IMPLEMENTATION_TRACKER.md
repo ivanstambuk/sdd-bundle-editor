@@ -220,3 +220,12 @@ This phase introduces a fundamental change: **all modifications happen through c
   
   *This enables "polish until done" workflows where AI drives the refinement process.*
 
+- [ ] **Standalone Bundle Server Mode**: Create a dedicated server application that:
+  1. Serves multiple spec bundles via HTTP (read-only API endpoints)
+  2. Exposes bundle content, schemas, and metadata for MCP tool consumption
+  3. Runs independently of the UI as a headless service
+  4. Could support stdio mode for CLI/MCP integration
+  5. Client applications (including this editor) can connect to consume specs
+  
+  *This enables agents to query and consume spec bundles programmatically via MCP tools.*
+

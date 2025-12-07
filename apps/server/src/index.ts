@@ -1,3 +1,7 @@
+// Load environment variables from .env file FIRST before any other imports
+// This ensures agent configuration persists across server restarts
+import 'dotenv/config';
+
 import Fastify from 'fastify';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';

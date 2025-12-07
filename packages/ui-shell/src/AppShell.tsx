@@ -179,11 +179,14 @@ export function AppShell() {
   };
 
   const handleAgentStart = async () => {
-    console.log('handleAgentStart called');
+    console.log('handleAgentStart called, readOnly:', isReadOnly);
     try {
       const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR }),
+        body: JSON.stringify({
+          bundleDir: DEFAULT_BUNDLE_DIR,
+          readOnly: isReadOnly  // Pass read-only mode to backend for sandbox control
+        }),
       });
       setConversation(data.state);
     } catch (err) {

@@ -12,6 +12,7 @@ import {
 
 export class CliAgentBackend implements AgentBackend {
     private config?: AgentBackendConfig;
+    private context?: AgentContext;
     private state: ConversationState = {
         status: 'idle',
         messages: []
@@ -22,6 +23,7 @@ export class CliAgentBackend implements AgentBackend {
     }
 
     async startConversation(context: AgentContext): Promise<ConversationState> {
+        this.context = context;
         this.state = {
             status: 'active',
             messages: [],
@@ -36,7 +38,28 @@ export class CliAgentBackend implements AgentBackend {
         }
 
         const command = this.config.options.command as string;
-        const args = (this.config.options.args as string[]) || [];
+        let args = [...((this.config.options.args as string[]) || [])];
+
+        // For Codex CLI, adjust sandbox mode based on readOnly context
+        if (command === 'codex') {
+            // Remove any existing --sandbox or --full-auto flags to override them
+            args = args.filter(arg =>
+                !arg.startsWith('--sandbox') &&
+                arg !== '--full-auto' &&
+                arg !== 'read-only' &&
+                arg !== 'workspace-write' &&
+                arg !== 'danger-full-access'
+            );
+
+            // Add appropriate sandbox mode based on readOnly flag
+            if (this.context?.readOnly) {
+                // Read-only mode: can read files, run commands, but NO file modifications
+                args.push('--sandbox', 'read-only');
+            } else {
+                // Write mode: can modify files in the workspace
+                args.push('--sandbox', 'workspace-write');
+            }
+        }
 
         // Add user message to history
         const userMsg: ConversationMessage = {

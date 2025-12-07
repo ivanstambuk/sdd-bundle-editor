@@ -911,6 +911,51 @@ body {
   margin-bottom: var(--spacing-md);
 }
 
+/* ========================================
+   Agent Backend Badge
+   ======================================== */
+.agent-backend-badge {
+  margin: var(--spacing-sm) 0;
+}
+
+.agent-backend-badge .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-accent-light);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+.backend-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-left: auto;
+  margin-right: var(--spacing-sm);
+}
+
+/* Agent Send Button Loading State */
+.send-btn.sending {
+  cursor: wait;
+  opacity: 0.7;
+  background: var(--color-bg-hover);
+}
+
+.send-btn.sending:disabled {
+  cursor: wait;
+}
+
 /* Agent Pending Changes */
 .pending-changes-block {
   margin: var(--spacing-sm) 0;

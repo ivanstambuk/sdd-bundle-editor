@@ -6,7 +6,7 @@ export interface AgentPanelProps {
     status: ConversationStatus;
     pendingChanges?: ProposedChange[];
     activeDecision?: AgentDecision;
-    onSendMessage: (message: string) => void;
+    onSendMessage: (message: string) => Promise<void>;
     onStartConversation: () => void;
     onAbortConversation: () => void;
     onAcceptChanges: () => void;
@@ -26,10 +26,30 @@ export function AgentPanel({
 }: AgentPanelProps) {
     const [inputText, setInputText] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
     const [showSettings, setShowSettings] = useState(false);
     const [config, setConfig] = useState<AgentBackendConfig>({ type: 'http' }); // Default to HTTP
     const [cliPreset, setCliPreset] = useState('custom');
     const [currentBackendType, setCurrentBackendType] = useState<string>('mock');
+    const [currentBackendLabel, setCurrentBackendLabel] = useState<string>('');
+    const [isSending, setIsSending] = useState(false);
+
+    // Generate a friendly label for the current backend config
+    const getBackendLabel = (cfg: AgentBackendConfig): string => {
+        if (cfg.type === 'mock') return '';
+        if (cfg.type === 'cli') {
+            const cmd = cfg.options?.command as string;
+            if (!cmd) return 'CLI';
+            // Capitalize first letter of command name
+            const name = cmd.charAt(0).toUpperCase() + cmd.slice(1);
+            return `${name} CLI`;
+        }
+        if (cfg.type === 'http') {
+            const model = cfg.options?.model as string;
+            return model ? `HTTP (${model})` : 'HTTP API';
+        }
+        return cfg.type.toUpperCase();
+    };
 
     const fetchStatus = () => {
         fetch('/agent/status')
@@ -37,6 +57,7 @@ export function AgentPanel({
             .then((data: { config?: AgentBackendConfig }) => {
                 if (data.config) {
                     setCurrentBackendType(data.config.type);
+                    setCurrentBackendLabel(getBackendLabel(data.config));
                     // Pre-fill form with current config if not editing
                     if (!showSettings) {
                         setConfig(data.config);
@@ -71,10 +92,24 @@ export function AgentPanel({
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, status, activeDecision]);
 
-    const handleSend = () => {
-        if (inputText.trim()) {
-            onSendMessage(inputText);
+    // Auto-focus input when conversation starts
+    useEffect(() => {
+        if (status === 'active') {
+            // Small delay to ensure the textarea is rendered
+            setTimeout(() => inputRef.current?.focus(), 100);
+        }
+    }, [status]);
+
+    const handleSend = async () => {
+        if (inputText.trim() && !isSending) {
+            const message = inputText;
             setInputText('');
+            setIsSending(true);
+            try {
+                await onSendMessage(message);
+            } finally {
+                setIsSending(false);
+            }
         }
     };
 
@@ -92,6 +127,11 @@ export function AgentPanel({
             <div className="agent-panel empty-state">
                 <div className="agent-placeholder">
                     <h3>Agent Editor</h3>
+                    {currentBackendLabel && (
+                        <div className="agent-backend-badge">
+                            <span className="badge badge-info">🤖 {currentBackendLabel}</span>
+                        </div>
+                    )}
                     <p>Start a conversation to modify the bundle using AI.</p>
 
                     {showSettings ? (
@@ -124,7 +164,7 @@ export function AgentPanel({
                                                         ...config,
                                                         options: {
                                                             command: 'codex',
-                                                            args: ['exec', '--sandbox', 'read-only', '--ask-for-approval=never']
+                                                            args: ['exec', '--full-auto']
                                                         }
                                                     });
                                                 } else if (val === 'gemini') {
@@ -294,6 +334,9 @@ export function AgentPanel({
         <div className="agent-panel">
             <div className="agent-header">
                 <span className={`status-badge status-${status}`}>{status}</span>
+                {currentBackendLabel && (
+                    <span className="backend-label">🤖 {currentBackendLabel}</span>
+                )}
                 <button onClick={onAbortConversation} className="abort-btn">Abort</button>
             </div>
             <div className="messages-list">
@@ -364,20 +407,21 @@ export function AgentPanel({
             </div>
             <div className="input-area">
                 <textarea
+                    ref={inputRef}
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Describe changes..."
+                    placeholder={isSending ? "Waiting for response..." : "Describe changes..."}
                     rows={3}
-                    disabled={status !== 'active' && status !== 'error'}
+                    disabled={isSending || (status !== 'active' && status !== 'error')}
                 />
                 <div className="input-actions">
                     <button
                         onClick={handleSend}
-                        disabled={!inputText.trim() || (status !== 'active' && status !== 'error')}
-                        className="send-btn"
+                        disabled={isSending || !inputText.trim() || (status !== 'active' && status !== 'error')}
+                        className={`send-btn ${isSending ? 'sending' : ''}`}
                     >
-                        Send
+                        {isSending ? '⏳ Sending...' : 'Send'}
                     </button>
                 </div>
             </div>

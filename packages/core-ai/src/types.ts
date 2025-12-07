@@ -101,6 +101,13 @@ export interface AgentContext {
     type: string;
     id: string;
   };
+  /** 
+   * When true, the agent should operate in read-only mode:
+   * - Can read files and execute queries
+   * - Cannot modify files or apply changes
+   * For Codex CLI, this maps to --sandbox read-only vs workspace-write
+   */
+  readOnly?: boolean;
 }
 
 export interface AgentBackend {

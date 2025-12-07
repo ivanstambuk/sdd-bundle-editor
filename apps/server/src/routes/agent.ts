@@ -21,12 +21,13 @@ export async function agentRoutes(fastify: FastifyInstance) {
 
     fastify.post('/agent/start', async (request, reply) => {
         try {
-            const body = (request.body as { bundleDir?: string }) || {};
+            const body = (request.body as { bundleDir?: string; readOnly?: boolean }) || {};
             const bundleDir = await resolveBundleDir(body.bundleDir);
 
             // Git check deferred to accept (write) time
             const state = await getBackend().startConversation({
                 bundleDir,
+                readOnly: body.readOnly ?? true, // Default to read-only for safety
                 // We'll populate other context fields (bundle, diagnostics) later as needed
             });
             return reply.send({ state });

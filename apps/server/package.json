@@ -15,6 +15,7 @@
     "@sdd-bundle-editor/core-ai": "workspace:*",
     "@sdd-bundle-editor/core-model": "workspace:*",
     "@sdd-bundle-editor/git-utils": "workspace:*",
+    "dotenv": "^17.2.3",
     "fastify": "^5.0.0"
   },
   "devDependencies": {

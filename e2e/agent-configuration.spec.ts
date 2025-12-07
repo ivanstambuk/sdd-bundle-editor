@@ -1,16 +1,30 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Agent Configuration', () => {
+// Run agent tests serially since they share backend server state
+test.describe.serial('Agent Configuration', () => {
     test('should configure CLI backend and verify echo response', async ({ page }) => {
         // 1. Navigate
         await page.goto('/');
 
+        // Reset to unconfigured state first
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+            await fetch('/agent/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'mock' })
+            });
+        });
+        await page.reload();
+
         // Screenshot 1: Initial state - unconfigured warning
         await page.waitForSelector('.agent-panel', { timeout: 5000 });
+        // Wait for the placeholder to appear (idle state)
+        await page.waitForSelector('.agent-placeholder', { timeout: 5000 });
         await page.screenshot({ path: 'artifacts/agent_step1_unconfigured.png' });
 
-        // 2. Open Configuration - when unconfigured, button shows "Configure Agent"
-        const configBtn = page.getByText('Configure Agent');
+        // 2. Open Configuration - the button class is .settings-btn regardless of text
+        const configBtn = page.locator('.settings-btn');
         await expect(configBtn).toBeVisible({ timeout: 5000 });
         await configBtn.click();
 

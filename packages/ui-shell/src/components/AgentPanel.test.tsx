@@ -13,9 +13,17 @@ describe('AgentPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+        // Mock fetch to return a configured agent status (not 'mock')
+        // This ensures the "Start Conversation" button is enabled
+        global.fetch = vi.fn().mockResolvedValue({
+            json: () => Promise.resolve({
+                config: { type: 'cli', options: { command: 'echo' } }
+            })
+        });
     });
 
-    it('renders start button when idle', () => {
+    it('renders start button when idle', async () => {
         render(
             <AgentPanel
                 messages={[]}
@@ -28,8 +36,16 @@ describe('AgentPanel', () => {
             />
         );
 
-        expect(screen.getByText('Start Conversation')).toBeInTheDocument();
-        fireEvent.click(screen.getByText('Start Conversation'));
+        // Wait for the button to become enabled (after fetch completes)
+        const startButton = await screen.findByText('Start Conversation');
+        expect(startButton).toBeInTheDocument();
+
+        // Wait for the fetch to complete and button to become enabled
+        await vi.waitFor(() => {
+            expect(startButton).not.toBeDisabled();
+        });
+
+        fireEvent.click(startButton);
         expect(mockOnStart).toHaveBeenCalled();
     });
 

@@ -32,6 +32,7 @@ export interface UiBundleSnapshot {
     edges: UiRefEdge[];
   };
   schemas?: Record<string, unknown>;
+  domainMarkdown?: string;
 }
 
 export interface UiAIResponse {

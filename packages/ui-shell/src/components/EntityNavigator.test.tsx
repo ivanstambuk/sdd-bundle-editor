@@ -29,7 +29,7 @@ const sampleBundle: UiBundleSnapshot = {
 
 describe('EntityNavigator', () => {
   it('renders placeholder when no bundle is loaded', () => {
-    render(<EntityNavigator bundle={null} selected={undefined} onSelect={() => {}} />);
+    render(<EntityNavigator bundle={null} selected={undefined} onSelect={() => { }} />);
 
     expect(screen.getByText(/No bundle loaded/i)).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe('EntityNavigator', () => {
     );
 
     const button = screen.getByRole('button', { name: 'FEAT-001' });
-    expect(button).toHaveStyle({ fontWeight: 'bold' });
+    expect(button).toHaveClass('selected');
   });
 });
 

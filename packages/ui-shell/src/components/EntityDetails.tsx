@@ -6,11 +6,14 @@ import { SddRefWidget } from './SddRefWidget';
 interface EntityDetailsProps {
   bundle: UiBundleSnapshot | null;
   entity: UiEntity | null;
+  readOnly?: boolean;
   onNavigate?: (entityType: string, entityId: string) => void;
+  onEditRequest?: () => void;
 }
 
-export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps) {
+export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequest }: EntityDetailsProps) {
   if (!bundle || !entity) {
+    // ... empty state ...
     return (
       <div className="entity-details">
         <div className="entity-placeholder">
@@ -22,6 +25,7 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
     );
   }
 
+  // ... schema and graph logic ...
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
 
   const outgoing =
@@ -35,6 +39,7 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
   const widgets: Record<string, any> = {};
 
   if (schema && typeof schema.properties === 'object') {
+    // ... schema parsing ...
     const props = schema.properties as Record<string, any>;
     for (const [propName, propSchema] of Object.entries(props)) {
       const ps = propSchema as any;
@@ -48,6 +53,8 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
         ps.items.format === 'sdd-ref'
       ) {
         uiSchema[propName] = { 'ui:widget': 'SddRefMulti' };
+      } else if (ps && ps['ui:widget']) {
+        uiSchema[propName] = { 'ui:widget': ps['ui:widget'] };
       }
     }
 
@@ -70,13 +77,29 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
   return (
     <div className="entity-details">
       <div className="entity-details-header">
-        <span className="entity-type-badge" data-type={entity.entityType}>
-          {entity.entityType}
-        </span>
-        <span className="entity-id">{entity.id}</span>
+        <div className="entity-header-left">
+          <span className="entity-type-badge" data-type={entity.entityType}>
+            {entity.entityType}
+          </span>
+          <span className="entity-id">{entity.id}</span>
+        </div>
+        {readOnly && onEditRequest && (
+          <button
+            className="btn btn-sm btn-secondary"
+            onClick={onEditRequest}
+            title="Ask the agent to modify this entity"
+          >
+            Edit via Agent
+          </button>
+        )}
       </div>
 
       <div className="entity-details-body">
+        {readOnly && (
+          <div className="read-only-banner">
+            Read-Only View
+          </div>
+        )}
         {schema ? (
           <AnyForm
             schema={schema as any}
@@ -84,8 +107,8 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
             uiSchema={uiSchema}
             widgets={widgets}
             validator={validator}
-            readonly
-            disabled
+            readonly={readOnly}
+            disabled={readOnly}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             onChange={() => { }}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -93,7 +116,8 @@ export function EntityDetails({ bundle, entity, onNavigate }: EntityDetailsProps
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             onError={() => { }}
           >
-            <></>
+            {/* Hide submit button in read-only mode by passing empty fragment */}
+            {readOnly ? <></> : undefined}
           </AnyForm>
         ) : (
           <div className="entity-no-schema">

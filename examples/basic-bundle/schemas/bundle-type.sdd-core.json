@@ -69,10 +69,10 @@
       "multiplicity": "many"
     },
     {
-      "name": "ADRBelongsToFeature",
-      "fromEntity": "ADR",
-      "fromField": "featureIds",
-      "toEntity": "Feature",
+      "name": "FeatureConstrainedByADR",
+      "fromEntity": "Feature",
+      "fromField": "adrIds",
+      "toEntity": "ADR",
       "multiplicity": "many"
     },
     {
@@ -108,6 +108,13 @@
       "fromEntity": "Fixture",
       "fromField": "requirementIds",
       "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RequirementConstrainedByADR",
+      "fromEntity": "Requirement",
+      "fromField": "adrIds",
+      "toEntity": "ADR",
       "multiplicity": "many"
     }
   ]

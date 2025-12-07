@@ -5,3 +5,23 @@ description: |
   Suitable for simple projects with basic requirement tracking.
 requiresFeatures:
   - FEAT-001
+conformanceRules:
+  - id: RULE-01
+    description: "Must implement the core demo feature"
+    severity: critical
+    linkedRequirement: REQ-001
+  - id: RULE-02
+    description: "Response time must be under 200ms"
+    severity: high
+
+auditTemplate: |
+  # Audit Report: Basic Profile
+  
+  ## Executive Summary
+  [Insert summary here]
+  
+  ## Findings
+  | Rule ID | Severity | Status | Observations |
+  |---------|----------|--------|--------------|
+  | RULE-01 | Critical |        |              |
+  | RULE-02 | High     |        |              |

@@ -42,3 +42,73 @@ export interface AIProvider {
   kind: ProviderKind;
   run(request: AIRequest): Promise<AIResponse>;
 }
+
+export type ConversationRole = 'user' | 'agent' | 'system';
+
+export interface ConversationMessage {
+  id: string;
+  role: ConversationRole;
+  content: string;
+  timestamp: number;
+}
+
+export type ConversationStatus = 'idle' | 'active' | 'pending_changes' | 'linting' | 'committed' | 'error';
+
+export interface ProposedChange {
+  entityId: string;
+  entityType: string;
+  fieldPath: string;
+  originalValue: unknown;
+  newValue: unknown;
+  rationale: string;
+}
+
+export interface DecisionOption {
+  id: string;
+  label: string;
+  description?: string;
+  pros?: string[];
+  cons?: string[];
+}
+
+export interface AgentDecision {
+  id: string;
+  question: string;
+  options: DecisionOption[];
+  status: 'open' | 'resolved';
+  context?: string;
+}
+
+export interface ConversationState {
+  status: ConversationStatus;
+  messages: ConversationMessage[];
+  pendingChanges?: ProposedChange[];
+  activeDecision?: AgentDecision;
+  lastError?: string;
+}
+
+export interface AgentBackendConfig {
+  type: 'vscode' | 'cli' | 'http' | 'mcp' | 'mock';
+  options?: Record<string, unknown>;
+}
+
+export interface AgentContext {
+  bundleDir: string;
+  bundle?: BundleSnapshot;
+  // Use loose type for diagnostics to avoid circular deps or complex mismatched types for now
+  diagnostics?: unknown[];
+  focusedEntity?: {
+    type: string;
+    id: string;
+  };
+}
+
+export interface AgentBackend {
+  initialize(config: AgentBackendConfig): Promise<void>;
+  startConversation(context: AgentContext): Promise<ConversationState>;
+  sendMessage(message: string): Promise<ConversationState>;
+  applyChanges(changes: ProposedChange[]): Promise<ConversationState>;
+  resolveDecision(decisionId: string, optionId: string): Promise<ConversationState>;
+  abortConversation(): Promise<ConversationState>;
+  getStatus(): Promise<ConversationState>;
+}

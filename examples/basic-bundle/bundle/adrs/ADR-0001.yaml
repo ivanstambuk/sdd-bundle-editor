@@ -13,5 +13,4 @@ consequences: |
   - All entity types require a JSON Schema
   - Custom extensions (x-refTargets, x-idTemplate) must be registered with Ajv
   - Schema changes require bundle-type version updates
-featureIds:
-  - FEAT-001
+

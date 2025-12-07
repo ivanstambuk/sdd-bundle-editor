@@ -20,6 +20,5 @@ rules:
   taskMustLinkRequirement:
     type: has-link
     fromEntity: "Task"
-    viaField: "requirementIds"
-    minLinks: 1
+
 

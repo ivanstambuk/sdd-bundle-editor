@@ -85,11 +85,16 @@ describe('EntityDetails', () => {
 
     render(<EntityDetails bundle={bundle} entity={entity} />);
 
-    expect(screen.getByText('Feature FEAT-001')).toBeInTheDocument();
+    expect(screen.getByText('Feature')).toBeInTheDocument();
+    expect(screen.getByText('FEAT-001')).toBeInTheDocument();
     expect(screen.getByTestId('rjsf-form')).toBeInTheDocument();
     expect(screen.getByText('Outgoing references')).toBeInTheDocument();
-    expect(screen.getByText(/Requirement:REQ-001/)).toBeInTheDocument();
-    expect(screen.getByText(/Task:TASK-001 via requirement/)).toBeInTheDocument();
+    expect(screen.getByText('Requirement')).toBeInTheDocument();
+    expect(screen.getByText('REQ-001')).toBeInTheDocument();
+    expect(screen.getByText('Task')).toBeInTheDocument();
+    expect(screen.getByText('TASK-001')).toBeInTheDocument();
+    expect(screen.getByText('via')).toBeInTheDocument();
+    expect(screen.getAllByText('requirement').length).toBeGreaterThan(0);
   });
 
   it('falls back to JSON view when no schema is available', () => {
@@ -99,7 +104,24 @@ describe('EntityDetails', () => {
     render(<EntityDetails bundle={bundle} entity={entity} />);
 
     expect(screen.queryByTestId('rjsf-form')).not.toBeInTheDocument();
-    expect(screen.getByText(/Sample feature/)).toBeInTheDocument();
+    expect(screen.getByText(/Schema not found for entity type/)).toBeInTheDocument();
+  });
+  it('renders read-only view when readOnly prop is true', () => {
+    const bundle = makeBundleWithSchema();
+    const entity = bundle.entities.Feature[0];
+    const mockOnEdit = vi.fn();
+
+    render(
+      <EntityDetails
+        bundle={bundle}
+        entity={entity}
+        readOnly={true}
+        onEditRequest={mockOnEdit}
+      />
+    );
+
+    expect(screen.getByText('Read-Only View')).toBeInTheDocument();
+    expect(screen.getByText('Edit via Agent')).toBeInTheDocument();
   });
 });
 

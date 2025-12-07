@@ -99,7 +99,7 @@ body {
    ======================================== */
 .app-shell {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px 1fr auto;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
   gap: 0;
@@ -909,4 +909,218 @@ body {
 
 .mb-md {
   margin-bottom: var(--spacing-md);
+}
+
+/* Agent Pending Changes */
+.pending-changes-block {
+  margin: var(--spacing-sm) 0;
+  padding: var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.pending-changes-block h4 {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.changes-list {
+  list-style: none;
+  margin-bottom: var(--spacing-md);
+  padding: 0;
+}
+
+.change-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+}
+
+.change-item:last-child {
+  border-bottom: none;
+}
+
+.change-type {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.change-path {
+  font-family: monospace;
+  color: var(--color-accent);
+}
+
+.change-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+}
+
+.btn-success {
+  background: var(--color-success);
+  color: #fff;
+  border: none;
+}
+
+.btn-success:hover {
+  background: var(--color-success-hover);
+}
+
+/* Decision Block */
+.decision-block {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.decision-block h4 {
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Read Only Toggle */
+.read-only-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-right: var(--spacing-md);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-bg-tertiary);
+  transition: .4s;
+  border: 1px solid var(--color-border);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: var(--color-accent);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px var(--color-accent);
+}
+
+input:checked+.slider:before {
+  transform: translateX(16px);
+}
+
+.slider.round {
+  border-radius: 20px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.toggle-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.decision-context {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  font-style: italic;
+}
+
+.decision-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.decision-option {
+  background: var(--color-bg-tertiary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.option-header strong {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.option-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.option-pros,
+.option-cons {
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-xs);
+}
+
+.option-pros span,
+.option-cons span {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.option-pros {
+  color: var(--color-success);
+}
+
+.option-cons {
+  color: var(--color-error);
+}
+
+.option-pros ul,
+.option-cons ul {
+  margin: 0;
+  padding-left: var(--spacing-md);
 }

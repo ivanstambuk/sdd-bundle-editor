@@ -8,6 +8,8 @@ import {
   type BundleSnapshot,
 } from './types';
 
+export * from './types';
+
 export function createNoopProvider(config?: Partial<AIProviderConfig>): AIProvider {
   return {
     id: config?.id ?? 'noop',
@@ -58,3 +60,24 @@ export async function fixErrors(
   return provider.run({ ...request, mode: 'fix-errors' });
 }
 
+export * from './backends/CliAgentBackend';
+export * from './backends/OpenAiAgentBackend';
+export * from './backends/MockAgentBackend';
+
+import { CliAgentBackend } from './backends/CliAgentBackend';
+import { OpenAiAgentBackend } from './backends/OpenAiAgentBackend';
+import { MockAgentBackend } from './backends/MockAgentBackend';
+import { AgentBackend, AgentBackendConfig } from './types';
+
+export function createAgentBackend(config: AgentBackendConfig): AgentBackend {
+  switch (config.type) {
+    case 'cli':
+      return new CliAgentBackend();
+    case 'http': // using http for openai-compatible for now logic
+      return new OpenAiAgentBackend();
+    case 'mock':
+      return new MockAgentBackend();
+    default:
+      throw new Error(`Unknown agent backend type: ${config.type}`);
+  }
+}

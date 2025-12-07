@@ -35,8 +35,8 @@ Tasks to bring the implementation into full compliance with `sdd-bundle-editor-s
 ### Domain Knowledge Markdown Support
 - [x] Add `domainKnowledge.path` to bundle manifest schema *(already in BundleManifest type)*
 - [x] Load markdown file in `core-model` bundle loading *(added to loadBundle)*
-- [ ] Include domain markdown in AI request context
-- [ ] (Optional) Display domain markdown in UI as read-only panel
+- [x] Include domain markdown in AI request context
+- [x] (Optional) Display domain markdown in UI as read-only panel
 
 ### Enhanced sdd-ref Validation
 - [x] Parse `x-refTargets` from schema during sdd-ref validation
@@ -46,7 +46,7 @@ Tasks to bring the implementation into full compliance with `sdd-bundle-editor-s
 ### Expanded Example Bundle
 - [x] Add full `bundle-type.json` with entities and relations arrays *(already present)*
 - [x] Add more entity types: ADR, Profile, Fixture (schema + sample entities)
-- [ ] Add lint configuration with feature-based rules
+- [x] Add lint configuration with feature-based rules
 - [x] Add sample `domain-knowledge.md` file *(already present)*
 
 ### Spec Document Cleanup
@@ -98,23 +98,32 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ---
 
-### 8.2 – Agent Integration Backends
-
-- [ ] Define `AgentBackend` abstraction in `core-ai`:
+- [x] Define `AgentBackend` abstraction in `core-ai`:
   - [ ] `VsCodeAgentBackend` – Communicates with VS Code's integrated agent
-  - [ ] `CliAgentBackend` – Spawns CLI agent process (stdin/stdout)
-  - [ ] `HttpAgentBackend` – Calls external HTTP API (Claude, OpenAI, etc.)
+  - [x] `CliAgentBackend` – Spawns CLI agent process (stdin/stdout)
+  - [x] `HttpAgentBackend` – Calls external HTTP API (Claude, OpenAI, etc.)
   - [ ] `McpAgentBackend` – Uses MCP (Model Context Protocol)
 
-- [ ] Implement backend discovery/configuration:
-  - [ ] Auto-detect VS Code context
-  - [ ] Configuration in `sdd-bundle.yaml` for agent backend settings
-  - [ ] Fallback chain if preferred backend unavailable
+---
 
-- [ ] Define agent context protocol:
-  - [ ] Pass bundle schema, current state, and entity context to agent
-  - [ ] Receive structured change proposals from agent
-  - [ ] Handle multi-turn conversations with context retention
+### 8.8 – MCP Server Integration [DONE]
+
+- [x] Create `@sdd-bundle-editor/mcp-server` package
+- [x] Implement standard MCP resources and tools:
+  - [x] `bundle://current` resource
+  - [x] `read_entity` and `list_entities` tools
+- [x] Implement Read-Only Context tools:
+  - [x] `get_context` – Graph traversal for entity dependencies
+  - [x] `get_conformance_context` – Profile rules and audit templates
+- [x] Verify with stdio client scripts
+
+---
+
+### 8.9 – Conformance Testing Mode [DONE]
+
+- [x] Update `Profile` schema to support `conformanceRules` and `auditTemplate`
+- [x] Update sample bundle with conformance data
+- [x] Implement `get_conformance_context` tool
 
 ---
 

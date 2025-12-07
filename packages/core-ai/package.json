@@ -10,6 +10,7 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
   },
   "dependencies": {
-    "@sdd-bundle-editor/core-model": "workspace:*"
+    "@sdd-bundle-editor/core-model": "workspace:*",
+    "openai": "^6.10.0"
   }
 }

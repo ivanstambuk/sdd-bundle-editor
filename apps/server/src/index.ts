@@ -11,6 +11,7 @@ import {
   fixErrors as aiFixErrors,
 } from '@sdd-bundle-editor/core-ai';
 import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
+import { agentRoutes } from './routes/agent';
 
 const DEFAULT_PORT = Number(process.env.PORT ?? '3000');
 
@@ -64,6 +65,7 @@ function serialiseBundle(
     entities,
     refGraph: bundle.refGraph,
     schemas,
+    domainMarkdown: bundle.domainMarkdown,
   };
 }
 
@@ -151,7 +153,7 @@ export async function createServer() {
         bundleType: bundle.manifest.metadata.bundleType,
         schema: buildBundleSchemaSnapshot(bundle),
         bundle: buildBundleSnapshot(bundle),
-        domainMarkdown: '',
+        domainMarkdown: bundle.domainMarkdown ?? '',
         diagnostics,
         instructions: body.instructions,
       });
@@ -184,7 +186,7 @@ export async function createServer() {
         bundleType: bundle.manifest.metadata.bundleType,
         schema: buildBundleSchemaSnapshot(bundle),
         bundle: buildBundleSnapshot(bundle),
-        domainMarkdown: '',
+        domainMarkdown: bundle.domainMarkdown ?? '',
         diagnostics,
         instructions: body.instructions,
       });
@@ -202,6 +204,8 @@ export async function createServer() {
       return reply.status(400).send({ error: (err as Error).message });
     }
   });
+
+  await fastify.register(agentRoutes);
 
   return fastify;
 }

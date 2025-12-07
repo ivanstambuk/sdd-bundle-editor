@@ -13,4 +13,9 @@ test('capture UI screenshots', async ({ page }) => {
     await page.getByRole('button', { name: 'Compile Spec' }).click();
     await expect(page.getByText('No diagnostics.')).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-diagnostics.png', fullPage: true });
+
+    // Capture ADR form to check textarea fields
+    await page.getByRole('button', { name: 'ADR-0001', exact: true }).click({ force: true });
+    await page.waitForTimeout(500); // Wait for form to render
+    await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-adr-form.png', fullPage: true });
 });

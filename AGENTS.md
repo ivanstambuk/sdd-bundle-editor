@@ -3,6 +3,26 @@
 This is a pnpm-based TypeScript monorepo that follows `sdd-bundle-editor-spec.md`.  
 Please keep the structure and internal dependencies consistent with what is already in place.
 
+**Mandatory Verification**:
+After any completed (meaningful, self-contained) change, you MUST run the full test suite to verify no regressions:
+1. `pnpm test` (Unit/Package tests)
+2. `pnpm test:e2e` (End-to-end tests)
+
+### Interaction Protocol: UI Features
+
+For any new feature or change that impacts the User Interface (UI), the following protocol is **MANDATORY**:
+
+1.  **Playwright Test Required**: You MUST write or update a Playwright E2E test (`e2e/*.spec.ts`) that covers the new feature.
+    *   **Simulate Interaction**: The test must simulate real user interactions (clicks, typing) to verify behavior.
+    *   **Verify Appearance**: Use assertions to verify element visibility, styling classes, and state changes.
+2.  **Screenshot Capture**: The test MUST capture a screenshot of the relevant UI state.
+    *   Use `await page.screenshot({ path: 'artifacts/<feature_name>.png' });`.
+    *   Save screenshots to the artifacts directory so they can be embedded in reports.
+3.  **Agent Verification**:
+    *   **Run the Test**: You MUST run `pnpm test:e2e` and confirm it passes.
+    *   **Inspect Results**: Verify the screenshot exists and embed it in your `walkthrough.md` or completion report to demonstrate the result to the user.
+4.  **No Skipping**: Do NOT skip these tests or ask the user to test manually. You must validate the feature yourself before successful hand-off.
+
 ---
 
 ### Implementation tracking
@@ -177,14 +197,38 @@ Screenshots are saved as:
 
 ---
 
-### AI-driven browser testing (browser_subagent)
+### AI-driven browser testing
 
-For visual design review and exploratory testing, AI agents can use the `browser_subagent` tool. See `.agent/workflows/browser-testing.md` for detailed instructions.
+> [!CAUTION]
+> **NEVER use the `browser_subagent` tool in this project.** CDP browser is NOT available and will always fail with `ECONNREFUSED 127.0.0.1:9222`.
+>
+> **ALL visual verification and screenshot capture MUST be done via Playwright E2E tests.**
 
-This is useful for:
-- Taking screenshots for design review.
-- Verifying UI renders correctly.
-- Exploratory testing beyond scripted Playwright tests.
+**Use Playwright tests for all visual verification:**
 
-**Note:** This requires manually starting servers first – see the workflow file for details.
+```bash
+# Run the screenshot capture test
+pnpm exec playwright test e2e/screenshot-capture.spec.ts
+
+# Run agent configuration test (captures 6 screenshots)
+pnpm exec playwright test e2e/agent-configuration.spec.ts
+
+# View captured screenshots
+ls -la artifacts/*.png
+```
+
+**When adding UI features:**
+1. Write a Playwright test in `e2e/` that exercises the feature
+2. Add `await page.screenshot({ path: 'artifacts/<feature_name>.png' });` to capture screenshots
+3. Run the test with `pnpm test:e2e` or `pnpm exec playwright test <test_file>`
+4. View the captured screenshots using `view_file` tool to validate
+
+**Screenshot locations:**
+- `artifacts/` - Primary location for feature screenshots
+- `test-results/` - Playwright's automatic test artifacts
+
+**Do NOT:**
+- Use `browser_subagent` tool (it will fail)
+- Ask the user to test manually without running E2E tests first
+- Skip visual verification on UI changes
 

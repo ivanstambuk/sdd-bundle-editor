@@ -3,6 +3,10 @@ import type { UiAIResponse, UiBundleSnapshot, UiDiagnostic, UiEntity } from './t
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
 import { DiagnosticsPanel } from './components/DiagnosticsPanel';
+import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
+import { AgentPanel } from './components/AgentPanel';
+import { ReadOnlyToggle } from './components/ReadOnlyToggle';
+import type { ConversationState } from '@sdd-bundle-editor/core-ai';
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -74,6 +78,21 @@ export function AppShell() {
   const [aiLog, setAiLog] = useState<string[]>([]);
   const [aiProposedBundle, setAiProposedBundle] = useState<UiBundleSnapshot | null>(null);
   const [aiDiffSummary, setAiDiffSummary] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<'entity' | 'domain'>('entity');
+
+  // Read-Only mode state
+  const [isReadOnly, setIsReadOnly] = useState(true);
+
+  // Agent state
+  const [conversation, setConversation] = useState<ConversationState>({ status: 'idle', messages: [] });
+  const [showAgentPanel, setShowAgentPanel] = useState(true);
+
+  // Poll agent status on mount
+  useEffect(() => {
+    fetchJson<{ state: ConversationState }>('/agent/status')
+      .then((data) => setConversation(data.state))
+      .catch((err) => console.error('Failed to fetch agent status', err));
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -159,21 +178,143 @@ export function AppShell() {
     setAiDiffSummary([]);
   };
 
+  const handleAgentStart = async () => {
+    console.log('handleAgentStart called');
+    try {
+      const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
+        method: 'POST',
+        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR }),
+      });
+      setConversation(data.state);
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message);
+    }
+  };
+
+  const handleAgentMessage = async (message: string) => {
+    try {
+      // Optimistic update
+      setConversation(prev => ({
+        ...prev,
+        messages: [
+          ...prev.messages,
+          { id: 'temp-' + Date.now(), role: 'user', content: message, timestamp: Date.now() }
+        ]
+      }));
+
+      const data = await fetchJson<{ state: ConversationState }>('/agent/message', {
+        method: 'POST',
+        body: JSON.stringify({ bundleDir: DEFAULT_BUNDLE_DIR, message }),
+      });
+      setConversation(data.state);
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message);
+    }
+  };
+
+  const handleAgentAbort = async () => {
+    try {
+      const data = await fetchJson<{ state: ConversationState }>('/agent/abort', {
+        method: 'POST',
+      });
+      setConversation(data.state);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleAgentAccept = async () => {
+    try {
+      const data = await fetchJson<{ state: ConversationState }>('/agent/accept', {
+        method: 'POST',
+        body: JSON.stringify({ changes: conversation.pendingChanges || [] }),
+      });
+      setConversation(data.state);
+      // Refresh bundle after changes
+      setLoading(true);
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(DEFAULT_BUNDLE_DIR)}`)
+        .then((data) => {
+          setBundle(data.bundle);
+          setDiagnostics(data.diagnostics);
+        })
+        .finally(() => setLoading(false));
+
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message);
+    }
+  };
+
+  const handleResolveDecision = async (decisionId: string, optionId: string) => {
+    try {
+      const data = await fetchJson<{ state: ConversationState }>('/agent/decision', {
+        method: 'POST',
+        body: JSON.stringify({ decisionId, optionId }),
+      });
+      setConversation(data.state);
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message);
+    }
+  };
+
+  const handleEditRequest = () => {
+    setIsReadOnly(false);
+    setShowAgentPanel(true);
+  };
+
+  const handleNavigate = (entityType: string, entityId: string) => {
+    // Find the target entity and select it
+    const entities = bundle?.entities[entityType] ?? [];
+    const targetEntity = entities.find((e) => e.id === entityId);
+    if (targetEntity) {
+      setSelectedEntity(targetEntity);
+      setViewMode('entity');
+    }
+  };
+
   return (
     <div className="app-shell">
       {/* Header */}
       <header className="app-header">
-        <div className="app-logo">
-          <div className="app-logo-icon">S</div>
+        <div className="header-left">
+          <span className="app-logo">📦</span>
           <h1 className="app-title">SDD Bundle Editor</h1>
         </div>
-        <div className="btn-group">
+        <div className="header-right">
+          <ReadOnlyToggle isReadOnly={isReadOnly} onToggle={setIsReadOnly} />
+
+          {bundle?.domainMarkdown && (
+            <button
+              type="button"
+              className={`btn ${viewMode === 'domain' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => {
+                setViewMode('domain');
+                setSelectedEntity(null);
+              }}
+            >
+              📖 Domain Knowledge
+            </button>
+          )}
+
+          <button
+            type="button"
+            className={`btn ${showAgentPanel ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setShowAgentPanel(!showAgentPanel)}
+          >
+            🤖 Agent
+          </button>
           <button type="button" className="btn btn-primary" onClick={handleCompile} disabled={loading}>
             Compile Spec
           </button>
           <button type="button" className="btn btn-secondary" onClick={handleAiGenerate} disabled={loading}>
             ✨ AI Generate
           </button>
+          <div className="bundle-path">
+            {DEFAULT_BUNDLE_DIR}
+          </div>
         </div>
       </header>
 
@@ -214,8 +355,11 @@ export function AppShell() {
         <div className="sidebar-section">
           <EntityNavigator
             bundle={bundle}
-            selected={selectedEntity ? { entityType: selectedEntity.entityType, id: selectedEntity.id } : undefined}
-            onSelect={setSelectedEntity}
+            selected={viewMode === 'entity' && selectedEntity ? { entityType: selectedEntity.entityType, id: selectedEntity.id } : undefined}
+            onSelect={(e) => {
+              setSelectedEntity(e);
+              setViewMode('entity');
+            }}
           />
         </div>
       </aside>
@@ -223,25 +367,23 @@ export function AppShell() {
       {/* Main Content */}
       <main className="main-content">
         <div className="content-area">
-          <EntityDetails
-            bundle={bundle}
-            entity={selectedEntity}
-            onNavigate={(entityType, entityId) => {
-              // Find the target entity and select it
-              const entities = bundle?.entities[entityType] ?? [];
-              const targetEntity = entities.find((e) => e.id === entityId);
-              if (targetEntity) {
-                setSelectedEntity(targetEntity);
-              }
-            }}
-          />
+          {viewMode === 'domain' && bundle?.domainMarkdown ? (
+            <DomainKnowledgePanel content={bundle.domainMarkdown} />
+          ) : (
+            <EntityDetails
+              bundle={bundle}
+              entity={selectedEntity}
+              readOnly={isReadOnly}
+              onNavigate={handleNavigate}
+              onEditRequest={handleEditRequest}
+            />
+          )}
 
           {aiLog.length > 0 && (
             <div className="ai-panel">
               <h2 className="ai-panel-title">AI Log</h2>
               <ul className="ai-log">
                 {aiLog.map((line: string, idx: number) => (
-                  // eslint-disable-next-line react/no-array-index-key
                   <li key={idx} className="ai-log-item">{line}</li>
                 ))}
               </ul>
@@ -254,7 +396,6 @@ export function AppShell() {
               {aiDiffSummary.length ? (
                 <ul className="ai-diff-summary">
                   {aiDiffSummary.map((line: string, idx: number) => (
-                    // eslint-disable-next-line react/no-array-index-key
                     <li key={idx} className="ai-diff-item">{line}</li>
                   ))}
                 </ul>
@@ -273,6 +414,22 @@ export function AppShell() {
           )}
         </div>
       </main>
+
+      {showAgentPanel && (
+        <aside className="right-sidebar">
+          <AgentPanel
+            messages={conversation.messages}
+            status={conversation.status}
+            pendingChanges={conversation.pendingChanges}
+            activeDecision={conversation.activeDecision}
+            onSendMessage={handleAgentMessage}
+            onStartConversation={handleAgentStart}
+            onAbortConversation={handleAgentAbort}
+            onAcceptChanges={handleAgentAccept}
+            onResolveDecision={handleResolveDecision}
+          />
+        </aside>
+      )}
 
       {/* Bottom Panel - Diagnostics */}
       <div className="bottom-panel">

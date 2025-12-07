@@ -39,7 +39,7 @@ module.exports = {
     port: 5173,
     proxy: [
       {
-        context: ['/bundle', '/bundle/validate', '/bundle/save', '/ai/generate', '/ai/fix-errors'],
+        context: ['/bundle', '/bundle/validate', '/bundle/save', '/ai/generate', '/ai/fix-errors', '/agent'],
         target: 'http://localhost:3000',
         changeOrigin: true,
       },

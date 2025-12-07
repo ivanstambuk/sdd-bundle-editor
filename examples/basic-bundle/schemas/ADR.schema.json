@@ -55,17 +55,6 @@
                 ]
             },
             "uniqueItems": true
-        },
-        "featureIds": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "format": "sdd-ref",
-                "x-refTargets": [
-                    "Feature"
-                ]
-            },
-            "uniqueItems": true
         }
     },
     "additionalProperties": false

@@ -46,6 +46,46 @@
             },
             "uniqueItems": true,
             "description": "Features that may optionally be implemented"
+        },
+        "conformanceRules": {
+            "type": "array",
+            "description": "Normative rules for conformance testing against this profile",
+            "items": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "description",
+                    "severity"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "critical",
+                            "high",
+                            "medium",
+                            "low"
+                        ]
+                    },
+                    "linkedRequirement": {
+                        "type": "string",
+                        "format": "sdd-ref",
+                        "x-refTargets": [
+                            "Requirement"
+                        ]
+                    }
+                }
+            }
+        },
+        "auditTemplate": {
+            "type": "string",
+            "description": "Markdown template for reporting audit findings"
         }
     },
     "additionalProperties": false

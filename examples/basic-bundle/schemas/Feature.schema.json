@@ -3,7 +3,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Feature",
   "type": "object",
-  "required": ["id", "title"],
+  "required": [
+    "id",
+    "title"
+  ],
   "properties": {
     "id": {
       "type": "string",
@@ -21,10 +24,22 @@
     },
     "tags": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "adrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-refTargets": [
+          "ADR"
+        ]
+      },
       "uniqueItems": true
     }
   },
   "additionalProperties": false
 }
-

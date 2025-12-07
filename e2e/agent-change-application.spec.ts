@@ -66,7 +66,7 @@ test.describe('Agent Change Application', () => {
         await header.click();
 
         // 3. Configure Agent to "Mock"
-        const configBtn = page.locator('button.settings-btn');
+        const configBtn = page.locator('[data-testid="agent-settings-btn"]');
         await configBtn.click();
 
         // Switch to Mock Agent (Debug)
@@ -74,22 +74,22 @@ test.describe('Agent Change Application', () => {
         await typeSelect.selectOption({ value: 'mock' });
 
         // Save config (force to avoid detachment race conditions)
-        await page.locator('button:has-text("Save")').click({ force: true });
+        await page.locator('[data-testid="agent-save-config-btn"]').click({ force: true });
 
         // Click Start Conversation
-        await page.locator('button.start-btn').click();
+        await page.locator('[data-testid="agent-start-btn"]').click();
 
-        // Wait for active state (textarea)
-        await page.waitForSelector('textarea');
+        // Wait for active state (message input)
+        await page.waitForSelector('[data-testid="agent-message-input"]');
 
         // 4. Send a message to trigger changes
-        await page.fill('textarea', 'propose change');
+        await page.locator('[data-testid="agent-message-input"]').fill('propose change');
 
         // Wait for the response to ensure backend processing
         const responsePromise = page.waitForResponse(response =>
             response.url().includes('/agent/message') && response.status() === 200
         );
-        await page.click('button.send-btn');
+        await page.locator('[data-testid="agent-send-btn"]').click();
         await responsePromise;
 
         // Wait for agent message bubble to appear (confirms state update in UI)
@@ -101,10 +101,10 @@ test.describe('Agent Change Application', () => {
         await expect(page.locator('.diff-new')).toContainText('New');
 
         // 6. Click Accept (force)
-        await page.locator('button:has-text("Accept & Apply")').click({ force: true });
+        await page.locator('[data-testid="agent-accept-btn"]').click({ force: true });
 
         // 7. Verify Success
         // Mock backend returns to 'committed' status after applying
-        await expect(page.locator('.status-badge')).toHaveText(/committed/i, { timeout: 30000 });
+        await expect(page.locator('[data-testid="agent-status-badge"]')).toHaveText(/committed/i, { timeout: 30000 });
     });
 });

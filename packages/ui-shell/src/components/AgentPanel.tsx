@@ -320,7 +320,7 @@ export function AgentPanel({
                             )}
 
                             <div className="settings-actions">
-                                <button onClick={handleSaveConfig} className="btn btn-primary btn-sm">Save</button>
+                                <button onClick={handleSaveConfig} className="btn btn-primary btn-sm" data-testid="agent-save-config-btn">Save</button>
                                 <button onClick={() => setShowSettings(false)} className="btn btn-secondary btn-sm">Cancel</button>
                             </div>
                         </div>
@@ -336,10 +336,11 @@ export function AgentPanel({
                                 className="start-btn btn btn-primary btn-lg"
                                 disabled={!isConfigured}
                                 title={!isConfigured ? "Please configure an agent provider first" : ""}
+                                data-testid="agent-start-btn"
                             >
                                 Start Conversation
                             </button>
-                            <button onClick={() => setShowSettings(true)} className="settings-btn btn btn-link">
+                            <button onClick={() => setShowSettings(true)} className="settings-btn btn btn-link" data-testid="agent-settings-btn">
                                 {isConfigured ? '⚙️ Configure' : '👉 Configure Agent'}
                             </button>
                         </div>
@@ -352,7 +353,7 @@ export function AgentPanel({
     return (
         <div className="agent-panel">
             <div className="agent-header">
-                <span className={`status-badge status-${status}`}>{status}</span>
+                <span className={`status-badge status-${status}`} data-testid="agent-status-badge">{status}</span>
                 {currentBackendLabel && (
                     <span className="backend-label">🤖 {currentBackendLabel}</span>
                 )}
@@ -420,7 +421,7 @@ export function AgentPanel({
                 )}
 
                 {(status === 'pending_changes' || status === 'linting') && pendingChanges && (
-                    <div className="pending-changes-block">
+                    <div className="pending-changes-block" data-testid="pending-changes-block">
                         <h4>Proposed Changes ({pendingChanges.length})</h4>
                         <ul className="changes-list">
                             {pendingChanges.map((change, idx) => {
@@ -453,6 +454,7 @@ export function AgentPanel({
                                 onClick={onAcceptChanges}
                                 className="btn btn-success btn-sm"
                                 disabled={status === 'linting'}
+                                data-testid="agent-accept-btn"
                             >
                                 {status === 'linting' ? '⏳ Applying & Linting...' : 'Accept & Apply'}
                             </button>
@@ -460,6 +462,7 @@ export function AgentPanel({
                                 onClick={onAbortConversation}
                                 className="btn btn-secondary btn-sm"
                                 disabled={status === 'linting'}
+                                data-testid="agent-decline-btn"
                             >
                                 Decline
                             </button>
@@ -478,12 +481,14 @@ export function AgentPanel({
                     placeholder={isSending ? "Waiting for response..." : "Describe changes..."}
                     rows={3}
                     disabled={isSending || (status !== 'active' && status !== 'error')}
+                    data-testid="agent-message-input"
                 />
                 <div className="input-actions">
                     <button
                         onClick={handleSend}
                         disabled={isSending || !inputText.trim() || (status !== 'active' && status !== 'error')}
                         className={`send-btn ${isSending ? 'sending' : ''}`}
+                        data-testid="agent-send-btn"
                     >
                         {isSending ? '⏳ Sending...' : 'Send'}
                     </button>

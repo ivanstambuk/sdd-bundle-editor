@@ -174,13 +174,10 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [x] Network/backend failures during agent communication (fetchWithRetry + error indicator)
   - [ ] User closes browser/editor during pending changes
 
-- [~] Implement rollback capability:
-  - [x] If lint fails repeatedly, offer to abort and leave files unchanged (via enhanced /agent/abort)
-  - [x] Clear in-memory pending changes on abort
-  - [ ] Add POST /agent/rollback endpoint
-  - [ ] Add "Discard All Changes" button in UI
-
-- ~~Add conversation persistence~~ (descoped - closed conversations are discarded by design)
+- [x] **8.5 Rollback Capability**
+  - [x] Backend: Add `POST /agent/rollback` (revert uncommitted changes, keeps conversation active)
+  - [x] UI: Add "Discard Changes" button to pending changes block
+  - [x] UI: Update `AppShell` to handle rollback and refresh UI state
 
 ---
 

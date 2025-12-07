@@ -321,6 +321,21 @@ export function AppShell() {
     }
   };
 
+  const handleAgentRollback = async () => {
+    try {
+      const data = await fetchJson<{ state: ConversationState; message?: string }>('/agent/rollback', {
+        method: 'POST',
+        body: JSON.stringify({ bundleDir: bundleDir }),
+      });
+      setConversation(data.state);
+      // Show rollback message as info (could add a toast in the future)
+      console.log('Rollback:', data.message);
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message);
+    }
+  };
+
   const handleResolveDecision = async (decisionId: string, optionId: string) => {
     try {
       const data = await fetchJson<{ state: ConversationState }>('/agent/decision', {
@@ -528,6 +543,7 @@ export function AppShell() {
             onStartConversation={handleAgentStart}
             onAbortConversation={handleAgentAbort}
             onAcceptChanges={handleAgentAccept}
+            onDiscardChanges={handleAgentRollback}
             onResolveDecision={handleResolveDecision}
           />
         </aside>

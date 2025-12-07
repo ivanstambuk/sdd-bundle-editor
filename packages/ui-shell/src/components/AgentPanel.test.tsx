@@ -8,6 +8,7 @@ describe('AgentPanel', () => {
     const mockOnStart = vi.fn();
     const mockOnAbort = vi.fn();
     const mockOnAccept = vi.fn();
+    const mockOnDiscard = vi.fn();
     const mockOnResolve = vi.fn();
 
     beforeEach(() => {
@@ -32,6 +33,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );
@@ -63,6 +65,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );
@@ -81,6 +84,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );
@@ -102,6 +106,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );
@@ -129,6 +134,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );
@@ -158,6 +164,7 @@ describe('AgentPanel', () => {
                 onStartConversation={mockOnStart}
                 onAbortConversation={mockOnAbort}
                 onAcceptChanges={mockOnAccept}
+                onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
             />
         );

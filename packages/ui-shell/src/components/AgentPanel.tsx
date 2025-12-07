@@ -11,6 +11,7 @@ export interface AgentPanelProps {
     onStartConversation: () => void;
     onAbortConversation: () => void;
     onAcceptChanges: () => void;
+    onDiscardChanges: () => void;
     onResolveDecision: (decisionId: string, optionId: string) => void;
 }
 
@@ -23,6 +24,7 @@ export function AgentPanel({
     onStartConversation,
     onAbortConversation,
     onAcceptChanges,
+    onDiscardChanges,
     onResolveDecision,
 }: AgentPanelProps) {
     const [inputText, setInputText] = useState('');
@@ -457,6 +459,14 @@ export function AgentPanel({
                                 data-testid="agent-accept-btn"
                             >
                                 {status === 'linting' ? '⏳ Applying & Linting...' : 'Accept & Apply'}
+                            </button>
+                            <button
+                                onClick={onDiscardChanges}
+                                className="btn btn-danger btn-sm"
+                                disabled={status === 'linting'}
+                                data-testid="agent-discard-btn"
+                            >
+                                🗑️ Discard All Changes
                             </button>
                             <button
                                 onClick={onAbortConversation}

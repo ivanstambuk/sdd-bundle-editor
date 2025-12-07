@@ -259,4 +259,48 @@ export async function agentRoutes(fastify: FastifyInstance) {
             return reply.status(400).send({ error: (err as Error).message });
         }
     });
+
+    // Rollback endpoint: reverts file changes but keeps conversation active (unlike abort)
+    // This allows users to retry or iterate after a failed apply attempt
+    fastify.post('/agent/rollback', async (request, reply) => {
+        try {
+            const body = (request.body as { bundleDir?: string }) || {};
+            let revertedFiles: string[] = [];
+
+            if (body.bundleDir) {
+                const { execFile } = await import('node:child_process');
+                const util = await import('node:util');
+                const execFileAsync = util.promisify(execFile);
+
+                try {
+                    // Get list of modified files in working tree
+                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: body.bundleDir });
+                    const modifiedFiles = stdout.toString().trim().split('\n')
+                        .filter(line => line.trim())
+                        .map(line => line.substring(3)); // Remove status prefix (e.g., " M ")
+
+                    if (modifiedFiles.length > 0) {
+                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: body.bundleDir });
+                        revertedFiles = modifiedFiles;
+                    }
+                } catch (gitErr) {
+                    fastify.log.warn(`Failed to revert files during rollback: ${(gitErr as Error).message}`);
+                }
+            }
+
+            // Clear pending changes but keep conversation active
+            const state = await getBackend().clearPendingChanges();
+
+            return reply.send({
+                state,
+                revertedFiles,
+                message: revertedFiles.length > 0
+                    ? `Rolled back ${revertedFiles.length} file(s). Conversation is still active.`
+                    : 'No files to roll back. Conversation is still active.'
+            });
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(400).send({ error: (err as Error).message });
+        }
+    });
 }

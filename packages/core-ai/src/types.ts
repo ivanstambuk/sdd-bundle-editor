@@ -95,5 +95,7 @@ export interface AgentBackend {
   applyChanges(changes: ProposedChange[]): Promise<ConversationState>;
   resolveDecision(decisionId: string, optionId: string): Promise<ConversationState>;
   abortConversation(): Promise<ConversationState>;
+  /** Clear pending changes but keep conversation active (for rollback/retry scenarios) */
+  clearPendingChanges(): Promise<ConversationState>;
   getStatus(): Promise<ConversationState>;
 }

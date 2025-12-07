@@ -158,6 +158,14 @@ export class MockAgentBackend implements AgentBackend {
         return this.conversation;
     }
 
+    async clearPendingChanges(): Promise<ConversationState> {
+        this.conversation.pendingChanges = undefined;
+        if (this.conversation.status === 'pending_changes' || this.conversation.status === 'linting') {
+            this.conversation.status = 'active';
+        }
+        return this.conversation;
+    }
+
     async abortConversation(): Promise<ConversationState> {
         this.conversation = {
             status: 'idle',

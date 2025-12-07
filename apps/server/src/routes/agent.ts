@@ -84,7 +84,9 @@ export async function agentRoutes(fastify: FastifyInstance) {
             // Ensure git is clean before applying changes
             const query = request.query as { bundleDir?: string };
             const bundleDir = await resolveBundleDir(query.bundleDir); // Resolves to CWD by default if no arg
-            // await assertCleanNonMainBranch(bundleDir); // Disabled for local dev/testing on main
+            if (process.env.TEST_MODE !== 'true') {
+                await assertCleanNonMainBranch(bundleDir);
+            }
 
             let changes = body.changes || [];
 

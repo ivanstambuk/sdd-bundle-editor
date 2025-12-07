@@ -27,6 +27,10 @@ export default defineConfig({
         stdout: 'pipe',
         stderr: 'pipe',
         timeout: 60_000,
+        env: {
+          ...process.env,
+          TEST_MODE: 'true',
+        },
       },
       {
         command: 'pnpm --filter @sdd-bundle-editor/web dev',

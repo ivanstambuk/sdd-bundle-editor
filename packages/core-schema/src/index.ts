@@ -27,8 +27,8 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
     validate: (data: unknown) => typeof data === 'string' && data.trim().length > 0,
   });
 
-  // Allow SDD-specific extension keywords in strict mode (metadata only).
-  const passthroughKeywords = ['x-refTargets', 'x-idTemplate', 'x-entityType', 'x-idScope'];
+  // Allow SDD-specific and RJSF UI extension keywords in strict mode (metadata only).
+  const passthroughKeywords = ['x-refTargets', 'x-idTemplate', 'x-entityType', 'x-idScope', 'ui:widget'];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({
       keyword,

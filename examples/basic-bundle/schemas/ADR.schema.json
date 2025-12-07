@@ -32,15 +32,18 @@
         },
         "context": {
             "type": "string",
-            "description": "The context and problem statement"
+            "description": "The context and problem statement",
+            "ui:widget": "textarea"
         },
         "decision": {
             "type": "string",
-            "description": "The decision that was made"
+            "description": "The decision that was made",
+            "ui:widget": "textarea"
         },
         "consequences": {
             "type": "string",
-            "description": "The consequences of this decision"
+            "description": "The consequences of this decision",
+            "ui:widget": "textarea"
         },
         "supersedes": {
             "type": "array",

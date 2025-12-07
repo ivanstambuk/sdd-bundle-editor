@@ -180,9 +180,7 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [ ] Add POST /agent/rollback endpoint
   - [ ] Add "Discard All Changes" button in UI
 
-- [ ] Add conversation persistence (optional):
-  - [ ] Store conversation history locally for review
-  - [ ] Allow resuming interrupted conversations if state permits
+- ~~Add conversation persistence~~ (descoped - closed conversations are discarded by design)
 
 ---
 

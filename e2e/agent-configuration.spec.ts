@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 test.describe.serial('Agent Configuration', () => {
     test('should configure CLI backend and verify echo response', async ({ page }) => {
         // 1. Navigate
-        await page.goto('/');
+        await page.goto('/?debug=true');
 
         // Reset to unconfigured state first
         await page.evaluate(async () => {

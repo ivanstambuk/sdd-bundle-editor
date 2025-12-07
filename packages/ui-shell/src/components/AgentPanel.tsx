@@ -33,7 +33,11 @@ export function AgentPanel({
     const [cliPreset, setCliPreset] = useState('custom');
     const [currentBackendType, setCurrentBackendType] = useState<string>('mock');
     const [currentBackendLabel, setCurrentBackendLabel] = useState<string>('');
+    const [activeCommand, setActiveCommand] = useState<string>('');
     const [isSending, setIsSending] = useState(false);
+
+    // Check for debug mode (allows Echo CLI usage)
+    const isDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
 
     // Generate a friendly label for the current backend config
     const getBackendLabel = (cfg: AgentBackendConfig): string => {
@@ -41,6 +45,9 @@ export function AgentPanel({
         if (cfg.type === 'cli') {
             const cmd = cfg.options?.command as string;
             if (!cmd) return 'CLI';
+            // "Echo" is for internal testing only, hidden unless debug mode is active
+            if (cmd.toLowerCase() === 'echo' && !isDebug) return '';
+
             // Capitalize first letter of command name
             const name = cmd.charAt(0).toUpperCase() + cmd.slice(1);
             return `${name} CLI`;
@@ -58,6 +65,7 @@ export function AgentPanel({
             .then((data: { config?: AgentBackendConfig }) => {
                 if (data.config) {
                     setCurrentBackendType(data.config.type);
+                    setActiveCommand(data.config.type === 'cli' ? (data.config.options?.command as string || '').toLowerCase() : '');
                     setCurrentBackendLabel(getBackendLabel(data.config));
                     // Pre-fill form with current config if not editing
                     if (!showSettings) {
@@ -122,7 +130,15 @@ export function AgentPanel({
     };
 
     if (status === 'idle') {
-        const isConfigured = currentBackendType !== 'mock';
+        const isEcho = activeCommand === 'echo';
+        const isAllowed = !isEcho || isDebug;
+        // Basically configured if not mock AND allowed
+        const isConfigured = currentBackendType !== 'mock' && isAllowed;
+
+        let warningMsg = '⚠️ Agent is not configured. Please select a provider.';
+        if (currentBackendType !== 'mock' && !isAllowed) {
+            warningMsg = '⚠️ Echo tool is for internal testing only. Enable debug mode to use.';
+        }
 
         return (
             <div className="agent-panel empty-state">
@@ -310,7 +326,7 @@ export function AgentPanel({
                         <div className="placeholder-actions">
                             {!isConfigured && (
                                 <div className="config-warning">
-                                    ⚠️ Agent is not configured. Please select a provider.
+                                    {warningMsg}
                                 </div>
                             )}
                             <button

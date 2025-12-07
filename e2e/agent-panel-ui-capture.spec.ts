@@ -6,8 +6,8 @@ import { test, expect } from '@playwright/test';
  */
 test.describe.serial('Agent Panel UI Capture - After Redesign', () => {
     test('capture redesigned agent panel', async ({ page }) => {
-        // Navigate to the app
-        await page.goto('/');
+        // Navigate to the app with debug mode enabled (to allow Echo CLI)
+        await page.goto('/?debug=true');
 
         // Wait for the app to load
         await expect(page.locator('.app-shell')).toBeVisible();

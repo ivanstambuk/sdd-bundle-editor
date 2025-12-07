@@ -25,8 +25,12 @@ coverage
 .vscode
 .idea
 
+# Playwright / E2E test artifacts
+test-results/
+playwright-report/
+*.webm
+
 # Misc
 *.log
 *.tmp
 *.swp
-test-results

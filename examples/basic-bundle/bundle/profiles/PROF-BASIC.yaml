@@ -1,5 +1,5 @@
 id: PROF-BASIC
-title: Basic SDD Profile
+title: Updated User Profile
 description: |
   A minimal profile that requires only the core feature set.
   Suitable for simple projects with basic requirement tracking.
@@ -7,19 +7,18 @@ requiresFeatures:
   - FEAT-001
 conformanceRules:
   - id: RULE-01
-    description: "Must implement the core demo feature"
+    description: Must implement the core demo feature
     severity: critical
     linkedRequirement: REQ-001
   - id: RULE-02
-    description: "Response time must be under 200ms"
+    description: Response time must be under 200ms
     severity: high
-
 auditTemplate: |
   # Audit Report: Basic Profile
-  
+
   ## Executive Summary
   [Insert summary here]
-  
+
   ## Findings
   | Rule ID | Severity | Status | Observations |
   |---------|----------|--------|--------------|

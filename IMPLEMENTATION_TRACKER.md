@@ -129,40 +129,40 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ### 8.3 – Change Proposal and Application
 
-- [ ] Implement change proposal workflow:
-  - [ ] Agent returns structured `ProposedChange[]` with entity modifications
-  - [ ] UI displays diff-style preview of proposed changes
-  - [ ] User can accept all, reject all, or request modifications
+- [x] Implement change proposal workflow:
+  - [x] Agent returns structured `ProposedChange[]` with entity modifications
+  - [x] UI displays diff-style preview of proposed changes
+  - [x] User can accept all, reject all, or request modifications
 
-- [ ] Implement change application:
-  - [ ] Apply accepted changes to in-memory bundle state
-  - [ ] Write modified entities back to YAML files
-  - [ ] Run full validation + lint pipeline
-  - [ ] If errors, report back to conversation for fix-up
-  - [ ] If clean, proceed to commit
+- [x] Implement change application:
+  - [x] Apply accepted changes to in-memory bundle state (`ChangeApplicationService`)
+  - [x] Write modified entities back to YAML files (`saveEntity`)
+  - [x] Run full validation + lint pipeline
+  - [x] If errors, report back to conversation / revert changes
+  - [x] If clean, proceed to commit
 
-- [ ] Implement automatic Git commit:
-  - [ ] Use `git-utils` package for commit operations
-  - [ ] Generate commit message summarizing changes
-  - [ ] Commit only the modified entity files
-  - [ ] Report commit hash to user as confirmation
+- [x] Implement automatic Git commit:
+  - [x] Use `git-utils` package for commit operations
+  - [x] Generate commit message summarizing changes
+  - [x] Commit only the modified entity files
+  - [x] Report commit status to user as confirmation
 
 ---
 
 ### 8.4 – UI Modifications for Read-Only Mode
 
-- [ ] Remove or disable direct editing in `EntityDetails`:
-  - [ ] Entity forms become read-only viewers
-  - [ ] No "Save" button on individual entities
-  - [ ] Clear visual indication that editing is via agent only
+- [x] Remove or disable direct editing in `EntityDetails`:
+  - [x] Entity forms become read-only viewers (via `ReadOnlyToggle`)
+  - [x] Save button hidden in read-only mode
+  - [x] Clear visual indication that editing is via agent only
 
-- [ ] Add "Edit via Agent" call-to-action:
-  - [ ] Button/link that opens conversation panel with entity context
+- [x] Add "Edit via Agent" call-to-action:
+  - [x] Button/link that focuses agent panel
   - [ ] Contextual prompts like "Fix diagnostics for this entity"
 
-- [ ] Add conversation panel to layout:
-  - [ ] Consider right panel or modal for conversation
-  - [ ] Collapsible/expandable design
+- [x] Add conversation panel to layout:
+  - [x] Right panel design with collapsible state
+  - [x] Integrated into AppShell layout
   - [ ] Keyboard shortcut to open agent panel
 
 ---
@@ -186,14 +186,14 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ### 8.6 – Testing and Documentation
 
-- [ ] Add unit tests for conversation protocol and state machine
-- [ ] Add integration tests for agent backend communication
-- [ ] Add E2E Playwright tests for:
-  - [ ] Starting conversation (Git check)
-  - [ ] Sending message and receiving response
-  - [ ] Accepting changes and verifying commit
-  - [ ] Aborting conversation
-- [ ] Update `AGENTS.md` with agent-first editing workflow documentation
+- [x] Add unit tests for conversation protocol and state machine (`ChangeApplicationService.test.ts`)
+- [x] Add integration tests for agent backend communication
+- [x] Add E2E Playwright tests for:
+  - [x] Starting conversation (Git check) – `agent-conversation.spec.ts`
+  - [x] Sending message and receiving response – `agent-conversation.spec.ts`
+  - [x] Accepting changes and verifying commit – `agent-change-application.spec.ts`
+  - [x] Aborting conversation – `agent-editing.spec.ts`
+- [x] Update `AGENTS.md` with agent-first editing workflow documentation
 - [ ] Update README with new usage patterns
 
 ---

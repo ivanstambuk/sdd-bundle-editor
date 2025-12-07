@@ -136,6 +136,9 @@ importers:
       '@sdd-bundle-editor/core-model':
         specifier: workspace:*
         version: link:../core-model
+      '@sdd-bundle-editor/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       openai:
         specifier: ^6.10.0
         version: 6.10.0(ws@8.18.3)(zod@3.25.76)
@@ -150,6 +153,9 @@ importers:
       '@sdd-bundle-editor/core-schema':
         specifier: workspace:*
         version: link:../core-schema
+      '@sdd-bundle-editor/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       yaml:
         specifier: ^2.5.0
         version: 2.8.2
@@ -183,6 +189,8 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+
+  packages/shared-types: {}
 
   packages/ui-shell:
     dependencies:

@@ -101,7 +101,7 @@ export async function agentRoutes(fastify: FastifyInstance) {
             }
 
             // 1. Load current bundle
-            const { loadBundleWithSchemaValidation, saveEntity, applyChange } = await import('@sdd-bundle-editor/core-model');
+            const { loadBundleWithSchemaValidation, saveEntity, applyChangesToBundle } = await import('@sdd-bundle-editor/core-model');
             const { commitChanges } = await import('@sdd-bundle-editor/git-utils');
             const { execFile } = await import('node:child_process');
             const util = await import('node:util');
@@ -109,26 +109,24 @@ export async function agentRoutes(fastify: FastifyInstance) {
 
             const { bundle } = await loadBundleWithSchemaValidation(bundleDir);
 
-            // 2. Apply changes to in-memory bundle and track modified files
-            const modifiedFiles = new Set<string>();
-            const modifiedEntities = new Set<string>();
+            // 2. Apply changes to in-memory bundle using the service
+            const result = applyChangesToBundle(bundle, changes);
 
-            for (const change of changes) {
-                try {
-                    applyChange(bundle, change);
-                    const entityMap = bundle.entities.get(change.entityType);
-                    const entity = entityMap?.get(change.entityId);
-                    if (entity && entity.filePath) {
-                        modifiedFiles.add(entity.filePath);
-                        modifiedEntities.add(`${change.entityType}:${change.entityId}`);
-                        // 3. Write modified entity to disk
-                        await saveEntity(entity);
-                    }
-                } catch (err) {
-                    // If application fails in-memory, we should probably stop and revert?
-                    // Since we haven't committed, and we track files, we can revert.
-                    const message = err instanceof Error ? err.message : String(err);
-                    return reply.status(400).send({ error: `Failed to apply change: ${message}` });
+            if (!result.success) {
+                return reply.status(400).send({
+                    error: `Failed to apply changes: ${result.errors?.join(', ') ?? 'Unknown error'}`
+                });
+            }
+
+            const modifiedFiles = new Set(result.modifiedFiles);
+
+            // 3. Write modified entities to disk
+            for (const entityKey of result.modifiedEntities) {
+                const [entityType, entityId] = entityKey.split(':');
+                const entityMap = bundle.entities.get(entityType);
+                const entity = entityMap?.get(entityId);
+                if (entity) {
+                    await saveEntity(entity);
                 }
             }
 

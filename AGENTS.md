@@ -63,6 +63,8 @@ When a visual bug is reported (spacing, alignment, colors, layout issues), follo
 
 **Why this matters**: CSS bugs often have non-obvious causes (cascade, inheritance, whitespace). Measuring first prevents wasted time on incorrect fixes.
 
+**Reference implementation**: See `e2e/css-spacing-validation.spec.ts` for a reusable test suite with helpers for measuring gaps (`measureGaps()`) and injecting test HTML (`injectTestMessage()`).
+
 ---
 
 ### Implementation tracking

@@ -1,6 +1,7 @@
 
 import { test, expect } from '@playwright/test';
 import { getSampleBundlePath } from './bundle-test-fixture';
+import { injectMockSpeechRecognition } from './utils/browser-mocks';
 
 test.describe('Speech to Text', () => {
     // Reduce timeout for debugging (but enough for sluggish CI)
@@ -11,70 +12,7 @@ test.describe('Speech to Text', () => {
         page.on('console', msg => console.log('BROWSER LOG:', msg.text()));
 
         // Mock SpeechRecognition before page loads
-        await page.addInitScript(() => {
-            console.log('Injecting MockSpeechRecognition');
-            class MockSpeechRecognition extends EventTarget {
-                continuous = false;
-                interimResults = false;
-                lang = '';
-
-                constructor() {
-                    super();
-                    console.log('MockSpeechRecognition instantiated');
-                }
-
-                start() {
-                    console.log('MockSpeechRecognition.start() called');
-                    this.dispatchEvent(new Event('start'));
-                    if (this.onstart) this.onstart(new Event('start'));
-
-                    // Simulate speech happening after a short delay
-                    setTimeout(() => {
-                        console.log('Simulating result');
-                        this.simulateResult('Hello Playwright');
-                    }, 500); // Increased delay slightly
-                }
-
-                stop() {
-                    console.log('MockSpeechRecognition.stop() called');
-                    this.dispatchEvent(new Event('end'));
-                    if (this.onend) this.onend(new Event('end'));
-                }
-
-                abort() {
-                    this.dispatchEvent(new Event('end'));
-                    if (this.onend) this.onend(new Event('end'));
-                }
-
-                simulateResult(transcript: string) {
-                    const event = {
-                        resultIndex: 0,
-                        results: {
-                            length: 1,
-                            0: {
-                                isFinal: true,
-                                0: { transcript }
-                            }
-                        }
-                    };
-                    if (this.onresult) {
-                        (this.onresult as any)(event);
-                    } else {
-                        console.log('No onresult handler set');
-                    }
-                }
-
-                onresult: any = null;
-                onstart: any = null;
-                onend: any = null;
-                onerror: any = null;
-            }
-
-            // @ts-ignore
-            window.SpeechRecognition = MockSpeechRecognition;
-            // @ts-ignore
-            window.webkitSpeechRecognition = MockSpeechRecognition;
-        });
+        await injectMockSpeechRecognition(page);
 
         const bundlePath = getSampleBundlePath();
         await page.goto(`/?bundleDir=${bundlePath}&debug=true`);

@@ -35,7 +35,7 @@ function setPath(obj: Record<string, unknown>, path: string, value: unknown): vo
 
 /**
  * Creates a new entity and adds it to the bundle.
- * Generates a file path based on the entity type and ID.
+ * Generates a file path based on the bundle's manifest layout configuration.
  * 
  * @param bundle - The bundle to add the entity to
  * @param bundleDir - Root directory of the bundle
@@ -63,10 +63,20 @@ export function createEntity(
         throw new Error(`Entity ${entityType}:${entityId} already exists in bundle.`);
     }
 
-    // Determine file path based on bundle structure
-    // Entities are typically stored in <bundleDir>/<entityType>/<entityId>.yaml
-    const entityTypeDir = path.join(bundleDir, entityType.toLowerCase());
-    const filePath = path.join(entityTypeDir, `${entityId}.yaml`);
+    // Determine file path from bundle's layout configuration
+    // Layout is defined in manifest.spec.layout.documents[entityType]
+    const layout = bundle.manifest.spec.layout.documents[entityType];
+    let filePath: string;
+
+    if (layout) {
+        // Use layout from manifest (e.g., { dir: "bundle/features", filePattern: "{id}.yaml" })
+        const fileName = layout.filePattern.replace('{id}', entityId);
+        filePath = path.join(bundleDir, layout.dir, fileName);
+    } else {
+        // Fallback to default pattern if no layout is defined for this entity type
+        const entityTypeDir = path.join(bundleDir, entityType.toLowerCase());
+        filePath = path.join(entityTypeDir, `${entityId}.yaml`);
+    }
 
     // Create the entity
     const entity: Entity = {

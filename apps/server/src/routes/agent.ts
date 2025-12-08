@@ -177,9 +177,47 @@ export async function agentRoutes(fastify: FastifyInstance) {
             const hasErrors = diagnostics.some(d => d.severity === 'error');
 
             if (hasErrors) {
-                // Revert changes
+                // Revert changes - handle new files vs existing files differently
                 const filesToRevert = Array.from(modifiedFiles);
-                await execFileAsync('git', ['checkout', '--', ...filesToRevert], { cwd: bundleDir });
+
+                // Check which files are tracked by git (existing) vs untracked (new)
+                const { stdout: gitStatusOutput } = await execFileAsync('git', ['status', '--porcelain', '--', ...filesToRevert], { cwd: bundleDir });
+                const statusLines = gitStatusOutput.toString().trim().split('\n').filter(l => l);
+
+                const untrackedFiles: string[] = [];
+                const trackedFiles: string[] = [];
+
+                for (const line of statusLines) {
+                    const status = line.substring(0, 2);
+                    const filePath = line.substring(3);
+                    const absolutePath = path.isAbsolute(filePath) ? filePath : path.join(bundleDir, filePath);
+
+                    if (status.includes('?')) {
+                        // Untracked (new) file - needs to be deleted
+                        untrackedFiles.push(absolutePath);
+                    } else {
+                        // Modified tracked file - can use git checkout
+                        trackedFiles.push(absolutePath);
+                    }
+                }
+
+                // Delete untracked new files
+                for (const file of untrackedFiles) {
+                    try {
+                        await fs.unlink(file);
+                    } catch (e) {
+                        fastify.log.warn(`Failed to delete untracked file ${file}: ${(e as Error).message}`);
+                    }
+                }
+
+                // Revert tracked files with git checkout
+                if (trackedFiles.length > 0) {
+                    try {
+                        await execFileAsync('git', ['checkout', '--', ...trackedFiles], { cwd: bundleDir });
+                    } catch (e) {
+                        fastify.log.warn(`Failed to revert some files: ${(e as Error).message}`);
+                    }
+                }
 
                 return reply.status(400).send({
                     error: 'Validation failed after applying changes. Changes have been reverted.',

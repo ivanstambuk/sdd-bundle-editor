@@ -18,8 +18,26 @@ function createTestBundle(entities: Entity[]): Bundle {
         });
     }
 
+    // Include a realistic manifest with layout configuration
+    const manifest = {
+        apiVersion: 'sdd.v1',
+        kind: 'Bundle',
+        metadata: { name: 'test-bundle', bundleType: 'test' },
+        spec: {
+            bundleTypeDefinition: 'schemas/bundle-type.json',
+            schemas: { documents: {} },
+            layout: {
+                documents: {
+                    Feature: { dir: 'bundle/features', filePattern: '{id}.yaml' },
+                    Requirement: { dir: 'bundle/requirements', filePattern: '{id}.yaml' },
+                    Profile: { dir: 'bundle/profiles', filePattern: '{id}.yaml' },
+                }
+            }
+        }
+    };
+
     return {
-        manifest: {} as any,
+        manifest: manifest as any,
         entities: entitiesMap,
         idRegistry,
         refGraph: { edges: [] },
@@ -186,6 +204,151 @@ describe('ChangeApplicationService', () => {
             expect(result.modifiedFiles).toEqual([]);
             expect(result.modifiedEntities).toEqual([]);
             expect(result.errors).toBeUndefined();
+        });
+
+        // NEW: Test for entity creation
+        it('should create a new entity when originalValue is null', () => {
+            const bundle = createTestBundle([]); // Empty bundle
+
+            const changes: ProposedChange[] = [
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-002',
+                    fieldPath: 'title',
+                    originalValue: null,
+                    newValue: 'New Feature Title',
+                },
+            ];
+
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
+
+            expect(result.success).toBe(true);
+            expect(result.modifiedEntities).toContain('Feature:FEAT-002');
+
+            // Verify entity was created
+            const createdEntity = bundle.entities.get('Feature')?.get('FEAT-002');
+            expect(createdEntity).toBeDefined();
+            expect(createdEntity!.data.title).toBe('New Feature Title');
+        });
+
+        // NEW: Test for the bug - multiple field changes for same new entity
+        it('should consolidate multiple field changes when creating a new entity (bug fix)', () => {
+            const bundle = createTestBundle([]); // Empty bundle
+
+            // LLM often sends multiple changes for a new entity, all with originalValue null
+            const changes: ProposedChange[] = [
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-003',
+                    fieldPath: 'id',
+                    originalValue: null,
+                    newValue: 'FEAT-003',
+                },
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-003',
+                    fieldPath: 'title',
+                    originalValue: null,
+                    newValue: 'My New Feature',
+                },
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-003',
+                    fieldPath: 'description',
+                    originalValue: null,
+                    newValue: 'Description for the new feature',
+                },
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-003',
+                    fieldPath: 'status',
+                    originalValue: null,
+                    newValue: 'draft',
+                },
+            ];
+
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
+
+            expect(result.success).toBe(true);
+            expect(result.errors).toBeUndefined();
+
+            // Should only create ONE entity, not fail with "already exists"
+            expect(result.modifiedEntities).toEqual(['Feature:FEAT-003']);
+
+            // Verify all fields were applied
+            const createdEntity = bundle.entities.get('Feature')?.get('FEAT-003');
+            expect(createdEntity).toBeDefined();
+            expect(createdEntity!.data.id).toBe('FEAT-003');
+            expect(createdEntity!.data.title).toBe('My New Feature');
+            expect(createdEntity!.data.description).toBe('Description for the new feature');
+            expect(createdEntity!.data.status).toBe('draft');
+        });
+
+        it('should handle nested field paths when creating a new entity', () => {
+            const bundle = createTestBundle([]);
+
+            const changes: ProposedChange[] = [
+                {
+                    entityType: 'Profile',
+                    entityId: 'PROFILE-001',
+                    fieldPath: 'metadata.name',
+                    originalValue: null,
+                    newValue: 'Test Profile',
+                },
+                {
+                    entityType: 'Profile',
+                    entityId: 'PROFILE-001',
+                    fieldPath: 'metadata.version',
+                    originalValue: null,
+                    newValue: '1.0.0',
+                },
+            ];
+
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
+
+            expect(result.success).toBe(true);
+
+            const createdEntity = bundle.entities.get('Profile')?.get('PROFILE-001');
+            expect(createdEntity).toBeDefined();
+            expect((createdEntity!.data as any).metadata.name).toBe('Test Profile');
+            expect((createdEntity!.data as any).metadata.version).toBe('1.0.0');
+        });
+
+        // NEW: Test for when agent proposes entire entity object with fieldPath "data"
+        it('should create entity when fieldPath is "data" (entire entity object)', () => {
+            const bundle = createTestBundle([]);
+
+            // DeepSeek often proposes the entire entity data as a single change with fieldPath: "data"
+            const changes: ProposedChange[] = [
+                {
+                    entityType: 'Feature',
+                    entityId: 'FEAT-004',
+                    fieldPath: 'data',
+                    originalValue: null,
+                    newValue: {
+                        id: 'FEAT-004',
+                        title: 'Complete Feature',
+                        description: 'A feature proposed as a whole object',
+                        status: 'draft',
+                        tags: ['test', 'complete']
+                    },
+                },
+            ];
+
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
+
+            expect(result.success).toBe(true);
+            expect(result.errors).toBeUndefined();
+            expect(result.modifiedEntities).toEqual(['Feature:FEAT-004']);
+
+            const createdEntity = bundle.entities.get('Feature')?.get('FEAT-004');
+            expect(createdEntity).toBeDefined();
+            // The data should be the entity itself, NOT wrapped under a "data" property
+            expect(createdEntity!.data.id).toBe('FEAT-004');
+            expect(createdEntity!.data.title).toBe('Complete Feature');
+            expect(createdEntity!.data.description).toBe('A feature proposed as a whole object');
+            expect(createdEntity!.data.status).toBe('draft');
+            expect(createdEntity!.data.tags).toEqual(['test', 'complete']);
         });
     });
 });

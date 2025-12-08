@@ -95,15 +95,31 @@ test.describe('Agent Change Application', () => {
         // Wait for agent message bubble to appear (confirms state update in UI)
         await expect(page.locator('.message.role-agent').last()).toContainText('propose');
 
-        // 5. Verify Diff View
+        // 5. Verify Proposed Changes Block
         await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });
-        await expect(page.locator('.diff-old')).toContainText('Original');
-        await expect(page.locator('.diff-new')).toContainText('New');
+        await expect(page.locator('[data-testid="agent-review-btn"]')).toBeVisible();
 
-        // 6. Click Accept (force)
+        // Capture screenshot before opening modal
+        await page.waitForTimeout(300);
+        await page.screenshot({ path: 'artifacts/proposed_changes_compact.png' });
+
+        // 6. Open Review Modal
+        await page.click('[data-testid="agent-review-btn"]');
+        await expect(page.locator('.diff-modal-overlay')).toBeVisible();
+        await expect(page.locator('.diff-old-header')).toBeVisible();
+        await expect(page.locator('.diff-new-header')).toBeVisible();
+
+        // Capture screenshot of modal
+        await page.waitForTimeout(500);
+        await page.screenshot({ path: 'artifacts/diff_review_modal.png' });
+
+        // 7. Close modal and Accept changes
+        await page.locator('.diff-modal-close').click();
+        await expect(page.locator('.diff-modal-overlay')).not.toBeVisible();
+
         await page.locator('[data-testid="agent-accept-btn"]').click({ force: true });
 
-        // 7. Verify Success
+        // 8. Verify Success
         // Mock backend returns to 'committed' status after applying
         await expect(page.locator('[data-testid="agent-status-badge"]')).toHaveText(/committed/i, { timeout: 30000 });
     });

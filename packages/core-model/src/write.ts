@@ -1,4 +1,5 @@
 import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { Bundle, Entity, ProposedChange } from './types';
 
@@ -30,6 +31,55 @@ function setPath(obj: Record<string, unknown>, path: string, value: unknown): vo
 
     const last = parts[parts.length - 1];
     current[last] = value;
+}
+
+/**
+ * Creates a new entity and adds it to the bundle.
+ * Generates a file path based on the entity type and ID.
+ * 
+ * @param bundle - The bundle to add the entity to
+ * @param bundleDir - Root directory of the bundle
+ * @param entityType - Type of entity (e.g., 'Feature', 'Requirement')
+ * @param entityId - Unique ID for the entity
+ * @param data - Entity data object
+ * @returns The created entity
+ */
+export function createEntity(
+    bundle: Bundle,
+    bundleDir: string,
+    entityType: string,
+    entityId: string,
+    data: any
+): Entity {
+    // Get or create the entity type map
+    let entityMap = bundle.entities.get(entityType);
+    if (!entityMap) {
+        entityMap = new Map();
+        bundle.entities.set(entityType, entityMap);
+    }
+
+    // Check if entity already exists
+    if (entityMap.has(entityId)) {
+        throw new Error(`Entity ${entityType}:${entityId} already exists in bundle.`);
+    }
+
+    // Determine file path based on bundle structure
+    // Entities are typically stored in <bundleDir>/<entityType>/<entityId>.yaml
+    const entityTypeDir = path.join(bundleDir, entityType.toLowerCase());
+    const filePath = path.join(entityTypeDir, `${entityId}.yaml`);
+
+    // Create the entity
+    const entity: Entity = {
+        id: entityId,
+        entityType,
+        filePath,
+        data,
+    };
+
+    // Add to bundle
+    entityMap.set(entityId, entity);
+
+    return entity;
 }
 
 /**

@@ -144,7 +144,7 @@ export async function agentRoutes(fastify: FastifyInstance) {
             const { bundle } = await loadBundleWithSchemaValidation(bundleDir);
 
             // 2. Apply changes to in-memory bundle using the service
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, bundleDir, changes);
 
             if (!result.success) {
                 return reply.status(400).send({
@@ -154,12 +154,16 @@ export async function agentRoutes(fastify: FastifyInstance) {
 
             const modifiedFiles = new Set(result.modifiedFiles);
 
-            // 3. Write modified entities to disk
+            // 3. Create directories for new entity files and write entities to disk
             for (const entityKey of result.modifiedEntities) {
                 const [entityType, entityId] = entityKey.split(':');
                 const entityMap = bundle.entities.get(entityType);
                 const entity = entityMap?.get(entityId);
                 if (entity) {
+                    // Ensure directory exists for new entities
+                    const entityDir = path.dirname(entity.filePath);
+                    await fs.mkdir(entityDir, { recursive: true });
+
                     await saveEntity(entity);
                 }
             }

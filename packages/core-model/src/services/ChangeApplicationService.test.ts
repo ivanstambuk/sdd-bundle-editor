@@ -47,7 +47,7 @@ describe('ChangeApplicationService', () => {
                 },
             ];
 
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
 
             expect(result.success).toBe(true);
             expect(result.modifiedFiles).toEqual(['/bundle/features/feat-001.yaml']);
@@ -88,7 +88,7 @@ describe('ChangeApplicationService', () => {
                 },
             ];
 
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
 
             expect(result.success).toBe(true);
             expect(result.modifiedFiles).toHaveLength(2);
@@ -124,7 +124,7 @@ describe('ChangeApplicationService', () => {
                 },
             ];
 
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
 
             expect(result.success).toBe(true);
             expect(result.modifiedFiles).toEqual(['/bundle/features/feat-001.yaml']);
@@ -144,7 +144,7 @@ describe('ChangeApplicationService', () => {
                 },
             ];
 
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
 
             expect(result.success).toBe(false);
             expect(result.errors).toBeDefined();
@@ -170,7 +170,7 @@ describe('ChangeApplicationService', () => {
                 },
             ];
 
-            const result = applyChangesToBundle(bundle, changes);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", changes);
 
             expect(result.success).toBe(false);
             expect(result.errors).toBeDefined();
@@ -180,7 +180,7 @@ describe('ChangeApplicationService', () => {
         it('should handle empty changes array', () => {
             const bundle = createTestBundle([]);
 
-            const result = applyChangesToBundle(bundle, []);
+            const result = applyChangesToBundle(bundle, "/fake/bundle/dir", []);
 
             expect(result.success).toBe(true);
             expect(result.modifiedFiles).toEqual([]);

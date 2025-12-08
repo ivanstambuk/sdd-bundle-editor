@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ConversationMessage, ConversationStatus, ProposedChange, AgentDecision, DecisionOption, AgentBackendConfig } from '@sdd-bundle-editor/core-ai';
 import ReactMarkdown from 'react-markdown';
+import { DiffReviewModal } from './DiffReviewModal';
 
 export interface AgentPanelProps {
     messages: ConversationMessage[];
@@ -37,6 +38,7 @@ export function AgentPanel({
     const [currentBackendLabel, setCurrentBackendLabel] = useState<string>('');
     const [activeCommand, setActiveCommand] = useState<string>('');
     const [isSending, setIsSending] = useState(false);
+    const [showDiffModal, setShowDiffModal] = useState(false);
 
     // Check for debug mode (allows Echo CLI usage)
     const isDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
@@ -424,32 +426,24 @@ export function AgentPanel({
 
                 {(status === 'pending_changes' || status === 'linting') && pendingChanges && (
                     <div className="pending-changes-block" data-testid="pending-changes-block">
-                        <h4>Proposed Changes ({pendingChanges.length})</h4>
+                        <div className="pending-changes-header">
+                            <h4>Proposed Changes ({pendingChanges.length})</h4>
+                            <button
+                                onClick={() => setShowDiffModal(true)}
+                                className="btn btn-primary btn-sm"
+                                disabled={status === 'linting'}
+                                data-testid="agent-review-btn"
+                            >
+                                📋 Review Changes
+                            </button>
+                        </div>
                         <ul className="changes-list">
-                            {pendingChanges.map((change, idx) => {
-                                const originalStr = typeof change.originalValue === 'string' ? change.originalValue : JSON.stringify(change.originalValue, null, 2);
-                                const newStr = typeof change.newValue === 'string' ? change.newValue : JSON.stringify(change.newValue, null, 2);
-
-                                return (
-                                    <li key={idx} className="change-item">
-                                        <div className="change-header">
-                                            <span className="change-type">{change.entityType}</span>
-                                            <span className="change-path">{change.fieldPath}</span>
-                                        </div>
-                                        <div className="change-diff">
-                                            <div className="diff-old">
-                                                <label>Original:</label>
-                                                <pre>{originalStr ?? 'undefined'}</pre>
-                                            </div>
-                                            <div className="diff-new">
-                                                <label>New:</label>
-                                                <pre>{newStr}</pre>
-                                            </div>
-                                        </div>
-                                        {change.rationale && <div className="change-rationale">{change.rationale}</div>}
-                                    </li>
-                                );
-                            })}
+                            {pendingChanges.map((change, idx) => (
+                                <li key={idx} className="change-item-compact">
+                                    <span className="change-type">{change.entityType}</span>
+                                    <span className="change-path">{change.fieldPath}</span>
+                                </li>
+                            ))}
                         </ul>
                         <div className="change-actions">
                             <button
@@ -504,6 +498,22 @@ export function AgentPanel({
                     </button>
                 </div>
             </div>
+
+            {/* Diff Review Modal */}
+            {showDiffModal && pendingChanges && (
+                <DiffReviewModal
+                    changes={pendingChanges}
+                    onAcceptAll={() => {
+                        setShowDiffModal(false);
+                        onAcceptChanges();
+                    }}
+                    onDeclineAll={() => {
+                        setShowDiffModal(false);
+                        onDiscardChanges();
+                    }}
+                    onClose={() => setShowDiffModal(false)}
+                />
+            )}
         </div>
     );
 }

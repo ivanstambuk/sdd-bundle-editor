@@ -59,24 +59,16 @@ export async function assertCleanNonMainBranch(cwd: string): Promise<void> {
 }
 
 export async function commitChanges(cwd: string, message: string, files: string[] = []): Promise<string> {
-  const args = ['commit', '-m', message];
-  if (files.length > 0) {
-    // If files are specified, we explicitly add them to the commit (partial commit)
-    // Or we can just 'git add' them first.
-    // Safety: only commit what was changed.
-    // 'git commit ... files' works.
-    args.push(...files);
-  } else {
-    // If no files specified, maybe commit all? Or throw?
-    // Let's safe-guard: assume we must be explicit or use -a if intentional.
-    // For this use case, we wrote files to disk, so we should commit them.
-    // git commit -a is risky if we didn't track them.
-    // Better to explicitly 'git add' then 'git commit'.
-    // Or 'git commit file1 file2'
+  if (files.length === 0) {
     throw new Error('No files specified for commit.');
   }
 
-  const { stdout } = await execFileAsync('git', args, { cwd });
+  // First, stage the files with 'git add'
+  // This is required for new (untracked) files, and also works for modified tracked files
+  await execFileAsync('git', ['add', '--', ...files], { cwd });
+
+  // Then commit with the message
+  const { stdout } = await execFileAsync('git', ['commit', '-m', message], { cwd });
   return stdout.trim();
 }
 

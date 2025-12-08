@@ -6,19 +6,11 @@ test.describe.serial('Agent Configuration', () => {
     test('should configure CLI backend and verify echo response', async ({ page }) => {
         const bundleDir = getSampleBundlePath();
 
-        // 1. Navigate
-        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true`);
+        // 1. Navigate with resetAgent=true to ensure fresh state
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true&resetAgent=true`);
 
-        // Reset to unconfigured state first
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-            await fetch('/agent/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: 'mock' })
-            });
-        });
-        await page.reload();
+        // Wait for app to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
 
         // Screenshot 1: Initial state - unconfigured warning
         await page.waitForSelector('.agent-panel', { timeout: 5000 });

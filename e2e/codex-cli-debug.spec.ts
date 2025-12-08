@@ -8,16 +8,11 @@ test.describe('Codex CLI Integration Debug', () => {
     test('should configure Codex CLI with correct args and document any errors', async ({ page }) => {
         const bundleDir = getSampleBundlePath();
 
-        // 1. Start fresh by calling the abort endpoint directly
-        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
+        // 1. Start fresh by calling the reset endpoint via URL param
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&resetAgent=true`);
 
-        // Wait for app to load first
+        // Wait for app to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });
-
-        // Call abort API to reset state
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
 
         // Reload to get fresh state
         await page.reload();

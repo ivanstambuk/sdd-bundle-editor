@@ -25,6 +25,46 @@ For any new feature or change that impacts the User Interface (UI), the followin
 
 ---
 
+### Debug-First Workflow for UI/CSS Issues
+
+When a visual bug is reported (spacing, alignment, colors, layout issues), follow this **measure-before-guessing** approach:
+
+1.  **Create a Reproduction Test FIRST**:
+    - Write an E2E test that reproduces the issue
+    - Inject test HTML if needed (don't depend on API responses)
+    - Use `boundingBox()` to measure actual pixel values
+    - Log computed styles (`getComputedStyle()`) for affected elements
+
+    ```typescript
+    // Example: Measure spacing between list items
+    const box1 = await items.nth(0).boundingBox();
+    const box2 = await items.nth(1).boundingBox();
+    const gap = box2.y - (box1.y + box1.height);
+    console.log(`Gap: ${gap}px`); // Quantify the issue!
+    ```
+
+2.  **Run Test to Establish Baseline**:
+    - Get actual measurements before making changes
+    - Compare actual vs expected values
+    - This identifies WHERE the extra space is coming from
+
+3.  **Check for CSS Cascade Issues**:
+    - Parent styles can affect children unexpectedly
+    - Watch for: `white-space: pre-wrap`, `display: flex`, `gap`, `line-height`
+    - Use browser DevTools or test to inspect computed styles
+
+4.  **Make Targeted CSS Changes**:
+    - Only after you understand the root cause
+    - Use `!important` sparingly; prefer more specific selectors
+
+5.  **Re-run Test to Verify Fix**:
+    - Test MUST pass before considering the issue fixed
+    - Capture screenshot for visual verification
+
+**Why this matters**: CSS bugs often have non-obvious causes (cascade, inheritance, whitespace). Measuring first prevents wasted time on incorrect fixes.
+
+---
+
 ### Implementation tracking
 
 - Treat `IMPLEMENTATION_TRACKER.md` as the canonical backlog for this repo.

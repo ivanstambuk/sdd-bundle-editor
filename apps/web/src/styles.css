@@ -1274,6 +1274,9 @@ body {
   line-height: 1.6;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  /* ⚠️ CASCADES TO CHILDREN - preserves whitespace/newlines in HTML.
+     Override with 'white-space: normal' in child elements (ul, ol) 
+     to prevent extra spacing from HTML formatting. See bullet-list-css-test.spec.ts */
   white-space: pre-wrap;
 }
 

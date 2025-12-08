@@ -1,6 +1,6 @@
 id: FEAT-002
 title: JWT Validation
-description: Secure authentication using JSON Web Token validation.
+description: Secure JWT token validation for API authentication and authorization.
 tags:
   - security
   - authentication

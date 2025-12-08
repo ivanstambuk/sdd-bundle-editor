@@ -1,8 +1,8 @@
 data:
   id: FEAT-002
-  title: Random Feature Name
-  description: A randomly named feature added to the bundle.
+  title: Dummy Feature
+  description: A simple dummy feature for testing purposes.
   tags:
-    - random
-    - new
+    - dummy
+    - test
   adrIds: []

@@ -5,8 +5,14 @@ import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 test.describe('QA UI Refresh on Agent Accept', () => {
     let tempBundleDir: string;
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-qa-refresh-');
+
+        // Reset agent state to ensure clean state
+        await page.goto('/');
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+        });
     });
 
     test.afterEach(async () => {

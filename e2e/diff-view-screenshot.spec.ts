@@ -5,10 +5,18 @@ test.describe('Agent Diff View Screenshot', () => {
     let tempDir: string;
     let bundlePath: string;
 
-    test.beforeAll(async () => {
+    test.beforeAll(async ({ browser }) => {
         bundlePath = await createTempBundle('sdd-diff-view-');
         tempDir = bundlePath;
         console.log('Created temp bundle at:', bundlePath);
+
+        // Reset agent state to ensure clean state
+        const page = await browser.newPage();
+        await page.goto('/');
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+        });
+        await page.close();
     });
 
     test.afterAll(async () => {

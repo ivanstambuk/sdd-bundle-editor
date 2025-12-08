@@ -360,6 +360,85 @@ ls -la artifacts/*.png
 
 ---
 
+### E2E Testing Patterns (MANDATORY)
+
+> [!IMPORTANT]
+> All E2E tests share a single backend server with persistent agent state. Follow these patterns to avoid flaky tests.
+
+#### Agent State Management
+
+**PATTERN 1: Reset agent state before each test**
+
+Every test that interacts with the agent backend MUST reset state in `beforeEach`:
+
+```typescript
+test.beforeEach(async ({ page }) => {
+    // Reset agent state to ensure clean state
+    await page.goto('/');
+    await page.evaluate(async () => {
+        await fetch('/agent/abort', { method: 'POST' });
+    });
+});
+```
+
+**PATTERN 2: Configure agent via UI, not API**
+
+Configure the agent via UI selectors AFTER page load, not via API calls before navigation:
+
+```typescript
+// ✅ CORRECT - Configure via UI after page load
+await page.goto(`/?bundleDir=${bundlePath}&debug=true`);
+await page.waitForSelector('.app-shell', { timeout: 10000 });
+await page.click('[data-testid="agent-settings-btn"]');
+await page.selectOption('.form-control', 'mock');
+await page.click('[data-testid="agent-save-config-btn"]');
+
+// ❌ WRONG - Pre-configuring via API often fails in full suite
+await page.evaluate(async () => {
+    await fetch('/agent/config', { ... });  // May be overwritten by other tests
+});
+await page.goto('/');
+```
+
+**Why this matters**: When tests run serially, API calls made before `page.goto()` may be affected by previous tests' lingering state or race conditions.
+
+#### External Bundle Fixture
+
+**MANDATORY**: Use the shared fixture from `e2e/bundle-test-fixture.ts`:
+
+```typescript
+import { createTempBundle, cleanupTempBundle, getSampleBundlePath } from './bundle-test-fixture';
+
+// For tests that MODIFY the bundle (use temp copy)
+let tempBundleDir: string;
+test.beforeEach(async () => {
+    tempBundleDir = await createTempBundle('sdd-test-prefix-');
+});
+test.afterEach(async () => {
+    await cleanupTempBundle(tempBundleDir);
+});
+
+// For READ-ONLY tests (use external bundle directly)
+const bundleDir = getSampleBundlePath();
+```
+
+**Environment Variable**: `SDD_SAMPLE_BUNDLE_PATH` controls the bundle location. Default: `/home/ivan/dev/sdd-sample-bundle`.
+
+#### Mock Agent Requirements
+
+- **Use `debug=true`** in URL for mock agent: `/?bundleDir=${path}&debug=true`
+- Mock agent is only enabled in debug mode for security
+- The mock agent triggers proposals when message contains "change"
+
+#### Why Tests Run Serially
+
+The `playwright.config.ts` sets `workers: 1` and `fullyParallel: false`. **Do NOT change this** without understanding that:
+- All tests share a single server process
+- Agent state is global (one conversation at a time)
+- Parallel tests cause race conditions on `/agent/*` endpoints
+
+---
+
 ### Pre-Fix Code Path Analysis (Prevent Iterative Debugging)
 
 **Problem**: Complex bugs often span multiple layers (UI → API → Service → Data). Fixing one layer at a time leads to multiple iterations and wasted effort.

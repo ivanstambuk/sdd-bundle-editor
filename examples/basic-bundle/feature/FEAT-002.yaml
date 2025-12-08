@@ -1,0 +1,8 @@
+id: FEAT-002
+title: JWT Validation
+description: Secure authentication using JSON Web Token validation.
+tags:
+  - security
+  - authentication
+  - api
+adrIds: []

@@ -96,6 +96,13 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [x] `POST /agent/abort` – Abort conversation without applying changes
   - [x] `GET /agent/status` – Current conversation state
 
+- [x] Add Speech-to-Text Input Support
+  - [x] Toggle button (microphone icon) in Agent Panel
+  - [x] Integration with `webkitSpeechRecognition` API
+  - [x] Auto-transcription to input field
+  - [x] Language set to 'en-US' defaults
+  - [x] Verified with E2E test `e2e/speech-to-text.spec.ts`
+
 ---
 
 - [x] Define `AgentBackend` abstraction in `core-ai`:

@@ -16,6 +16,27 @@ export interface AgentPanelProps {
     onResolveDecision: (decisionId: string, optionId: string) => void;
 }
 
+// Add Speech Recognition types
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start: () => void;
+    stop: () => void;
+    abort: () => void;
+    onresult: (event: any) => void;
+    onend: (event: any) => void;
+    onerror: (event: any) => void;
+    onstart: (event: any) => void;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: any;
+        webkitSpeechRecognition: any;
+    }
+}
+
 export function AgentPanel({
     messages,
     status,
@@ -39,6 +60,8 @@ export function AgentPanel({
     const [activeCommand, setActiveCommand] = useState<string>('');
     const [isSending, setIsSending] = useState(false);
     const [showDiffModal, setShowDiffModal] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<SpeechRecognition | null>(null);
 
     // Check for debug mode (allows Echo CLI usage)
     const isDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
@@ -131,6 +154,57 @@ export function AgentPanel({
             e.preventDefault();
             handleSend();
         }
+    };
+
+    const toggleListening = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            // State update to false will happen in onend
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false; // Keep simple for now, only final results
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+            setIsListening(true);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error', event.error);
+            setIsListening(false);
+        };
+
+        recognition.onresult = (event: any) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                }
+            }
+
+            if (finalTranscript) {
+                setInputText(prev => {
+                    const prefix = prev ? prev + ' ' : '';
+                    return prefix + finalTranscript.trim();
+                });
+            }
+        };
+
+        recognitionRef.current = recognition;
+        recognition.start();
     };
 
     if (status === 'idle') {
@@ -482,12 +556,23 @@ export function AgentPanel({
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={isSending ? "Waiting for response..." : "Describe changes..."}
+                    placeholder={isSending ? "Waiting for response..." : isListening ? "Listening... (Speak now)" : "Describe changes..."}
                     rows={3}
                     disabled={isSending || (status !== 'active' && status !== 'error')}
+                    className={isListening ? 'listening' : ''}
                     data-testid="agent-message-input"
                 />
                 <div className="input-actions">
+                    <button
+                        onClick={toggleListening}
+                        className={`mic-btn ${isListening ? 'active' : ''}`}
+                        disabled={isSending || (status !== 'active' && status !== 'error')}
+                        title={isListening ? "Stop Listening" : "Start Speech-to-Text"}
+                        type="button"
+                        data-testid="agent-mic-btn"
+                    >
+                        {isListening ? '🔴' : '🎤'}
+                    </button>
                     <button
                         onClick={handleSend}
                         disabled={isSending || !inputText.trim() || (status !== 'active' && status !== 'error')}

@@ -5,7 +5,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import * as util from 'node:util';
-import * as os from 'node:os';
+import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 
 const execAsync = util.promisify(exec);
 
@@ -14,28 +14,12 @@ test.describe.serial('Agent Editing Flow', () => {
     let tempDir: string;
 
     test.beforeAll(async () => {
-        // Create a temporary directory for the test bundle
-        tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sdd-test-'));
+        tempDir = await createTempBundle('sdd-agent-editing-');
         console.log(`Test bundle dir: ${tempDir}`);
-
-        // Copy basic-bundle to temp dir
-        // Assuming test runs from repo root
-        const sourceDir = path.resolve('examples/basic-bundle');
-        await execAsync(`cp -r "${sourceDir}/." "${tempDir}"`);
-
-        // Initialize git repo
-        await execAsync('git init', { cwd: tempDir });
-        await execAsync('git add .', { cwd: tempDir });
-        await execAsync('git config user.name "Test User"', { cwd: tempDir });
-        await execAsync('git config user.email "test@example.com"', { cwd: tempDir });
-        await execAsync('git commit -m "Initial commit"', { cwd: tempDir });
-        // Create a feature branch because 'main/master' are protected
-        await execAsync('git checkout -b feature/test-agent-edit', { cwd: tempDir });
     });
 
     test.afterAll(async () => {
-        // Cleanup
-        // await fs.rm(tempDir, { recursive: true, force: true });
+        await cleanupTempBundle(tempDir);
     });
 
     test('should propose and apply changes', async ({ page, request }) => {

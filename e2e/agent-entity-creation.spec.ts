@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import * as os from 'os';
+import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 
 /**
  * E2E Test for Entity Creation via Agent
@@ -15,28 +15,11 @@ test.describe('Entity Creation via Agent', () => {
     let tempBundleDir: string;
 
     test.beforeEach(async () => {
-        // Create a temporary copy of the basic-bundle
-        const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sdd-entity-creation-'));
-        tempBundleDir = tempDir;
-
-        // Copy the example bundle
-        const sourceDir = path.resolve(__dirname, '../examples/basic-bundle');
-        await copyDir(sourceDir, tempDir);
-
-        // Initialize git in temp dir
-        const { execSync } = require('child_process');
-        execSync('git init', { cwd: tempDir });
-        execSync('git config user.email "test@test.com"', { cwd: tempDir });
-        execSync('git config user.name "Test"', { cwd: tempDir });
-        execSync('git checkout -b test-branch', { cwd: tempDir });
-        execSync('git add .', { cwd: tempDir });
-        execSync('git commit -m "Initial commit"', { cwd: tempDir });
+        tempBundleDir = await createTempBundle('sdd-entity-creation-');
     });
 
     test.afterEach(async () => {
-        if (tempBundleDir) {
-            await fs.rm(tempBundleDir, { recursive: true, force: true }).catch(() => { });
-        }
+        await cleanupTempBundle(tempBundleDir);
     });
 
     test('new entity appears in sidebar after creation via mock agent', async ({ page }) => {
@@ -140,22 +123,3 @@ test.describe('Entity Creation via Agent', () => {
         }).rejects.toThrow();
     });
 });
-
-// Helper to recursively copy a directory
-async function copyDir(src: string, dest: string): Promise<void> {
-    await fs.mkdir(dest, { recursive: true });
-    const entries = await fs.readdir(src, { withFileTypes: true });
-
-    for (const entry of entries) {
-        const srcPath = path.join(src, entry.name);
-        const destPath = path.join(dest, entry.name);
-
-        if (entry.name === '.git') continue; // Skip .git
-
-        if (entry.isDirectory()) {
-            await copyDir(srcPath, destPath);
-        } else {
-            await fs.copyFile(srcPath, destPath);
-        }
-    }
-}

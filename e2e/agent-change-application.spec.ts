@@ -1,48 +1,15 @@
 import { test, expect } from '@playwright/test';
-
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-
-const { execSync } = require('child_process');
+import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 
 test.describe('Agent Change Application', () => {
     let tempBundleDir: string;
 
     test.beforeEach(async () => {
-        // Create a temporary directory for the bundle
-        const tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'sdd-test-'));
-        tempBundleDir = path.join(tmpDir, 'basic-bundle');
-
-        // Copy the example bundle to the temp directory
-        const sourceDir = path.resolve(__dirname, '../examples/basic-bundle');
-        await fs.promises.cp(sourceDir, tempBundleDir, { recursive: true });
-
-        // Initialize git repo for the commit feature to work
-        try {
-            execSync('git init', { cwd: tempBundleDir });
-            execSync('git config user.email "test@example.com"', { cwd: tempBundleDir });
-            execSync('git config user.name "Test User"', { cwd: tempBundleDir });
-            execSync('git add .', { cwd: tempBundleDir });
-            execSync('git commit -m "Initial commit"', { cwd: tempBundleDir });
-        } catch (e) {
-            console.error('Failed to init git in temp dir', e);
-        }
-
-        console.log(`Created temp bundle at: ${tempBundleDir}`);
+        tempBundleDir = await createTempBundle('sdd-test-change-');
     });
 
     test.afterEach(async () => {
-        // Cleanup temp directory
-        if (tempBundleDir) {
-            try {
-                // Delete parent tmp dir
-                await fs.promises.rm(path.dirname(tempBundleDir), { recursive: true, force: true });
-                console.log(`Cleaned up temp bundle at: ${tempBundleDir}`);
-            } catch (err) {
-                console.error('Failed to cleanup temp dir:', err);
-            }
-        }
+        await cleanupTempBundle(tempBundleDir);
     });
 
     test('should display and apply pending changes via Mock agent', async ({ page }) => {

@@ -97,7 +97,8 @@ export class MockAgentBackend implements AgentBackend {
         } else if (message.toLowerCase().includes('decide')) {
             responseContent = "I found an open question regarding JWT handling. Please decide.";
             this.conversation.activeDecision = mockDecision;
-            const repo = new OpenQuestionsRepository(process.cwd() + '/examples/basic-bundle');
+            const bundlePath = process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+            const repo = new OpenQuestionsRepository(bundlePath);
             await repo.addQuestion(mockDecision);
         }
 
@@ -141,9 +142,9 @@ export class MockAgentBackend implements AgentBackend {
             const selected = this.conversation.activeDecision.options.find(o => o.id === optionId);
 
             // Update repository
-            // NOTE: In a real app we'd get bundleDir from context but here we rely on the one passed in startConversation or assume cwd for mock
-            // For mock purposes let's assume one bundle
-            const repo = new OpenQuestionsRepository(process.cwd() + '/examples/basic-bundle');
+            // NOTE: In a real app we'd get bundleDir from context but here we rely on environment variable for mock
+            const bundlePath = process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+            const repo = new OpenQuestionsRepository(bundlePath);
             await repo.resolveQuestion(decisionId, selected?.label || 'Unknown');
 
             this.conversation.activeDecision = undefined;

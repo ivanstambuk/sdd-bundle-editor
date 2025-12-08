@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 // Run agent tests serially since they share backend server state
 test.describe.serial('Agent Configuration', () => {
     test('should configure CLI backend and verify echo response', async ({ page }) => {
+        const bundleDir = getSampleBundlePath();
+
         // 1. Navigate
-        await page.goto('/?debug=true');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true`);
 
         // Reset to unconfigured state first
         await page.evaluate(async () => {

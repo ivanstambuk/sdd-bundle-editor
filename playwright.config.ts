@@ -30,6 +30,7 @@ export default defineConfig({
         env: {
           ...process.env,
           TEST_MODE: 'true',
+          SDD_SAMPLE_BUNDLE_PATH: process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle',
         },
       },
       {

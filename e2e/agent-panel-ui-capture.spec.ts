@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 /**
  * Test to capture Agent Panel UI state after redesign
@@ -6,8 +7,10 @@ import { test, expect } from '@playwright/test';
  */
 test.describe.serial('Agent Panel UI Capture - After Redesign', () => {
     test('capture redesigned agent panel', async ({ page }) => {
+        const bundleDir = getSampleBundlePath();
+
         // Navigate to the app with debug mode enabled (to allow Echo CLI)
-        await page.goto('/?debug=true');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true`);
 
         // Wait for the app to load
         await expect(page.locator('.app-shell')).toBeVisible();

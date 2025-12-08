@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 test('capture UI screenshots', async ({ page }) => {
-    await page.goto('/');
+    const bundleDir = getSampleBundlePath();
+
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
     await page.waitForLoadState('networkidle');
     await expect(page.getByText('Entities')).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-initial.png', fullPage: true });

@@ -31,7 +31,10 @@ It is an MVP skeleton that already supports:
 - `packages/cli` – `sdd-bundle` CLI wrapping the core model/lint (plus stub AI).
 - `apps/server` – Fastify HTTP API around the core (bundle, validation, AI routes).
 - `apps/web` – React SPA that talks to `apps/server`.
-- `examples/basic-bundle` – minimal SDD bundle used for end‑to‑end tests.
+
+**Bundle Repositories** (external):
+- SDD bundles are now maintained in separate repositories to decouple content from the editor.
+- Example: `/home/ivan/dev/sdd-sample-bundle` (or set via `SDD_SAMPLE_BUNDLE_PATH` environment variable).
 
 ---
 
@@ -62,18 +65,18 @@ This runs `tsc` and `vitest` across all workspaces.
 
 ---
 
-## Example bundle
+## External Bundle Setup
 
-The repo includes a small example bundle in `examples/basic-bundle`:
+SDD bundles are maintained in separate repositories. The sample bundle is at `/home/ivan/dev/sdd-sample-bundle`:
 
 - `sdd-bundle.yaml` – manifest.
-- `schemas/*.schema.json` – document schemas for `Feature`, `Requirement`, `Task`.
+- `schemas/*.schema.json` – document schemas for `Feature`, `Requirement`, `Task`, etc.
 - `bundle/features/FEAT-001.yaml` – a single feature.
 - `bundle/requirements/REQ-001.yaml` – a requirement linked to the feature.
 - `bundle/tasks/TASK-001.yaml` – a task linked to the requirement and feature.
 - `config/sdd-lint.yaml` – lint rules (title capitalization, has‑link coverage).
 
-You can use this bundle to exercise the CLI and UI end‑to‑end.
+**Configuration**: Set the `SDD_SAMPLE_BUNDLE_PATH` environment variable to point to your bundle location, or pass `bundleDir` parameter to CLI/UI.
 
 ---
 
@@ -85,13 +88,13 @@ From the repo root (after `pnpm install`):
 
 ```bash
 pnpm --filter @sdd-bundle-editor/cli build
-node packages/cli/dist/index.js validate --bundle-dir examples/basic-bundle --output json
+node packages/cli/dist/index.js validate --bundle-dir /home/ivan/dev/sdd-sample-bundle --output json
 ```
 
 Or, if you wire it into `pnpm` bins:
 
 ```bash
-sdd-bundle validate --bundle-dir examples/basic-bundle --output json
+sdd-bundle validate --bundle-dir $SDD_SAMPLE_BUNDLE_PATH --output json
 ```
 
 ### Commands

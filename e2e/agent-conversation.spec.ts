@@ -1,10 +1,12 @@
 
 import { test, expect } from '@playwright/test';
-import * as path from 'path';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 // Run agent tests serially since they share backend server state
 test.describe.serial('Agent Conversation', () => {
     test('should start conversation and send message', async ({ page }) => {
+        const bundleDir = getSampleBundlePath();
+
         page.on('console', msg => console.log(`[BROWSER] ${msg.text()}`));
         page.on('pageerror', err => console.log(`[BROWSER ERROR] ${err}`));
         page.on('requestfailed', req => console.log(`[BROWSER REQ FAIL] ${req.url()} ${req.failure()?.errorText}`));
@@ -13,7 +15,7 @@ test.describe.serial('Agent Conversation', () => {
         });
 
         // 1. Navigate to the app
-        await page.goto('/');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 
         // Reset state and configure echo backend
         await page.evaluate(async () => {

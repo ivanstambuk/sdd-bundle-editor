@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 test.describe('Basic bundle UI flow', () => {
+  const bundleDir = getSampleBundlePath();
+
   test('loads basic bundle and lists entities', async ({ page }) => {
-    await page.goto('/');
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 
     await expect(page.getByText('Entities')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Feature' })).toBeVisible();
@@ -15,7 +18,7 @@ test.describe('Basic bundle UI flow', () => {
   });
 
   test('selects an entity and shows schema-driven details with references', async ({ page }) => {
-    await page.goto('/');
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 
     await page.getByRole('button', { name: 'FEAT-001' }).click();
 
@@ -27,11 +30,10 @@ test.describe('Basic bundle UI flow', () => {
   });
 
   test('Compile Spec keeps basic bundle free of diagnostics', async ({ page }) => {
-    await page.goto('/');
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 
     await page.getByRole('button', { name: 'Compile Spec' }).click();
 
     await expect(page.getByText('No diagnostics.')).toBeVisible();
   });
 });
-

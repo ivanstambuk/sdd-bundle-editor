@@ -1,29 +1,18 @@
 import { test, expect } from '@playwright/test';
-import { cpSync, mkdtempSync, rmSync } from 'fs';
-import { join } from 'path';
-import { tmpdir } from 'os';
+import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 
 test.describe('Agent Diff View Screenshot', () => {
     let tempDir: string;
     let bundlePath: string;
 
-    test.beforeAll(() => {
-        tempDir = mkdtempSync(join(tmpdir(), 'sdd-test-'));
-        bundlePath = join(tempDir, 'basic-bundle');
-        cpSync('examples/basic-bundle', bundlePath, {
-            recursive: true,
-            filter: (src) => !src.includes('.git')
-        });
+    test.beforeAll(async () => {
+        bundlePath = await createTempBundle('sdd-diff-view-');
+        tempDir = bundlePath;
         console.log('Created temp bundle at:', bundlePath);
     });
 
-    test.afterAll(() => {
-        try {
-            rmSync(tempDir, { recursive: true, force: true });
-            console.log('Cleaned up temp bundle at:', bundlePath);
-        } catch (err) {
-            console.error('Failed to clean up temp bundle:', err);
-        }
+    test.afterAll(async () => {
+        await cleanupTempBundle(tempDir);
     });
 
     test('should capture improved diff view', async ({ page }) => {

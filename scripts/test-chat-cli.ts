@@ -3,7 +3,8 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 
 const CLI_PATH = path.resolve(__dirname, '../packages/cli/dist/index.js');
-const BUNDLE_PATH = path.resolve(__dirname, '../examples/basic-bundle');
+// Use environment variable or default to external bundle location
+const BUNDLE_PATH = process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
 
 async function runTest() {
     console.log('Spawning CLI chat with echo backend...');

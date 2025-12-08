@@ -13,9 +13,12 @@ afterAll(async () => {
   await server.close();
 });
 
+/**
+ * Get the path to the sample bundle.
+ * Uses SDD_SAMPLE_BUNDLE_PATH environment variable if set, otherwise defaults to the external bundle location.
+ */
 function sampleBundleDir(): string {
-  // Resolve the example bundle directory from the server package.
-  return path.resolve(__dirname, '../../../examples/basic-bundle');
+  return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
 }
 
 describe('server bundle endpoints', () => {

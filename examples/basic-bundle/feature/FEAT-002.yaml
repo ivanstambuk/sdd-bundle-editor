@@ -1,8 +1,0 @@
-data:
-  id: FEAT-002
-  title: Dummy Feature
-  description: A simple dummy feature for testing purposes.
-  tags:
-    - dummy
-    - test
-  adrIds: []

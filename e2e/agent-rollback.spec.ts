@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { execSync } from 'child_process';
+import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 
 /**
  * E2E Test: Agent Rollback Capability
@@ -14,33 +11,11 @@ test.describe('Agent Rollback', () => {
     let tempBundleDir: string;
 
     test.beforeEach(async () => {
-        // Create a temporary directory for the bundle
-        const tmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'sdd-test-'));
-        tempBundleDir = path.join(tmpDir, 'basic-bundle');
-
-        // Copy the example bundle to the temp directory
-        const sourceDir = path.resolve(__dirname, '../examples/basic-bundle');
-        await fs.promises.cp(sourceDir, tempBundleDir, { recursive: true });
-
-        // Initialize git repo for the commit/rollback features to work
-        try {
-            execSync('git init', { cwd: tempBundleDir });
-            execSync('git config user.email "test@example.com"', { cwd: tempBundleDir });
-            execSync('git config user.name "Test User"', { cwd: tempBundleDir });
-            execSync('git add .', { cwd: tempBundleDir });
-            execSync('git commit -m "Initial commit"', { cwd: tempBundleDir });
-        } catch (e) {
-            console.error('Failed to init git in temp dir', e);
-        }
-
-        console.log(`Created temp bundle at: ${tempBundleDir}`);
+        tempBundleDir = await createTempBundle('sdd-rollback-');
     });
 
     test.afterEach(async () => {
-        // Clean up temp directory
-        if (tempBundleDir) {
-            await fs.promises.rm(path.dirname(tempBundleDir), { recursive: true, force: true });
-        }
+        await cleanupTempBundle(tempBundleDir);
     });
 
     test('discard button reverts pending changes and keeps conversation active', async ({ page }) => {

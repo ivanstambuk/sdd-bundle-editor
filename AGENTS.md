@@ -148,9 +148,9 @@ pnpm build
 From the repo root:
 
 - `pnpm --filter @sdd-bundle-editor/cli build`
-- `node packages/cli/dist/index.js validate --bundle-dir examples/basic-bundle --output json`
+- `node packages/cli/dist/index.js validate --bundle-dir $SDD_SAMPLE_BUNDLE_PATH --output json`
 
-Use `examples/basic-bundle` as the primary end-to-end sanity check when touching `core-model`, `core-schema`, or `core-lint`.
+Use the external sample bundle (default: `/home/ivan/dev/sdd-sample-bundle`) as the primary end-to-end sanity check when touching `core-model`, `core-schema`, or `core-lint`.
 
 ---
 
@@ -445,7 +445,7 @@ When debugging entity creation, check:
   ```
 
 **3. Entity IDs in Tests**
-- **Do NOT Assume IDs**: When testing against `examples/basic-bundle`, verify the entity IDs first (e.g., `PROF-BASIC`, not `user`).
+- **Do NOT Assume IDs**: When testing against the sample bundle, verify the entity IDs first (e.g., `PROF-BASIC`, not `user`).
 - **Best Practice**: Use `list_dir` or `view_file` to confirm IDs before hardcoding them in test expectations.
 
 ---

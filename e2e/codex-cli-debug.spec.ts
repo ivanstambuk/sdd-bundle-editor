@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 test.describe('Codex CLI Integration Debug', () => {
     // This test exercises the Codex CLI configuration flow with corrected arguments
     // The fix was: --ask-for-approval=never is invalid, should use --full-auto
 
     test('should configure Codex CLI with correct args and document any errors', async ({ page }) => {
+        const bundleDir = getSampleBundlePath();
+
         // 1. Start fresh by calling the abort endpoint directly
         await page.goto('/');
 
@@ -52,14 +55,14 @@ test.describe('Codex CLI Integration Debug', () => {
         console.log('Config status:', JSON.stringify(configStatus, null, 2));
 
         // 3. Start conversation via API
-        const startResult = await page.evaluate(async () => {
+        const startResult = await page.evaluate(async (bd) => {
             const res = await fetch('/agent/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ bundleDir: 'examples/basic-bundle' })
+                body: JSON.stringify({ bundleDir: bd })
             });
             return { status: res.status, body: await res.json() };
-        });
+        }, bundleDir);
         console.log('Start result:', JSON.stringify(startResult, null, 2));
 
         // Reload to see conversation status
@@ -70,17 +73,17 @@ test.describe('Codex CLI Integration Debug', () => {
         await page.screenshot({ path: 'artifacts/codex_step3_started.png' });
 
         // 4. Try sending a simple message via API
-        const messageResult = await page.evaluate(async () => {
+        const messageResult = await page.evaluate(async (bd) => {
             const res = await fetch('/agent/message', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    bundleDir: 'examples/basic-bundle',
+                    bundleDir: bd,
                     message: 'Say "Hello from Codex" in your response.'
                 })
             });
             return { status: res.status, body: await res.json() };
-        });
+        }, bundleDir);
         console.log('Message result:', JSON.stringify(messageResult, null, 2));
 
         // Reload to see the response/error

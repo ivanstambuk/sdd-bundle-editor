@@ -12,6 +12,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 // Helper to inject test content into the agent panel
 async function injectTestMessage(page: Page, testId: string, innerHTML: string) {
@@ -53,9 +54,10 @@ async function measureGaps(page: Page, selector: string): Promise<number[]> {
 }
 
 test.describe('CSS Spacing Validation', () => {
+    const bundleDir = getSampleBundlePath();
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('/?bundleDir=examples/basic-bundle');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
         await page.waitForSelector('.entity-group', { timeout: 10000 });
     });
 

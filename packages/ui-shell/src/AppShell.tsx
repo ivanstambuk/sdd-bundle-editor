@@ -105,15 +105,21 @@ function computeBundleDiff(
   return summary;
 }
 
-const DEFAULT_BUNDLE_DIR = 'examples/basic-bundle';
-
-function getInitialBundleDir() {
+/**
+ * Get the bundle directory from URL parameters.
+ * The bundleDir query parameter is REQUIRED - there is no default.
+ * External bundles should be specified via URL, e.g., /?bundleDir=/path/to/bundle
+ */
+function getInitialBundleDir(): string {
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
     const dir = params.get('bundleDir');
     if (dir) return dir;
   }
-  return DEFAULT_BUNDLE_DIR;
+  // Fallback for development - use environment variable or well-known location
+  // In production, bundleDir should always be provided via URL
+  console.warn('No bundleDir specified in URL. Please provide bundleDir query parameter.');
+  return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
 }
 
 export function AppShell() {

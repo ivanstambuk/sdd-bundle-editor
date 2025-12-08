@@ -1,8 +1,11 @@
 
 const http = require('http');
 
+// Use environment variable or default to external bundle location
+const bundleDir = process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+
 const data = JSON.stringify({
-    bundleDir: 'examples/basic-bundle'
+    bundleDir: bundleDir
 });
 
 const options = {

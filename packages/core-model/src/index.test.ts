@@ -2,9 +2,17 @@ import { describe, it, expect } from 'vitest';
 import * as path from 'node:path';
 import { loadBundleWithSchemaValidation } from './index';
 
+/**
+ * Get the path to the sample bundle.
+ * Uses SDD_SAMPLE_BUNDLE_PATH environment variable if set, otherwise defaults to the external bundle location.
+ */
+function getSampleBundlePath(): string {
+  return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+}
+
 describe('core-model basic wiring', () => {
   it('loads and validates the basic sample bundle without errors', async () => {
-    const bundleDir = path.resolve(__dirname, '../../../examples/basic-bundle');
+    const bundleDir = getSampleBundlePath();
     const { diagnostics, bundle } = await loadBundleWithSchemaValidation(bundleDir);
 
     const errorDiagnostics = diagnostics.filter((d) => d.severity === 'error');

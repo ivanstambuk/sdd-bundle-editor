@@ -1,10 +1,13 @@
 
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 test.describe('UI Alignment Capture', () => {
     test('capture agent panel alignment across different pages', async ({ page }) => {
+        const bundleDir = getSampleBundlePath();
+
         // Go to home with debug mode to ensure agent panel is enabled/visible
-        await page.goto('/?debug=true');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true`);
         await expect(page.locator('.app-shell')).toBeVisible();
 
         // 1. Capture Feature Page

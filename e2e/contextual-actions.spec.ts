@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
 test.describe('Contextual Actions', () => {
-    // Use a targeted bundle to ensure consistent state
-    const bundleDir = 'examples/basic-bundle';
+    // Use the sample bundle path for consistent state
+    const bundleDir = getSampleBundlePath();
 
     test('toggle agent panel with keyboard shortcut', async ({ page }) => {
         // 1. Load the editor
-        await page.goto(`/?bundleDir=${bundleDir}`);
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
         await page.waitForSelector('.app-shell');
 
         // 2. Initial state: Agent panel should be open by default
@@ -41,7 +42,7 @@ test.describe('Contextual Actions', () => {
         });
 
         // 2. Load editor with real bundle
-        await page.goto(`/?bundleDir=${bundleDir}`);
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 
         // 3. Wait for real bundle to load
         await expect(page.locator('.status-loading')).not.toBeVisible();

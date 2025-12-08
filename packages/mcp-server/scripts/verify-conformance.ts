@@ -3,7 +3,8 @@ import { spawn } from 'child_process';
 import * as path from 'path';
 
 const MCP_SERVER_PATH = path.resolve(__dirname, '../dist/index.js');
-const BUNDLE_PATH = path.resolve(__dirname, '../../../examples/basic-bundle');
+// Use environment variable or default to external bundle location
+const BUNDLE_PATH = process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
 
 async function run() {
     console.log(`Starting MCP server at ${MCP_SERVER_PATH} with bundle ${BUNDLE_PATH}`);

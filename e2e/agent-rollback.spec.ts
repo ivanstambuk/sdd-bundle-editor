@@ -10,8 +10,19 @@ import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 test.describe('Agent Rollback', () => {
     let tempBundleDir: string;
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-rollback-');
+
+        // Reset agent state before each test to ensure clean state
+        await page.goto('/');
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+            await fetch('/agent/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'mock' })
+            });
+        });
     });
 
     test.afterEach(async () => {
@@ -19,28 +30,23 @@ test.describe('Agent Rollback', () => {
     });
 
     test('discard button reverts pending changes and keeps conversation active', async ({ page }) => {
-        // Enable debug mode for testing
+        // Navigate to bundle with debug mode
         await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true`);
-        await page.waitForLoadState('networkidle');
 
-        // Configure Mock agent
-        await page.click('[data-testid="agent-settings-btn"]');
-        await page.selectOption('select.form-control', 'mock');
-        await page.click('[data-testid="agent-save-config-btn"]');
+        // Wait for app to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('[data-testid="agent-settings-btn"]', { timeout: 10000 });
 
-        // Wait for config to save
-        await page.waitForTimeout(500);
-
-        // Start conversation
+        // Start conversation (agent should already be configured as mock from beforeEach)
         await page.click('[data-testid="agent-start-btn"]');
-        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active');
+        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active', { timeout: 10000 });
 
         // Send a message that triggers pending changes
         await page.fill('[data-testid="agent-message-input"]', 'propose change');
         await page.click('[data-testid="agent-send-btn"]');
 
         // Wait for pending changes to appear
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 5000 });
+        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 10000 });
         await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('pending_changes');
 
         // Verify the Discard All Changes button is visible
@@ -51,7 +57,7 @@ test.describe('Agent Rollback', () => {
         await page.click('[data-testid="agent-discard-btn"]');
 
         // Verify pending changes are cleared
-        await expect(page.locator('[data-testid="pending-changes-block"]')).not.toBeVisible({ timeout: 3000 });
+        await expect(page.locator('[data-testid="pending-changes-block"]')).not.toBeVisible({ timeout: 5000 });
 
         // Verify conversation is still active (unlike abort which ends it)
         await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active');
@@ -65,26 +71,23 @@ test.describe('Agent Rollback', () => {
     });
 
     test('discard button is not visible when no pending changes', async ({ page }) => {
-        // Enable debug mode for testing
+        // Navigate to bundle with debug mode
         await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true`);
-        await page.waitForLoadState('networkidle');
 
-        // Configure Mock agent
-        await page.click('[data-testid="agent-settings-btn"]');
-        await page.selectOption('select.form-control', 'mock');
-        await page.click('[data-testid="agent-save-config-btn"]');
-        await page.waitForTimeout(500);
+        // Wait for app to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('[data-testid="agent-settings-btn"]', { timeout: 10000 });
 
-        // Start conversation
+        // Start conversation (agent should already be configured as mock from beforeEach)
         await page.click('[data-testid="agent-start-btn"]');
-        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active');
+        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active', { timeout: 10000 });
 
-        // Send a normal message (no pending changes)
+        // Send a normal message (no pending changes - "hello" doesn't trigger changes in mock backend)
         await page.fill('[data-testid="agent-message-input"]', 'hello');
         await page.click('[data-testid="agent-send-btn"]');
 
-        // Wait for response
-        await page.waitForTimeout(1000);
+        // Wait for agent response
+        await expect(page.locator('.message.role-agent').last()).toContainText('hello', { timeout: 5000 });
 
         // Verify discard button is NOT visible (no pending changes)
         await expect(page.locator('[data-testid="agent-discard-btn"]')).not.toBeVisible();

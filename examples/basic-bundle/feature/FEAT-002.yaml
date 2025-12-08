@@ -1,6 +1,6 @@
 id: FEAT-002
-title: Feature Two with Dummy Name
-description: A second feature added to demonstrate bundle expansion
+title: New Feature
+description: A new feature added to the bundle
 tags:
-  - demo
-  - expansion
+  - new
+adrIds: []

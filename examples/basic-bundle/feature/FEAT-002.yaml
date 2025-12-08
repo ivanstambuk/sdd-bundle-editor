@@ -1,6 +1,8 @@
-id: FEAT-002
-title: New Feature
-description: A new feature added to the bundle
-tags:
-  - new
-adrIds: []
+data:
+  id: FEAT-002
+  title: Random Feature Name
+  description: A randomly named feature added to the bundle.
+  tags:
+    - random
+    - new
+  adrIds: []

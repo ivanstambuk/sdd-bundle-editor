@@ -35,6 +35,7 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
                   <button
                     type="button"
                     className={`entity-btn ${isSelected ? 'selected' : ''}`}
+                    data-testid={`entity-${entity.id}`}
                     onClick={() => onSelect(entity)}
                   >
                     {entity.id}

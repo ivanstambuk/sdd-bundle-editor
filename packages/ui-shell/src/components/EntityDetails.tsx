@@ -105,6 +105,7 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
               className="btn btn-sm btn-secondary"
               onClick={onEditRequest}
               title="Ask the agent to modify this entity"
+              data-testid="edit-via-agent-btn"
             >
               Edit via Agent
             </button>
@@ -158,6 +159,7 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
                     className="reference-link"
                     onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
                     title={`Navigate to ${edge.toEntityType} ${edge.toId}`}
+                    data-testid={`outgoing-ref-${edge.toEntityType}-${edge.toId}`}
                   >
                     <span className="reference-link-type">{edge.toEntityType}</span>
                     <span className="reference-link-id">{edge.toId}</span>
@@ -182,6 +184,7 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
                     className="reference-link"
                     onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
                     title={`Navigate to ${edge.fromEntityType} ${edge.fromId}`}
+                    data-testid={`incoming-ref-${edge.fromEntityType}-${edge.fromId}`}
                   >
                     <span className="reference-link-type">{edge.fromEntityType}</span>
                     <span className="reference-link-id">{edge.fromId}</span>

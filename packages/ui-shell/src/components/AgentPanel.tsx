@@ -399,7 +399,7 @@ export function AgentPanel({
 
                             <div className="settings-actions">
                                 <button onClick={handleSaveConfig} className="btn btn-primary btn-sm" data-testid="agent-save-config-btn">Save</button>
-                                <button onClick={() => setShowSettings(false)} className="btn btn-secondary btn-sm">Cancel</button>
+                                <button onClick={() => setShowSettings(false)} className="btn btn-secondary btn-sm" data-testid="agent-cancel-config-btn">Cancel</button>
                             </div>
                         </div>
                     ) : (
@@ -435,7 +435,7 @@ export function AgentPanel({
                 {currentBackendLabel && (
                     <span className="backend-label">🤖 {currentBackendLabel}</span>
                 )}
-                <button onClick={onAbortConversation} className="abort-btn">Abort</button>
+                <button onClick={onAbortConversation} className="abort-btn" data-testid="agent-abort-btn">Abort</button>
             </div>
             <div className="messages-list">
                 {messages.map((msg, idx) => (
@@ -475,6 +475,7 @@ export function AgentPanel({
                                         <button
                                             onClick={() => onResolveDecision(activeDecision.id, option.id)}
                                             className="btn btn-primary btn-sm"
+                                            data-testid={`decision-option-${option.id}`}
                                         >
                                             Select
                                         </button>

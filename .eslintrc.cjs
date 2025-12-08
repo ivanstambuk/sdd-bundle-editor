@@ -21,6 +21,20 @@ module.exports = {
   rules: {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
-  }
+  },
+  overrides: [
+    {
+      files: ["*.tsx"],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector: "JSXOpeningElement:has(JSXAttribute[name.name='onClick']):not(:has(JSXAttribute[name.name='data-testid']))",
+            message: "Interactive elements with onClick must have a data-testid attribute for E2E testing."
+          }
+        ]
+      }
+    }
+  ]
 };
 

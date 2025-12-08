@@ -120,6 +120,25 @@ If you modify any `types.ts` or interface definition in a core package (e.g., `p
 - Dependent packages (like `apps/server` or `packages/ui-shell`) consume the *built* declaration files (`dist/*.d.ts`), not the source `src/`.
 - Consumers will NOT see your changes (and linter will error) until you build the core package.
 
+### CRITICAL: Always Rebuild After TypeScript Changes
+**The server and other consumers import from `dist/`, NOT from `src/`.**
+
+After modifying **ANY** TypeScript file in a core package (`packages/*`), you **MUST** rebuild before testing:
+
+```bash
+# Rebuild the specific package you modified
+pnpm --filter @sdd-bundle-editor/core-model build
+pnpm --filter @sdd-bundle-editor/git-utils build
+# etc.
+
+# Or rebuild everything
+pnpm build
+```
+
+**Why this matters**: The dev server uses `ts-node` for `apps/server`, but it imports packages like `@sdd-bundle-editor/core-model` from their compiled `dist/` output. If you edit `packages/core-model/src/write.ts` but don't rebuild, the server still uses the OLD code from `packages/core-model/dist/write.js`.
+
+**Symptom of forgetting**: Your code changes appear correct, tests pass, but the running server doesn't reflect your changes.
+
 **For ui-shell development**: Use `pnpm dev:watch` instead of `pnpm dev` to automatically rebuild on changes. See "Development mode" section below.
 
 ---

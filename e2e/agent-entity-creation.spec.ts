@@ -16,12 +16,6 @@ test.describe('Entity Creation via Agent', () => {
 
     test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-entity-creation-');
-
-        // Reset agent state to ensure clean state for each test
-        await page.goto('/');
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
     });
 
     test.afterEach(async () => {
@@ -30,7 +24,7 @@ test.describe('Entity Creation via Agent', () => {
 
     test('new entity appears in sidebar after creation via mock agent', async ({ page }) => {
         const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
+        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
 
         // 1. Wait for app and bundle to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });
@@ -89,7 +83,7 @@ test.describe('Entity Creation via Agent', () => {
 
     test('entity file is created in correct bundle directory structure', async ({ page }) => {
         const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
+        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
 
         // Wait for app and bundle to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });

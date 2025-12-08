@@ -15,8 +15,9 @@ test.describe('Agent Change Application', () => {
     test('should display and apply pending changes via Mock agent', async ({ page }) => {
         // 1. Navigate to the app with debug mode AND pointing to the temp bundle
         // Encode the path for URL safety
+        // Use resetAgent=true to ensure fresh agent state
         const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?debug=true&bundleDir=${encodedPath}`);
+        await page.goto(`/?debug=true&bundleDir=${encodedPath}&resetAgent=true`);
 
         // 2. Open Agent Panel (it might be hidden initially? check layout)
         // ... (rest of the test logic remains similar, but now using clean state)

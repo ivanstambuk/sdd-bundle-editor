@@ -12,12 +12,6 @@ test.describe('Agent Rollback', () => {
 
     test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-rollback-');
-
-        // Reset agent state to ensure clean state for each test
-        await page.goto('/');
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
     });
 
     test.afterEach(async () => {
@@ -25,8 +19,8 @@ test.describe('Agent Rollback', () => {
     });
 
     test('discard button reverts pending changes and keeps conversation active', async ({ page }) => {
-        // Navigate to bundle with debug mode
-        await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true`);
+        // Navigate to bundle with debug mode via resetAgent
+        await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true&resetAgent=true`);
 
         // Wait for app to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });
@@ -79,7 +73,7 @@ test.describe('Agent Rollback', () => {
 
     test('discard button is not visible when no pending changes', async ({ page }) => {
         // Navigate to bundle with debug mode
-        await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true`);
+        await page.goto(`/?bundleDir=${encodeURIComponent(tempBundleDir)}&debug=true&resetAgent=true`);
 
         // Wait for app to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });

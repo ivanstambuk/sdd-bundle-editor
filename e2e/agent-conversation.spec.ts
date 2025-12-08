@@ -5,11 +5,7 @@ import { getSampleBundlePath } from './bundle-test-fixture';
 // Run agent tests serially since they share backend server state
 test.describe.serial('Agent Conversation', () => {
     test.beforeEach(async ({ page }) => {
-        // Reset agent state to ensure clean state
-        await page.goto('/');
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
+        // No manual reset needed here, we'll use resetAgent=true in the test
     });
 
     test('should start conversation and send message', async ({ page }) => {
@@ -19,7 +15,8 @@ test.describe.serial('Agent Conversation', () => {
         page.on('pageerror', err => console.log(`[BROWSER ERROR] ${err}`));
 
         // Navigate to the app with bundleDir and debug mode (for mock agent)
-        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true`);
+        // Use resetAgent=true to ensure clean backend state
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true&resetAgent=true`);
 
         // Wait for app to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });

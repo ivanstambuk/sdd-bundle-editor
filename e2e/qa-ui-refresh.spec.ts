@@ -7,12 +7,6 @@ test.describe('QA UI Refresh on Agent Accept', () => {
 
     test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-qa-refresh-');
-
-        // Reset agent state to ensure clean state
-        await page.goto('/');
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
     });
 
     test.afterEach(async () => {
@@ -21,7 +15,7 @@ test.describe('QA UI Refresh on Agent Accept', () => {
 
     test('should refresh entity details in UI after agent changes are accepted', async ({ page }) => {
         const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
+        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
 
         // 1. Wait for app and bundle to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });

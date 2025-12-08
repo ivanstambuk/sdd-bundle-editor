@@ -9,14 +9,6 @@ test.describe('Agent Diff View Screenshot', () => {
         bundlePath = await createTempBundle('sdd-diff-view-');
         tempDir = bundlePath;
         console.log('Created temp bundle at:', bundlePath);
-
-        // Reset agent state to ensure clean state
-        const page = await browser.newPage();
-        await page.goto('/');
-        await page.evaluate(async () => {
-            await fetch('/agent/abort', { method: 'POST' });
-        });
-        await page.close();
     });
 
     test.afterAll(async () => {
@@ -26,7 +18,7 @@ test.describe('Agent Diff View Screenshot', () => {
     test('should capture improved diff view', async ({ page }) => {
         // Navigate to the app with the test bundle (debug=true required for Mock agent)
         const encodedPath = encodeURIComponent(bundlePath);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
+        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
 
         // Wait for app and bundle to load
         await page.waitForSelector('.app-shell', { timeout: 10000 });

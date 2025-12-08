@@ -8,6 +8,9 @@ export default defineConfig({
   expect: {
     timeout: 10_000,
   },
+  // Run tests serially to avoid race conditions with shared server agent state
+  workers: 1,
+  fullyParallel: false,
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',

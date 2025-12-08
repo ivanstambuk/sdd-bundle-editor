@@ -23,6 +23,12 @@ test.describe.serial('Agent Editing Flow', () => {
     });
 
     test('should propose and apply changes', async ({ page }) => {
+        // Reset agent state first
+        await page.goto('/');
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+        });
+
         // Navigate to app with custom bundleDir
         await page.goto(`/?bundleDir=${encodeURIComponent(tempDir)}&debug=true`);
 

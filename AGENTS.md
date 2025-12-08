@@ -360,6 +360,72 @@ ls -la artifacts/*.png
 
 ---
 
+### Pre-Fix Code Path Analysis (Prevent Iterative Debugging)
+
+**Problem**: Complex bugs often span multiple layers (UI → API → Service → Data). Fixing one layer at a time leads to multiple iterations and wasted effort.
+
+**Protocol**: Before making ANY code fix for a bug that involves data flow, **trace the ENTIRE path first**.
+
+#### Step 1: Map the Complete Flow
+For bugs involving entity creation/modification, trace these layers:
+
+```
+1. UI Component (what triggers the action?)
+   └── AppShell.tsx → handler function
+
+2. API Call (what endpoint is called?)
+   └── /agent/accept, /bundle/save, etc.
+
+3. Route Handler (how is the request processed?)
+   └── apps/server/src/routes/agent.ts
+
+4. Service Layer (what business logic runs?)
+   └── ChangeApplicationService.ts, write.ts
+
+5. Data Layer (how is data persisted?)
+   └── saveEntity(), git commit
+
+6. Reload/Refresh (how does UI get updated data?)
+   └── fetchJson('/bundle'), setBundle()
+```
+
+#### Step 2: Check Each Layer BEFORE Fixing
+At each layer, verify:
+- [ ] Input data format (log or inspect)
+- [ ] Expected vs actual behavior
+- [ ] Error handling (what happens on failure?)
+- [ ] Output data format
+
+#### Step 3: Document All Issues Found
+Create a list of ALL issues before fixing ANY of them:
+```markdown
+## Issues Found in Entity Creation Flow
+1. ChangeApplicationService: Multiple creates for same entity
+2. write.ts: File path generated incorrectly
+3. ChangeApplicationService: fieldPath "data" not handled
+4. git-utils: New files not staged before commit
+```
+
+#### Step 4: Fix in Order (Bottom-Up or Top-Down)
+Fix issues in logical order, not discovery order. Usually:
+- Bottom-up: Fix data layer first, then service, then API, then UI
+- This prevents "fix cascades" where fixing one layer reveals the next
+
+#### Example: Entity Creation Flow
+When debugging entity creation, check:
+1. **Agent proposes changes** → What does `pendingChanges` array look like?
+2. **Accept is clicked** → What goes to `/agent/accept`?
+3. **Changes applied** → Does `applyChangesToBundle` succeed?
+4. **Entity created** → Does `createEntity` use correct file path?
+5. **File saved** → Does `saveEntity` write valid YAML?
+6. **Git commit** → Does `commitChanges` stage new files?
+7. **Validation** → Does reload find the new entity?
+8. **UI refresh** → Does `setBundle` receive updated data?
+
+**Time saved**: 30 minutes upfront analysis prevents 2+ hours of iterative fixes.
+
+---
+
 ### Testing & Debugging Best Practices
 
 **1. Explicit Context is Mandatory**

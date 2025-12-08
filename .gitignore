@@ -34,4 +34,4 @@ playwright-report/
 *.log
 *.tmp
 *.swp
-artifacts/*.png
+artifacts/**/*.png

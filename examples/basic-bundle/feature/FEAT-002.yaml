@@ -1,8 +1,6 @@
 id: FEAT-002
-title: JWT Validation
-description: Secure JWT token validation for API authentication and authorization.
+title: Feature Two with Dummy Name
+description: A second feature added to demonstrate bundle expansion
 tags:
-  - security
-  - authentication
-  - api
-adrIds: []
+  - demo
+  - expansion

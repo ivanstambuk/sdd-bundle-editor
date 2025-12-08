@@ -48,12 +48,14 @@ export class OpenAiAgentBackend implements AgentBackend {
     private systemPrompt: string = '';
 
     async initialize(config: AgentBackendConfig): Promise<void> {
-        const apiKey = process.env.DEEPSEEK_API_KEY || config.options?.apiKey as string;
+        console.log('[OpenAiAgentBackend] Initializing with config:', JSON.stringify(config, null, 2));
+        const apiKey = process.env.DEEPSEEK_API_KEY || process.env.AGENT_HTTP_API_KEY || config.options?.apiKey as string;
         const baseURL = config.options?.baseURL as string || 'https://api.deepseek.com';
         this.model = config.options?.model as string || 'deepseek-chat';
 
         if (!apiKey) {
-            throw new Error('API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY env var.');
+            console.error('[OpenAiAgentBackend] Missing API Key. check DEEPSEEK_API_KEY, AGENT_HTTP_API_KEY or config.options.apiKey');
+            throw new Error('API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY or AGENT_HTTP_API_KEY env var, or provide via config.');
         }
 
         this.client = new OpenAI({

@@ -30,6 +30,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
+    new (require('webpack').DefinePlugin)({
+      'process.env.SDD_SAMPLE_BUNDLE_PATH': JSON.stringify(process.env.SDD_SAMPLE_BUNDLE_PATH),
+    }),
   ],
   devServer: {
     static: {

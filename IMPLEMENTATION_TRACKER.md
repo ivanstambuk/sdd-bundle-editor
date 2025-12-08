@@ -195,12 +195,29 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ---
 
+## Infrastructure Improvements [DONE]
+
+### External Bundle Repository Migration
+
+- [x] Decouple bundle content from editor codebase:
+  - [x] Create shared E2E test fixture (`e2e/bundle-test-fixture.ts`)
+  - [x] Update all 16 E2E tests to use shared fixture
+  - [x] Update unit tests to use `SDD_SAMPLE_BUNDLE_PATH` env var
+  - [x] Remove `DEFAULT_BUNDLE_DIR` from `AppShell.tsx`
+  - [x] Update MockAgentBackend, MCP server, and scripts
+  - [x] Update documentation (README.md, AGENTS.md)
+  - [x] Delete `examples/basic-bundle/` directory
+
+**Configuration**: Set `SDD_SAMPLE_BUNDLE_PATH` environment variable to point to external bundle (default: `/home/ivan/dev/sdd-sample-bundle`).
+
+---
+
 ## Future / Stretch Work
 
 - [x] Replace the no-op AI provider with real `http` or `cli` provider in `core-ai`  
   *(Implemented DeepSeek v3 provider with Tool Calling)*
 
-- [ ] Add richer example bundles:
+- [~] Add richer example bundles (now in separate bundle repos):
   - [ ] Protocol spec bundle (e.g., EC-OPRF/FHE-style)
   - [ ] Feature-based project bundle (e.g., Feature 006-style EUDIW simulator)
 

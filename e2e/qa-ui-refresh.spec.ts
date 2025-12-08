@@ -17,25 +17,23 @@ test.describe('QA UI Refresh on Agent Accept', () => {
         const encodedPath = encodeURIComponent(tempBundleDir);
         await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
 
-        // 1. Wait for bundle to load and select the FEAT-001 entity
+        // 1. Wait for app and bundle to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Click on FEAT-001 in the entity navigator (using entity-btn class)
+        // Click on FEAT-001 in the entity navigator
         await page.locator('.entity-btn', { hasText: 'FEAT-001' }).click();
 
         // Verify initial state using the title input field
         const titleInput = page.locator('#root_title');
-        await expect(titleInput).toHaveValue('Basic Demo Feature');
+        await expect(titleInput).toHaveValue('Basic Demo Feature', { timeout: 10000 });
 
-        // 2. Configure Mock Agent
+        // 2. Configure Mock Agent via UI (not API - more reliable)
         await page.locator('[data-testid="agent-settings-btn"]').click();
         await page.locator('select.form-control').first().selectOption({ value: 'mock' });
         await page.locator('[data-testid="agent-save-config-btn"]').click();
 
-        // Wait for settings to close and configuration to apply
-        await page.waitForTimeout(500);
-
-        // 3. Start conversation - button should now be enabled
+        // 3. Start conversation
         const startBtn = page.locator('[data-testid="agent-start-btn"]');
         await expect(startBtn).toBeEnabled({ timeout: 5000 });
         await startBtn.click();
@@ -53,23 +51,22 @@ test.describe('QA UI Refresh on Agent Accept', () => {
         await responsePromise;
 
         // 5. Wait for pending changes block
+        await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });
         await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
 
         // 6. Click Accept to apply changes
         await page.locator('[data-testid="agent-accept-btn"]').click();
 
-        // 7. Verify UI refresh: the title input should now show the updated value
-        // Monitor browser console for AppShell logs
-        page.on('console', msg => console.log('BROWSER:', msg.text()));
+        // 7. Wait for accept to complete
+        await page.waitForResponse(response =>
+            response.url().includes('/agent/accept') && response.status() === 200,
+            { timeout: 30000 }
+        );
 
-        // Wait for bundle reload to complete - give more time for the refresh cycle
-        await page.waitForTimeout(3000);
+        // 8. Verify UI refresh: the title input should now show the updated value
+        // Wait for bundle reload to complete
+        await page.waitForTimeout(2000);
 
-        // Debug: Check current value
-        const currentValue = await titleInput.inputValue();
-        console.log('Current title value after accept:', currentValue);
-
-        // The key verification: selectedEntity should be updated with fresh data after bundle fetch
         // Mock backend changes title to "Updated Demo Feature Title"
         await expect(titleInput).toHaveValue('Updated Demo Feature Title', { timeout: 10000 });
 

@@ -14,8 +14,14 @@ import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
 test.describe('Entity Creation via Agent', () => {
     let tempBundleDir: string;
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ page }) => {
         tempBundleDir = await createTempBundle('sdd-entity-creation-');
+
+        // Reset agent state to ensure clean state for each test
+        await page.goto('/');
+        await page.evaluate(async () => {
+            await fetch('/agent/abort', { method: 'POST' });
+        });
     });
 
     test.afterEach(async () => {
@@ -26,18 +32,18 @@ test.describe('Entity Creation via Agent', () => {
         const encodedPath = encodeURIComponent(tempBundleDir);
         await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
 
-        // 1. Wait for bundle to load
+        // 1. Wait for app and bundle to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
         // Verify initial state - only FEAT-001 should exist
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-001' })).toBeVisible();
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-002' })).not.toBeVisible();
 
-        // 2. Configure Mock agent (since we need predictable behavior for test)
+        // 2. Configure Mock agent via UI (not API - more reliable)
         await page.locator('[data-testid="agent-settings-btn"]').click();
         await page.selectOption('select.form-control', 'mock');
         await page.locator('[data-testid="agent-save-config-btn"]').click();
-        await page.waitForTimeout(500);
 
         // 3. Start conversation
         const startBtn = page.locator('[data-testid="agent-start-btn"]');
@@ -57,6 +63,7 @@ test.describe('Entity Creation via Agent', () => {
         await responsePromise;
 
         // 5. Wait for pending changes
+        await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });
         await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
 
         // 6. Accept changes
@@ -84,21 +91,27 @@ test.describe('Entity Creation via Agent', () => {
         const encodedPath = encodeURIComponent(tempBundleDir);
         await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
 
-        // Wait for load
+        // Wait for app and bundle to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Configure Mock agent
+        // Configure Mock agent via UI
         await page.locator('[data-testid="agent-settings-btn"]').click();
         await page.selectOption('select.form-control', 'mock');
         await page.locator('[data-testid="agent-save-config-btn"]').click();
-        await page.waitForTimeout(500);
 
         // Start conversation and apply changes
+        await expect(page.locator('[data-testid="agent-start-btn"]')).toBeEnabled({ timeout: 5000 });
         await page.locator('[data-testid="agent-start-btn"]').click();
         await page.waitForSelector('[data-testid="agent-message-input"]', { timeout: 10000 });
 
         await page.locator('[data-testid="agent-message-input"]').fill('propose change');
+
+        const responsePromise = page.waitForResponse(response =>
+            response.url().includes('/agent/message') && response.status() === 200
+        );
         await page.locator('[data-testid="agent-send-btn"]').click();
+        await responsePromise;
 
         await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
         await page.locator('[data-testid="agent-accept-btn"]').click();
@@ -113,13 +126,11 @@ test.describe('Entity Creation via Agent', () => {
         const wrongPath = path.join(tempBundleDir, 'feature', 'FEAT-001.yaml');
 
         // Correct path should exist
-        await expect(async () => {
-            await fs.access(correctPath);
-        }).not.toThrow();
+        const correctExists = await fs.access(correctPath).then(() => true).catch(() => false);
+        expect(correctExists).toBe(true);
 
         // Wrong directory should NOT exist  
-        await expect(async () => {
-            await fs.access(wrongPath);
-        }).rejects.toThrow();
+        const wrongExists = await fs.access(wrongPath).then(() => true).catch(() => false);
+        expect(wrongExists).toBe(false);
     });
 });

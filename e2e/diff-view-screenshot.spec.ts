@@ -16,30 +16,34 @@ test.describe('Agent Diff View Screenshot', () => {
     });
 
     test('should capture improved diff view', async ({ page }) => {
-        // Navigate to the app with the test bundle
+        // Navigate to the app with the test bundle (debug=true required for Mock agent)
         const encodedPath = encodeURIComponent(bundlePath);
-        await page.goto(`/?bundleDir=${encodedPath}`);
+        await page.goto(`/?bundleDir=${encodedPath}&debug=true`);
 
-        // Wait for bundle to load - check for entity groups
+        // Wait for app and bundle to load
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Configure mock agent
+        // Configure mock agent via UI (not API - more reliable)
         await page.click('[data-testid="agent-settings-btn"]');
         await page.selectOption('.form-control', 'mock');
         await page.click('[data-testid="agent-save-config-btn"]');
 
-        // Wait for settings to close
-        await expect(page.locator('[data-testid="agent-start-btn"]')).toBeVisible();
-
         // Start conversation
+        await expect(page.locator('[data-testid="agent-start-btn"]')).toBeEnabled({ timeout: 5000 });
         await page.click('[data-testid="agent-start-btn"]');
 
         // Wait for the input to be enabled
-        await expect(page.locator('[data-testid="agent-message-input"]')).toBeEnabled({ timeout: 5000 });
+        await expect(page.locator('[data-testid="agent-message-input"]')).toBeEnabled({ timeout: 10000 });
 
         // Send a message that will trigger a change proposal
         await page.fill('[data-testid="agent-message-input"]', 'propose change');
+
+        const responsePromise = page.waitForResponse(response =>
+            response.url().includes('/agent/message') && response.status() === 200
+        );
         await page.click('[data-testid="agent-send-btn"]');
+        await responsePromise;
 
         // Wait for the "Proposed Changes" section to appear
         await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });

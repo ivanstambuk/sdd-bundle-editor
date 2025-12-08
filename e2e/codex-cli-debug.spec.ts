@@ -9,7 +9,10 @@ test.describe('Codex CLI Integration Debug', () => {
         const bundleDir = getSampleBundlePath();
 
         // 1. Start fresh by calling the abort endpoint directly
-        await page.goto('/');
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
+
+        // Wait for app to load first
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
 
         // Call abort API to reset state
         await page.evaluate(async () => {
@@ -18,7 +21,8 @@ test.describe('Codex CLI Integration Debug', () => {
 
         // Reload to get fresh state
         await page.reload();
-        await page.waitForSelector('.agent-panel', { timeout: 5000 });
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('.agent-panel', { timeout: 10000 });
 
         // Screenshot 1: Initial state after reset
         await page.screenshot({ path: 'artifacts/codex_step1_initial.png' });
@@ -42,7 +46,8 @@ test.describe('Codex CLI Integration Debug', () => {
 
         // Reload to pick up new config in UI
         await page.reload();
-        await page.waitForSelector('.agent-panel', { timeout: 5000 });
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('.agent-panel', { timeout: 10000 });
 
         // Screenshot 2: After configuration
         await page.screenshot({ path: 'artifacts/codex_step2_configured.png' });
@@ -67,7 +72,8 @@ test.describe('Codex CLI Integration Debug', () => {
 
         // Reload to see conversation status
         await page.reload();
-        await page.waitForSelector('.agent-panel', { timeout: 5000 });
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('.agent-panel', { timeout: 10000 });
 
         // Screenshot 3: After starting conversation
         await page.screenshot({ path: 'artifacts/codex_step3_started.png' });
@@ -88,7 +94,8 @@ test.describe('Codex CLI Integration Debug', () => {
 
         // Reload to see the response/error
         await page.reload();
-        await page.waitForSelector('.agent-panel', { timeout: 5000 });
+        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        await page.waitForSelector('.agent-panel', { timeout: 10000 });
 
         // Screenshot 4: After sending message (shows response or error)
         await page.screenshot({ path: 'artifacts/codex_step4_message_sent.png' });

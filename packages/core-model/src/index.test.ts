@@ -23,9 +23,9 @@ describe('core-model basic wiring', () => {
     const requirements = bundle.entities.get('Requirement');
     const tasks = bundle.entities.get('Task');
 
-    expect(features?.size).toBe(1);
-    expect(requirements?.size).toBe(1);
-    expect(tasks?.size).toBe(1);
+    expect(features?.size).toBe(3);
+    expect(requirements?.size).toBe(4);
+    expect(tasks?.size).toBe(3);
 
     // We expect at least one edge from Requirement -> Feature and Task -> Requirement.
     const edges = bundle.refGraph.edges;

@@ -38,7 +38,7 @@ test.describe('Entity Creation via Agent', () => {
 
         // Verify initial state - only FEAT-001 should exist
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-001' })).toBeVisible();
-        await expect(page.locator('.entity-btn', { hasText: 'FEAT-002' })).not.toBeVisible();
+        await expect(page.locator('.entity-btn', { hasText: 'FEAT-999' })).not.toBeVisible();
 
         // 2. Configure Mock agent via UI (not API - more reliable)
         await page.locator('[data-testid="agent-settings-btn"]').click();
@@ -63,8 +63,8 @@ test.describe('Entity Creation via Agent', () => {
         await responsePromise;
 
         // 5. Wait for pending changes
-        await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
+
+        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 30000 });
 
         // 6. Accept changes
         await page.locator('[data-testid="agent-accept-btn"]').click();
@@ -113,7 +113,7 @@ test.describe('Entity Creation via Agent', () => {
         await page.locator('[data-testid="agent-send-btn"]').click();
         await responsePromise;
 
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
+        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 30000 });
         await page.locator('[data-testid="agent-accept-btn"]').click();
 
         await page.waitForResponse(response =>

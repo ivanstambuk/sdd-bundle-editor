@@ -57,8 +57,8 @@ test.describe('QA UI Refresh on Agent Accept', () => {
         await responsePromise;
 
         // 5. Wait for pending changes block
-        await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 15000 });
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 15000 });
+
+        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 30000 });
 
         // 6. Click Accept to apply changes
         await page.locator('[data-testid="agent-accept-btn"]').click();

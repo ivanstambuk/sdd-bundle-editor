@@ -15,14 +15,13 @@ test.describe('Speech to Text', () => {
         await injectMockSpeechRecognition(page);
 
         const bundlePath = getSampleBundlePath();
-        await page.goto(`/?bundleDir=${bundlePath}&debug=true`);
+
+        // Use resetAgent=true to ensure fresh state
+        await page.goto(`/?bundleDir=${bundlePath}&debug=true&resetAgent=true`);
 
         // Ensure Agent Panel is open
         const agentPanel = page.locator('.agent-panel');
         if (!(await agentPanel.isVisible())) {
-            const settingsBtn = page.locator('[data-testid="agent-settings-btn"]'); // This button is creating confusion, it's inside placeholder?
-            // No, the toggle button in header is what we want.
-            // Title "Toggle Agent Panel (Ctrl+J)"
             const toggleBtn = page.getByTitle('Toggle Agent Panel (Ctrl+J)');
             if (await toggleBtn.isVisible()) {
                 await toggleBtn.click();
@@ -30,24 +29,12 @@ test.describe('Speech to Text', () => {
         }
         await expect(agentPanel).toBeVisible({ timeout: 10000 });
 
-        // If 'Start Conversation' button is present, click it.
-        // It might be inside .placeholder-actions
-        const startBtn = page.getByTestId('agent-start-btn');
-        if (await startBtn.isVisible()) {
-            console.log('Starting conversation...');
-            await startBtn.click();
-            // Wait for status to become active
-            await expect(page.getByTestId('agent-status-badge')).toHaveText('active', { timeout: 15000 });
-        } else {
-            // Maybe already active? Verify
-            console.log('Start button not visible, checking status...');
-            const statusBadge = page.getByTestId('agent-status-badge');
-            if (await statusBadge.isVisible()) {
-                console.log('Current Status:', await statusBadge.innerText());
-            } else {
-                console.log('Status badge NOT visible');
-            }
-        }
+        // Deterministic Start: We KNOW it is idle because of resetAgent=true
+        console.log('Starting conversation...');
+        await page.getByTestId('agent-start-btn').click();
+
+        // Wait for status to become active
+        await expect(page.getByTestId('agent-status-badge')).toHaveText('active', { timeout: 15000 });
     });
 
     test('should activate microphone state and transcribe text', async ({ page }) => {

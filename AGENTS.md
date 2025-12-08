@@ -367,9 +367,24 @@ ls -la artifacts/*.png
 
 #### Agent State Management
 
-**PATTERN 1: Reset agent state before each test**
+**PATTERN 1: Reset agent state via URL param (RECOMMENDED)**
 
-Every test that interacts with the agent backend MUST reset state in `beforeEach`:
+The application supports a `resetAgent=true` query parameter that triggers a hard reset of the agent backend state on load. Use this in `beforeEach` to guarantee a deterministic starting state.
+
+```typescript
+test.beforeEach(async ({ page }) => {
+    const bundlePath = getSampleBundlePath();
+    // This ensures the agent backend is idle and memory is cleared
+    await page.goto(`/?bundleDir=${bundlePath}&debug=true&resetAgent=true`);
+    
+    // Now safe to click Start immediately without checking status
+    await page.getByTestId('agent-start-btn').click();
+});
+```
+
+**PATTERN 2: Reset agent state before each test (Alternative)**
+
+Every test that interacts with the agent backend MUST reset state in `beforeEach` if not using `resetAgent=true`:
 
 ```typescript
 test.beforeEach(async ({ page }) => {
@@ -381,7 +396,7 @@ test.beforeEach(async ({ page }) => {
 });
 ```
 
-**PATTERN 2: Configure agent via UI, not API**
+**PATTERN 3: Configure agent via UI, not API**
 
 Configure the agent via UI selectors AFTER page load, not via API calls before navigation:
 

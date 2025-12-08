@@ -175,6 +175,23 @@ export function AppShell() {
   }, []);
 
   useEffect(() => {
+    // Check for resetAgent query param
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('resetAgent') === 'true') {
+        log.info('Resetting agent state via query parameter...');
+        fetch('/agent/reset', { method: 'POST' })
+          .then(res => res.json())
+          .then(() => {
+            log.info('Agent state reset successful.');
+            // Refresh status after reset
+            return fetchJson<{ state: ConversationState }>('/agent/status');
+          })
+          .then((data) => setConversation(data.state))
+          .catch(err => log.error('Failed to reset agent state', err));
+      }
+    }
+
     setLoading(true);
     fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}`)
       .then((data) => {

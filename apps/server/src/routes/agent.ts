@@ -306,6 +306,17 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
+    // Reset endpoint for testing: clears all agent state memory
+    fastify.post('/agent/reset', async (_request, reply) => {
+        try {
+            await AgentService.getInstance().reset();
+            return reply.send({ success: true, message: 'Agent state reset.' });
+        } catch (err) {
+            fastify.log.error(err);
+            return reply.status(500).send({ error: (err as Error).message });
+        }
+    });
+
     // Rollback endpoint: reverts file changes but keeps conversation active (unlike abort)
     // This allows users to retry or iterate after a failed apply attempt
     fastify.post('/agent/rollback', async (request, reply) => {

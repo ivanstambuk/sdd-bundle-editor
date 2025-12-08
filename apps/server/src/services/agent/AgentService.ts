@@ -60,6 +60,19 @@ export class AgentService {
         }
     }
 
+    /**
+     * Resets the agent backend status to its initial state.
+     * Useful for testing to ensure a clean slate.
+     */
+    async reset(): Promise<void> {
+        console.log('Resetting AgentService state...');
+        // We can either create a new backend instance or add a reset method to the interface.
+        // Re-creating the backend ensures total cleanup of internal state (messages, etc).
+        // It relies on currentConfig being preserved.
+        this.backend = createAgentBackend(this.currentConfig);
+        await this.backend.initialize(this.currentConfig);
+    }
+
     async saveConfig(config: AgentBackendConfig): Promise<void> {
         // 1. Configure in-memory first (fast fail)
         this.configure(config);

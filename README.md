@@ -132,15 +132,32 @@ Key endpoints (default base URL: `http://localhost:3000`):
 
 ---
 
-## Web UI
+## Development Workflow
 
-The web app lives in `apps/web` and implements the **Agent-First Editing Workflow**.
+### Running the Full Stack
 
-To run in development:
+From the repo root, run:
 
 ```bash
-cd apps/web
 pnpm dev
+```
+
+This starts **three concurrent processes**:
+- **[server]** (blue) – Backend API server
+- **[web]** (green) – Webpack dev server for the UI
+- **[ui-shell]** (yellow) – TypeScript compiler in watch mode
+
+**Why watch mode by default?**
+The `packages/ui-shell` is consumed as a **compiled library**. When AI agents (or you) edit React components, those changes must be compiled from `src/` to `dist/` before the browser can use them. Watch mode ensures this happens automatically.
+
+**Alternative (lighter weight, no auto-compile):**
+```bash
+pnpm dev:simple
+```
+
+Use this if you're only working on the backend and want to save CPU resources. If you make changes to `ui-shell`, you'll need to manually rebuild:
+```bash
+pnpm --filter @sdd-bundle-editor/ui-shell build
 ```
 
 ### Agent-First Workflow

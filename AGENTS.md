@@ -181,63 +181,33 @@ From the repo root:
 pnpm dev
 ```
 
-This runs both the backend server and web dev server concurrently using `concurrently`. Output is prefixed with `[server]` and `[web]` for clarity.
+This runs the backend server, web dev server, **and** the ui-shell TypeScript compiler in watch mode using `concurrently`. Output is prefixed with `[server]`, `[web]`, and `[ui-shell]` for clarity.
 
-**⚠️ IMPORTANT: Hot Reload vs Build Requirements**
+**⚠️ IMPORTANT: Watch Mode is Now Default**
 
-The ui-shell package (`packages/ui-shell`) is consumed as a **built library**. This means:
+As of the recent update, `pnpm dev` automatically includes watch mode for `ui-shell`. This is critical because:
 
-**Standard `pnpm dev` behavior**:
+**How ui-shell compilation works:**
 - ✅ Changes to `apps/web/src/**` → **Hot reload** (instant)
 - ✅ Changes to `apps/server/src/**` → Server restarts automatically
-- ❌ Changes to `packages/ui-shell/src/**` → **Requires rebuild** (not instant)
-
-**When you modify `packages/ui-shell/src/` components**:
-
-You have **two options**:
-
-**Option 1: Rebuild manually** (slower, but simple)
-```bash
-# After changing AppShell.tsx, EntityDetails.tsx, etc.
-pnpm --filter @sdd-bundle-editor/ui-shell build
-
-# Then refresh browser to see changes
-```
-
-**Option 2: Use watch mode** (recommended for active ui-shell development)
-```bash
-# Run this instead of `pnpm dev`
-pnpm dev:watch
-```
-
-This runs THREE processes concurrently:
-- `[server]` - Backend server (blue)
-- `[web]` - Webpack dev server (green)
-- `[ui-shell]` - TypeScript compiler in watch mode (yellow)
-
-**With `pnpm dev:watch`**:
 - ✅ Changes to `packages/ui-shell/src/**` → **Auto-rebuild** (1-2 seconds)
-- ✅ Webpack detects the rebuild and hot-reloads automatically
-- ✅ See changes immediately without manual build steps
-
-**Visual indicator**: Watch the `[ui-shell]` output. When you save a file:
-```
-[ui-shell] File change detected. Starting incremental compilation...
-[ui-shell] Found 0 errors. Watching for file changes.
-```
-
-**When to use which mode**:
-- **`pnpm dev`**: General development, working on server/web only
-- **`pnpm dev:watch`**: Actively developing React components in ui-shell
-- **Manual build**: One-off changes to ui-shell
-
-**Why is it designed this way?**
 
 The `ui-shell` is a **shared component library** consumed by `apps/web`:
 1. `apps/web/src/index.tsx` imports: `import { AppShell } from '@sdd-bundle-editor/ui-shell'`
 2. This resolves to: `packages/ui-shell/dist/index.js` (the **built** output)
 3. TypeScript must compile `.tsx` → `.js` before webpack can use it
 4. Watch mode automates this compilation step
+
+**If you need to save resources** (e.g., only working on backend):
+```bash
+pnpm dev:simple  # No ui-shell watch, manual rebuild required
+```
+
+**Visual indicator**: Watch the `[ui-shell]` output. When you save a file:
+```
+[ui-shell] File change detected. Starting incremental compilation...
+[ui-shell] Found 0 errors. Watching for file changes.
+```
 
 ---
 

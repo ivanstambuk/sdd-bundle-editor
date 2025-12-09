@@ -40,11 +40,15 @@ export class CliAgentBackend implements AgentBackend {
         const command = this.config.options.command as string;
         let args = [...((this.config.options.args as string[]) || [])];
 
-        // For Codex CLI, adjust sandbox mode based on readOnly context
+        // For Codex CLI, adjust sandbox mode and add model/reasoning flags
         if (command === 'codex') {
             // Remove any existing --sandbox or --full-auto flags to override them
             args = args.filter(arg =>
                 !arg.startsWith('--sandbox') &&
+                !arg.startsWith('-m') &&
+                !arg.startsWith('--model') &&
+                !arg.startsWith('--reasoning-effort') &&
+                !arg.startsWith('--reasoning-summary') &&
                 arg !== '--full-auto' &&
                 arg !== 'read-only' &&
                 arg !== 'workspace-write' &&
@@ -58,6 +62,21 @@ export class CliAgentBackend implements AgentBackend {
             } else {
                 // Write mode: can modify files in the workspace
                 args.push('--sandbox', 'workspace-write');
+            }
+
+            // Add model flag if specified
+            if (this.config.model) {
+                args.push('-m', this.config.model);
+            }
+
+            // Add reasoning effort flag if specified
+            if (this.config.reasoningEffort) {
+                args.push('--reasoning-effort', this.config.reasoningEffort);
+            }
+
+            // Add reasoning summary flag if specified
+            if (this.config.reasoningSummary) {
+                args.push('--reasoning-summary', this.config.reasoningSummary);
             }
         }
 

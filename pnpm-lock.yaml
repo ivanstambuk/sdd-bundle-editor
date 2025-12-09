@@ -212,6 +212,9 @@ importers:
       '@sdd-bundle-editor/core-ai':
         specifier: workspace:*
         version: link:../core-ai
+      '@sdd-bundle-editor/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       react:
         specifier: ^18.3.0
         version: 18.3.1

@@ -325,7 +325,7 @@ export function AppShell() {
     }
   };
 
-  const handleAgentMessage = async (message: string) => {
+  const handleAgentMessage = async (message: string, options?: { model?: string; reasoningEffort?: string }) => {
     try {
       // Optimistic update
       setConversation(prev => ({
@@ -338,7 +338,12 @@ export function AppShell() {
 
       const data = await fetchJson<{ state: ConversationState }>('/agent/message', {
         method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir, message }),
+        body: JSON.stringify({
+          bundleDir: bundleDir,
+          message,
+          model: options?.model,
+          reasoningEffort: options?.reasoningEffort
+        }),
       });
       setConversation(data.state);
     } catch (err) {

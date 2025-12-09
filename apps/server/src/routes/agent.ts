@@ -46,9 +46,22 @@ export async function agentRoutes(fastify: FastifyInstance) {
 
     fastify.post('/agent/message', async (request, reply) => {
         try {
-            const body = (request.body as { message: string, bundleDir?: string }) || {};
+            const body = (request.body as { message: string, bundleDir?: string, model?: string, reasoningEffort?: string }) || {};
             if (!body.message) {
                 return reply.status(400).send({ error: 'Message content required' });
+            }
+
+            // If model params are provided, update the config (but don't recreate backend)
+            if (body.model || body.reasoningEffort) {
+                const agentService = AgentService.getInstance();
+                const currentConfig = agentService.getConfig();
+                // Update config in-place without recreating backend
+                if (body.model) {
+                    currentConfig.model = body.model;
+                }
+                if (body.reasoningEffort) {
+                    currentConfig.reasoningEffort = body.reasoningEffort as any;
+                }
             }
 
             const state = await getBackend().sendMessage(body.message);

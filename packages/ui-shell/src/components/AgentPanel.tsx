@@ -1,14 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ConversationMessage, ConversationStatus, ProposedChange, AgentDecision, DecisionOption, AgentBackendConfig } from '@sdd-bundle-editor/core-ai';
+import {
+    ConversationMessage,
+    ConversationStatus,
+    ProposedChange,
+    AgentDecision,
+    DecisionOption,
+    AgentBackendConfig,
+    CodexModel,
+    CodexReasoningEffort,
+    CodexReasoningSummary,
+    CODEX_MODEL_CAPABILITIES,
+    DEEPSEEK_MODELS
+} from '@sdd-bundle-editor/shared-types';
 import ReactMarkdown from 'react-markdown';
 import { DiffReviewModal } from './DiffReviewModal';
+
+export interface MessageOptions {
+    model?: string;
+    reasoningEffort?: string;
+}
 
 export interface AgentPanelProps {
     messages: ConversationMessage[];
     status: ConversationStatus;
     pendingChanges?: ProposedChange[];
     activeDecision?: AgentDecision;
-    onSendMessage: (message: string) => Promise<void>;
+    onSendMessage: (message: string, options?: MessageOptions) => Promise<void>;
     onStartConversation: () => void;
     onAbortConversation: () => void;
     onAcceptChanges: () => void;
@@ -64,6 +81,10 @@ export function AgentPanel({
     const [showDiffModal, setShowDiffModal] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+    // Inline model selection state (used during chat session)
+    const [activeModel, setActiveModel] = useState<string>('gpt-5.1-codex-max');
+    const [activeReasoningEffort, setActiveReasoningEffort] = useState<CodexReasoningEffort>('medium');
 
     // Check for debug mode (allows Echo CLI usage)
     const isDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
@@ -144,7 +165,15 @@ export function AgentPanel({
             setInputText('');
             setIsSending(true);
             try {
-                await onSendMessage(message);
+                // Pass inline model selection to the message handler
+                const options: MessageOptions = {};
+                if (currentBackendType === 'cli' && activeCommand === 'codex') {
+                    options.model = activeModel;
+                    options.reasoningEffort = activeReasoningEffort;
+                } else if (currentBackendType === 'http') {
+                    options.model = activeModel;
+                }
+                await onSendMessage(message, options);
             } finally {
                 setIsSending(false);
             }
@@ -261,15 +290,18 @@ export function AgentPanel({
                                                 if (val === 'codex') {
                                                     setConfig({
                                                         ...config,
+                                                        model: 'gpt-5.1-codex-max',
+                                                        reasoningEffort: 'medium',
+                                                        reasoningSummary: 'auto',
                                                         options: {
                                                             command: 'codex',
                                                             args: ['exec', '--full-auto']
                                                         }
                                                     });
                                                 } else if (val === 'gemini') {
-                                                    setConfig({ ...config, options: { command: 'gemini', args: [] } });
+                                                    setConfig({ ...config, model: undefined, reasoningEffort: undefined, reasoningSummary: undefined, options: { command: 'gemini', args: [] } });
                                                 } else if (val === 'claude') {
-                                                    setConfig({ ...config, options: { command: 'claude', args: [] } });
+                                                    setConfig({ ...config, model: undefined, reasoningEffort: undefined, reasoningSummary: undefined, options: { command: 'claude', args: [] } });
                                                 }
                                             }}
                                         >
@@ -279,6 +311,16 @@ export function AgentPanel({
                                             <option value="claude">Claude Code</option>
                                         </select>
                                     </div>
+
+                                    {/* Model Selection is now inline during chat */}
+                                    {cliPreset === 'codex' && (
+                                        <div className="form-group">
+                                            <small style={{ color: 'var(--color-text-muted)' }}>
+                                                💡 Model and reasoning effort can be changed during chat via the selector bar below the input.
+                                            </small>
+                                        </div>
+                                    )}
+
                                     {cliPreset === 'custom' && (
                                         <>
                                             <div className="form-group">
@@ -341,15 +383,18 @@ export function AgentPanel({
                                                         break;
                                                     case 'openrouter':
                                                         baseURL = 'https://openrouter.ai/api/v1';
+                                                        model = '';
                                                         break;
                                                 }
                                                 if (baseURL) {
                                                     setConfig({
                                                         ...config,
-                                                        options: { ...config.options, baseURL, model }
+                                                        model: model || undefined,
+                                                        options: { ...config.options, baseURL, httpProvider: val }
                                                     });
                                                 }
                                             }}
+                                            data-testid="http-provider-select"
                                         >
                                             <option value="custom">Custom</option>
                                             <option value="openai">OpenAI</option>
@@ -384,18 +429,29 @@ export function AgentPanel({
                                             placeholder="sk-..."
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        <label>Model:</label>
-                                        <input
-                                            className="form-control"
-                                            value={(config.options?.model as string) || ''}
-                                            onChange={e => setConfig({
-                                                ...config,
-                                                options: { ...config.options, model: e.target.value }
-                                            })}
-                                            placeholder="gpt-4o"
-                                        />
-                                    </div>
+
+                                    {/* Model selection - hint for DeepSeek, input for others */}
+                                    {config.options?.httpProvider === 'deepseek' ? (
+                                        <div className="form-group">
+                                            <small style={{ color: 'var(--color-text-muted)' }}>
+                                                💡 DeepSeek model (Chat/Reasoner) can be switched during chat via the selector bar below the input.
+                                            </small>
+                                        </div>
+                                    ) : (
+                                        <div className="form-group">
+                                            <label>Model:</label>
+                                            <input
+                                                className="form-control"
+                                                value={config.model || (config.options?.model as string) || ''}
+                                                onChange={e => setConfig({
+                                                    ...config,
+                                                    model: e.target.value
+                                                })}
+                                                placeholder="gpt-4o"
+                                                data-testid="http-model-input"
+                                            />
+                                        </div>
+                                    )}
                                 </>
                             )}
 
@@ -595,6 +651,72 @@ export function AgentPanel({
                         {isSending ? '⏳ Sending...' : 'Send'}
                     </button>
                 </div>
+
+                {/* Inline Model Selector Bar - shown when conversation has started (not idle) */}
+                {(status as any) !== 'idle' && currentBackendType !== 'mock' && (
+                    <div className="model-selector-bar" data-testid="model-selector-bar">
+                        {currentBackendType === 'cli' && activeCommand === 'codex' && (
+                            <>
+                                <div className="model-selector-item">
+                                    <select
+                                        value={activeModel}
+                                        onChange={e => {
+                                            const newModel = e.target.value as CodexModel;
+                                            setActiveModel(newModel);
+                                            // Reset reasoning effort if xhigh selected but not supported
+                                            const caps = CODEX_MODEL_CAPABILITIES[newModel];
+                                            if (activeReasoningEffort && !caps.supportedReasoningEfforts.includes(activeReasoningEffort)) {
+                                                setActiveReasoningEffort('medium');
+                                            }
+                                        }}
+                                        data-testid="inline-model-select"
+                                        className="inline-select"
+                                    >
+                                        <option value="gpt-5.1-codex-max">GPT-5.1-Max</option>
+                                        <option value="gpt-5.1-codex">GPT-5.1-Codex</option>
+                                        <option value="gpt-5.1">GPT-5.1</option>
+                                        <option value="gpt-5.1-codex-mini">GPT-5.1-Mini</option>
+                                        <option value="o3">o3</option>
+                                        <option value="o4-mini">o4-mini</option>
+                                    </select>
+                                </div>
+                                <div className="model-selector-item">
+                                    <select
+                                        value={activeReasoningEffort}
+                                        onChange={e => setActiveReasoningEffort(e.target.value as CodexReasoningEffort)}
+                                        data-testid="inline-reasoning-select"
+                                        className="inline-select"
+                                    >
+                                        {(() => {
+                                            const caps = CODEX_MODEL_CAPABILITIES[activeModel as CodexModel];
+                                            return caps?.supportedReasoningEfforts.map((effort: CodexReasoningEffort) => (
+                                                <option key={effort} value={effort}>
+                                                    {effort === 'xhigh' ? 'XHigh' :
+                                                        effort === 'none' ? 'None' :
+                                                            effort.charAt(0).toUpperCase() + effort.slice(1)}
+                                                </option>
+                                            ));
+                                        })()}
+                                    </select>
+                                </div>
+                            </>
+                        )}
+
+                        {currentBackendType === 'http' && (config.options?.httpProvider === 'deepseek' || (typeof config.options?.baseURL === 'string' && config.options.baseURL.includes('deepseek'))) && (
+                            <div className="model-selector-item">
+                                <select
+                                    value={activeModel}
+                                    onChange={e => setActiveModel(e.target.value)}
+                                    data-testid="inline-deepseek-model-select"
+                                    className="inline-select"
+                                >
+                                    <option value="deepseek-chat">Chat</option>
+                                    <option value="deepseek-reasoner">Reasoner</option>
+                                </select>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Diff Review Modal */}

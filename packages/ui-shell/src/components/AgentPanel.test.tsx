@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { AgentPanel } from './AgentPanel';
-import { ConversationMessage } from '@sdd-bundle-editor/core-ai';
+import { ConversationMessage } from '@sdd-bundle-editor/shared-types';
 import React from 'react';
 
 describe('AgentPanel', () => {
@@ -10,6 +10,7 @@ describe('AgentPanel', () => {
     const mockOnAccept = vi.fn();
     const mockOnDiscard = vi.fn();
     const mockOnResolve = vi.fn();
+    const mockOnNewChat = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -35,6 +36,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 
@@ -67,6 +69,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 
@@ -86,6 +89,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 
@@ -108,6 +112,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 
@@ -136,6 +141,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 
@@ -166,6 +172,7 @@ describe('AgentPanel', () => {
                 onAcceptChanges={mockOnAccept}
                 onDiscardChanges={mockOnDiscard}
                 onResolveDecision={mockOnResolve}
+                onNewChat={mockOnNewChat}
             />
         );
 

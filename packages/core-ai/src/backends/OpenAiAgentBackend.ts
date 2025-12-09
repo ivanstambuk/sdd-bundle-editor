@@ -39,7 +39,7 @@ const PROPOSE_CHANGES_TOOL = {
 
 export class OpenAiAgentBackend implements AgentBackend {
     private client?: OpenAI;
-    private model: string = 'deepseek-chat';
+    private config?: AgentBackendConfig; // Store config reference
     private state: ConversationState = {
         status: 'idle',
         messages: []
@@ -49,9 +49,10 @@ export class OpenAiAgentBackend implements AgentBackend {
 
     async initialize(config: AgentBackendConfig): Promise<void> {
         console.log('[OpenAiAgentBackend] Initializing with config:', JSON.stringify(config, null, 2));
+        this.config = config; // Store reference
+
         const apiKey = process.env.DEEPSEEK_API_KEY || process.env.AGENT_HTTP_API_KEY || config.options?.apiKey as string;
         const baseURL = config.options?.baseURL as string || 'https://api.deepseek.com';
-        this.model = config.options?.model as string || 'deepseek-chat';
 
         if (!apiKey) {
             console.error('[OpenAiAgentBackend] Missing API Key. check DEEPSEEK_API_KEY, AGENT_HTTP_API_KEY or config.options.apiKey');
@@ -101,7 +102,7 @@ export class OpenAiAgentBackend implements AgentBackend {
 
             const completion = await this.client.chat.completions.create({
                 messages: apiMessages,
-                model: this.model,
+                model: this.config?.model || 'deepseek-chat', // Removed this.config?.options?.model
                 tools: tools.length > 0 ? tools : undefined, // Don't pass tools array if empty
                 tool_choice: tools.length > 0 ? 'auto' : undefined,
             });

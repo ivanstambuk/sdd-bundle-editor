@@ -10,6 +10,14 @@ export {
   AgentDecision,
   ConversationState,
   AgentBackendConfig,
+  // Model configuration types
+  CodexModel,
+  CodexReasoningEffort,
+  CodexReasoningSummary,
+  DeepSeekModel,
+  ModelCapabilities,
+  CODEX_MODEL_CAPABILITIES,
+  DEEPSEEK_MODELS,
 } from '@sdd-bundle-editor/shared-types';
 
 // Import types locally for use in this file

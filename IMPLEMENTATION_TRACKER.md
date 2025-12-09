@@ -103,6 +103,11 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [x] Language set to 'en-US' defaults
   - [x] Verified with E2E test `e2e/speech-to-text.spec.ts`
 
+- [x] Implement Inline Model Selection:
+  - [x] Inline selector bar in Agent Panel (Model & Reasoning Effort)
+  - [x] Dynamic updates based on backend type (CLI/HTTP) and model capabilities
+  - [x] Per-message model configuration (no backend restart required)
+
 ---
 
 - [x] Define `AgentBackend` abstraction in `core-ai`:

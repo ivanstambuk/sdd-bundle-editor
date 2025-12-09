@@ -116,7 +116,9 @@ export class CliAgentBackend implements AgentBackend {
 
     private runCommand(command: string, args: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
-            const proc = spawn(command, args);
+            // Run CLI in the bundle directory so MCP tools index the correct files
+            const cwd = this.context?.bundleDir || process.cwd();
+            const proc = spawn(command, args, { cwd });
             let stdout = '';
             let stderr = '';
 

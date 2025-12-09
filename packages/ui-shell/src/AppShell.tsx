@@ -464,10 +464,27 @@ export function AppShell() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Check for Ctrl+J (or Command+J on Mac)
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'j') {
+      const isMod = e.ctrlKey || e.metaKey;
+
+      // Cmd+J - Toggle Agent Panel
+      if (isMod && e.key.toLowerCase() === 'j') {
         e.preventDefault();
         setShowAgentPanel(prev => !prev);
+      }
+
+      // Cmd+B - Toggle Sidebar
+      if (isMod && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        setSidebarCollapsed(prev => !prev);
+      }
+
+      // Cmd+P - Quick Search (focus entity search/navigator)
+      if (isMod && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        // TODO: Implement quick search modal/focus
+        // For now, just ensure sidebar is open and entity view is shown
+        if (sidebarCollapsed) setSidebarCollapsed(false);
+        setViewMode('entity');
       }
     };
 

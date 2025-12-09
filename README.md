@@ -172,10 +172,24 @@ The editor is designed to be a **Read-Only Viewer** by default. You cannot direc
 
 ### Features
 
-- **Read-Only Forms**: Prevents accidental drift between UI and files.
+- **Read-only mode UI prevents accidental schema edits when working with the AI agent.
 - **Contextual Actions**: "Fix with Agent" buttons on diagnostic errors.
 - **Error Recovery**: Network handling and "Discard Changes" (rollback) capability.
 - **Diagnostics**: Real-time validation and linting feedback.
+
+---
+
+## Keyboard Shortcuts
+
+### Global Shortcuts
+- **`Ctrl+J` / `Cmd+J`** - Toggle Agent Panel (AI chat interface)
+- **`Ctrl+B` / `Cmd+B`** - Toggle Sidebar (entity navigator)
+- **`Ctrl+P` / `Cmd+P`** - Quick Search (entity finder)
+
+### UI Features
+- **Resizable Sidebar** - Drag right edge to resize (200-500px range)
+- **Collapsible Groups** - Click entity type headers to expand/collapse
+- **Breadcrumb Navigation** - Shows current location: Bundle > EntityType > EntityID
 
 ---
 

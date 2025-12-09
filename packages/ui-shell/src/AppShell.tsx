@@ -351,8 +351,18 @@ export function AppShell() {
     try {
       const data = await fetchJson<{ state: ConversationState }>('/agent/abort', {
         method: 'POST',
+        body: JSON.stringify({ bundleDir: bundleDir }),
       });
       setConversation(data.state);
+
+      // Refresh bundle after abort to reflect any reverted changes
+      setLoading(true);
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
+        .then((data) => {
+          setBundle(data.bundle);
+          setDiagnostics(data.diagnostics);
+        })
+        .finally(() => setLoading(false));
     } catch (err) {
       log.error('Operation failed', err);
     }
@@ -415,6 +425,52 @@ export function AppShell() {
       setConversation(data.state);
     } catch (err) {
       log.error('Operation failed', err);
+      setError((err as Error).message);
+    }
+  };
+
+  const handleAgentNewChat = async () => {
+    try {
+      const hasPendingChanges = (conversation.pendingChanges?.length ?? 0) > 0;
+
+      // Show confirmation if there are pending changes
+      if (hasPendingChanges) {
+        const confirmed = window.confirm(
+          'You have pending changes. Starting a new chat will discard them. Continue?'
+        );
+        if (!confirmed) return;
+      }
+
+      // Step 1: Rollback any uncommitted files
+      if (hasPendingChanges) {
+        await fetchJson<{ state: ConversationState }>('/agent/rollback', {
+          method: 'POST',
+          body: JSON.stringify({ bundleDir: bundleDir }),
+        });
+      }
+
+      // Step 2: Reset agent state (clears conversation, keeps config)
+      await fetchJson<{ success: boolean }>('/agent/reset', {
+        method: 'POST',
+        body: JSON.stringify({}), // Empty body to satisfy content-type validation
+      });
+
+      // Step 3: Refresh status to update UI
+      const data = await fetchJson<{ state: ConversationState }>('/agent/status');
+      setConversation(data.state);
+
+      // Step 4: Refresh bundle to reflect reverted changes
+      setLoading(true);
+      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
+        .then((data) => {
+          setBundle(data.bundle);
+          setDiagnostics(data.diagnostics);
+        })
+        .finally(() => setLoading(false));
+
+      log.info('New chat started successfully');
+    } catch (err) {
+      log.error('Failed to start new chat', err);
       setError((err as Error).message);
     }
   };
@@ -490,7 +546,7 @@ export function AppShell() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [sidebarCollapsed]);
 
   return (
     <div className={`app-shell ${showAgentPanel ? 'with-agent-panel' : ''}`}>
@@ -696,6 +752,7 @@ export function AppShell() {
             onAcceptChanges={handleAgentAccept}
             onDiscardChanges={handleAgentRollback}
             onResolveDecision={handleResolveDecision}
+            onNewChat={handleAgentNewChat}
           />
         </aside>
       )}

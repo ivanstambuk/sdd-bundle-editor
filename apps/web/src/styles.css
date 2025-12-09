@@ -1323,6 +1323,28 @@ body {
   background: var(--color-error-bg);
 }
 
+.new-chat-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.new-chat-btn:hover {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-hover);
+  color: var(--color-accent-hover);
+}
+
+
 /* Messages List */
 .messages-list {
   flex: 1;
@@ -2322,170 +2344,172 @@ input:checked+.slider:before {
   font-style: italic;
   font-size: 0.8rem;
   color: var(--color-text-secondary);
-}/* ========================================
+}
+
+/* ========================================
    Mobile Responsive Layout
    ======================================== */
 
 @media (max-width: 768px) {
 
-    /* Single column layout on mobile */
-    .app-shell {
-        grid-template-columns: 1fr;
-        grid-template-rows: 48px 1fr auto;
-    }
+  /* Single column layout on mobile */
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr auto;
+  }
 
-    .app-shell.with-agent-panel {
-        grid-template-columns: 1fr;
-    }
+  .app-shell.with-agent-panel {
+    grid-template-columns: 1fr;
+  }
 
-    /* Hide sidebar by default on mobile, show as overlay */
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 48px;
-        bottom: 0;
-        z-index: 100;
-        transform: translateX(-100%);
-        transition: transform var(--transition-normal);
-        box-shadow: var(--shadow-lg);
-        width: 280px !important;
-        /* Override inline width */
-    }
+  /* Hide sidebar by default on mobile, show as overlay */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 48px;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    box-shadow: var(--shadow-lg);
+    width: 280px !important;
+    /* Override inline width */
+  }
 
-    .sidebar.mobile-open {
-        transform: translateX(0);
-    }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
 
-    /* Hide resize handle on mobile */
-    .sidebar-resize-handle {
-        display: none;
-    }
+  /* Hide resize handle on mobile */
+  .sidebar-resize-handle {
+    display: none;
+  }
 
-    /* Backdrop overlay when sidebar is open */
-    .sidebar-backdrop {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 99;
-    }
+  /* Backdrop overlay when sidebar is open */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
 
-    .sidebar- backdrop.active {
-        display: block;
-    }
+  .sidebar- backdrop.active {
+    display: block;
+  }
 
-    /* Agent panel as bottom sheet on mobile */
-    .right-sidebar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 80vh;
-        max-height: 80vh;
-        background: var(--color-bg-secondary);
-        border-radius: 16px 16px 0 0;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
-        transform: translateY(100%);
-        transition: transform var(--transition-normal);
-        z-index: 200;
-        display: flex;
-        flex-direction: column;
-    }
+  /* Agent panel as bottom sheet on mobile */
+  .right-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80vh;
+    max-height: 80vh;
+    background: var(--color-bg-secondary);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
+    transform: translateY(100%);
+    transition: transform var(--transition-normal);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .app-shell.with-agent-panel .right-sidebar {
-        transform: translateY(0);
-    }
+  .app-shell.with-agent-panel .right-sidebar {
+    transform: translateY(0);
+  }
 
-    /* Bottom sheet handle */
-    .right-sidebar::before {
-        content: '';
-        position: absolute;
-        top: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
-        height: 4px;
-        background: var(--color-text-muted);
-        border-radius: 2px;
-    }
+  /* Bottom sheet handle */
+  .right-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: var(--color-text-muted);
+    border-radius: 2px;
+  }
 
-    /* Mobile header adjustments */
-    .header-left,
-    .header-right {
-        gap: 4px;
-    }
+  /* Mobile header adjustments */
+  .header-left,
+  .header-right {
+    gap: 4px;
+  }
 
-    .breadcrumb {
-        font-size: var(--font-size-xs);
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+  .breadcrumb {
+    font-size: var(--font-size-xs);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-    /* Adjust icon button sizes for touch */
-    .btn-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
+  /* Adjust icon button sizes for touch */
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
 
-    /* Bottom panel - reduce height on mobile */
-    .bottom-panel {
-        max-height: 200px;
-    }
+  /* Bottom panel - reduce height on mobile */
+  .bottom-panel {
+    max-height: 200px;
+  }
 
-    /* Main content - adjust padding */
-    .content-area {
-        padding: var(--spacing-md);
-    }
+  /* Main content - adjust padding */
+  .content-area {
+    padding: var(--spacing-md);
+  }
 
-    /* Entity details - stack layouts */
-    .entity-details {
-        padding: var(--spacing-md);
-    }
+  /* Entity details - stack layouts */
+  .entity-details {
+    padding: var(--spacing-md);
+  }
 
-    /* Agent panel - mobile optimizations */
-    .agent-panel {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
+  /* Agent panel - mobile optimizations */
+  .agent-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .agent-messages {
-        flex: 1;
-        overflow-y: auto;
-    }
+  .agent-messages {
+    flex: 1;
+    overflow-y: auto;
+  }
 
-    .agent-input-area {
-        flex-shrink: 0;
-    }
+  .agent-input-area {
+    flex-shrink: 0;
+  }
 
-    /* Hide read-only toggle text on mobile */
-    .read-only-toggle span {
-        display: none;
-    }
+  /* Hide read-only toggle text on mobile */
+  .read-only-toggle span {
+    display: none;
+  }
 }
 
 /* Tablet breakpoint */
 @media (min-width: 769px) and (max-width: 1024px) {
 
-    /* Adjust grid for medium screens */
-    .app-shell {
-        grid-template-columns: 240px 1fr;
-    }
+  /* Adjust grid for medium screens */
+  .app-shell {
+    grid-template-columns: 240px 1fr;
+  }
 
-    .app-shell.with-agent-panel {
-        grid-template-columns: 240px 1fr 360px;
-    }
+  .app-shell.with-agent-panel {
+    grid-template-columns: 240px 1fr 360px;
+  }
 
-    /* Slightly smaller sidebar */
-    .sidebar {
-        width: 240px;
-    }
+  /* Slightly smaller sidebar */
+  .sidebar {
+    width: 240px;
+  }
 
-    /* Reduce font sizes slightly */
-    html {
-        font-size: 13px;
-    }
+  /* Reduce font sizes slightly */
+  html {
+    font-size: 13px;
+  }
 }

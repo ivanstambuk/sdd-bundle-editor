@@ -14,6 +14,7 @@ export interface AgentPanelProps {
     onAcceptChanges: () => void;
     onDiscardChanges: () => void;
     onResolveDecision: (decisionId: string, optionId: string) => void;
+    onNewChat: () => void;
 }
 
 // Add Speech Recognition types
@@ -48,6 +49,7 @@ export function AgentPanel({
     onAcceptChanges,
     onDiscardChanges,
     onResolveDecision,
+    onNewChat,
 }: AgentPanelProps) {
     const [inputText, setInputText] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export function AgentPanel({
         }
         if (cfg.type === 'http') {
             const model = cfg.options?.model as string;
-            return model ? `HTTP (${model})` : 'HTTP API';
+            return model || 'HTTP API';
         }
         return cfg.type.toUpperCase();
     };
@@ -434,6 +436,16 @@ export function AgentPanel({
                 <span className={`status-badge status-${status}`} data-testid="agent-status-badge">{status}</span>
                 {currentBackendLabel && (
                     <span className="backend-label">🤖 {currentBackendLabel}</span>
+                )}
+                {(status === 'active' || status === 'pending_changes' || status === 'error') && (
+                    <button
+                        onClick={onNewChat}
+                        className="new-chat-btn"
+                        title="Start New Chat"
+                        data-testid="agent-new-chat-btn"
+                    >
+                        ➕
+                    </button>
                 )}
                 <button onClick={onAbortConversation} className="abort-btn" data-testid="agent-abort-btn">Abort</button>
             </div>

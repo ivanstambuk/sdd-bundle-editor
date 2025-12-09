@@ -96,11 +96,14 @@ export class OpenAiAgentBackend implements AgentBackend {
         ];
 
         try {
+            // Only provide the propose_changes tool if NOT in read-only mode
+            const tools = this.context?.readOnly ? [] : [PROPOSE_CHANGES_TOOL];
+
             const completion = await this.client.chat.completions.create({
                 messages: apiMessages,
                 model: this.model,
-                tools: [PROPOSE_CHANGES_TOOL],
-                tool_choice: 'auto',
+                tools: tools.length > 0 ? tools : undefined, // Don't pass tools array if empty
+                tool_choice: tools.length > 0 ? 'auto' : undefined,
             });
 
             const choice = completion.choices[0];
@@ -239,13 +242,36 @@ export class OpenAiAgentBackend implements AgentBackend {
     private buildSystemPrompt(): string {
         // Serialize the bundle context for the LLM
         // We use JSON for simplicity
-        let prompt = `You are an intelligent SDD (Spec-Driven Development) Bundle Editor assistant.
-Your goal is to help the user evolve the specification bundle.
+        const isReadOnly = this.context?.readOnly ?? false;
 
+        let prompt = `You are an intelligent SDD (Spec-Driven Development) Bundle Editor assistant.
+Your goal is to help the user understand and ${isReadOnly ? 'analyze' : 'evolve'} the specification bundle.
+`;
+
+        if (isReadOnly) {
+            prompt += `
+IMPORTANT: You are currently in READ-ONLY mode. You can:
+- Answer questions about the bundle
+- Analyze entities and their relationships
+- Provide recommendations and insights
+- Explain specifications
+
+You CANNOT:
+- Modify any entities
+- Create new entities
+- Propose changes to the bundle
+
+If the user asks you to make changes, politely explain that you are in read-only mode and suggest they toggle the "Read-Only" switch in the UI to enable editing.
+`;
+        } else {
+            prompt += `
 You have access to a tool 'propose_changes' which you MUST use to modify the bundle.
 When the user asks to rename, create, or update entities, call this tool.
 Do not ask for permission to use the tool; just use it if the user's intent is clear.
+`;
+        }
 
+        prompt += `
 CURRENT BUNDLE CONTEXT:
 `;
 

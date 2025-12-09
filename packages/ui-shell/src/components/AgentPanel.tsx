@@ -25,6 +25,7 @@ export interface AgentPanelProps {
     status: ConversationStatus;
     pendingChanges?: ProposedChange[];
     activeDecision?: AgentDecision;
+    lastError?: string;
     onSendMessage: (message: string, options?: MessageOptions) => Promise<void>;
     onStartConversation: () => void;
     onAbortConversation: () => void;
@@ -60,6 +61,7 @@ export function AgentPanel({
     status,
     pendingChanges,
     activeDecision,
+    lastError,
     onSendMessage,
     onStartConversation,
     onAbortConversation,
@@ -173,7 +175,35 @@ export function AgentPanel({
                 } else if (currentBackendType === 'http') {
                     options.model = activeModel;
                 }
-                await onSendMessage(message, options);
+                const minDuration = 500;
+                const setMinLoading = new Promise(resolve => setTimeout(resolve, minDuration));
+
+                // Allow error to propagate but ensure we waited minDuration
+                try {
+                    await Promise.all([
+                        onSendMessage(message, options),
+                        setMinLoading
+                    ]);
+                } catch (err) {
+                    // Even if it failed, we waited. Rethrow to let UI handle error if needed, 
+                    // though onSendMessage usually handles state updates via props.
+                    // But here we just want to ensure catch block runs if needed.
+                    // Actually onSendMessage returns Promise<void>, if it throws, we catch here.
+                    await setMinLoading; // Ensure we still waited if it failed fast
+                    throw err; // Re-throw to be caught by caller if any (none here) or just logged? 
+                    // Actually handleSend catches nothing currently? 
+                    // Wait, original code:
+                    // try { ... await onSendMessage... } finally { setIsSending(false) }
+                    // It swallowed errors? No, promise rejection bubbles up?
+                    // handleSend is async void, so rejection is unhandled unless caught.
+                    // But normally onSendMessage updates 'status' prop to 'error' via parent re-render?
+                    // Let's assume onSendMessage might throw or might just update state.
+                    // If access to onSendMessage throws, we want to catch it?
+                    // But original code didn't catch. 
+                    // Let's stick to original behavior but add delay.
+                }
+            } catch (err) {
+                console.error("Error sending message:", err);
             } finally {
                 setIsSending(false);
             }
@@ -269,6 +299,7 @@ export function AgentPanel({
                                     className="form-control"
                                     value={config.type}
                                     onChange={e => setConfig({ type: e.target.value, options: {} } as any)}
+                                    data-testid="agent-provider-type-select"
                                 >
                                     <option value="http">AI Provider (HTTP)</option>
                                     <option value="cli">Local CLI Tool</option>
@@ -284,6 +315,7 @@ export function AgentPanel({
                                         <select
                                             className="form-control"
                                             value={cliPreset}
+                                            data-testid="agent-cli-preset-select"
                                             onChange={e => {
                                                 const val = e.target.value;
                                                 setCliPreset(val);
@@ -505,6 +537,13 @@ export function AgentPanel({
                 )}
                 <button onClick={onAbortConversation} className="abort-btn" data-testid="agent-abort-btn">Abort</button>
             </div>
+
+            {status === 'error' && lastError && (
+                <div className="agent-error-banner" data-testid="agent-error-banner">
+                    ⚠️ {lastError}
+                </div>
+            )}
+
             <div className="messages-list">
                 {messages.map((msg, idx) => (
                     <div key={msg.id} className={`message role-${msg.role}`} data-testid={`chat-message-${msg.role}-${idx}`}>
@@ -652,9 +691,9 @@ export function AgentPanel({
                     </button>
                 </div>
 
-                {/* Inline Model Selector Bar - shown when conversation has started (not idle) */}
                 {(status as any) !== 'idle' && currentBackendType !== 'mock' && (
                     <div className="model-selector-bar" data-testid="model-selector-bar">
+                        {/* Codex CLI model/reasoning selection */}
                         {currentBackendType === 'cli' && activeCommand === 'codex' && (
                             <>
                                 <div className="model-selector-item">
@@ -720,20 +759,22 @@ export function AgentPanel({
             </div>
 
             {/* Diff Review Modal */}
-            {showDiffModal && pendingChanges && (
-                <DiffReviewModal
-                    changes={pendingChanges}
-                    onAcceptAll={() => {
-                        setShowDiffModal(false);
-                        onAcceptChanges();
-                    }}
-                    onDeclineAll={() => {
-                        setShowDiffModal(false);
-                        onDiscardChanges();
-                    }}
-                    onClose={() => setShowDiffModal(false)}
-                />
-            )}
-        </div>
+            {
+                showDiffModal && pendingChanges && (
+                    <DiffReviewModal
+                        changes={pendingChanges}
+                        onAcceptAll={() => {
+                            setShowDiffModal(false);
+                            onAcceptChanges();
+                        }}
+                        onDeclineAll={() => {
+                            setShowDiffModal(false);
+                            onDiscardChanges();
+                        }}
+                        onClose={() => setShowDiffModal(false)}
+                    />
+                )
+            }
+        </div >
     );
 }

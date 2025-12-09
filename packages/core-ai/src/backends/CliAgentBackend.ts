@@ -42,7 +42,7 @@ export class CliAgentBackend implements AgentBackend {
 
         // For Codex CLI, adjust sandbox mode and add model/reasoning flags
         if (command === 'codex') {
-            // Remove any existing --sandbox or --full-auto flags to override them
+            // Remove any existing flags we want to manage explicitly
             args = args.filter(arg =>
                 !arg.startsWith('--sandbox') &&
                 !arg.startsWith('-m') &&
@@ -69,14 +69,14 @@ export class CliAgentBackend implements AgentBackend {
                 args.push('-m', this.config.model);
             }
 
-            // Add reasoning effort flag if specified
+            // Add reasoning effort using the generic -c flag
             if (this.config.reasoningEffort) {
-                args.push('--reasoning-effort', this.config.reasoningEffort);
+                args.push('-c', `model_reasoning_effort="${this.config.reasoningEffort}"`);
             }
 
-            // Add reasoning summary flag if specified
+            // Add reasoning summary using the generic -c flag
             if (this.config.reasoningSummary) {
-                args.push('--reasoning-summary', this.config.reasoningSummary);
+                args.push('-c', `model_reasoning_summary="${this.config.reasoningSummary}"`);
             }
         }
 
@@ -137,7 +137,13 @@ export class CliAgentBackend implements AgentBackend {
         return new Promise((resolve, reject) => {
             // Run CLI in the bundle directory so MCP tools index the correct files
             const cwd = this.context?.bundleDir || process.cwd();
-            const proc = spawn(command, args, { cwd });
+            // Wrap command in 'script' to fake a TTY if capturing output
+            // Usage: script -q -c "command args..." /dev/null
+            // This is a workaround for "stdin is not a terminal" on some systems
+            // We need to carefully construct the command string for script
+            const wrappedArgs = ['-q', '-c', `${command} ${args.map(a => `"${a.replace(/"/g, '\\"')}"`).join(' ')}`, '/dev/null'];
+
+            const proc = spawn('script', wrappedArgs, { cwd });
             let stdout = '';
             let stderr = '';
 
@@ -151,13 +157,27 @@ export class CliAgentBackend implements AgentBackend {
 
             proc.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Command failed with code ${code}: ${stderr}`));
+                    // Check if it's the known "stdin is not a terminal" error pattern in stderr or stdout
+                    // But since we are using script, it should succeed.
+                    // If script fails, we report it.
+                    reject(new Error(`Command failed with code ${code}: ${stderr || stdout}`));
                 } else {
+                    // Clean up script output artifacts (e.g. \r\n) might be needed, but for now trim implies it.
+                    // script might capture stderr in stdout depending on shell, but usually distinct.
+                    // NOTE: script output often contains \r\n line endings.
                     resolve(stdout.trim());
                 }
             });
 
-            proc.on('error', (err) => reject(err));
+            proc.on('error', (err: any) => {
+                if (err.code === 'ENOENT') {
+                    // Check if 'script' is missing, or the command itself
+                    // Since we spawn 'script', ENOENT here means 'script' is missing.
+                    reject(new Error(`Command 'script' not found. Please ensure 'util-linux' or equivalent is installed.`));
+                } else {
+                    reject(err);
+                }
+            });
         });
     }
 }

@@ -751,6 +751,7 @@ export function AppShell() {
             status={conversation.status}
             pendingChanges={conversation.pendingChanges}
             activeDecision={conversation.activeDecision}
+            lastError={conversation.lastError}
             onSendMessage={handleAgentMessage}
             onStartConversation={handleAgentStart}
             onAbortConversation={handleAgentAbort}

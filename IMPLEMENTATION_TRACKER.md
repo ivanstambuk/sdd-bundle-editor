@@ -76,7 +76,7 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ---
 
-### 8.1 – Conversational Agent Interface
+### 8.1 – Conversational Agent Interface [DONE]
 
 - [x] Design and implement a chat/prompt panel in the UI:
   - [x] Text input for user prompts
@@ -188,7 +188,7 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 ---
 
-### 8.6 – Testing and Documentation
+### 8.6 – Testing and Documentation [DONE]
 
 - [x] Add unit tests for conversation protocol and state machine (`ChangeApplicationService.test.ts`)
 - [x] Add integration tests for agent backend communication

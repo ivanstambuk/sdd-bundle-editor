@@ -4,63 +4,74 @@
    CSS Variables / Design Tokens
    ======================================== */
 :root {
-  /* Colors - Dark Theme */
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-bg-hover: #475569;
+  /* Colors - Antigravity Dark Theme */
+  --color-bg-primary: #1a1b26;
+  --color-bg-secondary: #16161e;
+  --color-bg-tertiary: #24283b;
+  --color-bg-hover: #2f3549;
 
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-text-primary: #c0caf5;
+  --color-text-secondary: #9aa5ce;
+  --color-text-muted: #565f89;
 
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-accent-light: rgba(59, 130, 246, 0.15);
+  --color-accent: #7aa2f7;
+  --color-accent-hover: #7dcfff;
+  --color-accent-light: rgba(122, 162, 247, 0.15);
 
-  --color-success: #22c55e;
-  --color-success-bg: rgba(34, 197, 94, 0.15);
-  --color-warning: #f59e0b;
-  --color-warning-bg: rgba(245, 158, 11, 0.15);
-  --color-error: #ef4444;
-  --color-error-bg: rgba(239, 68, 68, 0.15);
+  --color-success: #9ece6a;
+  --color-success-bg: rgba(158, 206, 106, 0.15);
+  --color-warning: #e0af68;
+  --color-warning-bg: rgba(224, 175, 104, 0.15);
+  --color-error: #f7768e;
+  --color-error-bg: rgba(247, 118, 142, 0.15);
 
-  --color-border: #334155;
-  --color-border-light: #475569;
+  --color-border: #24283b;
+  --color-border-light: #2f3549;
 
-  /* Entity type colors */
-  --color-feature: #8b5cf6;
-  --color-requirement: #06b6d4;
-  --color-task: #f97316;
-  --color-adr: #10b981;
-  --color-profile: #ec4899;
-  --color-fixture: #f59e0b;
+  /* Entity type colors - Muted palette */
+  --color-feature: #bb9af7;
+  --color-requirement: #7dcfff;
+  --color-task: #ff9e64;
+  --color-adr: #9ece6a;
+  --color-profile: #f7768e;
+  --color-fixture: #e0af68;
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+  /* Spacing - Balanced Density (15% reduction) */
+  --spacing-xs: 0.2rem;
+  /* ~3px, was 4px */
+  --spacing-sm: 0.4rem;
+  /* ~6px, was 8px */
+  --spacing-md: 0.75rem;
+  /* ~12px, was 16px */
+  --spacing-lg: 1.2rem;
+  /* ~19px, was 24px */
+  --spacing-xl: 1.7rem;
+  /* ~27px, was 32px */
 
-  /* Typography */
+  /* Typography - Balanced Density (14px base) */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
+  --font-size-xs: 0.6875rem;
+  /* 11px */
+  --font-size-sm: 0.8125rem;
+  /* 13px */
+  --font-size-md: 0.875rem;
+  /* 14px - new base */
+  --font-size-lg: 1rem;
+  /* 16px */
+  --font-size-xl: 1.125rem;
+  /* 18px */
   --font-size-2xl: 1.5rem;
+  /* 24px */
 
   /* Border radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+  /* Shadows - Slightly stronger for darker bg */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -79,8 +90,10 @@
 }
 
 html {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 14px;
+  /* Balanced density base */
+  line-height: 1.45;
+  /* Tighter for more content */
 }
 
 body {
@@ -111,51 +124,105 @@ body {
   grid-template-columns: 280px 1fr 420px;
 }
 
-/* Header */
+/* Header - VS Code Minimal Style */
 .app-header {
   grid-column: 1 / -1;
   background: var(--color-bg-secondary);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-md) var(--spacing-lg);
+  height: 48px;
+  padding: 0 var(--spacing-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--spacing-md);
 }
 
-.app-logo {
+.header-left,
+.header-right {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
 }
 
-.app-logo-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-feature));
-  border-radius: var(--radius-md);
+/* Breadcrumb Navigation */
+.breadcrumb {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: var(--font-size-lg);
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
-.app-title {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.breadcrumb-item {
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb-current {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.breadcrumb-separator {
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+/* Icon Buttons */
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.btn-icon.active {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hamburger-menu {
+  font-size: 20px;
+  padding: 0;
 }
 
 /* Sidebar */
 .sidebar {
+  position: relative;
   background: var(--color-bg-secondary);
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  width: 280px;
+  transition: width var(--transition-normal);
+}
+
+.sidebar.collapsed {
+  width: 50px;
+}
+
+/* Hide sidebar content when collapsed */
+.sidebar.collapsed .sidebar-section {
+  display: none;
 }
 
 .sidebar-section {
@@ -164,6 +231,23 @@ body {
 
 .sidebar-section+.sidebar-section {
   border-top: 1px solid var(--color-border);
+}
+
+/* Sidebar resize handle */
+.sidebar-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background var(--transition-fast);
+  z-index: 10;
+}
+
+.sidebar-resize-handle:hover {
+  background: var(--color-accent);
 }
 
 /* Main Content Area */
@@ -294,83 +378,105 @@ body {
 }
 
 /* ========================================
-   Entity Navigator
+   Entity Navigator - VS Code Compact Style
    ======================================== */
 .entity-navigator h2 {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-md);
+  padding: 0 var(--spacing-sm);
 }
 
 .entity-group {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 2px;
 }
 
+/* Group Header - Clickable button style */
 .entity-group-header {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  gap: 6px;
+  padding: 4px var(--spacing-sm);
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  /* 13px */
+  font-weight: 500;
   color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xs);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  user-select: none;
 }
 
-.entity-group-header::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.entity-group-header:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+/* Chevron icon with rotation animation */
+.entity-group-chevron {
+  width: 14px;
+  font-size: var(--font-size-sm);
+  transition: transform var(--transition-fast);
   flex-shrink: 0;
 }
 
-.entity-group[data-type="Feature"] .entity-group-header::before {
-  background: var(--color-feature);
+.entity-group.collapsed .entity-group-chevron {
+  transform: rotate(-90deg);
 }
 
-.entity-group[data-type="Requirement"] .entity-group-header::before {
-  background: var(--color-requirement);
+/* Entity type icon */
+.entity-group-icon {
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-.entity-group[data-type="Task"] .entity-group-header::before {
-  background: var(--color-task);
+/* Group name */
+.entity-group-name {
+  flex: 1;
 }
 
-.entity-group[data-type="ADR"] .entity-group-header::before {
-  background: var(--color-adr);
-}
-
-.entity-group[data-type="Profile"] .entity-group-header::before {
-  background: var(--color-profile);
-}
-
-.entity-group[data-type="Fixture"] .entity-group-header::before {
-  background: var(--color-fixture);
+/* Count badge */
+.entity-group-count {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  /* 11px */
+  color: var(--color-text-muted);
+  background: var(--color-bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .entity-list {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .entity-item {
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
+/* Entity button - VS Code compact style */
 .entity-btn {
   display: block;
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  padding-left: calc(var(--spacing-md) + 16px);
+  padding: 4px var(--spacing-sm) 4px 32px;
+  /* Indent for hierarchy */
   text-align: left;
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+  /* 13px */
   font-family: inherit;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -384,7 +490,12 @@ body {
 .entity-btn.selected {
   background: var(--color-accent-light);
   color: var(--color-accent);
-  font-weight: 600;
+  font-weight: 500;
+}
+
+/* Remove old colored dots - now using icons */
+.entity-group-header::before {
+  display: none;
 }
 
 /* ========================================
@@ -1492,9 +1603,11 @@ body {
   0% {
     box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
@@ -2209,4 +2322,170 @@ input:checked+.slider:before {
   font-style: italic;
   font-size: 0.8rem;
   color: var(--color-text-secondary);
+}/* ========================================
+   Mobile Responsive Layout
+   ======================================== */
+
+@media (max-width: 768px) {
+
+    /* Single column layout on mobile */
+    .app-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: 48px 1fr auto;
+    }
+
+    .app-shell.with-agent-panel {
+        grid-template-columns: 1fr;
+    }
+
+    /* Hide sidebar by default on mobile, show as overlay */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 48px;
+        bottom: 0;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform var(--transition-normal);
+        box-shadow: var(--shadow-lg);
+        width: 280px !important;
+        /* Override inline width */
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    /* Hide resize handle on mobile */
+    .sidebar-resize-handle {
+        display: none;
+    }
+
+    /* Backdrop overlay when sidebar is open */
+    .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+
+    .sidebar- backdrop.active {
+        display: block;
+    }
+
+    /* Agent panel as bottom sheet on mobile */
+    .right-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80vh;
+        max-height: 80vh;
+        background: var(--color-bg-secondary);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.6);
+        transform: translateY(100%);
+        transition: transform var(--transition-normal);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .app-shell.with-agent-panel .right-sidebar {
+        transform: translateY(0);
+    }
+
+    /* Bottom sheet handle */
+    .right-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: var(--color-text-muted);
+        border-radius: 2px;
+    }
+
+    /* Mobile header adjustments */
+    .header-left,
+    .header-right {
+        gap: 4px;
+    }
+
+    .breadcrumb {
+        font-size: var(--font-size-xs);
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Adjust icon button sizes for touch */
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    /* Bottom panel - reduce height on mobile */
+    .bottom-panel {
+        max-height: 200px;
+    }
+
+    /* Main content - adjust padding */
+    .content-area {
+        padding: var(--spacing-md);
+    }
+
+    /* Entity details - stack layouts */
+    .entity-details {
+        padding: var(--spacing-md);
+    }
+
+    /* Agent panel - mobile optimizations */
+    .agent-panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .agent-messages {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .agent-input-area {
+        flex-shrink: 0;
+    }
+
+    /* Hide read-only toggle text on mobile */
+    .read-only-toggle span {
+        display: none;
+    }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    /* Adjust grid for medium screens */
+    .app-shell {
+        grid-template-columns: 240px 1fr;
+    }
+
+    .app-shell.with-agent-panel {
+        grid-template-columns: 240px 1fr 360px;
+    }
+
+    /* Slightly smaller sidebar */
+    .sidebar {
+        width: 240px;
+    }
+
+    /* Reduce font sizes slightly */
+    html {
+        font-size: 13px;
+    }
 }

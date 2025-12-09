@@ -6,6 +6,8 @@ import { DiagnosticsPanel } from './components/DiagnosticsPanel';
 import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
 import { AgentPanel } from './components/AgentPanel';
 import { ReadOnlyToggle } from './components/ReadOnlyToggle';
+import { Breadcrumb } from './components/Breadcrumb';
+import { ResizableSidebar } from './components/ResizableSidebar';
 import type { ConversationState } from '@sdd-bundle-editor/core-ai';
 import { createLogger } from './utils/logger';
 
@@ -142,6 +144,7 @@ export function AppShell() {
   // Agent state
   const [conversation, setConversation] = useState<ConversationState>({ status: 'idle', messages: [] });
   const [showAgentPanel, setShowAgentPanel] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Git health state for mid-conversation monitoring
   const [gitHealth, setGitHealth] = useState<AgentHealth | null>(null);
@@ -502,11 +505,19 @@ export function AppShell() {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header - VS Code Minimal Style */}
       <header className="app-header">
         <div className="header-left">
-          <span className="app-logo">📦</span>
-          <h1 className="app-title">SDD Bundle Editor</h1>
+          <button
+            type="button"
+            className="btn-icon hamburger-menu"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            data-testid="sidebar-toggle"
+          >
+            ☰
+          </button>
+          <Breadcrumb bundle={bundle} selectedEntity={selectedEntity} />
         </div>
         <div className="header-right">
           <ReadOnlyToggle isReadOnly={isReadOnly} onToggle={setIsReadOnly} />
@@ -514,38 +525,50 @@ export function AppShell() {
           {bundle?.domainMarkdown && (
             <button
               type="button"
-              className={`btn ${viewMode === 'domain' ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn-icon ${viewMode === 'domain' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('domain');
                 setSelectedEntity(null);
               }}
+              title="Domain Knowledge"
             >
-              📖 Domain Knowledge
+              📖
             </button>
           )}
 
           <button
             type="button"
-            className={`btn ${showAgentPanel ? 'btn-primary' : 'btn-secondary'}`}
+            className={`btn-icon ${showAgentPanel ? 'active' : ''}`}
             onClick={() => setShowAgentPanel(!showAgentPanel)}
             title="Toggle Agent Panel (Ctrl+J)"
+            data-testid="agent-toggle"
           >
-            🤖 Agent
+            🤖
           </button>
-          <button type="button" className="btn btn-primary" onClick={handleCompile} disabled={loading}>
-            Compile Spec
+          <button
+            type="button"
+            className="btn-icon"
+            onClick={handleCompile}
+            disabled={loading}
+            title="Compile Spec"
+            data-testid="compile-btn"
+          >
+            ⚡
           </button>
-          <button type="button" className="btn btn-secondary" onClick={handleAiGenerate} disabled={loading}>
-            ✨ AI Generate
+          <button
+            type="button"
+            className="btn-icon"
+            onClick={handleAiGenerate}
+            disabled={loading}
+            title="AI Generate"
+          >
+            ✨
           </button>
-          <div className="bundle-path">
-            {bundleDir}
-          </div>
         </div>
       </header>
 
       {/* Sidebar */}
-      <aside className="sidebar">
+      <ResizableSidebar isCollapsed={sidebarCollapsed}>
         <div className="sidebar-section">
           {loading && <span className="status-loading">Loading...</span>}
           {error && <div className="status-error">Error: {error}</div>}
@@ -588,7 +611,7 @@ export function AppShell() {
             }}
           />
         </div>
-      </aside>
+      </ResizableSidebar>
 
       {/* Main Content */}
       <main className="main-content">

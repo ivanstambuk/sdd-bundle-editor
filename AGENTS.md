@@ -3,6 +3,27 @@
 This is a pnpm-based TypeScript monorepo that follows `sdd-bundle-editor-spec.md`.  
 Please keep the structure and internal dependencies consistent with what is already in place.
 
+---
+
+## Core Architecture Principle: "Editor is Dumb, AI is Smart"
+
+> **The editor is a schema-driven viewer/editor. It does NOT embed domain intelligence.**
+
+| Responsibility | Owner |
+|----------------|-------|
+| Rendering entities and relations | **Editor** (dumb) |
+| Traceability analysis, coverage checks | **AI** (via prompts) |
+| Governance gap detection | **AI** (via prompts) |
+| Entity graph reasoning | **AI** (semantic understanding) |
+
+**Implications:**
+- Do NOT create programmatic "analysis services" that hard-code domain logic
+- Traceability is **process-based** (AI creates linked tasks/plans), not API-based
+- Intelligence lives in **configurable prompts**, not in TypeScript code
+- The editor should work with ANY bundle schema, not just SDD-specific entities
+
+---
+
 **Mandatory Verification**:
 After any completed (meaningful, self-contained) change, you MUST run the full test suite to verify no regressions:
 1. `pnpm test` (Unit/Package tests)

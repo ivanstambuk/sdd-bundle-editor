@@ -138,22 +138,25 @@ This keeps momentum while allowing course correction.
 
 ---
 
-### Phase 9: Agent Operations Enhancement
-- Traceability analysis, coverage checking
-- Telemetry schema generation from scenarios
-- Diagram generation/refresh
-- Governance gap analysis
-- Threat coverage validation
+### Phase 9: Agent Operations Enhancement (DEFERRED)
+- Governance prompt templates (configurable, not hard-coded logic)
+- Requires task/implementation-plan generation feature first
+- Traceability is AI-driven, not programmatic
 
-**Complexity**: High | **Dependencies**: Phase 1-8
+**Complexity**: Medium | **Dependencies**: Phase 1-8, task generation feature
 
 ---
 
-### Phase 10: External Spec References
+### Phase 10: External Spec References (DEFERRED)
 - Add `external_spec_ref` entity
 - Spec type detection (openapi3/asyncapi2/protobuf/graphql)
 - Location/version/hash tracking
 - Reverse engineering: OpenAPI → protocol + data_schema
+
+**Future Enhancement: OpenAPI Protocol Binding**
+- Protocol binding = `{openapi_filename}#{operationId}`
+- Example: `user-api.yaml#createUser` → no manual endpoint/method definition
+- Spec file embedded in bundle or linked externally
 
 **Complexity**: High | **Dependencies**: Phase 2
 

@@ -35,3 +35,6 @@ playwright-report/
 *.tmp
 *.swp
 artifacts/**/*.png
+
+# PlantUML (download on setup)
+tools/plantuml/plantuml.jar

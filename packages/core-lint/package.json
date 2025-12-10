@@ -8,5 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest",
     "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
   }
 }

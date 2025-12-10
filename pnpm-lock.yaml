@@ -152,7 +152,11 @@ importers:
         specifier: ^6.10.0
         version: 6.10.0(ws@8.18.3)(zod@3.25.76)
 
-  packages/core-lint: {}
+  packages/core-lint:
+    dependencies:
+      yaml:
+        specifier: ^2.5.0
+        version: 2.8.2
 
   packages/core-model:
     dependencies:

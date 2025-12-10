@@ -1,12 +1,16 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { parse as parseYaml } from 'yaml';
 import {
   type CoverageRule,
+  type EnumValueRule,
   type HasLinkRule,
   type LintConfig,
   type LintDiagnostic,
   type LintRule,
+  type QualityCheckRule,
   type RegexRule,
+  type RequiredFieldRule,
 } from './types';
 
 interface LintEntity {
@@ -45,8 +49,10 @@ export async function loadLintConfig(bundleDir: string, configRelPath?: string):
   const fullPath = path.join(bundleDir, configRelPath);
   try {
     const raw = await fs.readFile(fullPath, 'utf8');
-    // Lint config is YAML in spec, but we can start with JSON or very small YAML parser later.
-    // For now, expect JSON-like content; this will evolve when we add YAML parsing dependency.
+    // Support both YAML and JSON lint config files
+    if (configRelPath.endsWith('.yaml') || configRelPath.endsWith('.yml')) {
+      return parseYaml(raw) as LintConfig;
+    }
     return JSON.parse(raw) as LintConfig;
   } catch {
     return undefined;
@@ -178,6 +184,152 @@ function runNoBrokenRefRule(bundle: LintBundle, ruleName: string): LintDiagnosti
   return diagnostics;
 }
 
+function runRequiredFieldRule(bundle: LintBundle, ruleName: string, rule: RequiredFieldRule): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  for (const entityType of rule.targetEntities) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      const value = (entity.data as Record<string, unknown>)[rule.field];
+      const isEmpty = value === undefined || value === null ||
+        (typeof value === 'string' && value.trim().length === 0) ||
+        (Array.isArray(value) && value.length === 0);
+
+      if (isEmpty) {
+        diagnostics.push({
+          code: ruleName,
+          message: rule.message ?? `Required field "${rule.field}" is missing or empty on ${entityType} "${entity.id}"`,
+          severity: ruleSeverity(rule),
+          entityType,
+          entityId: entity.id,
+          field: rule.field,
+          source: 'lint',
+        });
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
+function runEnumValueRule(bundle: LintBundle, ruleName: string, rule: EnumValueRule): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  for (const entityType of rule.targetEntities) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      const value = (entity.data as Record<string, unknown>)[rule.field];
+      if (value !== undefined && value !== null && typeof value === 'string') {
+        if (!rule.allowedValues.includes(value)) {
+          diagnostics.push({
+            code: ruleName,
+            message: rule.message ?? `Field "${rule.field}" has invalid value "${value}". Allowed: ${rule.allowedValues.join(', ')}`,
+            severity: ruleSeverity(rule),
+            entityType,
+            entityId: entity.id,
+            field: rule.field,
+            source: 'lint',
+          });
+        }
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
+function runQualityCheckRule(bundle: LintBundle, ruleName: string, rule: QualityCheckRule): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  for (const entityType of rule.targetEntities) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      const data = entity.data as Record<string, unknown>;
+
+      // Atomic check: description should be concise (< 500 chars) and focused
+      if (rule.checks.atomic) {
+        const desc = data.description;
+        if (typeof desc === 'string' && desc.length > 500) {
+          diagnostics.push({
+            code: `${ruleName}.atomic`,
+            message: `${entityType} "${entity.id}" may not be atomic: description exceeds 500 characters. Consider splitting into smaller requirements.`,
+            severity: ruleSeverity(rule),
+            entityType,
+            entityId: entity.id,
+            field: 'description',
+            source: 'lint',
+          });
+        }
+      }
+
+      // Traceable check: should have featureIds or covered_by_scenarios
+      if (rule.checks.traceable) {
+        const featureIds = data.featureIds;
+        const scenarios = data.covered_by_scenarios;
+        const hasFeatures = featureIds && Array.isArray(featureIds) && featureIds.length > 0;
+        const hasScenarios = scenarios && Array.isArray(scenarios) && scenarios.length > 0;
+        if (!hasFeatures && !hasScenarios) {
+          diagnostics.push({
+            code: `${ruleName}.traceable`,
+            message: `${entityType} "${entity.id}" has no traceability links (featureIds or covered_by_scenarios is empty).`,
+            severity: ruleSeverity(rule),
+            entityType,
+            entityId: entity.id,
+            field: 'featureIds',
+            source: 'lint',
+          });
+        }
+      }
+
+      // Complete check: required fields should be filled
+      if (rule.checks.complete) {
+        const requiredFields = ['title', 'description', 'kind', 'category'];
+        for (const field of requiredFields) {
+          const val = data[field];
+          if (val === undefined || val === null || (typeof val === 'string' && val.trim() === '')) {
+            diagnostics.push({
+              code: `${ruleName}.complete`,
+              message: `${entityType} "${entity.id}" is incomplete: missing "${field}" field.`,
+              severity: ruleSeverity(rule),
+              entityType,
+              entityId: entity.id,
+              field,
+              source: 'lint',
+            });
+          }
+        }
+      }
+
+      // Verifiable check: should have acceptanceCriteria OR featureIds
+      if (rule.checks.verifiable) {
+        const criteria = data.acceptanceCriteria;
+        const featureIds = data.featureIds;
+        const hasCriteria = criteria && Array.isArray(criteria) && criteria.length > 0;
+        const hasFeatures = featureIds && Array.isArray(featureIds) && featureIds.length > 0;
+
+        if (!hasCriteria && !hasFeatures) {
+          diagnostics.push({
+            code: `${ruleName}.verifiable`,
+            message: `${entityType} "${entity.id}" may not be verifiable: no acceptanceCriteria and no linked features.`,
+            severity: ruleSeverity(rule),
+            entityType,
+            entityId: entity.id,
+            source: 'lint',
+          });
+        }
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
 export function runLintRules(bundle: LintBundle, config: LintConfig | undefined): LintDiagnostic[] {
   if (!config?.rules) return [];
   const diagnostics: LintDiagnostic[] = [];
@@ -196,6 +348,15 @@ export function runLintRules(bundle: LintBundle, config: LintConfig | undefined)
         break;
       case 'no-broken-ref':
         diagnostics.push(...runNoBrokenRefRule(bundle, name));
+        break;
+      case 'required-field':
+        diagnostics.push(...runRequiredFieldRule(bundle, name, rule));
+        break;
+      case 'enum-value':
+        diagnostics.push(...runEnumValueRule(bundle, name, rule));
+        break;
+      case 'quality-check':
+        diagnostics.push(...runQualityCheckRule(bundle, name, rule));
         break;
       default:
         break;

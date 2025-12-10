@@ -460,8 +460,14 @@ export function AppShell() {
         body: JSON.stringify({}), // Empty body to satisfy content-type validation
       });
 
-      // Step 3: Refresh status to update UI
-      const data = await fetchJson<{ state: ConversationState }>('/agent/status');
+      // Step 3: Auto-start a new conversation (no need to click "Start Conversation" again)
+      const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
+        method: 'POST',
+        body: JSON.stringify({
+          bundleDir: bundleDir,
+          readOnly: isReadOnly
+        }),
+      });
       setConversation(data.state);
 
       // Step 4: Refresh bundle to reflect reverted changes

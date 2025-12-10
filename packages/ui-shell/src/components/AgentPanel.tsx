@@ -153,13 +153,14 @@ export function AgentPanel({
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, status, activeDecision]);
 
-    // Auto-focus input when conversation starts
+    // Auto-focus input when conversation starts or when new chat begins (messages cleared)
     useEffect(() => {
         if (status === 'active') {
-            // Small delay to ensure the textarea is rendered
-            setTimeout(() => inputRef.current?.focus(), 100);
+            // Focus immediately for new/empty conversations, with delay for transitions
+            const delay = messages.length === 0 ? 50 : 100;
+            setTimeout(() => inputRef.current?.focus(), delay);
         }
-    }, [status]);
+    }, [status, messages.length === 0]); // Also trigger when messages become empty (new chat)
 
     const handleSend = async () => {
         if (inputText.trim() && !isSending) {
@@ -731,8 +732,7 @@ export function AgentPanel({
                                             return caps?.supportedReasoningEfforts.map((effort: CodexReasoningEffort) => (
                                                 <option key={effort} value={effort}>
                                                     {effort === 'xhigh' ? 'XHigh' :
-                                                        effort === 'none' ? 'None' :
-                                                            effort.charAt(0).toUpperCase() + effort.slice(1)}
+                                                        effort.charAt(0).toUpperCase() + effort.slice(1)}
                                                 </option>
                                             ));
                                         })()}

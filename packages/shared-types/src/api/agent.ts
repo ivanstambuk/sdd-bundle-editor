@@ -90,9 +90,15 @@ export type CodexModel =
 /**
  * Reasoning effort levels for Codex CLI.
  * Controls computational depth for reasoning tasks.
- * Note: 'xhigh' is only available for gpt-5.1-codex-max
+ * 
+ * Official values per Codex docs:
+ * - 'minimal' - Minimize reasoning
+ * - 'low' - Low reasoning effort
+ * - 'medium' - Default value
+ * - 'high' - High reasoning effort
+ * - 'xhigh' - Extra high (only gpt-5.1-codex-max)
  */
-export type CodexReasoningEffort = 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
+export type CodexReasoningEffort = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
 
 /**
  * Reasoning summary verbosity for Codex CLI.
@@ -119,36 +125,37 @@ export interface ModelCapabilities {
 
 /**
  * Static map of model capabilities for UI dynamic rendering.
+ * Based on official Codex CLI documentation.
  */
 export const CODEX_MODEL_CAPABILITIES: Record<CodexModel, ModelCapabilities> = {
     'gpt-5.1-codex-max': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high', 'xhigh'],
         supportsReasoningSummary: true,
     },
     'gpt-5.1-codex': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high'],
         supportsReasoningSummary: true,
     },
     'gpt-5.1': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high'],
         supportsReasoningSummary: true,
     },
     'gpt-5.1-codex-mini': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['none', 'minimal', 'low', 'medium', 'high'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high'],
         supportsReasoningSummary: true,
     },
     'o3': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['low', 'medium', 'high'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high'],
         supportsReasoningSummary: true,
     },
     'o4-mini': {
         supportsReasoningEffort: true,
-        supportedReasoningEfforts: ['low', 'medium', 'high'],
+        supportedReasoningEfforts: ['minimal', 'low', 'medium', 'high'],
         supportsReasoningSummary: true,
     },
 };

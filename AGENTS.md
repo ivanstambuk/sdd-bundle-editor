@@ -152,6 +152,16 @@ From the repo root:
 
 Use the external sample bundle (default: `/home/ivan/dev/sdd-sample-bundle`) as the primary end-to-end sanity check when touching `core-model`, `core-schema`, or `core-lint`.
 
+**Accessing the external sample bundle:**
+- The sample bundle is **outside the workspace**, so `view_file` and `list_dir` will fail with workspace access errors.
+- **Use shell commands instead**: Run `cat`, `ls`, or file editing tools with the Cwd set to the workspace root and pass the full external path as an argument.
+  ```bash
+  # From repo root (Cwd: /home/ivan/dev/sdd-bundle-editor)
+  cat /home/ivan/dev/sdd-sample-bundle/sdd-bundle.yaml
+  ls -la /home/ivan/dev/sdd-sample-bundle/schemas
+  ```
+- For creating/editing files in the sample bundle, use `echo` with heredocs or `cat` with stdin redirection.
+
 ---
 
 ### Backend server

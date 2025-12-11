@@ -15,7 +15,8 @@ import { Page, expect } from '@playwright/test';
  * 2. Waits for the app to load
  * 3. Configures the mock agent backend
  * 
- * After calling this, the agent is in 'idle' state and ready to start conversations.
+ * NOTE: After saving config, the conversation auto-starts, so the agent
+ * transitions to 'active' state automatically.
  * 
  * @param page - Playwright page object
  * @param bundleDir - Path to the bundle directory to load
@@ -24,8 +25,8 @@ import { Page, expect } from '@playwright/test';
  * ```typescript
  * test('my agent test', async ({ page }) => {
  *     await setupMockAgent(page, BUNDLE_DIR);
- *     await page.click('[data-testid="agent-start-btn"]');
- *     // ... rest of test
+ *     // Agent is now active and ready for messages
+ *     await sendAgentMessage(page, 'Hello');
  * });
  * ```
  */
@@ -34,24 +35,40 @@ export async function setupMockAgent(page: Page, bundleDir: string): Promise<voi
     await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true&resetAgent=true`);
     await page.waitForSelector('.app-shell', { timeout: 10000 });
 
-    // Configure mock agent via UI
+    // Configure mock agent via UI - this auto-starts the conversation after save
     await page.click('[data-testid="agent-settings-btn"]');
     await page.selectOption('.form-control', 'mock');
     await page.click('[data-testid="agent-save-config-btn"]');
 
-    // Wait for agent status to be ready
-    await page.waitForSelector('[data-testid="agent-status-badge"]', { timeout: 5000 });
+    // Wait for conversation to be active (config save auto-starts conversation)
+    await page.waitForSelector('[data-testid="agent-status-badge"]:has-text("active")', { timeout: 10000 });
 }
 
 /**
- * Starts an agent conversation after mock agent is set up.
+ * Ensures agent conversation is in active state.
+ * 
+ * If conversation is already active (e.g., after setupMockAgent auto-start),
+ * this function is a no-op. Otherwise, it clicks the start button.
  * 
  * @param page - Playwright page object
  * @param timeout - Timeout for waiting for active status (default 10000ms)
  */
 export async function startAgentConversation(page: Page, timeout = 10000): Promise<void> {
-    await page.click('[data-testid="agent-start-btn"]');
-    await page.waitForSelector('[data-testid="agent-status-badge"]:has-text("active")', { timeout });
+    // Check if already active (setupMockAgent auto-starts conversation now)
+    const statusBadge = page.locator('[data-testid="agent-status-badge"]');
+    const currentStatus = await statusBadge.textContent();
+
+    if (currentStatus === 'active') {
+        // Already active, nothing to do
+        return;
+    }
+
+    // Need to start conversation
+    const startBtn = page.locator('[data-testid="agent-start-btn"]');
+    if (await startBtn.isVisible()) {
+        await startBtn.click();
+        await page.waitForSelector('[data-testid="agent-status-badge"]:has-text("active")', { timeout });
+    }
 }
 
 /**
@@ -87,12 +104,15 @@ export async function waitForPendingChanges(page: Page, timeout = 15000): Promis
 /**
  * Accepts the current pending changes.
  * 
+ * After accepting, pending changes block disappears and status returns to 'active'.
+ * (Mock agent shows 'committed' briefly then returns to 'active')
+ * 
  * @param page - Playwright page object
  */
 export async function acceptPendingChanges(page: Page): Promise<void> {
     await page.click('[data-testid="agent-accept-btn"]');
-    // Wait for status to indicate committed
-    await expect(page.locator('[data-testid="agent-status-badge"]')).toHaveText(/committed/i, { timeout: 30000 });
+    // Wait for pending changes to be cleared (indicates accept was processed)
+    await expect(page.locator('[data-testid="pending-changes-block"]')).not.toBeVisible({ timeout: 30000 });
 }
 
 /**

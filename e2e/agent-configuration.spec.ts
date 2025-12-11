@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { getSampleBundlePath } from './bundle-test-fixture';
+// NOTE: This test intentionally uses custom setup to test CLI-specific configuration flow
+// Other agent tests should prefer using the shared fixture from ./fixtures/agent-test-fixture
 
 // Run agent tests serially since they share backend server state
 test.describe.serial('Agent Configuration', () => {
     test('should configure CLI backend and verify echo response', async ({ page }) => {
         const bundleDir = getSampleBundlePath();
 
-        // 1. Navigate with resetAgent=true to ensure fresh state
+        // Navigate with resetAgent=true to ensure fresh state
         await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&debug=true&resetAgent=true`);
 
         // Wait for app to load

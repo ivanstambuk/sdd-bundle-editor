@@ -1,4 +1,16 @@
-import { useEffect, useState, useCallback } from 'react';
+/**
+ * AppShell - Main application shell component.
+ * 
+ * This component composes the main UI layout and connects:
+ * - Bundle state (via useBundleState hook)
+ * - Agent state (via useAgentState hook)
+ * - Keyboard shortcuts (via useKeyboardShortcuts hook)
+ * 
+ * The component focuses on layout composition and prop drilling,
+ * with business logic extracted to hooks and API layer.
+ */
+
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import type { UiAIResponse, UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
@@ -8,65 +20,15 @@ import { AgentPanel } from './components/AgentPanel';
 import { ReadOnlyToggle } from './components/ReadOnlyToggle';
 import { Breadcrumb } from './components/Breadcrumb';
 import { ResizableSidebar } from './components/ResizableSidebar';
-import type { ConversationState } from '@sdd-bundle-editor/core-ai';
 import { createLogger } from './utils/logger';
+import { useBundleState, useAgentState, useKeyboardShortcuts } from './hooks';
+import { aiApi, agentApi } from './api';
 
 const log = createLogger('AppShell');
 
-async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || res.statusText);
-  }
-  return (await res.json()) as T;
-}
-
-// Retry wrapper with exponential backoff for transient failures
-async function fetchWithRetry<T>(
-  url: string,
-  options?: RequestInit,
-  maxRetries = 3
-): Promise<T> {
-  let lastError: Error | null = null;
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fetchJson<T>(url, options);
-    } catch (err) {
-      lastError = err as Error;
-      // Only retry on network errors or 5xx, not on 4xx client errors
-      const isRetryable = lastError.message.includes('fetch') ||
-        lastError.message.includes('5') ||
-        lastError.message.includes('network');
-      if (!isRetryable || attempt === maxRetries - 1) {
-        throw lastError;
-      }
-      // Exponential backoff: 1s, 2s, 4s
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-    }
-  }
-  throw lastError;
-}
-
-interface AgentHealth {
-  conversationStatus: string;
-  hasPendingChanges: boolean;
-  git: {
-    isRepo: boolean;
-    branch?: string;
-    isClean?: boolean;
-  };
-  canAcceptChanges: boolean;
-}
-
-interface BundleResponse {
-  bundle: UiBundleSnapshot;
-  diagnostics: UiDiagnostic[];
-}
-
+/**
+ * Compute diff summary between two bundle snapshots.
+ */
 function computeBundleDiff(
   current: UiBundleSnapshot,
   updated: UiBundleSnapshot,
@@ -110,7 +72,6 @@ function computeBundleDiff(
 /**
  * Get the bundle directory from URL parameters.
  * The bundleDir query parameter is REQUIRED - there is no default.
- * External bundles should be specified via URL, e.g., /?bundleDir=/path/to/bundle
  */
 function getInitialBundleDir(): string {
   if (typeof window !== 'undefined') {
@@ -118,152 +79,100 @@ function getInitialBundleDir(): string {
     const dir = params.get('bundleDir');
     if (dir) return dir;
   }
-  // Fallback for development - use environment variable or well-known location
-  // In production, bundleDir should always be provided via URL
   console.warn('No bundleDir specified in URL. Please provide bundleDir query parameter.');
   return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
 }
 
 export function AppShell() {
+  // Core state
   const [bundleDir] = useState(getInitialBundleDir);
-  const [bundle, setBundle] = useState<UiBundleSnapshot | null>(null);
-  const [diagnostics, setDiagnostics] = useState<UiDiagnostic[]>([]);
+
+  // Bundle state hook
+  const {
+    bundle,
+    diagnostics,
+    selectedEntity,
+    loading: bundleLoading,
+    error: bundleError,
+    loadBundle,
+    reloadBundle,
+    setBundle,
+    setDiagnostics,
+    selectEntity,
+    navigateToEntity,
+    runValidation,
+    clearError,
+  } = useBundleState(bundleDir);
+
+  // UI state
   const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
   const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
-  const [selectedEntity, setSelectedEntity] = useState<UiEntity | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [aiLog, setAiLog] = useState<string[]>([]);
-  const [aiProposedBundle, setAiProposedBundle] = useState<UiBundleSnapshot | null>(null);
-  const [aiDiffSummary, setAiDiffSummary] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'entity' | 'domain'>('entity');
-
-  // Read-Only mode state
   const [isReadOnly, setIsReadOnly] = useState(true);
-
-  // Agent state
-  const [conversation, setConversation] = useState<ConversationState>({ status: 'idle', messages: [] });
   const [showAgentPanel, setShowAgentPanel] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Git health state for mid-conversation monitoring
-  const [gitHealth, setGitHealth] = useState<AgentHealth | null>(null);
-  const [networkError, setNetworkError] = useState<string | null>(null);
+  // AI generation state (legacy)
+  const [aiLog, setAiLog] = useState<string[]>([]);
+  const [aiProposedBundle, setAiProposedBundle] = useState<UiBundleSnapshot | null>(null);
+  const [aiDiffSummary, setAiDiffSummary] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Poll agent health when conversation is active
-  const pollHealth = useCallback(async () => {
-    if (conversation.status === 'idle') return;
-    try {
-      const health = await fetchJson<AgentHealth>(`/agent/health?bundleDir=${encodeURIComponent(bundleDir)}`);
-      setGitHealth(health);
-      setNetworkError(null);
-    } catch (err) {
-      setNetworkError((err as Error).message);
-    }
-  }, [conversation.status, bundleDir]);
+  // Agent state hook
+  const agentState = useAgentState({
+    bundleDir,
+    onBundleReload: reloadBundle,
+    onError: setError,
+  });
 
-  useEffect(() => {
-    if (conversation.status !== 'idle') {
-      pollHealth();
-      const interval = setInterval(pollHealth, 5000); // Poll every 5 seconds
-      return () => clearInterval(interval);
-    }
-  }, [conversation.status, pollHealth]);
+  // Keyboard shortcuts
+  useKeyboardShortcuts(useMemo(() => [
+    {
+      key: 'j',
+      ctrl: true,
+      handler: () => setShowAgentPanel(prev => !prev),
+      description: 'Toggle Agent Panel'
+    },
+    {
+      key: 'b',
+      ctrl: true,
+      handler: () => setSidebarCollapsed(prev => !prev),
+      description: 'Toggle Sidebar'
+    },
+    {
+      key: 'p',
+      ctrl: true,
+      handler: () => {
+        if (sidebarCollapsed) setSidebarCollapsed(false);
+        setViewMode('entity');
+      },
+      description: 'Quick Search'
+    },
+  ], [sidebarCollapsed]));
 
-  // Poll agent status on mount
-  useEffect(() => {
-    fetchJson<{ state: ConversationState }>('/agent/status')
-      .then((data) => setConversation(data.state))
-      .catch((err) => log.error('Failed to fetch agent status', err));
-  }, []);
-
+  // Initial load
   useEffect(() => {
     // Check for resetAgent query param
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       if (params.get('resetAgent') === 'true') {
         log.info('Resetting agent state via query parameter...');
-        fetch('/agent/reset', { method: 'POST' })
-          .then(res => res.json())
-          .then(() => {
-            log.info('Agent state reset successful.');
-            // Refresh status after reset
-            return fetchJson<{ state: ConversationState }>('/agent/status');
-          })
-          .then((data) => setConversation(data.state))
-          .catch(err => log.error('Failed to reset agent state', err));
+        agentState.resetAgent();
       }
     }
 
-    setLoading(true);
-    fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}`)
-      .then((data) => {
-        setBundle(data.bundle);
-        setDiagnostics(data.diagnostics);
-      })
-      .catch((err: unknown) => {
-        setError((err as Error).message);
-      })
-      .finally(() => setLoading(false));
+    loadBundle();
   }, []);
 
-  // Refresh selected entity when bundle data updates (e.g. after Agent edit)
-  // Refresh selected entity when bundle data updates (e.g. after Agent edit)
-  useEffect(() => {
-    if (bundle && selectedEntity) {
-      const entities = bundle.entities[selectedEntity.entityType] ?? [];
-      const freshEntity = entities.find(e => e.id === selectedEntity.id);
-
-      log.debug('Checking for fresh entity:', {
-        type: selectedEntity.entityType,
-        id: selectedEntity.id,
-        found: !!freshEntity,
-        currentTitle: (selectedEntity.data as any).title,
-        newTitle: freshEntity ? (freshEntity.data as any).title : 'N/A'
-      });
-
-      if (freshEntity) {
-        // Only update if data actually changed to avoid loop (if we add selectedEntity to deps)
-        // or if successful refresh is needed.
-        // We use JSON stringify for deep comparison to be safe, or just trust the new object reference.
-        // Since freshEntity comes from a new bundle fetch, reference should differ.
-        if (JSON.stringify(freshEntity.data) !== JSON.stringify(selectedEntity.data)) {
-          log.info('Entity data changed, updating selection.');
-          setSelectedEntity(freshEntity);
-        } else {
-          log.debug('Entity data is identical, skipping update.');
-        }
-      }
-    }
-  }, [bundle, selectedEntity]);
-
-  const handleCompile = async () => {
-    if (!bundle) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchJson<{ diagnostics: UiDiagnostic[] }>('/bundle/validate', {
-        method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir }),
-      });
-      setDiagnostics(data.diagnostics);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handlers for AI generation (legacy)
   const handleAiGenerate = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchJson<{ response: UiAIResponse }>('/ai/generate', {
-        method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir }),
-      });
+      const data = await aiApi.generate(bundleDir);
       const notes = data.response.notes ?? [];
-      setAiLog((prev: string[]) => [...prev, ...notes]);
+      setAiLog((prev) => [...prev, ...notes]);
       if (data.response.updatedBundle && bundle) {
         setAiProposedBundle(data.response.updatedBundle);
         setAiDiffSummary(computeBundleDiff(bundle, data.response.updatedBundle));
@@ -275,29 +184,13 @@ export function AppShell() {
     }
   };
 
-  const filteredDiagnostics = diagnostics.filter((d: UiDiagnostic) => {
-    if (severityFilter !== 'all' && d.severity !== severityFilter) {
-      return false;
-    }
-    if (entityTypeFilter !== 'all' && d.entityType !== entityTypeFilter) {
-      return false;
-    }
-    return true;
-  });
-
-  const entityTypes = bundle ? Object.keys(bundle.entities) : [];
-
   const handleApplyAiChanges = async () => {
     if (!aiProposedBundle) return;
     setBundle(aiProposedBundle);
     setAiProposedBundle(null);
     setAiDiffSummary([]);
     try {
-      const data = await fetchJson<{ diagnostics: UiDiagnostic[] }>('/bundle/validate', {
-        method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir }),
-      });
-      setDiagnostics(data.diagnostics);
+      await runValidation();
     } catch (err) {
       setError((err as Error).message);
     }
@@ -308,198 +201,44 @@ export function AppShell() {
     setAiDiffSummary([]);
   };
 
-  const handleAgentStart = async () => {
-    log.debug('handleAgentStart called', { readOnly: isReadOnly });
-    try {
-      const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
-        method: 'POST',
-        body: JSON.stringify({
-          bundleDir: bundleDir,
-          readOnly: isReadOnly  // Pass read-only mode to backend for sandbox control
-        }),
-      });
-      setConversation(data.state);
-    } catch (err) {
-      log.error('Operation failed', err);
-      setError((err as Error).message);
-    }
+  // Handler for fix diagnostics action
+  const handleFixDiagnostics = (entity: UiEntity, curDiagnostics: UiDiagnostic[]) => {
+    const errorCount = curDiagnostics.filter(d => d.severity === 'error').length;
+    const warningCount = curDiagnostics.filter(d => d.severity === 'warning').length;
+    const summary = `${errorCount} errors, ${warningCount} warnings`;
+
+    setShowAgentPanel(true);
+
+    const issues = curDiagnostics
+      .slice(0, 5)
+      .map(d => `- [${d.severity}] ${d.message}`)
+      .join('\n');
+
+    const prompt = `Fix the following issues for ${entity.entityType} ${entity.id} (${summary}):\n\n${issues}\n\n${curDiagnostics.length > 5 ? '(and more...)' : ''}`;
+
+    agentState.sendMessage(prompt);
   };
 
-  const handleAgentMessage = async (message: string, options?: { model?: string; reasoningEffort?: string }) => {
-    try {
-      // Optimistic update
-      setConversation(prev => ({
-        ...prev,
-        messages: [
-          ...prev.messages,
-          { id: 'temp-' + Date.now(), role: 'user', content: message, timestamp: Date.now() }
-        ]
-      }));
-
-      const data = await fetchJson<{ state: ConversationState }>('/agent/message', {
-        method: 'POST',
-        body: JSON.stringify({
-          bundleDir: bundleDir,
-          message,
-          model: options?.model,
-          reasoningEffort: options?.reasoningEffort
-        }),
-      });
-      setConversation(data.state);
-    } catch (err) {
-      log.error('Operation failed', err);
-      setError((err as Error).message);
-    }
-  };
-
-  const handleAgentAbort = async () => {
-    try {
-      const data = await fetchJson<{ state: ConversationState }>('/agent/abort', {
-        method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir }),
-      });
-      setConversation(data.state);
-
-      // Refresh bundle after abort to reflect any reverted changes
-      setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
-        .then((data) => {
-          setBundle(data.bundle);
-          setDiagnostics(data.diagnostics);
-        })
-        .finally(() => setLoading(false));
-    } catch (err) {
-      log.error('Operation failed', err);
-    }
-  };
-
-  const handleAgentAccept = async () => {
-    try {
-      const data = await fetchJson<{ state: ConversationState }>(`/agent/accept?bundleDir=${encodeURIComponent(bundleDir)}`, {
-        method: 'POST',
-        body: JSON.stringify({ changes: conversation.pendingChanges || [] }),
-      });
-      setConversation(data.state);
-      // Refresh bundle after changes
-      setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
-        .then((data) => {
-          log.info('Bundle refreshed after accept', { entityTypes: Object.keys(data.bundle.entities) });
-          setBundle(data.bundle);
-          setDiagnostics(data.diagnostics);
-        })
-        .finally(() => setLoading(false));
-
-    } catch (err) {
-      log.error('Operation failed', err);
-      setError((err as Error).message);
-    }
-  };
-
-  const handleAgentRollback = async () => {
-    try {
-      const data = await fetchJson<{ state: ConversationState; message?: string }>('/agent/rollback', {
-        method: 'POST',
-        body: JSON.stringify({ bundleDir: bundleDir }),
-      });
-      setConversation(data.state);
-      // Show rollback message
-      log.info('Rollback completed', { message: data.message });
-
-      // Also refresh bundle
-      setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
-        .then((data) => {
-          setBundle(data.bundle);
-          setDiagnostics(data.diagnostics);
-        })
-        .finally(() => setLoading(false));
-
-    } catch (err) {
-      log.error('Operation failed', err);
-      setError((err as Error).message);
-    }
-  };
-
-  const handleResolveDecision = async (decisionId: string, optionId: string) => {
-    try {
-      const data = await fetchJson<{ state: ConversationState }>('/agent/decision', {
-        method: 'POST',
-        body: JSON.stringify({ decisionId, optionId }),
-      });
-      setConversation(data.state);
-    } catch (err) {
-      log.error('Operation failed', err);
-      setError((err as Error).message);
-    }
-  };
-
-  const handleAgentNewChat = async () => {
-    try {
-      const hasPendingChanges = (conversation.pendingChanges?.length ?? 0) > 0;
-
-      // Show confirmation if there are pending changes
-      if (hasPendingChanges) {
-        const confirmed = window.confirm(
-          'You have pending changes. Starting a new chat will discard them. Continue?'
-        );
-        if (!confirmed) return;
-      }
-
-      // Step 1: Rollback any uncommitted files
-      if (hasPendingChanges) {
-        await fetchJson<{ state: ConversationState }>('/agent/rollback', {
-          method: 'POST',
-          body: JSON.stringify({ bundleDir: bundleDir }),
-        });
-      }
-
-      // Step 2: Reset agent state (clears conversation, keeps config)
-      await fetchJson<{ success: boolean }>('/agent/reset', {
-        method: 'POST',
-        body: JSON.stringify({}), // Empty body to satisfy content-type validation
-      });
-
-      // Step 3: Auto-start a new conversation (no need to click "Start Conversation" again)
-      const data = await fetchJson<{ state: ConversationState }>('/agent/start', {
-        method: 'POST',
-        body: JSON.stringify({
-          bundleDir: bundleDir,
-          readOnly: isReadOnly
-        }),
-      });
-      setConversation(data.state);
-
-      // Step 4: Refresh bundle to reflect reverted changes
-      setLoading(true);
-      fetchJson<BundleResponse>(`/bundle?bundleDir=${encodeURIComponent(bundleDir)}&_t=${Date.now()}`)
-        .then((data) => {
-          setBundle(data.bundle);
-          setDiagnostics(data.diagnostics);
-        })
-        .finally(() => setLoading(false));
-
-      log.info('New chat started successfully');
-    } catch (err) {
-      log.error('Failed to start new chat', err);
-      setError((err as Error).message);
-    }
-  };
-
+  // Handler for edit request
   const handleEditRequest = () => {
     setIsReadOnly(false);
     setShowAgentPanel(true);
   };
 
+  // Handler for navigation
   const handleNavigate = (entityType: string, entityId: string) => {
-    // Find the target entity and select it
-    const entities = bundle?.entities[entityType] ?? [];
-    const targetEntity = entities.find((e) => e.id === entityId);
-    if (targetEntity) {
-      setSelectedEntity(targetEntity);
-      setViewMode('entity');
-    }
+    navigateToEntity(entityType, entityId);
+    setViewMode('entity');
   };
+
+  // Filtered diagnostics
+  const filteredDiagnostics = diagnostics.filter((d: UiDiagnostic) => {
+    if (severityFilter !== 'all' && d.severity !== severityFilter) return false;
+    if (entityTypeFilter !== 'all' && d.entityType !== entityTypeFilter) return false;
+    return true;
+  });
+
+  const entityTypes = bundle ? Object.keys(bundle.entities) : [];
 
   const currentEntityDiagnostics = selectedEntity
     ? diagnostics.filter(d =>
@@ -508,67 +247,22 @@ export function AppShell() {
     )
     : [];
 
-  const handleFixDiagnostics = (entity: UiEntity, curDiagnostics: UiDiagnostic[]) => {
-    const errorCount = curDiagnostics.filter(d => d.severity === 'error').length;
-    const warningCount = curDiagnostics.filter(d => d.severity === 'warning').length;
-    const summary = `${errorCount} errors, ${warningCount} warnings`;
+  // Combined loading state
+  const isLoading = loading || bundleLoading;
 
-    // 1. Open Agent Panel
-    setShowAgentPanel(true);
-
-    // 2. Identify issues
-    // We limit to top 5 issues to keep prompt concise
-    const issues = curDiagnostics
-      .slice(0, 5)
-      .map(d => `- [${d.severity}] ${d.message}`)
-      .join('\n');
-
-    const prompt = `Fix the following issues for ${entity.entityType} ${entity.id} (${summary}):\n\n${issues}\n\n${curDiagnostics.length > 5 ? '(and more...)' : ''}`;
-
-    // 3. Send message
-    handleAgentMessage(prompt);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMod = e.ctrlKey || e.metaKey;
-
-      // Cmd+J - Toggle Agent Panel
-      if (isMod && e.key.toLowerCase() === 'j') {
-        e.preventDefault();
-        setShowAgentPanel(prev => !prev);
-      }
-
-      // Cmd+B - Toggle Sidebar
-      if (isMod && e.key.toLowerCase() === 'b') {
-        e.preventDefault();
-        setSidebarCollapsed(prev => !prev);
-      }
-
-      // Cmd+P - Quick Search (focus entity search/navigator)
-      if (isMod && e.key.toLowerCase() === 'p') {
-        e.preventDefault();
-        // TODO: Implement quick search modal/focus
-        // For now, just ensure sidebar is open and entity view is shown
-        if (sidebarCollapsed) setSidebarCollapsed(false);
-        setViewMode('entity');
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [sidebarCollapsed]);
+  // Combined error state
+  const displayError = error || bundleError;
 
   return (
     <div className={`app-shell ${showAgentPanel ? 'with-agent-panel' : ''}`}>
       {/* Git dirty state warning */}
-      {gitHealth && gitHealth.git.isClean === false && conversation.status !== 'idle' && (
+      {agentState.agentHealth && agentState.agentHealth.git.isClean === false && agentState.conversation.status !== 'idle' && (
         <div className="warning-banner git-dirty-warning" data-testid="git-dirty-warning">
           ⚠️ Git working tree has uncommitted changes. You cannot accept agent changes until the working tree is clean.
           <button
             type="button"
             className="btn btn-sm"
-            onClick={pollHealth}
+            onClick={agentState.refreshHealth}
           >
             🔄 Refresh
           </button>
@@ -576,20 +270,20 @@ export function AppShell() {
       )}
 
       {/* Network error indicator */}
-      {networkError && (
+      {agentState.networkError && (
         <div className="warning-banner network-error-warning" data-testid="network-error-warning">
-          ⚠️ Connection issue: {networkError}
+          ⚠️ Connection issue: {agentState.networkError}
           <button
             type="button"
             className="btn btn-sm"
-            onClick={pollHealth}
+            onClick={agentState.refreshHealth}
           >
             🔄 Retry
           </button>
         </div>
       )}
 
-      {/* Header - VS Code Minimal Style */}
+      {/* Header */}
       <header className="app-header">
         <div className="header-left">
           <button
@@ -612,7 +306,7 @@ export function AppShell() {
               className={`btn-icon ${viewMode === 'domain' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('domain');
-                setSelectedEntity(null);
+                selectEntity(null);
               }}
               title="Domain Knowledge"
             >
@@ -632,8 +326,8 @@ export function AppShell() {
           <button
             type="button"
             className="btn-icon"
-            onClick={handleCompile}
-            disabled={loading}
+            onClick={runValidation}
+            disabled={isLoading}
             title="Compile Spec"
             data-testid="compile-btn"
           >
@@ -643,7 +337,7 @@ export function AppShell() {
             type="button"
             className="btn-icon"
             onClick={handleAiGenerate}
-            disabled={loading}
+            disabled={isLoading}
             title="AI Generate"
           >
             ✨
@@ -654,8 +348,8 @@ export function AppShell() {
       {/* Sidebar */}
       <ResizableSidebar isCollapsed={sidebarCollapsed}>
         <div className="sidebar-section">
-          {loading && <span className="status-loading">Loading...</span>}
-          {error && <div className="status-error">Error: {error}</div>}
+          {isLoading && <span className="status-loading">Loading...</span>}
+          {displayError && <div className="status-error">Error: {displayError}</div>}
 
           <div className="controls">
             <div className="filter-group">
@@ -690,7 +384,7 @@ export function AppShell() {
             bundle={bundle}
             selected={viewMode === 'entity' && selectedEntity ? { entityType: selectedEntity.entityType, id: selectedEntity.id } : undefined}
             onSelect={(e) => {
-              setSelectedEntity(e);
+              selectEntity(e);
               setViewMode('entity');
             }}
           />
@@ -738,10 +432,10 @@ export function AppShell() {
                 <div className="text-muted">No differences detected.</div>
               )}
               <div className="btn-group">
-                <button type="button" className="btn btn-success" onClick={handleApplyAiChanges} disabled={loading}>
+                <button type="button" className="btn btn-success" onClick={handleApplyAiChanges} disabled={isLoading}>
                   Apply Changes
                 </button>
-                <button type="button" className="btn btn-ghost" onClick={handleDiscardAiChanges} disabled={loading}>
+                <button type="button" className="btn btn-ghost" onClick={handleDiscardAiChanges} disabled={isLoading}>
                   Discard
                 </button>
               </div>
@@ -753,18 +447,18 @@ export function AppShell() {
       {showAgentPanel && (
         <aside className="right-sidebar">
           <AgentPanel
-            messages={conversation.messages}
-            status={conversation.status}
-            pendingChanges={conversation.pendingChanges}
-            activeDecision={conversation.activeDecision}
-            lastError={conversation.lastError}
-            onSendMessage={handleAgentMessage}
-            onStartConversation={handleAgentStart}
-            onAbortConversation={handleAgentAbort}
-            onAcceptChanges={handleAgentAccept}
-            onDiscardChanges={handleAgentRollback}
-            onResolveDecision={handleResolveDecision}
-            onNewChat={handleAgentNewChat}
+            messages={agentState.conversation.messages}
+            status={agentState.conversation.status}
+            pendingChanges={agentState.conversation.pendingChanges}
+            activeDecision={agentState.conversation.activeDecision}
+            lastError={agentState.conversation.lastError}
+            onSendMessage={agentState.sendMessage}
+            onStartConversation={() => agentState.startConversation(isReadOnly)}
+            onAbortConversation={agentState.abortConversation}
+            onAcceptChanges={() => agentState.acceptChanges(agentState.conversation.pendingChanges || [])}
+            onDiscardChanges={agentState.rollbackChanges}
+            onResolveDecision={agentState.resolveDecision}
+            onNewChat={() => agentState.startNewChat(isReadOnly)}
           />
         </aside>
       )}

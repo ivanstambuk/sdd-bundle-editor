@@ -218,3 +218,36 @@ Understanding agent state transitions is critical for writing correct assertions
 
 > ⚠️ **Important**: `startNewChat()` resets then immediately starts a new conversation,
 > so the status transitions to 'active' (new conversation), NOT 'idle'.
+
+## AgentPanel Page Object
+
+For cleaner tests, use the AgentPanel page object from `e2e/page-objects/AgentPanel.ts`:
+
+```typescript
+import { AgentPanel } from './page-objects/AgentPanel';
+
+test('my agent test', async ({ page }) => {
+    const agent = new AgentPanel(page);
+    
+    await agent.navigate(bundleDir);         // go to app with reset
+    await agent.configure('mock');           // set up mock agent
+    await agent.sendMessage('Hello');        // send and wait for response
+    
+    if (await agent.hasPendingChanges()) {
+        await agent.acceptChanges();
+    }
+});
+```
+
+This provides a clean API with proper encapsulation of UI selectors.
+
+## Debug Logging
+
+Enable verbose API logging during test runs:
+
+```bash
+DEBUG_E2E=true pnpm test:e2e
+```
+
+This logs all API requests/responses to the backend server, making it easier to debug failures.
+

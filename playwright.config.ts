@@ -7,7 +7,7 @@ export default defineConfig({
   globalSetup: './e2e/global-setup.ts',
   timeout: 120_000,
   expect: {
-    timeout: 10_000,
+    timeout: 5_000,
   },
   // Run tests serially to avoid race conditions with shared server agent state
   workers: 1,

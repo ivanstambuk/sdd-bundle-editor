@@ -168,7 +168,22 @@ export function useAgentState(options: UseAgentStateOptions): UseAgentStateRetur
         }
     }, [bundleDir, handleError, onBundleReload]);
 
-    // Start a new chat (handles pending changes)
+    /**
+     * Starts a new chat session, optionally discarding pending changes.
+     * 
+     * IMPORTANT: This function resets the agent state then immediately starts
+     * a new conversation. The resulting status is 'active' (NOT 'idle').
+     * 
+     * Flow:
+     * 1. If pending changes exist, shows confirmation dialog
+     * 2. If confirmed (or no pending changes), calls rollback to discard changes
+     * 3. Calls reset() to clear agent state
+     * 4. Calls start() to begin a new conversation
+     * 5. Status transitions: current -> 'active' (new conversation)
+     * 
+     * @param readOnly - Whether to start in read-only mode (default true)
+     * @returns Promise<boolean> - true if new chat started, false if user cancelled
+     */
     const startNewChat = useCallback(async (readOnly = true): Promise<boolean> => {
         try {
             const hasPendingChanges = (conversation.pendingChanges?.length ?? 0) > 0;

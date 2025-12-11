@@ -180,3 +180,41 @@ test.describe('Your Feature Test', () => {
 ❌ **Don't use parallel workers** - config is set to 1 for a reason
 ❌ **Don't forget debug=true** - mock agent requires it
 ❌ **Don't use hardcoded paths** - use bundle-test-fixture functions
+❌ **Don't expect 'idle' after New Chat** - `startNewChat()` results in 'active' status
+
+## Shared Agent Test Fixture
+
+For agent tests, prefer using the shared fixture from `e2e/fixtures/agent-test-fixture.ts`:
+
+```typescript
+import { 
+    setupMockAgent, 
+    startAgentConversation, 
+    sendAgentMessage,
+    clickNewChat 
+} from './fixtures/agent-test-fixture';
+
+test('my agent test', async ({ page }) => {
+    await setupMockAgent(page, bundleDir);
+    await startAgentConversation(page);
+    await sendAgentMessage(page, 'Hello agent');
+    // ... rest of test
+});
+```
+
+This ensures consistent agent setup and prevents common configuration issues.
+
+## Agent State Transitions
+
+Understanding agent state transitions is critical for writing correct assertions:
+
+| Action | Starting Status | Resulting Status |
+|--------|----------------|------------------|
+| Start Conversation | idle | active |
+| Send Message | active | active (or pending_changes) |
+| Accept Changes | pending_changes | committed → active |
+| Click New Chat | active/pending_changes | **active** (NOT idle!) |
+| Abort Conversation | any | idle |
+
+> ⚠️ **Important**: `startNewChat()` resets then immediately starts a new conversation,
+> so the status transitions to 'active' (new conversation), NOT 'idle'.

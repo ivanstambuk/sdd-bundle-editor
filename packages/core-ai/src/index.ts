@@ -60,9 +60,11 @@ export async function fixErrors(
   return provider.run({ ...request, mode: 'fix-errors' });
 }
 
+export * from './backends/BaseAgentBackend';
 export * from './backends/CliAgentBackend';
 export * from './backends/OpenAiAgentBackend';
 export * from './backends/MockAgentBackend';
+export * from './test-utils';
 
 import { CliAgentBackend } from './backends/CliAgentBackend';
 import { OpenAiAgentBackend } from './backends/OpenAiAgentBackend';

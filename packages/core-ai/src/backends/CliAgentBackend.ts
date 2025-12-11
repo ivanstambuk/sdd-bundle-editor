@@ -1,25 +1,20 @@
+/**
+ * CLI Agent Backend for CLI-based agents like Codex.
+ * Spawns external CLI processes to handle conversations.
+ */
 
 import { spawn } from 'child_process';
+import { BaseAgentBackend } from './BaseAgentBackend';
 import {
-    AgentBackend,
     AgentBackendConfig,
     AgentContext,
     ConversationState,
     ProposedChange,
-    AgentDecision,
-    ConversationMessage
 } from '../types';
 
-export class CliAgentBackend implements AgentBackend {
-    private config?: AgentBackendConfig;
-    private context?: AgentContext;
-    private state: ConversationState = {
-        status: 'idle',
-        messages: []
-    };
-
+export class CliAgentBackend extends BaseAgentBackend {
     async initialize(config: AgentBackendConfig): Promise<void> {
-        this.config = config;
+        await super.initialize(config);
     }
 
     async startConversation(context: AgentContext): Promise<ConversationState> {
@@ -28,8 +23,7 @@ export class CliAgentBackend implements AgentBackend {
             status: 'active',
             messages: [],
         };
-        // Optionally invoke CLI with initial context if supported
-        return this.state;
+        return this.getStatus();
     }
 
     async sendMessage(message: string): Promise<ConversationState> {
@@ -41,111 +35,90 @@ export class CliAgentBackend implements AgentBackend {
         let args = [...((this.config.options.args as string[]) || [])];
 
         // For Codex CLI, use 'exec' subcommand for non-interactive execution
-        // and adjust sandbox mode and add model/reasoning flags
         if (command === 'codex') {
-            // Remove any existing flags we want to manage explicitly
-            args = args.filter(arg =>
-                !arg.startsWith('--sandbox') &&
-                !arg.startsWith('-m') &&
-                !arg.startsWith('--model') &&
-                !arg.startsWith('--reasoning-effort') &&
-                !arg.startsWith('--reasoning-summary') &&
-                arg !== '--full-auto' &&
-                arg !== 'read-only' &&
-                arg !== 'workspace-write' &&
-                arg !== 'danger-full-access' &&
-                arg !== 'exec'  // Also remove 'exec' if user added it manually
-            );
-
-            // Prepend 'exec' subcommand for non-interactive execution
-            args.unshift('exec');
-
-            // Add appropriate sandbox mode based on readOnly flag
-            if (this.context?.readOnly) {
-                // Read-only mode: can read files, run commands, but NO file modifications
-                args.push('--sandbox', 'read-only');
-            } else {
-                // Write mode: can modify files in the workspace
-                args.push('--sandbox', 'workspace-write');
-            }
-
-            // Add model flag if specified
-            if (this.config.model) {
-                args.push('-m', this.config.model);
-            }
-
-            // Add reasoning effort using the generic -c flag
-            if (this.config.reasoningEffort) {
-                args.push('-c', `model_reasoning_effort="${this.config.reasoningEffort}"`);
-            }
-
-            // Add reasoning summary using the generic -c flag
-            if (this.config.reasoningSummary) {
-                args.push('-c', `model_reasoning_summary="${this.config.reasoningSummary}"`);
-            }
+            args = this.prepareCodexArgs(args);
         }
 
         // Add user message to history
-        const userMsg: ConversationMessage = {
-            id: Date.now().toString(),
-            role: 'user',
-            content: message,
-            timestamp: Date.now()
-        };
-        this.state.messages.push(userMsg);
+        this.addMessage('user', message);
 
         try {
             const output = await this.runCommand(command, [...args, message]);
-
-            const agentMsg: ConversationMessage = {
-                id: (Date.now() + 1).toString(),
-                role: 'agent',
-                content: output,
-                timestamp: Date.now()
-            };
-            this.state.messages.push(agentMsg);
+            this.addMessage('agent', output);
         } catch (err) {
-            this.state.lastError = (err as Error).message;
-            this.state.status = 'error';
+            this.setError((err as Error).message);
         }
 
-        return this.state;
+        return this.getStatus();
     }
 
     async applyChanges(changes: ProposedChange[]): Promise<ConversationState> {
         // CLI backend doesn't handle application logic itself yet
-        return this.state;
+        return this.getStatus();
     }
 
     async resolveDecision(decisionId: string, optionId: string): Promise<ConversationState> {
-        return this.state;
+        return this.getStatus();
     }
 
-    async clearPendingChanges(): Promise<ConversationState> {
-        this.state.pendingChanges = undefined;
-        if (this.state.status === 'pending_changes' || this.state.status === 'linting') {
-            this.state.status = 'active';
+    // =========================================================================
+    // Private helper methods
+    // =========================================================================
+
+    /**
+     * Prepare Codex CLI-specific arguments.
+     */
+    private prepareCodexArgs(args: string[]): string[] {
+        // Remove any existing flags we want to manage explicitly
+        const filteredArgs = args.filter(arg =>
+            !arg.startsWith('--sandbox') &&
+            !arg.startsWith('-m') &&
+            !arg.startsWith('--model') &&
+            !arg.startsWith('--reasoning-effort') &&
+            !arg.startsWith('--reasoning-summary') &&
+            arg !== '--full-auto' &&
+            arg !== 'read-only' &&
+            arg !== 'workspace-write' &&
+            arg !== 'danger-full-access' &&
+            arg !== 'exec'
+        );
+
+        // Prepend 'exec' subcommand for non-interactive execution
+        filteredArgs.unshift('exec');
+
+        // Add appropriate sandbox mode based on readOnly flag
+        if (this.isReadOnly()) {
+            filteredArgs.push('--sandbox', 'read-only');
+        } else {
+            filteredArgs.push('--sandbox', 'workspace-write');
         }
-        return this.state;
+
+        // Add model flag if specified
+        if (this.config?.model) {
+            filteredArgs.push('-m', this.config.model);
+        }
+
+        // Add reasoning effort using the generic -c flag
+        if (this.config?.reasoningEffort) {
+            filteredArgs.push('-c', `model_reasoning_effort="${this.config.reasoningEffort}"`);
+        }
+
+        // Add reasoning summary using the generic -c flag
+        if (this.config?.reasoningSummary) {
+            filteredArgs.push('-c', `model_reasoning_summary="${this.config.reasoningSummary}"`);
+        }
+
+        return filteredArgs;
     }
 
-    async abortConversation(): Promise<ConversationState> {
-        this.state.status = 'idle';
-        return this.state;
-    }
-
-    async getStatus(): Promise<ConversationState> {
-        return this.state;
-    }
-
+    /**
+     * Execute CLI command and return output.
+     */
     private runCommand(command: string, args: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
-            // Run CLI in the bundle directory so MCP tools index the correct files
-            const cwd = this.context?.bundleDir || process.cwd();
-
-            // Spawn the command directly - for Codex CLI, we use 'exec' subcommand
-            // which is designed for non-interactive use (no TTY required)
+            const cwd = this.getBundleDir();
             const proc = spawn(command, args, { cwd });
+
             let stdout = '';
             let stderr = '';
 
@@ -165,7 +138,7 @@ export class CliAgentBackend implements AgentBackend {
                 }
             });
 
-            proc.on('error', (err: any) => {
+            proc.on('error', (err: NodeJS.ErrnoException) => {
                 if (err.code === 'ENOENT') {
                     reject(new Error(`Command '${command}' not found. Please ensure it is installed and in your PATH.`));
                 } else {

@@ -1,14 +1,20 @@
+/**
+ * OpenAI/DeepSeek Agent Backend for HTTP-based AI providers.
+ * Uses OpenAI SDK for communication with compatible APIs.
+ */
 
 import OpenAI from 'openai';
+import { BaseAgentBackend } from './BaseAgentBackend';
 import {
-    AgentBackend,
     AgentBackendConfig,
     AgentContext,
     ConversationState,
     ProposedChange,
-    ConversationMessage
 } from '../types';
 
+/**
+ * Tool definition for proposing changes to the bundle.
+ */
 const PROPOSE_CHANGES_TOOL = {
     type: 'function' as const,
     function: {
@@ -37,25 +43,19 @@ const PROPOSE_CHANGES_TOOL = {
     }
 };
 
-export class OpenAiAgentBackend implements AgentBackend {
+export class OpenAiAgentBackend extends BaseAgentBackend {
     private client?: OpenAI;
-    private config?: AgentBackendConfig; // Store config reference
-    private state: ConversationState = {
-        status: 'idle',
-        messages: []
-    };
-    private context?: AgentContext;
     private systemPrompt: string = '';
 
     async initialize(config: AgentBackendConfig): Promise<void> {
+        await super.initialize(config);
         console.log('[OpenAiAgentBackend] Initializing with config:', JSON.stringify(config, null, 2));
-        this.config = config; // Store reference
 
         const apiKey = process.env.DEEPSEEK_API_KEY || process.env.AGENT_HTTP_API_KEY || config.options?.apiKey as string;
         const baseURL = config.options?.baseURL as string || 'https://api.deepseek.com';
 
         if (!apiKey) {
-            console.error('[OpenAiAgentBackend] Missing API Key. check DEEPSEEK_API_KEY, AGENT_HTTP_API_KEY or config.options.apiKey');
+            console.error('[OpenAiAgentBackend] Missing API Key. Check DEEPSEEK_API_KEY, AGENT_HTTP_API_KEY or config.options.apiKey');
             throw new Error('API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY or AGENT_HTTP_API_KEY env var, or provide via config.');
         }
 
@@ -72,21 +72,14 @@ export class OpenAiAgentBackend implements AgentBackend {
             messages: [],
         };
         this.systemPrompt = this.buildSystemPrompt();
-        return this.state;
+        return this.getStatus();
     }
 
     async sendMessage(message: string): Promise<ConversationState> {
         if (!this.client) throw new Error('Backend not initialized');
 
         // Add user message
-        const userMsg: ConversationMessage = {
-            id: Date.now().toString(),
-            role: 'user',
-            content: message,
-            timestamp: Date.now()
-        };
-        this.state.messages.push(userMsg);
-        // Status remains 'active' while waiting
+        this.addMessage('user', message);
 
         const apiMessages = [
             { role: 'system' as const, content: this.systemPrompt },
@@ -98,12 +91,12 @@ export class OpenAiAgentBackend implements AgentBackend {
 
         try {
             // Only provide the propose_changes tool if NOT in read-only mode
-            const tools = this.context?.readOnly ? [] : [PROPOSE_CHANGES_TOOL];
+            const tools = this.isReadOnly() ? [] : [PROPOSE_CHANGES_TOOL];
 
             const completion = await this.client.chat.completions.create({
                 messages: apiMessages,
-                model: this.config?.model || 'deepseek-chat', // Removed this.config?.options?.model
-                tools: tools.length > 0 ? tools : undefined, // Don't pass tools array if empty
+                model: this.config?.model || 'deepseek-chat',
+                tools: tools.length > 0 ? tools : undefined,
                 tool_choice: tools.length > 0 ? 'auto' : undefined,
             });
 
@@ -118,132 +111,113 @@ export class OpenAiAgentBackend implements AgentBackend {
             const toolCalls = responseMsg.tool_calls;
 
             // Add agent message
-            const agentMsg: ConversationMessage = {
-                id: (Date.now() + 1).toString(),
-                role: 'agent',
-                content: content, // Can be null if only tool calls, but we store string
-                timestamp: Date.now()
-            };
-            this.state.messages.push(agentMsg);
+            this.addMessage('agent', content);
 
             // Handle tool calls
             if (toolCalls && toolCalls.length > 0) {
-                const changes: ProposedChange[] = [];
-
-                // Use any cast to bypass strict OpenAI SDK types vs our usage
-                for (const toolCall of toolCalls as any[]) {
-                    if (toolCall.function?.name === 'propose_changes') {
-                        try {
-                            const args = JSON.parse(toolCall.function.arguments);
-                            if (Array.isArray(args.changes)) {
-                                const mappedChanges = args.changes.map((c: any) => {
-                                    let entityType = c.entityType;
-
-                                    // If entityType is missing or partial, try to resolve it from the bundle context
-                                    if ((!entityType || entityType === 'Unknown') && c.entityId && this.context?.bundle?.bundle) {
-                                        // The Bundle interface has an idRegistry map
-                                        const registryEntry = this.context.bundle.bundle.idRegistry.get(c.entityId);
-                                        if (registryEntry) {
-                                            entityType = registryEntry.entityType;
-                                        }
-                                    }
-
-                                    // Resolve original value from bundle if possible
-                                    let originalValue = null;
-                                    if (entityType && entityType !== 'Unknown' && c.entityId && this.context?.bundle?.bundle) {
-                                        const entityMap = this.context.bundle.bundle.entities.get(entityType);
-                                        const entity = entityMap?.get(c.entityId);
-                                        if (entity && entity.data) {
-                                            // Simple top-level field access for now. 
-                                            // TODO: Support nested path access if 'field' contains dots
-                                            originalValue = (entity.data as any)[c.field];
-                                        }
-                                    }
-
-                                    return {
-                                        entityId: c.entityId,
-                                        entityType: entityType || 'Unknown',
-                                        fieldPath: c.field,
-                                        newValue: c.newValue,
-                                        originalValue: originalValue,
-                                        rationale: c.rationale
-                                    };
-                                });
-                                changes.push(...mappedChanges);
-                            }
-                        } catch (e) {
-                            console.error('Failed to parse tool arguments:', e);
-                        }
-                    }
-                }
-
+                const changes = this.parseToolCalls(toolCalls);
                 if (changes.length > 0) {
-                    this.state.pendingChanges = changes;
-                    this.state.status = 'pending_changes';
+                    this.setPendingChanges(changes);
                 } else {
-                    this.state.status = 'active';
+                    this.setStatus('active');
                 }
             } else {
-                this.state.status = 'active';
+                this.setStatus('active');
             }
 
         } catch (err) {
             console.error('AI Provider Error:', err);
-            this.state.lastError = (err as Error).message;
-            this.state.status = 'error';
+            this.setError((err as Error).message);
         }
 
-        return this.state;
+        return this.getStatus();
     }
 
-    async applyChanges(changes: ProposedChange[], updatedBundle?: any): Promise<ConversationState> {
-        // In this architecture, applyChanges is handled by the server/service layer
-        // The backend just proposes them.
-        // We assume successful application moves us back to 'active' or 'committed'
+    async applyChanges(changes: ProposedChange[], updatedBundle?: unknown): Promise<ConversationState> {
         this.state.pendingChanges = undefined;
-        this.state.status = 'active';
+        this.setStatus('active');
 
         if (updatedBundle && this.context) {
-            this.context.bundle = updatedBundle;
+            this.context.bundle = updatedBundle as any;
             this.systemPrompt = this.buildSystemPrompt();
-            // Optionally, add a system message to confirm context update
         }
 
         // Add a system message indicating changes were applied
-        // So the LLM knows for the next turn
-        this.state.messages.push({
-            id: Date.now().toString(),
-            role: 'system', // or user 'system' equivalent
-            content: 'Changes have been successfully applied to the bundle. The system prompt has been updated with the latest bundle context.',
-            timestamp: Date.now()
-        });
+        this.addMessage('system', 'Changes have been successfully applied to the bundle. The system prompt has been updated with the latest bundle context.');
 
-        return this.state;
+        return this.getStatus();
     }
 
     async resolveDecision(decisionId: string, optionId: string): Promise<ConversationState> {
-        return this.state;
+        return this.getStatus();
     }
 
-    async clearPendingChanges(): Promise<ConversationState> {
-        this.state.pendingChanges = undefined;
-        this.state.status = 'active';
-        return this.state;
+    // =========================================================================
+    // Private helper methods
+    // =========================================================================
+
+    /**
+     * Parse tool calls from OpenAI response and extract changes.
+     */
+    private parseToolCalls(toolCalls: any[]): ProposedChange[] {
+        const changes: ProposedChange[] = [];
+
+        for (const toolCall of toolCalls) {
+            if (toolCall.function?.name === 'propose_changes') {
+                try {
+                    const args = JSON.parse(toolCall.function.arguments);
+                    if (Array.isArray(args.changes)) {
+                        const mappedChanges = args.changes.map((c: any) => this.mapChange(c));
+                        changes.push(...mappedChanges);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse tool arguments:', e);
+                }
+            }
+        }
+
+        return changes;
     }
 
-    async abortConversation(): Promise<ConversationState> {
-        this.state.status = 'idle';
-        return this.state;
+    /**
+     * Map a raw change object to a ProposedChange.
+     */
+    private mapChange(c: any): ProposedChange {
+        let entityType = c.entityType;
+
+        // Resolve entityType from registry if missing
+        if ((!entityType || entityType === 'Unknown') && c.entityId && this.context?.bundle?.bundle) {
+            const registryEntry = this.context.bundle.bundle.idRegistry.get(c.entityId);
+            if (registryEntry) {
+                entityType = registryEntry.entityType;
+            }
+        }
+
+        // Resolve original value from bundle if possible
+        let originalValue = null;
+        if (entityType && entityType !== 'Unknown' && c.entityId && this.context?.bundle?.bundle) {
+            const entityMap = this.context.bundle.bundle.entities.get(entityType);
+            const entity = entityMap?.get(c.entityId);
+            if (entity?.data) {
+                originalValue = (entity.data as any)[c.field];
+            }
+        }
+
+        return {
+            entityId: c.entityId,
+            entityType: entityType || 'Unknown',
+            fieldPath: c.field,
+            newValue: c.newValue,
+            originalValue: originalValue,
+            rationale: c.rationale
+        };
     }
 
-    async getStatus(): Promise<ConversationState> {
-        return this.state;
-    }
-
+    /**
+     * Build the system prompt with current bundle context.
+     */
     private buildSystemPrompt(): string {
-        // Serialize the bundle context for the LLM
-        // We use JSON for simplicity
-        const isReadOnly = this.context?.readOnly ?? false;
+        const isReadOnly = this.isReadOnly();
 
         let prompt = `You are an intelligent SDD (Spec-Driven Development) Bundle Editor assistant.
 Your goal is to help the user understand and ${isReadOnly ? 'analyze' : 'evolve'} the specification bundle.
@@ -277,13 +251,13 @@ CURRENT BUNDLE CONTEXT:
 `;
 
         if (this.context?.bundle?.bundle) {
-            // Flatten the nested Map<EntityType, Map<EntityId, Entity>> structure
+            // Flatten the nested Map structure
             const allEntities: any[] = [];
             for (const typeMap of this.context.bundle.bundle.entities.values()) {
                 for (const entity of typeMap.values()) {
                     allEntities.push({
                         id: entity.id,
-                        type: entity.entityType, // use entityType prop from Entity interface
+                        type: entity.entityType,
                         data: entity.data
                     });
                 }

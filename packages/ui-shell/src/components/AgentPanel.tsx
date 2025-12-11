@@ -85,8 +85,8 @@ export function AgentPanel({
     const recognitionRef = useRef<SpeechRecognition | null>(null);
 
     // Inline model selection state (used during chat session)
-    const [activeModel, setActiveModel] = useState<string>('gpt-5.1-codex-max');
-    const [activeReasoningEffort, setActiveReasoningEffort] = useState<CodexReasoningEffort>('medium');
+    const [activeModel, setActiveModel] = useState<string>('gpt-5.1');
+    const [activeReasoningEffort, setActiveReasoningEffort] = useState<CodexReasoningEffort>('high');
 
     // Check for debug mode (allows Echo CLI usage)
     const isDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
@@ -143,6 +143,8 @@ export function AgentPanel({
             setShowSettings(false);
             // Refresh status to update main view
             fetchStatus();
+            // Automatically start conversation after saving config
+            onStartConversation();
         } catch (err) {
             console.error('Failed to save config', err);
             // In real app, show error toast
@@ -323,8 +325,8 @@ export function AgentPanel({
                                                 if (val === 'codex') {
                                                     setConfig({
                                                         ...config,
-                                                        model: 'gpt-5.1-codex-max',
-                                                        reasoningEffort: 'medium',
+                                                        model: 'gpt-5.1',
+                                                        reasoningEffort: 'high',
                                                         reasoningSummary: 'auto',
                                                         options: {
                                                             command: 'codex',

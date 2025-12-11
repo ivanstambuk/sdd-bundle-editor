@@ -25,13 +25,10 @@ test.describe('Agent Change Application', () => {
         // Wait for navigator to load content
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Debug screenshot
-        // await page.screenshot({ path: 'artifacts/debug_initial_load.png' });
-
-        const header = page.locator('h3', { hasText: 'Feature' }).first();
-        // Just ensure it exists
-        await expect(header).toBeVisible();
-        await header.click();
+        // Expand Feature group (groups are collapsed by default)
+        const featureGroup = page.getByTestId('entity-group-Feature');
+        await expect(featureGroup).toBeVisible();
+        await featureGroup.click();
 
         // 3. Configure Agent to "Mock"
         const configBtn = page.locator('[data-testid="agent-settings-btn"]');

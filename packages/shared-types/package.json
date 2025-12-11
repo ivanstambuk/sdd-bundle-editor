@@ -8,5 +8,8 @@
         "build": "tsc -p tsconfig.json",
         "test": "echo \"No tests\""
     },
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "@sinclair/typebox": "^0.34.41"
+    }
 }

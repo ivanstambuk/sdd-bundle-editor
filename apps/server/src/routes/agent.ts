@@ -3,6 +3,17 @@ import { assertCleanNonMainBranch, getGitStatus } from '@sdd-bundle-editor/git-u
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { AgentService } from '../services/agent/AgentService';
+import {
+    AgentStartRequestSchema,
+    AgentMessageRequestSchema,
+    AgentStatusResponseSchema,
+    AgentRollbackRequestSchema,
+    AgentRollbackResponseSchema,
+    AgentHealthResponseSchema,
+    AgentDecisionRequestSchema,
+    AgentConfigRequestSchema,
+    ErrorResponseSchema,
+} from '@sdd-bundle-editor/shared-types';
 
 async function resolveBundleDir(queryDir?: string): Promise<string> {
     if (!queryDir) {
@@ -22,9 +33,19 @@ export async function agentRoutes(fastify: FastifyInstance) {
     // Helper to get current backend (it handles reconfiguration)
     const getBackend = () => AgentService.getInstance().getBackend();
 
-    fastify.post('/agent/start', async (request, reply) => {
+    fastify.post('/agent/start', {
+        schema: {
+            tags: ['agent'],
+            description: 'Start a new agent conversation',
+            body: AgentStartRequestSchema,
+            response: {
+                200: AgentStatusResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { bundleDir?: string; readOnly?: boolean }) || {};
+            const body = request.body as { bundleDir?: string; readOnly?: boolean };
             const bundleDir = await resolveBundleDir(body.bundleDir);
 
             // Load bundle to provide context to agent

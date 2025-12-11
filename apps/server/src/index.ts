@@ -17,6 +17,8 @@ import {
 import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
 import { agentRoutes } from './routes/agent';
 
+import { registerOpenAPI } from './openapi';
+
 const DEFAULT_PORT = Number(process.env.PORT ?? '3000');
 
 async function resolveBundleDir(queryDir?: string): Promise<string> {
@@ -77,6 +79,9 @@ export async function createServer() {
   const fastify = Fastify({
     logger: true,
   });
+
+  // Register OpenAPI documentation
+  await registerOpenAPI(fastify);
 
   // Health check endpoint for Playwright and monitoring
   fastify.get('/health', async (_request, reply) => {

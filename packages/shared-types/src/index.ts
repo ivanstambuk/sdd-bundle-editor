@@ -10,3 +10,12 @@ export * from './api/agent';
 
 // TypeBox schemas for runtime validation
 export * from './schemas';
+
+// Domain-specific error classes
+export * from './errors';
+
+// Result type for functional error handling
+export * from './result';
+
+// Structured logging utilities
+export * from './logging';

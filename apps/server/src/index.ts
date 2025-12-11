@@ -18,6 +18,7 @@ import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
 import { agentRoutes } from './routes/agent';
 
 import { registerOpenAPI } from './openapi';
+import { registerErrorHandler } from './error-handler';
 
 const DEFAULT_PORT = Number(process.env.PORT ?? '3000');
 
@@ -79,6 +80,9 @@ export async function createServer() {
   const fastify = Fastify({
     logger: true,
   });
+
+  // Register centralized error handler
+  registerErrorHandler(fastify);
 
   // Register OpenAPI documentation
   await registerOpenAPI(fastify);

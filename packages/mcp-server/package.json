@@ -13,9 +13,11 @@
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.0.1",
         "@sdd-bundle-editor/core-model": "workspace:*",
+        "js-yaml": "^4.1.0",
         "zod": "^3.23.8"
     },
     "devDependencies": {
+        "@types/js-yaml": "^4.0.9",
         "@types/node": "^20.14.9",
         "typescript": "^5.5.4"
     }

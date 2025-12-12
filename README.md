@@ -193,6 +193,52 @@ The editor is designed to be a **Read-Only Viewer** by default. You cannot direc
 
 ---
 
+## MCP Server (AI Integration)
+
+The project includes an MCP (Model Context Protocol) server that exposes bundle data to AI assistants like GitHub Copilot and Claude Desktop.
+
+### Quick Start
+
+```bash
+# Test with MCP Inspector
+npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /path/to/your/bundle
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `read_entity` | Read a specific entity by type and ID |
+| `list_entities` | List all entity IDs |
+| `get_context` | Get entity with all related dependencies |
+| `get_conformance_context` | Get profile conformance rules |
+
+### VS Code + GitHub Copilot
+
+Create `.vscode/mcp.json` in your project:
+
+```json
+{
+  "servers": {
+    "sdd-bundle": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/home/ivan/dev/sdd-bundle-editor/packages/mcp-server/dist/index.js",
+        "/path/to/your/bundle"
+      ]
+    }
+  }
+}
+```
+
+Then in Copilot Chat (Agent Mode), use `#get_context`, `#read_entity`, etc. to invoke tools.
+
+See [`packages/mcp-server/README.md`](packages/mcp-server/README.md) for full documentation.
+
+---
+
+
 ## Status and next work
 
 The project has transitioned to the **Agent-First** architecture (Phase 8).

@@ -1,0 +1,30 @@
+# Example SDD Bundle Registry Configuration
+# 
+# Use with: node packages/mcp-server/dist/index.js --config bundles.yaml
+#
+# Paths can be absolute or relative to this file's location.
+# Each bundle needs a unique 'id' that will be used in tool calls.
+
+bundles:
+  # Sample bundle for testing/demo
+  - id: sample
+    path: /home/ivan/dev/sdd-sample-bundle
+    tags: [demo, sample]
+    description: "Sample SDD bundle for demonstration and testing"
+
+  # Add more bundles as needed:
+  #
+  # - id: api-spec
+  #   path: /home/ivan/specs/api-specification
+  #   tags: [api, rest, openapi]
+  #   description: "Company REST API specification"
+  #
+  # - id: security-baseline
+  #   path: /home/ivan/specs/security-standards
+  #   tags: [security, compliance]
+  #   description: "Security baseline requirements and controls"
+  #
+  # - id: observability
+  #   path: /home/ivan/specs/otel-schema
+  #   tags: [telemetry, observability]
+  #   description: "OpenTelemetry schema and conventions"

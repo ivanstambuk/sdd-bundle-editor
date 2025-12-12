@@ -356,6 +356,23 @@ export async function loadBundleWithSchemaValidation(
   const refTargetDiagnostics = validateRefTargets(bundle, rawSchemas);
   diagnostics.push(...refTargetDiagnostics);
 
+  // Built-in broken reference detection (no lint config required)
+  // Detects when entities reference IDs that don't exist in the bundle
+  for (const edge of bundle.refGraph.edges) {
+    const target = bundle.idRegistry.get(edge.toId);
+    if (!target) {
+      diagnostics.push({
+        severity: 'error',
+        message: `Broken reference: ${edge.fromEntityType} "${edge.fromId}" references non-existent ${edge.toEntityType} "${edge.toId}" via "${edge.fromField}"`,
+        entityId: edge.fromId,
+        entityType: edge.fromEntityType,
+        path: `/${edge.fromField}`,
+        source: 'schema',
+        code: 'broken-ref',
+      });
+    }
+  }
+
   // Load and run lint rules, if configured.
   const lintConfigPath = bundle.manifest.spec.lintConfig?.path;
   const lintConfig = await loadLintConfig(bundleDir, lintConfigPath);

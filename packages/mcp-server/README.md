@@ -25,6 +25,20 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `get_conformance_context` | Get profile conformance rules and audit templates |
 | `search_entities` | Search for entities across all bundles |
 
+### Prompts (Structured AI Workflows)
+| Prompt | Description |
+|--------|-------------|
+| `implement-requirement` | Generate an implementation plan for a requirement |
+| `explain-entity` | Get a clear explanation of any entity for different audiences |
+| `audit-profile` | Perform a conformance audit against a profile |
+| `trace-dependency` | Trace upstream/downstream dependencies for any entity |
+| `coverage-analysis` | Analyze coverage gaps in specifications |
+| `suggest-relations` | Suggest missing relationships between entities |
+| `generate-test-cases` | Generate test cases for requirements or features |
+| `summarize-bundle` | Generate executive/technical summaries of a bundle |
+| `diff-bundles` | Compare two bundles and highlight differences |
+| `create-roadmap` | Generate implementation roadmap from specifications |
+
 ---
 
 ## Running Locally
@@ -151,6 +165,151 @@ npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js --con
    - `list_bundles` - See what's loaded
    - `search_entities` - Search across all bundles
    - Other tools - Specify `bundleId` when in multi-bundle mode
+
+3. **Prompts Tab**:
+   - `implement-requirement` - Get an implementation plan
+   - `explain-entity` - Understand any entity
+   - `audit-profile` - Run conformance checks
+   - `trace-dependency` - Analyze entity dependencies
+
+---
+
+## Using Prompts
+
+Prompts provide structured AI workflows. They gather relevant context and format it for the AI.
+
+### implement-requirement
+
+Generate an implementation plan for a requirement:
+
+```json
+{
+  "requirementId": "REQ-AUTH-001",
+  "depth": "detailed"
+}
+```
+
+**depth options**: `overview`, `detailed`, `with-code`
+
+### explain-entity
+
+Get a clear explanation of any entity:
+
+```json
+{
+  "entityType": "Component",
+  "entityId": "COMP-API-GATEWAY",
+  "audience": "new-team-member"
+}
+```
+
+**audience options**: `developer`, `stakeholder`, `new-team-member`
+
+### audit-profile
+
+Perform a conformance audit:
+
+```json
+{
+  "profileId": "PROF-SECURITY-BASELINE",
+  "scope": "full"
+}
+```
+
+**scope options**: `full`, `requirements-only`, `quick`
+
+### trace-dependency
+
+Analyze dependencies for any entity:
+
+```json
+{
+  "entityType": "Task",
+  "entityId": "TASK-001",
+  "direction": "both"
+}
+```
+
+**direction options**: `upstream`, `downstream`, `both`
+
+### coverage-analysis
+
+Analyze coverage gaps in your specification:
+
+```json
+{
+  "focus": "all",
+  "threshold": 80
+}
+```
+
+**focus options**: `requirements`, `features`, `threats`, `all`
+
+### suggest-relations
+
+Get AI suggestions for missing relationships:
+
+```json
+{
+  "entityType": "Requirement",
+  "confidence": "high"
+}
+```
+
+**confidence options**: `high`, `medium`, `all`
+
+### generate-test-cases
+
+Generate test cases for a requirement or feature:
+
+```json
+{
+  "entityType": "Requirement",
+  "entityId": "REQ-001",
+  "style": "bdd"
+}
+```
+
+**style options**: `bdd`, `traditional`, `checklist`
+
+### summarize-bundle
+
+Generate a summary of the bundle:
+
+```json
+{
+  "format": "executive"
+}
+```
+
+**format options**: `executive`, `technical`, `onboarding`
+
+### diff-bundles
+
+Compare two loaded bundles (requires multi-bundle mode):
+
+```json
+{
+  "bundleA": "api-v1",
+  "bundleB": "api-v2",
+  "focus": "all"
+}
+```
+
+**focus options**: `all`, `requirements`, `structure`
+
+### create-roadmap
+
+Generate an implementation roadmap:
+
+```json
+{
+  "scope": "all",
+  "format": "phases"
+}
+```
+
+**format options**: `timeline`, `phases`, `milestones`
 
 ---
 

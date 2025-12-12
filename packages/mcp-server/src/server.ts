@@ -478,6 +478,92 @@ export class SddMcpServer {
                 };
             }
         );
+
+        // Tool: validate_bundle
+        this.server.tool(
+            "validate_bundle",
+            "Validate a bundle and return all diagnostics. Use when user asks 'are there any issues?', 'validate my spec', 'check for errors', or 'find broken references'. Returns errors and warnings including broken references, schema violations, and lint rule failures.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to validate all bundles)"),
+            },
+            async ({ bundleId }) => {
+                // Validate all bundles
+                if (bundleId === "all" || (!bundleId && !this.isSingleBundleMode())) {
+                    const allDiagnostics: Array<{
+                        bundleId: string;
+                        severity: string;
+                        message: string;
+                        entityType?: string;
+                        entityId?: string;
+                        code?: string;
+                    }> = [];
+
+                    for (const [bId, loaded] of this.bundles) {
+                        for (const d of loaded.diagnostics) {
+                            allDiagnostics.push({
+                                bundleId: bId,
+                                severity: d.severity,
+                                message: d.message,
+                                entityType: d.entityType,
+                                entityId: d.entityId,
+                                code: d.code,
+                            });
+                        }
+                    }
+
+                    const errorCount = allDiagnostics.filter(d => d.severity === 'error').length;
+                    const warnCount = allDiagnostics.filter(d => d.severity === 'warning').length;
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: JSON.stringify({
+                                summary: {
+                                    bundlesChecked: this.bundles.size,
+                                    totalErrors: errorCount,
+                                    totalWarnings: warnCount,
+                                    isValid: errorCount === 0,
+                                },
+                                diagnostics: allDiagnostics,
+                            }, null, 2),
+                        }],
+                    };
+                }
+
+                // Validate single bundle
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId or use 'all'. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                const errorCount = loaded.diagnostics.filter(d => d.severity === 'error').length;
+                const warnCount = loaded.diagnostics.filter(d => d.severity === 'warning').length;
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify({
+                            bundleId: loaded.id,
+                            summary: {
+                                totalErrors: errorCount,
+                                totalWarnings: warnCount,
+                                isValid: errorCount === 0,
+                            },
+                            diagnostics: loaded.diagnostics,
+                        }, null, 2),
+                    }],
+                };
+            }
+        );
     }
 
     /**
@@ -1521,6 +1607,114 @@ Include:
                 };
             }
         );
+
+        // Prompt 11: bundle-health
+        this.server.prompt(
+            "bundle-health",
+            "Analyze bundle health and generate a comprehensive report. Use when user asks 'how healthy is my spec?', 'are there any issues?', 'bundle status', or 'quality check'. Returns analysis of broken references, schema errors, coverage gaps, and recommendations.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+            },
+            async ({ bundleId }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    return {
+                        messages: [{
+                            role: "user",
+                            content: { type: "text", text: `Error: Bundle not found. Available bundles: ${this.getBundleIds().join(", ")}` }
+                        }]
+                    };
+                }
+
+                const bundle = loaded.bundle;
+                const diagnostics = loaded.diagnostics;
+
+                // Categorize diagnostics
+                const errors = diagnostics.filter(d => d.severity === 'error');
+                const warnings = diagnostics.filter(d => d.severity === 'warning');
+                const brokenRefs = diagnostics.filter(d => d.code?.includes('broken') || d.message.includes('missing') || d.message.includes('not found'));
+                const schemaErrors = diagnostics.filter(d => d.source === 'schema');
+                const lintWarnings = diagnostics.filter(d => d.source === 'lint');
+
+                // Entity statistics
+                const entityCounts: Record<string, number> = {};
+                for (const [type, entities] of bundle.entities) {
+                    entityCounts[type] = entities.size;
+                }
+                const totalEntities = Object.values(entityCounts).reduce((a, b) => a + b, 0);
+                const relationCount = bundle.refGraph.edges.length;
+
+                // Orphan detection (entities with no incoming or outgoing refs)
+                const entitiesWithRefs = new Set<string>();
+                for (const edge of bundle.refGraph.edges) {
+                    entitiesWithRefs.add(edge.fromId);
+                    entitiesWithRefs.add(edge.toId);
+                }
+                const orphans: string[] = [];
+                for (const [type, entities] of bundle.entities) {
+                    for (const [id] of entities) {
+                        if (!entitiesWithRefs.has(id)) {
+                            orphans.push(`${type}:${id}`);
+                        }
+                    }
+                }
+
+                const promptContent = `You are analyzing the health of an SDD bundle.
+
+## Bundle: ${loaded.id}
+- **Path**: ${loaded.path}
+- **Description**: ${loaded.description || "N/A"}
+
+## Overall Health Status
+${errors.length === 0 ? "✅ **HEALTHY** - No critical errors" : `❌ **ISSUES FOUND** - ${errors.length} error(s) need attention`}
+
+## Summary Metrics
+| Metric | Value |
+|--------|-------|
+| Total Entities | ${totalEntities} |
+| Relations | ${relationCount} |
+| Errors | ${errors.length} |
+| Warnings | ${warnings.length} |
+| Orphan Entities | ${orphans.length} |
+
+## Entity Breakdown
+${Object.entries(entityCounts).map(([type, count]) => `- ${type}: ${count}`).join("\n")}
+
+## Critical Issues (${errors.length})
+${errors.length > 0 ? errors.map(e => `- ❌ **${e.entityType || "Bundle"}${e.entityId ? ` (${e.entityId})` : ""}**: ${e.message}`).join("\n") : "None - bundle is error-free! ✓"}
+
+## Broken References (${brokenRefs.length})
+${brokenRefs.length > 0 ? brokenRefs.map(e => `- ${e.entityType}:${e.entityId} → ${e.message}`).join("\n") : "No broken references found ✓"}
+
+## Schema Issues (${schemaErrors.length})
+${schemaErrors.length > 0 ? schemaErrors.map(e => `- ${e.entityType}:${e.entityId} - ${e.message} [${e.code}]`).join("\n") : "All entities conform to schema ✓"}
+
+## Lint Warnings (${lintWarnings.length})
+${lintWarnings.length > 0 ? lintWarnings.map(e => `- ${e.entityType}:${e.entityId} - ${e.message}`).join("\n") : "No lint warnings ✓"}
+
+## Orphan Entities (${orphans.length})
+${orphans.length > 0 ? `These entities have no relationships:\n${orphans.slice(0, 10).map(o => `- ${o}`).join("\n")}${orphans.length > 10 ? `\n... and ${orphans.length - 10} more` : ""}` : "All entities are connected ✓"}
+
+## Your Task
+Generate a comprehensive bundle health report:
+
+1. **Executive Summary** - One paragraph overall assessment
+2. **Critical Actions** - What must be fixed immediately (errors)
+3. **Recommended Improvements** - What should be fixed (warnings)
+4. **Coverage Analysis** - Are specifications complete?
+5. **Risk Assessment** - What could these issues lead to?
+6. **Next Steps** - Prioritized action items with estimates
+
+Be specific about what needs to be done to resolve each issue.`;
+
+                return {
+                    messages: [{
+                        role: "user",
+                        content: { type: "text", text: promptContent }
+                    }]
+                };
+            }
+        );
     }
 
     async start() {
@@ -1535,8 +1729,20 @@ Include:
                     tags: config.tags,
                     description: config.description,
                     bundle: result.bundle,
+                    diagnostics: result.diagnostics.map(d => ({
+                        severity: d.severity,
+                        message: d.message,
+                        entityId: d.entityId,
+                        entityType: d.entityType,
+                        filePath: d.filePath,
+                        path: d.path,
+                        source: d.source,
+                        code: d.code,
+                    })),
                 });
-                console.error(`  ✓ Loaded ${config.id} (${result.diagnostics.length} diagnostics)`);
+                const errorCount = result.diagnostics.filter(d => d.severity === 'error').length;
+                const warnCount = result.diagnostics.filter(d => d.severity === 'warning').length;
+                console.error(`  ✓ Loaded ${config.id} (${errorCount} errors, ${warnCount} warnings)`);
             } catch (err) {
                 console.error(`  ✗ Failed to load ${config.id}:`, err);
                 // Continue loading other bundles

@@ -18,7 +18,21 @@ export type BundleConfig = z.infer<typeof BundleConfigSchema>;
 export type BundlesConfigFile = z.infer<typeof BundlesConfigFileSchema>;
 
 /**
- * Loaded bundle with its configuration
+ * Diagnostic from bundle validation
+ */
+export interface BundleDiagnostic {
+    severity: 'error' | 'warning';
+    message: string;
+    entityId?: string;
+    entityType?: string;
+    filePath?: string;
+    path?: string;
+    source?: 'schema' | 'lint' | 'gate';
+    code?: string;
+}
+
+/**
+ * Loaded bundle with its configuration and diagnostics
  */
 export interface LoadedBundle {
     id: string;
@@ -26,4 +40,5 @@ export interface LoadedBundle {
     tags?: string[];
     description?: string;
     bundle: import("@sdd-bundle-editor/core-model").Bundle;
+    diagnostics: BundleDiagnostic[];
 }

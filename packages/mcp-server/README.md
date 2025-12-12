@@ -24,6 +24,7 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `get_context` | Graph traversal to get entity with dependencies |
 | `get_conformance_context` | Get profile conformance rules and audit templates |
 | `search_entities` | Search for entities across all bundles |
+| `validate_bundle` | Validate a bundle and return diagnostics |
 
 ### Prompts (Structured AI Workflows)
 | Prompt | Description |
@@ -38,6 +39,7 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `summarize-bundle` | Generate executive/technical summaries of a bundle |
 | `diff-bundles` | Compare two bundles and highlight differences |
 | `create-roadmap` | Generate implementation roadmap from specifications |
+| `bundle-health` | Analyze bundle health and generate a report |
 
 ---
 

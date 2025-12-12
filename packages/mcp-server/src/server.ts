@@ -122,9 +122,10 @@ export class SddMcpServer {
     }
 
     private setupTools() {
-        // New tool: list_bundles
+        // Tool: list_bundles
         this.server.tool(
             "list_bundles",
+            "List all loaded specification bundles. Use this first to discover what bundles are available, their IDs, entity types, and metadata. Returns bundle IDs needed for other tool calls in multi-bundle mode.",
             {},
             async () => {
                 const bundleList = Array.from(this.bundles.values()).map(b => ({
@@ -145,9 +146,10 @@ export class SddMcpServer {
             }
         );
 
-        // read_entity - now with optional bundleId
+        // Tool: read_entity
         this.server.tool(
             "read_entity",
+            "Read the complete data for a specific entity. Use when you need full details about a Requirement, Task, Feature, Component, Profile, Threat, or any other entity type. Returns all fields including title, description, state, priority, and relationships.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
@@ -193,9 +195,10 @@ export class SddMcpServer {
             }
         );
 
-        // list_entities - now with optional bundleId
+        // Tool: list_entities
         this.server.tool(
             "list_entities",
+            "List all entities in a bundle. Use to discover available entity IDs, see what entity types exist, or get an overview of bundle contents. Without entityType filter, shows all available types. With filter, shows all IDs of that type.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to list from all bundles)"),
                 entityType: z.string().optional().describe("Filter by entity type"),
@@ -246,9 +249,10 @@ export class SddMcpServer {
             }
         );
 
-        // get_context - now with optional bundleId
+        // Tool: get_context
         this.server.tool(
             "get_context",
+            "Get an entity with all its related dependencies via graph traversal. Use when you need to understand how an entity connects to others - what it depends on and what depends on it. Returns the target entity plus all directly related entities (Requirements, Tasks, Features, Components, etc.).",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().describe("Entity type"),
@@ -323,9 +327,10 @@ export class SddMcpServer {
             }
         );
 
-        // get_conformance_context - now with optional bundleId
+        // Tool: get_conformance_context
         this.server.tool(
             "get_conformance_context",
+            "Get conformance rules and audit templates from a Profile. Use for compliance checking, understanding what rules apply, or preparing for audits. Without profileId, lists all available profiles. With profileId, returns detailed rules, linked requirements, and audit templates.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 profileId: z.string().optional().describe("Profile ID (optional, lists all profiles if not specified)"),
@@ -415,9 +420,10 @@ export class SddMcpServer {
             }
         );
 
-        // New tool: search_entities - search across all bundles
+        // Tool: search_entities
         this.server.tool(
             "search_entities",
+            "Search for entities across all bundles by keyword. Use when user asks about something by name, topic, or keyword rather than exact ID. Searches entity IDs, titles, statements, and descriptions. Returns matching entities with their bundle and type.",
             {
                 query: z.string().describe("Search query (searches in entity IDs and titles)"),
                 entityType: z.string().optional().describe("Filter by entity type"),
@@ -481,6 +487,7 @@ export class SddMcpServer {
         // Prompt 1: implement-requirement
         this.server.prompt(
             "implement-requirement",
+            "Generate a detailed implementation plan for a requirement. Use when user asks 'how do I implement REQ-XXX?', 'help me build this requirement', or 'what tasks are needed for this requirement?'. Gathers related features, components, existing tasks, and domain knowledge to create actionable steps with estimates.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 requirementId: z.string().describe("The requirement ID to implement"),
@@ -584,6 +591,7 @@ Include:
         // Prompt 2: explain-entity
         this.server.prompt(
             "explain-entity",
+            "Explain any entity in plain language for a specific audience. Use when user asks 'what is FEAT-XXX?', 'explain this to my manager', 'help me understand this component', or 'what does this requirement mean?'. Adapts language for developers, stakeholders, or new team members.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().describe("Entity type (e.g., Requirement, Component, Feature)"),
@@ -694,6 +702,7 @@ Include:
         // Prompt 3: audit-profile
         this.server.prompt(
             "audit-profile",
+            "Run a conformance audit against a profile's rules. Use when user asks 'are we compliant with X?', 'audit against security baseline', 'check conformance', or 'what rules are we missing?'. Returns detailed pass/fail analysis with remediation recommendations.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 profileId: z.string().describe("Profile ID to audit against"),
@@ -806,6 +815,7 @@ Structure your response as:
         // Prompt 4: trace-dependency
         this.server.prompt(
             "trace-dependency",
+            "Trace all dependencies for any entity. Use when user asks 'what depends on this?', 'what will be affected if I change X?', 'show me the dependency chain', or 'impact analysis for this task'. Returns visual dependency tree with impact assessment.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().describe("Entity type"),
@@ -953,6 +963,7 @@ Analyze this dependency trace and provide:
         // Prompt 5: coverage-analysis
         this.server.prompt(
             "coverage-analysis",
+            "Analyze specification coverage and find gaps. Use when user asks 'what requirements lack tests?', 'where are the gaps?', 'coverage report', or 'what's missing?'. Returns detailed coverage metrics with prioritized recommendations.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 focus: z.enum(["requirements", "features", "threats", "all"]).default("all").describe("Coverage focus area"),
@@ -1061,6 +1072,7 @@ Provide:
         // Prompt 6: suggest-relations
         this.server.prompt(
             "suggest-relations",
+            "Suggest missing relationships between entities. Use when user asks 'what am I missing?', 'suggest connections', 'find related entities', or 'improve my spec'. Analyzes entity content to find likely relationships that should be added.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().optional().describe("Focus on specific entity type"),
@@ -1138,6 +1150,7 @@ Provide at least 5 suggestions if possible, sorted by confidence.`;
         // Prompt 7: generate-test-cases
         this.server.prompt(
             "generate-test-cases",
+            "Generate test cases for a requirement or feature. Use when user asks 'write tests for REQ-XXX', 'what should I test?', 'BDD scenarios for this feature', or 'test coverage for this'. Generates comprehensive test cases in BDD, traditional, or checklist format.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.enum(["Requirement", "Feature"]).describe("Entity type to generate tests for"),
@@ -1233,6 +1246,7 @@ For each test, ensure it is:
         // Prompt 8: summarize-bundle
         this.server.prompt(
             "summarize-bundle",
+            "Generate a summary of the entire bundle. Use when user asks 'what is this project about?', 'give me an overview', 'executive summary', or 'onboard me to this spec'. Generates comprehensive summaries tailored for executives, developers, or new team members.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 format: z.enum(["executive", "technical", "onboarding"]).default("executive").describe("Summary format"),
@@ -1318,6 +1332,7 @@ Include:
         // Prompt 9: diff-bundles
         this.server.prompt(
             "diff-bundles",
+            "Compare two bundles and show differences. Use when user asks 'what changed between versions?', 'compare these specs', 'diff v1 vs v2', or 'migration analysis'. Requires two bundles loaded. Shows added, removed, and modified entities.",
             {
                 bundleA: z.string().describe("First bundle ID"),
                 bundleB: z.string().describe("Second bundle ID"),
@@ -1409,6 +1424,7 @@ Compare these bundles and provide:
         // Prompt 10: create-roadmap
         this.server.prompt(
             "create-roadmap",
+            "Generate an implementation roadmap from specifications. Use when user asks 'create a project plan', 'what's the roadmap?', 'how do I implement all this?', or 'phased implementation plan'. Creates timeline, phases, or milestone-based roadmaps with dependencies.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 scope: z.string().default("all").describe("Scope: 'all', 'feature:FEAT-001', or 'tag:security'"),

@@ -46,17 +46,18 @@ test.describe('Contextual Actions', () => {
 
         // 3. Wait for real bundle to load
         await expect(page.locator('.status-loading')).not.toBeVisible();
-        await expect(page.locator('.entity-group-header:has-text("Feature")')).toBeVisible();
+        await expect(page.locator('[data-testid="entity-group-Feature"]')).toBeVisible();
 
-        // 4. Navigate to FEAT-001
-        await page.click('[data-type="Feature"] .entity-item:has-text("FEAT-001")');
+        // Expand Feature group and navigate to FEAT-001
+        await page.click('[data-testid="entity-group-Feature"]');
+        await page.click('[data-testid="entity-FEAT-001"]');
 
         // 5. Verify no fix button initially
         const fixButton = page.getByTestId('fix-with-agent-btn');
         await expect(fixButton).not.toBeVisible();
 
         // 6. Trigger Compile to get diagnostics
-        await page.click('button:has-text("Compile Spec")');
+        await page.click('[data-testid="compile-btn"]');
 
         // 7. Verify Fix button appears
         await expect(fixButton).toBeVisible();

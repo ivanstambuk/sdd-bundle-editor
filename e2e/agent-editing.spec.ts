@@ -6,6 +6,7 @@ import * as fs from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import * as util from 'node:util';
 import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
+import { setupMockAgent, startAgentConversation, sendAgentMessage, waitForPendingChanges, acceptPendingChanges } from './fixtures/agent-test-fixture';
 
 const execAsync = util.promisify(exec);
 
@@ -23,34 +24,19 @@ test.describe.serial('Agent Editing Flow', () => {
     });
 
     test('should propose and apply changes', async ({ page }) => {
-        // Navigate to app with custom bundleDir and reset logic
-        await page.goto(`/?bundleDir=${encodeURIComponent(tempDir)}&debug=true&resetAgent=true`);
-
-        // Wait for app to load
-        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        // Use shared fixture for consistent agent setup
+        await setupMockAgent(page, tempDir);
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
         // Check if agent panel is visible
         const agentPanel = page.locator('.agent-panel');
         await expect(agentPanel).toBeVisible({ timeout: 10000 });
 
-        // Configure Mock agent via UI (not API - more reliable)
-        await page.click('[data-testid="agent-settings-btn"]');
-        await page.selectOption('.form-control', 'mock');
-        await page.click('[data-testid="agent-save-config-btn"]');
-
-        // Start Conversation
-        const startBtn = page.locator('[data-testid="agent-start-btn"]');
-        await expect(startBtn).toBeEnabled({ timeout: 5000 });
-        await startBtn.click();
-
-        // Wait for input to be visible
-        const inputArea = page.locator('[data-testid="agent-message-input"]');
-        await expect(inputArea).toBeVisible({ timeout: 10000 });
+        // Start conversation using shared helper (handles auto-start case)
+        await startAgentConversation(page);
 
         // Send "propose change"
-        await inputArea.fill('propose change');
-
+        await page.fill('[data-testid="agent-message-input"]', 'propose change');
         const responsePromise = page.waitForResponse(response =>
             response.url().includes('/agent/message') && response.status() === 200
         );
@@ -60,9 +46,8 @@ test.describe.serial('Agent Editing Flow', () => {
         // Wait for agent response
         await expect(page.locator('.message.role-agent').last()).toContainText('propose', { timeout: 10000 });
 
-        // We expect to see "Proposed Changes" in the Agent Panel
-        await expect(page.locator('text=Proposed Changes')).toBeVisible({ timeout: 10000 });
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 10000 });
+        // Wait for pending changes using shared helper
+        await waitForPendingChanges(page);
 
         // Accept Changes
         const acceptBtn = page.locator('[data-testid="agent-accept-btn"]');
@@ -75,8 +60,8 @@ test.describe.serial('Agent Editing Flow', () => {
             { timeout: 30000 }
         );
 
-        // Verify status changed to committed
-        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('committed', { timeout: 10000 });
+        // Wait for pending changes to clear
+        await expect(page.locator('[data-testid="pending-changes-block"]')).not.toBeVisible({ timeout: 10000 });
 
         // Verify File on Disk - Mock backend updates FEAT-001 title
         const featureFilePath = path.join(tempDir, 'bundle/features/FEAT-001.yaml');

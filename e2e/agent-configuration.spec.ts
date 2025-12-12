@@ -20,8 +20,8 @@ test.describe.serial('Agent Configuration', () => {
         await page.waitForSelector('.agent-placeholder', { timeout: 5000 });
         await page.screenshot({ path: 'artifacts/agent_step1_unconfigured.png' });
 
-        // 2. Open Configuration - the button class is .settings-btn regardless of text
-        const configBtn = page.locator('.settings-btn');
+        // 2. Open Configuration - use data-testid
+        const configBtn = page.locator('[data-testid="agent-settings-btn"]');
         await expect(configBtn).toBeVisible({ timeout: 5000 });
         await configBtn.click();
 
@@ -51,24 +51,23 @@ test.describe.serial('Agent Configuration', () => {
         // Screenshot 4: After filling custom CLI command
         await page.screenshot({ path: 'artifacts/agent_step4_custom_cli.png' });
 
-        // 6. Save
-        await page.getByRole('button', { name: 'Save' }).click();
+        // 6. Save - config save now auto-starts conversation
+        await page.locator('[data-testid="agent-save-config-btn"]').click();
 
-        // Screenshot 5: Configured state - Start button should now be enabled
-        await page.waitForTimeout(500); // Wait for state to update
+        // Wait for conversation to be active (auto-started after save)
+        await expect(page.locator('[data-testid="agent-status-badge"]')).toContainText('active', { timeout: 10000 });
+
+        // Screenshot 5: Configured state - now active
         await page.screenshot({ path: 'artifacts/agent_step5_configured.png' });
 
-        // 7. Start Conversation
-        await page.locator('button.start-btn').click();
-
         // 8. Send "Hello Configuration"
-        const inputArea = page.locator('textarea[placeholder="Describe changes..."]');
+        const inputArea = page.locator('[data-testid="agent-message-input"]');
         await expect(inputArea).toBeVisible();
         await inputArea.fill('Hello Configuration');
-        await page.locator('button.send-btn').click();
+        await page.locator('[data-testid="agent-send-btn"]').click();
 
         // 9. Verify Response "Echo: Hello Configuration"
-        await expect(page.locator('.message-content').getByText('Hello Configuration').last()).toBeVisible();
+        await expect(page.locator('.message-content').getByText('Hello Configuration').last()).toBeVisible({ timeout: 10000 });
 
         // Screenshot 6: Conversation active with echo response
         await page.screenshot({ path: 'artifacts/agent_step6_conversation.png' });

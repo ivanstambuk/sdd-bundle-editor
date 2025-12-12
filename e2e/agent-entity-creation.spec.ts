@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import { createTempBundle, cleanupTempBundle } from './bundle-test-fixture';
+import { setupMockAgent, startAgentConversation, waitForPendingChanges } from './fixtures/agent-test-fixture';
 
 /**
  * E2E Test for Entity Creation via Agent
@@ -23,47 +24,32 @@ test.describe('Entity Creation via Agent', () => {
     });
 
     test('new entity appears in sidebar after creation via mock agent', async ({ page }) => {
-        const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
-
-        // 1. Wait for app and bundle to load
-        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        // Use shared fixture for consistent agent setup
+        await setupMockAgent(page, tempBundleDir);
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Verify initial state - only FEAT-001 should exist
+        // Verify initial state - only FEAT-001 should exist (expand Feature group first)
+        const featureGroup = page.locator('[data-testid="entity-group-Feature"]');
+        await featureGroup.click();
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-001' })).toBeVisible();
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-999' })).not.toBeVisible();
 
-        // 2. Configure Mock agent via UI (not API - more reliable)
-        await page.locator('[data-testid="agent-settings-btn"]').click();
-        await page.selectOption('select.form-control', 'mock');
-        await page.locator('[data-testid="agent-save-config-btn"]').click();
+        // Start conversation using shared helper
+        await startAgentConversation(page);
 
-        // 3. Start conversation
-        const startBtn = page.locator('[data-testid="agent-start-btn"]');
-        await expect(startBtn).toBeEnabled({ timeout: 5000 });
-        await startBtn.click();
-
-        // Wait for active state
-        await page.waitForSelector('[data-testid="agent-message-input"]', { timeout: 10000 });
-
-        // 4. Request entity modification (mock backend modifies FEAT-001 title)
+        // Request entity modification (mock backend modifies FEAT-001 title)
         await page.locator('[data-testid="agent-message-input"]').fill('propose change');
-
         const responsePromise = page.waitForResponse(response =>
             response.url().includes('/agent/message') && response.status() === 200
         );
         await page.locator('[data-testid="agent-send-btn"]').click();
         await responsePromise;
 
-        // 5. Wait for pending changes
+        // Wait for pending changes using shared helper
+        await waitForPendingChanges(page);
 
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 30000 });
-
-        // 6. Accept changes
+        // Accept changes
         await page.locator('[data-testid="agent-accept-btn"]').click();
-
-        // Wait for accept to complete
         await page.waitForResponse(response =>
             response.url().includes('/agent/accept') && response.status() === 200,
             { timeout: 30000 }
@@ -72,7 +58,7 @@ test.describe('Entity Creation via Agent', () => {
         // Wait for bundle reload
         await page.waitForTimeout(2000);
 
-        // 7. Verify the modification worked (FEAT-001 should still be visible)
+        // Verify the modification worked (FEAT-001 should still be visible)
         await expect(page.locator('.entity-btn', { hasText: 'FEAT-001' })).toBeVisible();
 
         // Click on FEAT-001 and verify title was updated
@@ -82,32 +68,21 @@ test.describe('Entity Creation via Agent', () => {
     });
 
     test('entity file is created in correct bundle directory structure', async ({ page }) => {
-        const encodedPath = encodeURIComponent(tempBundleDir);
-        await page.goto(`/?bundleDir=${encodedPath}&debug=true&resetAgent=true`);
-
-        // Wait for app and bundle to load
-        await page.waitForSelector('.app-shell', { timeout: 10000 });
+        // Use shared fixture for consistent agent setup
+        await setupMockAgent(page, tempBundleDir);
         await page.waitForSelector('.entity-group', { timeout: 10000 });
 
-        // Configure Mock agent via UI
-        await page.locator('[data-testid="agent-settings-btn"]').click();
-        await page.selectOption('select.form-control', 'mock');
-        await page.locator('[data-testid="agent-save-config-btn"]').click();
-
         // Start conversation and apply changes
-        await expect(page.locator('[data-testid="agent-start-btn"]')).toBeEnabled({ timeout: 5000 });
-        await page.locator('[data-testid="agent-start-btn"]').click();
-        await page.waitForSelector('[data-testid="agent-message-input"]', { timeout: 10000 });
+        await startAgentConversation(page);
 
         await page.locator('[data-testid="agent-message-input"]').fill('propose change');
-
         const responsePromise = page.waitForResponse(response =>
             response.url().includes('/agent/message') && response.status() === 200
         );
         await page.locator('[data-testid="agent-send-btn"]').click();
         await responsePromise;
 
-        await expect(page.locator('[data-testid="pending-changes-block"]')).toBeVisible({ timeout: 30000 });
+        await waitForPendingChanges(page);
         await page.locator('[data-testid="agent-accept-btn"]').click();
 
         await page.waitForResponse(response =>

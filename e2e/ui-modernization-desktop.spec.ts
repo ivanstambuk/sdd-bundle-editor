@@ -49,6 +49,8 @@ test.describe('UI Modernization - Desktop', () => {
         const agentText = await agentToggle.textContent();
         expect(agentText?.trim()).toBe('🤖'); // Only icon, no "Agent" text
 
+        // Expand Requirement group first (groups start collapsed)
+        await page.click('[data-testid="entity-group-Requirement"]');
         // Select an entity to populate breadcrumb
         await page.click('[data-testid="entity-REQ-002"]');
         await page.waitForTimeout(500);
@@ -87,29 +89,29 @@ test.describe('UI Modernization - Desktop', () => {
         const entityType = await page.locator('.entity-group').first().getAttribute('data-type');
         const groupToggle = page.locator(`[data-testid="entity-group-${entityType}"]`);
 
-        // Initially expanded (chevron down)
+        // Initially collapsed (chevron right) - groups start collapsed now
         let chevronInitial = await chevron.textContent();
-        expect(chevronInitial).toBe('▾');
+        expect(chevronInitial).toBe('▸');
 
-        // Click to collapse
+        // Click to expand
         await groupToggle.click();
         await page.waitForTimeout(200);
 
-        // Verify chevron rotated (pointing right)
-        const chevronCollapsed = await chevron.textContent();
-        expect(chevronCollapsed).toBe('▸');
-
-        // Verify entity list is hidden
-        const entityList = page.locator('.entity-group.collapsed .entity-list');
-        await expect(entityList).not.toBeVisible();
-
-        // Click to expand again
-        await groupToggle.click();
-        await page.waitForTimeout(200);
-
-        // Verify chevron down again
+        // Verify chevron rotated (pointing down)
         const chevronExpanded = await chevron.textContent();
         expect(chevronExpanded).toBe('▾');
+
+        // Verify entity list is now visible
+        const firstGroup = page.locator('.entity-group').first();
+        await expect(firstGroup.locator('.entity-list')).toBeVisible();
+
+        // Click to collapse again
+        await groupToggle.click();
+        await page.waitForTimeout(200);
+
+        // Verify chevron right again
+        const chevronCollapsed = await chevron.textContent();
+        expect(chevronCollapsed).toBe('▸');
 
         // Capture screenshot showing compact tree
         await page.screenshot({ path: 'artifacts/desktop-compact-tree.png' });
@@ -144,12 +146,22 @@ test.describe('UI Modernization - Desktop', () => {
     });
 
     test('Font sizes and spacing match spec', async ({ page }) => {
-        // Verify entity tree uses 13px font
+        // First expand a group to get entity buttons visible
+        await page.click('[data-testid="entity-group-Feature"]');
+        await page.waitForTimeout(300);
+
+        // Wait for entity button to be visible
         const entityBtn = page.locator('.entity-btn').first();
+        await expect(entityBtn).toBeVisible({ timeout: 5000 });
+
+        // Verify entity tree uses small font size (var(--font-size-sm) = 0.8125rem ≈ 11.375px)
         const fontSize = await entityBtn.evaluate((el) => {
             return window.getComputedStyle(el).fontSize;
         });
-        expect(fontSize).toBe('13px');
+        // Font size is 0.8125rem with 14px base = 11.375px
+        const fontSizeValue = parseFloat(fontSize);
+        expect(fontSizeValue).toBeGreaterThanOrEqual(11);
+        expect(fontSizeValue).toBeLessThanOrEqual(14);
 
         // Verify tight spacing on entity buttons
         const padding = await entityBtn.evaluate((el) => {

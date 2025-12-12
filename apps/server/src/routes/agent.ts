@@ -5,15 +5,25 @@ import * as fs from 'node:fs/promises';
 import { AgentService } from '../services/agent/AgentService';
 import {
     AgentStartRequestSchema,
+    AgentStartRequest,
     AgentMessageRequestSchema,
-    AgentStatusResponseSchema,
+    AgentMessageRequest,
+    AgentAcceptRequestSchema,
+    AgentAcceptRequest,
+    AgentAbortRequestSchema,
+    AgentAbortRequest,
     AgentRollbackRequestSchema,
+    AgentRollbackRequest,
+    AgentDecisionRequestSchema,
+    AgentDecisionRequest,
+    AgentConfigRequestSchema,
+    AgentConfigRequest,
+    AgentStatusResponseSchema,
     AgentRollbackResponseSchema,
     AgentHealthResponseSchema,
-    AgentDecisionRequestSchema,
-    AgentConfigRequestSchema,
     ErrorResponseSchema,
 } from '@sdd-bundle-editor/shared-types';
+import { Type } from '@sinclair/typebox';
 
 async function resolveBundleDir(queryDir?: string): Promise<string> {
     if (!queryDir) {
@@ -29,11 +39,40 @@ async function resolveBundleDir(queryDir?: string): Promise<string> {
     }
 }
 
+// Common response schema for state-only responses
+const StateResponseSchema = Type.Object({
+    state: Type.Any(),
+});
+
+// Success response schema
+const SuccessResponseSchema = Type.Object({
+    success: Type.Boolean(),
+    message: Type.Optional(Type.String()),
+});
+
+// Accept response schema
+const AcceptResponseSchema = Type.Object({
+    state: Type.Any(),
+    commited: Type.Optional(Type.Boolean()),
+    error: Type.Optional(Type.String()),
+    diagnostics: Type.Optional(Type.Array(Type.Any())),
+});
+
+// Abort response schema
+const AbortResponseSchema = Type.Object({
+    state: Type.Any(),
+    revertedFiles: Type.Array(Type.String()),
+    message: Type.String(),
+});
+
 export async function agentRoutes(fastify: FastifyInstance) {
     // Helper to get current backend (it handles reconfiguration)
     const getBackend = () => AgentService.getInstance().getBackend();
 
-    fastify.post('/agent/start', {
+    // =========================================================================
+    // POST /agent/start - Start a new conversation
+    // =========================================================================
+    fastify.post<{ Body: AgentStartRequest }>('/agent/start', {
         schema: {
             tags: ['agent'],
             description: 'Start a new agent conversation',
@@ -45,8 +84,8 @@ export async function agentRoutes(fastify: FastifyInstance) {
         },
     }, async (request, reply) => {
         try {
-            const body = request.body as { bundleDir?: string; readOnly?: boolean };
-            const bundleDir = await resolveBundleDir(body.bundleDir);
+            const { bundleDir: rawBundleDir, readOnly } = request.body;
+            const bundleDir = await resolveBundleDir(rawBundleDir);
 
             // Load bundle to provide context to agent
             const { loadBundleWithSchemaValidation } = await import('@sdd-bundle-editor/core-model');
@@ -56,7 +95,7 @@ export async function agentRoutes(fastify: FastifyInstance) {
             const state = await getBackend().startConversation({
                 bundleDir,
                 bundle: { bundle },
-                readOnly: body.readOnly ?? true,
+                readOnly: readOnly ?? true,
             });
             return reply.send({ state });
         } catch (err) {
@@ -65,27 +104,37 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/message', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/message - Send a message to the agent
+    // =========================================================================
+    fastify.post<{ Body: AgentMessageRequest }>('/agent/message', {
+        schema: {
+            tags: ['agent'],
+            description: 'Send a message to the agent',
+            body: AgentMessageRequestSchema,
+            response: {
+                200: StateResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { message: string, bundleDir?: string, model?: string, reasoningEffort?: string }) || {};
-            if (!body.message) {
-                return reply.status(400).send({ error: 'Message content required' });
-            }
+            const { message, model, reasoningEffort } = request.body;
 
             // If model params are provided, update the config (but don't recreate backend)
-            if (body.model || body.reasoningEffort) {
+            if (model || reasoningEffort) {
                 const agentService = AgentService.getInstance();
                 const currentConfig = agentService.getConfig();
                 // Update config in-place without recreating backend
-                if (body.model) {
-                    currentConfig.model = body.model;
+                if (model) {
+                    currentConfig.model = model;
                 }
-                if (body.reasoningEffort) {
-                    currentConfig.reasoningEffort = body.reasoningEffort as any;
+                if (reasoningEffort) {
+                    currentConfig.reasoningEffort = reasoningEffort as any;
                 }
             }
 
-            const state = await getBackend().sendMessage(body.message);
+            const state = await getBackend().sendMessage(message);
             return reply.send({ state });
         } catch (err) {
             fastify.log.error(err);
@@ -93,22 +142,46 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.get('/agent/status', async (_request, reply) => {
+    // =========================================================================
+    // GET /agent/status - Get current conversation status
+    // =========================================================================
+    fastify.get('/agent/status', {
+        schema: {
+            tags: ['agent'],
+            description: 'Get current agent conversation status and configuration',
+            response: {
+                200: AgentStatusResponseSchema,
+            },
+        },
+    }, async (_request, reply) => {
         const state = await getBackend().getStatus();
         const config = AgentService.getInstance().getConfig();
         return reply.send({ state, config });
     });
 
-    // Health endpoint for mid-conversation monitoring
-    // Returns conversation state + Git status for detecting dirty state
-    fastify.get('/agent/health', async (request, reply) => {
+    // =========================================================================
+    // GET /agent/health - Health check with Git status
+    // =========================================================================
+    fastify.get<{ Querystring: { bundleDir?: string } }>('/agent/health', {
+        schema: {
+            tags: ['agent'],
+            description: 'Check agent health including conversation state and Git status',
+            querystring: Type.Object({
+                bundleDir: Type.Optional(Type.String()),
+            }),
+            response: {
+                200: AgentHealthResponseSchema,
+                500: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const query = request.query as { bundleDir?: string };
+            const { bundleDir } = request.query;
             const state = await getBackend().getStatus();
 
             let gitStatus: { isRepo: boolean; branch?: string; isClean?: boolean } = { isRepo: false };
-            if (query.bundleDir) {
-                gitStatus = await getGitStatus(query.bundleDir);
+            if (bundleDir) {
+                gitStatus = await getGitStatus(bundleDir);
             }
 
             const hasPendingChanges = (state.pendingChanges?.length ?? 0) > 0;
@@ -129,16 +202,23 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/config', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/config - Update agent configuration
+    // =========================================================================
+    fastify.post<{ Body: AgentConfigRequest }>('/agent/config', {
+        schema: {
+            tags: ['agent'],
+            description: 'Update agent backend configuration',
+            body: AgentConfigRequestSchema,
+            response: {
+                200: SuccessResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const config = (request.body as any);
-            if (!config || !config.type) {
-                return reply.status(400).send({ error: 'Invalid configuration' });
-            }
-            await AgentService.getInstance().saveConfig(config);
-            // Update reference to new backend
-            // Note: In a real app we might want to handle concurrent requests better, 
-            // but for this single-user tool it's fine.
+            const config = request.body;
+            await AgentService.getInstance().saveConfig(config as any);
             return reply.send({ success: true });
         } catch (err) {
             fastify.log.error(err);
@@ -146,12 +226,28 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/accept', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/accept - Accept and commit pending changes
+    // =========================================================================
+    fastify.post<{ Body: AgentAcceptRequest; Querystring: { bundleDir?: string } }>('/agent/accept', {
+        schema: {
+            tags: ['agent'],
+            description: 'Accept and commit pending changes from the agent',
+            body: AgentAcceptRequestSchema,
+            querystring: Type.Object({
+                bundleDir: Type.Optional(Type.String()),
+            }),
+            response: {
+                200: AcceptResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { changes?: any[] }) || {};
+            const body = request.body;
             // Ensure git is clean before applying changes
-            const query = request.query as { bundleDir?: string };
-            const bundleDir = await resolveBundleDir(query.bundleDir); // Resolves to CWD by default if no arg
+            const query = request.query;
+            const bundleDir = await resolveBundleDir(query.bundleDir || body.bundleDir);
             if (process.env.TEST_MODE !== 'true') {
                 await assertCleanNonMainBranch(bundleDir);
             }
@@ -281,14 +377,23 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/decision', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/decision - Resolve a decision point
+    // =========================================================================
+    fastify.post<{ Body: AgentDecisionRequest }>('/agent/decision', {
+        schema: {
+            tags: ['agent'],
+            description: 'Resolve an agent decision by selecting an option',
+            body: AgentDecisionRequestSchema,
+            response: {
+                200: StateResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { decisionId: string, optionId: string }) || {};
-            if (!body.decisionId || !body.optionId) {
-                return reply.status(400).send({ error: 'decisionId and optionId required' });
-            }
-
-            const state = await getBackend().resolveDecision(body.decisionId, body.optionId);
+            const { decisionId, optionId } = request.body;
+            const state = await getBackend().resolveDecision(decisionId, optionId);
             return reply.send({ state });
         } catch (err) {
             fastify.log.error(err);
@@ -296,28 +401,41 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    fastify.post('/agent/abort', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/abort - Abort the current conversation
+    // =========================================================================
+    fastify.post<{ Body: AgentAbortRequest }>('/agent/abort', {
+        schema: {
+            tags: ['agent'],
+            description: 'Abort the current conversation and optionally revert file changes',
+            body: AgentAbortRequestSchema,
+            response: {
+                200: AbortResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { bundleDir?: string }) || {};
+            const { bundleDir } = request.body;
 
             // If there are pending changes and a bundleDir, revert any uncommitted files
             const currentStatus = await getBackend().getStatus();
             let revertedFiles: string[] = [];
 
-            if (body.bundleDir && currentStatus.pendingChanges && currentStatus.pendingChanges.length > 0) {
+            if (bundleDir && currentStatus.pendingChanges && currentStatus.pendingChanges.length > 0) {
                 const { execFile } = await import('node:child_process');
                 const util = await import('node:util');
                 const execFileAsync = util.promisify(execFile);
 
                 try {
                     // Get list of modified files in working tree
-                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: body.bundleDir });
+                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: bundleDir });
                     const modifiedFiles = stdout.toString().trim().split('\n')
                         .filter(line => line.trim())
                         .map(line => line.substring(3)); // Remove status prefix (e.g., " M ")
 
                     if (modifiedFiles.length > 0) {
-                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: body.bundleDir });
+                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: bundleDir });
                         revertedFiles = modifiedFiles;
                     }
                 } catch (gitErr) {
@@ -340,8 +458,19 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    // Reset endpoint for testing: clears all agent state memory
-    fastify.post('/agent/reset', async (_request, reply) => {
+    // =========================================================================
+    // POST /agent/reset - Reset agent state (for testing)
+    // =========================================================================
+    fastify.post('/agent/reset', {
+        schema: {
+            tags: ['agent'],
+            description: 'Reset all agent state (primarily for testing)',
+            response: {
+                200: SuccessResponseSchema,
+                500: ErrorResponseSchema,
+            },
+        },
+    }, async (_request, reply) => {
         try {
             await AgentService.getInstance().reset();
             return reply.send({ success: true, message: 'Agent state reset.' });
@@ -351,27 +480,38 @@ export async function agentRoutes(fastify: FastifyInstance) {
         }
     });
 
-    // Rollback endpoint: reverts file changes but keeps conversation active (unlike abort)
-    // This allows users to retry or iterate after a failed apply attempt
-    fastify.post('/agent/rollback', async (request, reply) => {
+    // =========================================================================
+    // POST /agent/rollback - Rollback file changes but keep conversation
+    // =========================================================================
+    fastify.post<{ Body: AgentRollbackRequest }>('/agent/rollback', {
+        schema: {
+            tags: ['agent'],
+            description: 'Revert file changes but keep the conversation active for retry',
+            body: AgentRollbackRequestSchema,
+            response: {
+                200: AgentRollbackResponseSchema,
+                400: ErrorResponseSchema,
+            },
+        },
+    }, async (request, reply) => {
         try {
-            const body = (request.body as { bundleDir?: string }) || {};
+            const { bundleDir } = request.body;
             let revertedFiles: string[] = [];
 
-            if (body.bundleDir) {
+            if (bundleDir) {
                 const { execFile } = await import('node:child_process');
                 const util = await import('node:util');
                 const execFileAsync = util.promisify(execFile);
 
                 try {
                     // Get list of modified files in working tree
-                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: body.bundleDir });
+                    const { stdout } = await execFileAsync('git', ['status', '--porcelain'], { cwd: bundleDir });
                     const modifiedFiles = stdout.toString().trim().split('\n')
                         .filter(line => line.trim())
                         .map(line => line.substring(3)); // Remove status prefix (e.g., " M ")
 
                     if (modifiedFiles.length > 0) {
-                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: body.bundleDir });
+                        await execFileAsync('git', ['checkout', '--', ...modifiedFiles], { cwd: bundleDir });
                         revertedFiles = modifiedFiles;
                     }
                 } catch (gitErr) {
@@ -384,7 +524,6 @@ export async function agentRoutes(fastify: FastifyInstance) {
 
             return reply.send({
                 state,
-                revertedFiles,
                 message: revertedFiles.length > 0
                     ? `Rolled back ${revertedFiles.length} file(s). Conversation is still active.`
                     : 'No files to roll back. Conversation is still active.'

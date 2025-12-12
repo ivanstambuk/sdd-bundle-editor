@@ -455,3 +455,6 @@ export type {
 export * from './write';
 export type { ProposedChange } from './types';
 export { applyChangesToBundle, type ApplyChangesResult } from './services/ChangeApplicationService';
+
+// Test utilities (exported for use in tests in other packages)
+export * from './test-fixtures';

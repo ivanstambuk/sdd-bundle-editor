@@ -6,15 +6,6 @@ import Fastify from 'fastify';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { loadBundleWithSchemaValidation } from '@sdd-bundle-editor/core-model';
-import {
-  buildBundleSchemaSnapshot,
-  buildBundleSnapshot,
-  createNoopProvider,
-  generateBundle as aiGenerateBundle,
-  refineBundle as aiRefineBundle,
-  fixErrors as aiFixErrors,
-} from '@sdd-bundle-editor/core-ai';
-import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
 import { agentRoutes } from './routes/agent';
 
 import { registerOpenAPI } from './openapi';
@@ -140,77 +131,6 @@ export async function createServer() {
         saved: true,
         diagnostics,
         bundle: serialiseBundle(bundle),
-      });
-    } catch (err) {
-      fastify.log.error(err);
-      return reply.status(400).send({ error: (err as Error).message });
-    }
-  });
-
-  fastify.post('/ai/generate', async (request, reply) => {
-    try {
-      const body = (request.body as { bundleDir?: string; instructions?: string }) || {};
-      const bundleDir = await resolveBundleDir(body.bundleDir);
-      await assertCleanNonMainBranch(bundleDir);
-      const { bundle, diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
-      const hasErrors = diagnostics.some((d) => d.severity === 'error');
-      if (hasErrors) {
-        return reply.status(400).send({
-          error: 'Bundle has validation errors; cannot run AI generate.',
-          diagnostics,
-        });
-      }
-
-      const provider = createNoopProvider({ id: 'noop-http' });
-      const response = await aiGenerateBundle(provider, {
-        bundleType: bundle.manifest.metadata.bundleType,
-        schema: buildBundleSchemaSnapshot(bundle),
-        bundle: buildBundleSnapshot(bundle),
-        domainMarkdown: bundle.domainMarkdown ?? '',
-        diagnostics,
-        instructions: body.instructions,
-      });
-
-      const schemas = await loadDocumentSchemasForBundle(bundleDir, bundle.manifest);
-
-      return reply.send({
-        response: {
-          notes: response.notes,
-          updatedBundle: response.updatedBundle
-            ? serialiseBundle(response.updatedBundle.bundle, schemas)
-            : undefined,
-        },
-      });
-    } catch (err) {
-      fastify.log.error(err);
-      return reply.status(400).send({ error: (err as Error).message });
-    }
-  });
-
-  fastify.post('/ai/fix-errors', async (request, reply) => {
-    try {
-      const body = (request.body as { bundleDir?: string; instructions?: string }) || {};
-      const bundleDir = await resolveBundleDir(body.bundleDir);
-      await assertCleanNonMainBranch(bundleDir);
-      const { bundle, diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
-
-      const provider = createNoopProvider({ id: 'noop-http' });
-      const response = await aiFixErrors(provider, {
-        bundleType: bundle.manifest.metadata.bundleType,
-        schema: buildBundleSchemaSnapshot(bundle),
-        bundle: buildBundleSnapshot(bundle),
-        domainMarkdown: bundle.domainMarkdown ?? '',
-        diagnostics,
-        instructions: body.instructions,
-      });
-
-      return reply.send({
-        response: {
-          notes: response.notes,
-          updatedBundle: response.updatedBundle
-            ? serialiseBundle(response.updatedBundle.bundle, await loadDocumentSchemasForBundle(bundleDir, bundle.manifest))
-            : undefined,
-        },
       });
     } catch (err) {
       fastify.log.error(err);

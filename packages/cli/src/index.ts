@@ -4,14 +4,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import * as readline from 'node:readline';
 import { loadBundleWithSchemaValidation } from '@sdd-bundle-editor/core-model';
-import {
-  buildBundleSchemaSnapshot,
-  buildBundleSnapshot,
-  createNoopProvider,
-  createAgentBackend,
-  generateBundle as aiGenerateBundle,
-} from '@sdd-bundle-editor/core-ai';
-import { assertCleanNonMainBranch } from '@sdd-bundle-editor/git-utils';
+import { createAgentBackend } from '@sdd-bundle-editor/core-ai';
 
 interface DiagnosticOutput {
   severity: 'error' | 'warning';
@@ -122,56 +115,6 @@ async function runReportCoverage(options: { bundleDir?: string; output?: string 
   return 0;
 }
 
-async function runGenerate(options: {
-  bundleDir?: string;
-  bundleType?: string;
-  domainPath?: string;
-  providerId?: string;
-}): Promise<number> {
-  const bundleDir = await findBundleDir(options.bundleDir);
-  await assertCleanNonMainBranch(bundleDir);
-  const { bundle, diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
-  const hasErrors = diagnostics.some((d) => d.severity === 'error');
-  if (hasErrors) {
-    throw new Error('Bundle has validation errors; cannot run AI generate.');
-  }
-
-  const domainPath =
-    options.domainPath ??
-    (bundle.manifest as any).spec?.domainKnowledge?.path ??
-    'domain/domain-knowledge.md';
-
-  let domainMarkdown = '';
-  try {
-    const domainFullPath = path.join(bundleDir, domainPath);
-    domainMarkdown = await fs.readFile(domainFullPath, 'utf8');
-  } catch {
-    // ignore; domainMarkdown stays empty
-  }
-
-  const provider = createNoopProvider({ id: options.providerId ?? 'noop-cli' });
-
-  const requestBase = {
-    bundleType: options.bundleType ?? bundle.manifest.metadata.bundleType,
-    schema: buildBundleSchemaSnapshot(bundle),
-    bundle: buildBundleSnapshot(bundle),
-    domainMarkdown,
-    diagnostics,
-    instructions: undefined,
-  };
-
-  const response = await aiGenerateBundle(provider, requestBase);
-
-  // eslint-disable-next-line no-console
-  console.log(
-    'AI generate (noop provider) completed. Notes:',
-    (response.notes ?? []).join('\n'),
-  );
-
-  // In the MVP stub, we do not write any YAML; just exit successfully if no exception.
-  return 0;
-}
-
 async function runChat(options: {
   bundleDir?: string;
   backend?: 'cli' | 'http';
@@ -264,29 +207,6 @@ export async function main(argv: string[]): Promise<void> {
     .action(async (opts) => {
       try {
         const exitCode = await runReportCoverage(opts);
-        process.exitCode = exitCode;
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error((err as Error).message);
-        process.exitCode = 1;
-      }
-    });
-
-  program
-    .command('generate')
-    .description('Run AI-assisted bundle generation (stubbed)')
-    .option('--bundle-dir <dir>', 'Bundle directory (default: current working directory)')
-    .option('--bundle-type <type>', 'Bundle type id (e.g. sdd-core)')
-    .option('--domain <path>', 'Path to domain knowledge markdown')
-    .option('--provider <id>', 'AI provider id (for future use)')
-    .action(async (opts) => {
-      try {
-        const exitCode = await runGenerate({
-          bundleDir: opts.bundleDir,
-          bundleType: opts.bundleType,
-          domainPath: opts.domain,
-          providerId: opts.provider,
-        });
         process.exitCode = exitCode;
       } catch (err) {
         // eslint-disable-next-line no-console

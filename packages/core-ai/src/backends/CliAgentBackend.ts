@@ -11,6 +11,7 @@ import {
     ConversationState,
     ProposedChange,
 } from '../types';
+import { AgentError, SddErrorCode } from '@sdd-bundle-editor/shared-types';
 
 export class CliAgentBackend extends BaseAgentBackend {
     async initialize(config: AgentBackendConfig): Promise<void> {
@@ -28,7 +29,11 @@ export class CliAgentBackend extends BaseAgentBackend {
 
     async sendMessage(message: string): Promise<ConversationState> {
         if (!this.config?.options?.command) {
-            throw new Error('CLI command not configured');
+            throw new AgentError(
+                'CLI command not configured',
+                SddErrorCode.AGENT_CONFIG_INVALID,
+                { requiredConfig: 'options.command' }
+            );
         }
 
         const command = this.config.options.command as string;
@@ -132,7 +137,11 @@ export class CliAgentBackend extends BaseAgentBackend {
 
             proc.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error(`Command failed with code ${code}: ${stderr || stdout}`));
+                    reject(new AgentError(
+                        `CLI command failed with code ${code}`,
+                        SddErrorCode.AGENT_COMMUNICATION_FAILED,
+                        { command, args, code, stderr: stderr || stdout }
+                    ));
                 } else {
                     resolve(stdout.trim());
                 }
@@ -140,9 +149,17 @@ export class CliAgentBackend extends BaseAgentBackend {
 
             proc.on('error', (err: NodeJS.ErrnoException) => {
                 if (err.code === 'ENOENT') {
-                    reject(new Error(`Command '${command}' not found. Please ensure it is installed and in your PATH.`));
+                    reject(new AgentError(
+                        `Command '${command}' not found. Please ensure it is installed and in your PATH.`,
+                        SddErrorCode.AGENT_CONFIG_INVALID,
+                        { command, errorCode: 'ENOENT' }
+                    ));
                 } else {
-                    reject(err);
+                    reject(new AgentError(
+                        `CLI error: ${err.message}`,
+                        SddErrorCode.AGENT_COMMUNICATION_FAILED,
+                        { command, originalError: err.message }
+                    ));
                 }
             });
         });

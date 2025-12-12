@@ -197,7 +197,11 @@ importers:
         specifier: ^3.0.0
         version: 3.0.1(ajv@8.17.1)
 
-  packages/git-utils: {}
+  packages/git-utils:
+    dependencies:
+      '@sdd-bundle-editor/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
 
   packages/mcp-server:
     dependencies:

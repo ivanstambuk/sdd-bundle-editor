@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest",
     "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
+  },
+  "dependencies": {
+    "@sdd-bundle-editor/shared-types": "workspace:*"
   }
 }
-

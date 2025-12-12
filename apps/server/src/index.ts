@@ -6,6 +6,7 @@ import Fastify from 'fastify';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { loadBundleWithSchemaValidation } from '@sdd-bundle-editor/core-model';
+import { BundleError, SddErrorCode } from '@sdd-bundle-editor/shared-types';
 import { agentRoutes } from './routes/agent';
 
 import { registerOpenAPI } from './openapi';
@@ -20,7 +21,11 @@ async function resolveBundleDir(queryDir?: string): Promise<string> {
     await fs.access(manifestPath);
     return baseDir;
   } catch {
-    throw new Error(`sdd-bundle.yaml not found in ${baseDir}`);
+    throw new BundleError(
+      `Bundle not found: sdd-bundle.yaml missing in ${baseDir}`,
+      SddErrorCode.BUNDLE_NOT_FOUND,
+      { bundleDir: baseDir, expectedFile: 'sdd-bundle.yaml' }
+    );
   }
 }
 

@@ -11,6 +11,7 @@ import {
     ConversationState,
     ProposedChange,
 } from '../types';
+import { AgentError, SddErrorCode } from '@sdd-bundle-editor/shared-types';
 
 /**
  * Tool definition for proposing changes to the bundle.
@@ -56,7 +57,11 @@ export class OpenAiAgentBackend extends BaseAgentBackend {
 
         if (!apiKey) {
             console.error('[OpenAiAgentBackend] Missing API Key. Check DEEPSEEK_API_KEY, AGENT_HTTP_API_KEY or config.options.apiKey');
-            throw new Error('API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY or AGENT_HTTP_API_KEY env var, or provide via config.');
+            throw new AgentError(
+                'API Key required for OpenAI/DeepSeek provider. Set DEEPSEEK_API_KEY or AGENT_HTTP_API_KEY env var, or provide via config.',
+                SddErrorCode.AGENT_CONFIG_INVALID,
+                { requiredEnvVars: ['DEEPSEEK_API_KEY', 'AGENT_HTTP_API_KEY'] }
+            );
         }
 
         this.client = new OpenAI({
@@ -76,7 +81,13 @@ export class OpenAiAgentBackend extends BaseAgentBackend {
     }
 
     async sendMessage(message: string): Promise<ConversationState> {
-        if (!this.client) throw new Error('Backend not initialized');
+        if (!this.client) {
+            throw new AgentError(
+                'Backend not initialized',
+                SddErrorCode.AGENT_NOT_INITIALIZED,
+                { hint: 'Call initialize() before sendMessage()' }
+            );
+        }
 
         // Add user message
         this.addMessage('user', message);
@@ -104,7 +115,11 @@ export class OpenAiAgentBackend extends BaseAgentBackend {
             const responseMsg = choice?.message;
 
             if (!responseMsg) {
-                throw new Error('No response from AI provider');
+                throw new AgentError(
+                    'No response from AI provider',
+                    SddErrorCode.AGENT_COMMUNICATION_FAILED,
+                    { model: this.config?.model }
+                );
             }
 
             const content = responseMsg.content || '';

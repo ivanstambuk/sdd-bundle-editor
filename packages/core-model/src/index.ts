@@ -373,6 +373,86 @@ export async function loadBundleWithSchemaValidation(
     }
   }
 
+  // Orphan detection: entities with no relationships (warning)
+  // These entities may be incomplete or disconnected from the spec
+  const entitiesInRefs = new Set<string>();
+  for (const edge of bundle.refGraph.edges) {
+    entitiesInRefs.add(edge.fromId);
+    entitiesInRefs.add(edge.toId);
+  }
+  for (const [type, entities] of bundle.entities) {
+    // Skip Bundle meta-entity
+    if (type === 'Bundle') continue;
+    for (const [id, entity] of entities) {
+      if (!entitiesInRefs.has(id)) {
+        diagnostics.push({
+          severity: 'warning',
+          message: `Orphan entity: ${type} "${id}" has no relationships (neither references nor is referenced by other entities)`,
+          entityId: id,
+          entityType: type,
+          filePath: entity.filePath,
+          source: 'schema',
+          code: 'orphan-entity',
+        });
+      }
+    }
+  }
+
+  // Required relationship enforcement (from bundle-type definition)
+  // Multiplicity "one" means max 1 value. Combined with JSON Schema "required", it means exactly 1.
+  if (bundle.bundleTypeDefinition?.relations) {
+    for (const relation of bundle.bundleTypeDefinition.relations) {
+      // Only check "one" multiplicity (max 1 value)
+      if (relation.multiplicity !== 'one') continue;
+
+      const fromEntities = bundle.entities.get(relation.fromEntity);
+      if (!fromEntities) continue;
+
+      // Check if this field is required in the JSON Schema
+      const schema = rawSchemas.get(relation.fromEntity);
+      const requiredFields = schema?.required as string[] | undefined;
+      const isSchemaRequired = requiredFields?.includes(relation.fromField) ?? false;
+
+      for (const [id, entity] of fromEntities) {
+        const fieldValue = (entity.data as Record<string, unknown>)[relation.fromField];
+
+        // Check if the field exists and has exactly one non-empty value
+        let refCount = 0;
+        if (typeof fieldValue === 'string' && fieldValue.trim().length > 0) {
+          refCount = 1;
+        } else if (Array.isArray(fieldValue)) {
+          refCount = fieldValue.filter(v => typeof v === 'string' && v.trim().length > 0).length;
+        }
+
+        // Error: Too many values for "one" multiplicity
+        if (refCount > 1) {
+          diagnostics.push({
+            severity: 'error',
+            message: `Multiplicity violation: ${relation.fromEntity} "${id}" has ${refCount} values in "${relation.fromField}" but relation "${relation.name}" allows at most one`,
+            entityId: id,
+            entityType: relation.fromEntity,
+            path: `/${relation.fromField}`,
+            source: 'schema',
+            code: 'multiplicity-too-many',
+          });
+        }
+
+        // Warning: Missing required ref (only if JSON Schema marks it as required)
+        if (refCount === 0 && isSchemaRequired) {
+          diagnostics.push({
+            severity: 'warning',
+            message: `Missing required relationship: ${relation.fromEntity} "${id}" should have a "${relation.toEntity}" reference via "${relation.fromField}" (relation: ${relation.name})`,
+            entityId: id,
+            entityType: relation.fromEntity,
+            path: `/${relation.fromField}`,
+            source: 'schema',
+            code: 'missing-required-ref',
+          });
+        }
+      }
+    }
+  }
+
   // Load and run lint rules, if configured.
   const lintConfigPath = bundle.manifest.spec.lintConfig?.path;
   const lintConfig = await loadLintConfig(bundleDir, lintConfigPath);

@@ -157,9 +157,9 @@ pnpm mcp-cli apply_changes --dry-run -c '[...]'
 - [x] `e2e/ui-modernization-desktop.spec.ts` - updated
 - [x] `e2e/global-setup.ts` - removed agent setup
 
-### 6.3 Add MCP-based tests
-- [ ] Test MCP tool calls via HTTP
-- [ ] Test `apply_changes` end-to-end
+### 6.3 Add MCP-based tests ✅
+- [x] Test MCP tool calls via HTTP (health, list_bundles, list_entities, read_entity, search_entities, validate_bundle)
+- [x] Test `apply_changes` end-to-end (dry-run, update, create, delete)
 
 ---
 
@@ -214,6 +214,7 @@ pnpm mcp-cli apply_changes --dry-run -c '[...]'
 | Phase 4 | Simplified UI to read-only, removed AgentPanel |
 | Phase 5 | MCP test CLI (`mcp-cli.ts`) for HTTP transport testing |
 | Phase 6 | Updated E2E tests, 10/10 passing |
+| Phase 6.3 | MCP-based E2E tests (10 tests) |
 | Phase 7 | Updated AGENTS.md, README.md, ARCHITECTURE.md, spec.md |
 
 ## Remaining Work
@@ -221,7 +222,6 @@ pnpm mcp-cli apply_changes --dry-run -c '[...]'
 | Phase | Remaining Items |
 |-------|-----------------|
 | Phase 4.4 | UI to use MCP protocol directly |
-| Phase 6.3 | MCP-based E2E tests |
 
 ---
 

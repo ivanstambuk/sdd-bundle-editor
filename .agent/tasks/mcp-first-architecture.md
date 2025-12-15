@@ -33,11 +33,14 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 - [x] Ensure `saveEntity` can create directories for new entities
 - [x] Add `deleteEntity` function
 
-### 1.3 Unit tests for apply_changes
-- [ ] Test valid batch apply
-- [ ] Test validation failure attribution
-- [ ] Test dryRun mode
-- [ ] Test cascade errors (delete entity referenced elsewhere)
+### 1.3 Unit tests for apply_changes ✅
+- [x] Test createEntity (new entity, duplicate ID)
+- [x] Test applyChange (update simple field, update priority, add new field)
+- [x] Test saveEntity (persist to disk)
+- [x] Test delete operation (memory and disk)
+- [x] Test batch operations (same entity, cross-entity types)
+- [x] Test validation integration (valid entities, schema violations)
+- [x] Test edge cases (empty data, non-existent type/ID)
 
 ---
 
@@ -205,6 +208,7 @@ pnpm mcp-cli apply_changes --dry-run -c '[...]'
 | Phase | Items Completed |
 |-------|-----------------|
 | Phase 1 | `apply_changes` tool, `deleteEntity` function |
+| Phase 1.3 | Unit tests for apply_changes (15 tests) |
 | Phase 2 | HTTP/SSE transport with `--http` flag, Streamable HTTP |
 | Phase 3 | Removed all agent routes, git integration from server |
 | Phase 4 | Simplified UI to read-only, removed AgentPanel |
@@ -216,7 +220,6 @@ pnpm mcp-cli apply_changes --dry-run -c '[...]'
 
 | Phase | Remaining Items |
 |-------|-----------------|
-| Phase 1.3 | Unit tests for apply_changes |
 | Phase 4.4 | UI to use MCP protocol directly |
 | Phase 6.3 | MCP-based E2E tests |
 

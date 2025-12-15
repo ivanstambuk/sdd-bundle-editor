@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
-import { getEntityDisplayName, getEntityIcon } from '../utils/schemaMetadata';
+import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
@@ -19,13 +19,13 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
     }
   }, [bundle]);
 
-  // Build metadata lookup from schemas - no fallback, reads from schema or uses raw type
+  // Build metadata lookup from schemas - uses plural for headers
   const getMetadata = useMemo(() => {
     const schemas = bundle?.schemas ?? {};
     return (entityType: string) => {
       const schema = schemas[entityType];
       return {
-        displayName: getEntityDisplayName(schema) ?? entityType, // Raw type if no metadata
+        displayName: getEntityDisplayNamePlural(schema) ?? entityType, // Plural for headers
         icon: getEntityIcon(schema), // undefined if no metadata
       };
     };

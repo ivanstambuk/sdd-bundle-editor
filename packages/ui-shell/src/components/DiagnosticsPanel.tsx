@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { UiDiagnostic } from '../types';
-import { getEntityDisplayName } from '../utils/schemaMetadata';
+import { getEntityDisplayName, getEntityDisplayNamePlural } from '../utils/schemaMetadata';
 
 interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
@@ -13,11 +13,18 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas }: Diagnost
   const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
   const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
 
-  // Helper to get display name from schema
+  // Helper to get singular display name (for entity references)
   const getDisplayName = (entityType: string): string => {
     if (!entityType || entityType === '(bundle)') return entityType;
     const schema = schemas?.[entityType];
     return getEntityDisplayName(schema) ?? entityType;
+  };
+
+  // Helper to get plural display name (for group headers)
+  const getDisplayNamePlural = (entityType: string): string => {
+    if (!entityType || entityType === '(bundle)') return entityType;
+    const schema = schemas?.[entityType];
+    return getEntityDisplayNamePlural(schema) ?? entityType;
   };
 
   // Apply filters
@@ -97,7 +104,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas }: Diagnost
       ) : (
         groups.map(([entityType, group]) => (
           <div key={entityType} className="diagnostic-group">
-            <h3 className="diagnostic-group-title">{getDisplayName(entityType)}</h3>
+            <h3 className="diagnostic-group-title">{getDisplayNamePlural(entityType)}</h3>
             <ul className="diagnostic-list">
               {group.map((d, idx) => (
                 // eslint-disable-next-line react/no-array-index-key

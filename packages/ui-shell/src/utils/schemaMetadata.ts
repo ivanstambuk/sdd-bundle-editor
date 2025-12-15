@@ -9,6 +9,7 @@
  *   "title": "Open Question",
  *   "x-sdd-ui": {
  *     "displayName": "Open Question",
+ *     "displayNamePlural": "Open Questions",
  *     "icon": "❓"
  *   },
  *   ...
@@ -20,8 +21,10 @@
  * UI metadata extension for entity schemas.
  */
 export interface SddUiMetadata {
-    /** Human-readable display name (e.g., "Open Question" instead of "OpenQuestion") */
+    /** Human-readable singular display name (e.g., "Open Question") */
     displayName: string;
+    /** Human-readable plural display name (e.g., "Open Questions") */
+    displayNamePlural?: string;
     /** Emoji icon for the entity type */
     icon: string;
     /** Optional accent color (CSS color value) */
@@ -54,7 +57,7 @@ export function getSchemaUiMetadata(schema: unknown): SddUiMetadata | undefined 
 }
 
 /**
- * Get display name for an entity type from its schema.
+ * Get singular display name for an entity type from its schema.
  * Returns undefined if not available in schema.
  */
 export function getEntityDisplayName(schema: unknown): string | undefined {
@@ -72,6 +75,20 @@ export function getEntityDisplayName(schema: unknown): string | undefined {
     }
 
     return undefined;
+}
+
+/**
+ * Get plural display name for an entity type from its schema.
+ * Falls back to singular displayName if plural not defined.
+ * Returns undefined if not available in schema.
+ */
+export function getEntityDisplayNamePlural(schema: unknown): string | undefined {
+    const metadata = getSchemaUiMetadata(schema);
+    if (metadata?.displayNamePlural) {
+        return metadata.displayNamePlural;
+    }
+    // Fall back to singular if plural not defined
+    return getEntityDisplayName(schema);
 }
 
 /**

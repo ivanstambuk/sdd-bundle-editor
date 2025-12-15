@@ -111,38 +111,24 @@ export function AppShell() {
   return (
     <div className="app-shell">
       {/* Info banner - UI is read-only, shows MCP connection status */}
-      <div className="info-banner" data-testid="read-only-banner" style={{
-        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-        padding: '8px 16px',
-        borderBottom: '1px solid #0284c7',
-        color: '#0369a1',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        📖 <strong>Read-Only Mode</strong> — To edit entities, use an MCP client (Claude Desktop, VS Code Copilot) connected to the MCP server.
+      <div className="info-banner" data-testid="read-only-banner">
+        📖 <strong>Read-Only Mode</strong>
+        <span className="info-text">
+          — To edit entities, use an MCP client (Claude Desktop, VS Code Copilot) connected to the MCP server.
+        </span>
         <span
+          className={`mcp-status ${isMcpMode ? 'connected' : 'fallback'}`}
           data-testid="mcp-status"
-          style={{
-            marginLeft: '12px',
-            padding: '2px 8px',
-            borderRadius: '4px',
-            backgroundColor: isMcpMode ? '#dcfce7' : '#fef3c7',
-            color: isMcpMode ? '#166534' : '#92400e',
-            fontSize: '11px',
-            fontWeight: 500,
-          }}
         >
           {isMcpMode ? '🔗 MCP' : '📡 HTTP'}
         </span>
         <button
           type="button"
-          className="btn btn-sm"
+          className="btn btn-secondary btn-sm"
           onClick={reloadBundle}
-          style={{ marginLeft: 'auto' }}
+          data-testid="reload-bundle"
         >
-          🔄 Reload Bundle
+          🔄 Reload
         </button>
       </div>
 

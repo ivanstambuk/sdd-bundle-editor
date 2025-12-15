@@ -1,14 +1,41 @@
 /**
  * Custom hook for managing bundle state.
  * Encapsulates bundle loading, validation, and selection logic.
+ * 
+ * MCP-First Architecture (Phase 4.4):
+ * This hook now uses MCP protocol directly via mcpBundleApi.
+ * Falls back to legacy HTTP API if MCP is unavailable.
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from '../types';
-import { bundleApi, type BundleResponse } from '../api';
+import { mcpBundleApi, bundleApi, type BundleResponse } from '../api';
 import { createLogger } from '../utils/logger';
 
 const log = createLogger('useBundleState');
+
+/**
+ * Detect if we should use MCP or legacy API.
+ * MCP is used when mcpUrl param is present or when running against MCP server.
+ */
+function shouldUseMcpApi(): boolean {
+    if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        // Use MCP if mcpUrl param is present, or if useMcp=true
+        if (params.get('mcpUrl') || params.get('useMcp') === 'true') {
+            return true;
+        }
+    }
+    // Default to MCP mode in MCP-first architecture
+    return true;
+}
+
+/**
+ * Get the appropriate API based on mode
+ */
+function getApi(useMcp: boolean) {
+    return useMcp ? mcpBundleApi : bundleApi;
+}
 
 export interface UseBundleStateReturn {
     // State
@@ -17,6 +44,8 @@ export interface UseBundleStateReturn {
     selectedEntity: UiEntity | null;
     loading: boolean;
     error: string | null;
+    /** True if using MCP mode, false for legacy HTTP */
+    isMcpMode: boolean;
 
     // Actions
     loadBundle: () => Promise<void>;
@@ -42,16 +71,48 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Load bundle from server
+    // Track if we're using MCP mode
+    const useMcp = useRef(shouldUseMcpApi());
+    const [isMcpMode, setIsMcpMode] = useState(useMcp.current);
+
+    // Load bundle from server (MCP or legacy)
     const loadBundle = useCallback(async () => {
         setLoading(true);
         setError(null);
+
+        const api = getApi(useMcp.current);
+
         try {
-            const data = await bundleApi.load(bundleDir);
+            log.info(`Loading bundle via ${useMcp.current ? 'MCP' : 'legacy'} API`, { bundleDir });
+            const data = await api.load(bundleDir);
             setBundle(data.bundle);
             setDiagnostics(data.diagnostics);
+            setIsMcpMode(useMcp.current);
+            log.info('Bundle loaded successfully', {
+                entityTypes: Object.keys(data.bundle.entities),
+                diagnosticsCount: data.diagnostics.length,
+            });
         } catch (err) {
-            setError((err as Error).message);
+            const errorMessage = (err as Error).message;
+            log.error('Failed to load bundle', { error: errorMessage });
+
+            // If MCP fails, try falling back to legacy API
+            if (useMcp.current) {
+                log.info('MCP load failed, falling back to legacy API');
+                useMcp.current = false;
+                setIsMcpMode(false);
+
+                try {
+                    const data = await bundleApi.load(bundleDir);
+                    setBundle(data.bundle);
+                    setDiagnostics(data.diagnostics);
+                    log.info('Fallback to legacy API succeeded');
+                } catch (fallbackErr) {
+                    setError(`MCP: ${errorMessage}. Legacy: ${(fallbackErr as Error).message}`);
+                }
+            } else {
+                setError(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -60,13 +121,35 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
     // Reload bundle with cache-busting (after modifications)
     const reloadBundle = useCallback(async () => {
         setLoading(true);
+
+        const api = getApi(useMcp.current);
+
         try {
-            const data = await bundleApi.loadFresh(bundleDir);
+            log.info(`Reloading bundle via ${useMcp.current ? 'MCP' : 'legacy'} API`);
+            const data = await api.loadFresh(bundleDir);
             log.info('Bundle reloaded', { entityTypes: Object.keys(data.bundle.entities) });
             setBundle(data.bundle);
             setDiagnostics(data.diagnostics);
         } catch (err) {
-            setError((err as Error).message);
+            const errorMessage = (err as Error).message;
+            log.error('Failed to reload bundle', { error: errorMessage });
+
+            // If MCP fails, try falling back to legacy API
+            if (useMcp.current) {
+                log.info('MCP reload failed, falling back to legacy API');
+                useMcp.current = false;
+                setIsMcpMode(false);
+
+                try {
+                    const data = await bundleApi.loadFresh(bundleDir);
+                    setBundle(data.bundle);
+                    setDiagnostics(data.diagnostics);
+                } catch (fallbackErr) {
+                    setError(`MCP: ${errorMessage}. Legacy: ${(fallbackErr as Error).message}`);
+                }
+            } else {
+                setError(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -77,11 +160,29 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         if (!bundle) return;
         setLoading(true);
         setError(null);
+
+        const api = getApi(useMcp.current);
+
         try {
-            const data = await bundleApi.validate(bundleDir);
+            log.info(`Running validation via ${useMcp.current ? 'MCP' : 'legacy'} API`);
+            const data = await api.validate(bundleDir);
             setDiagnostics(data.diagnostics);
+            log.info('Validation complete', { diagnosticsCount: data.diagnostics.length });
         } catch (err) {
-            setError((err as Error).message);
+            const errorMessage = (err as Error).message;
+            log.error('Validation failed', { error: errorMessage });
+
+            // If MCP fails, try falling back to legacy API
+            if (useMcp.current) {
+                try {
+                    const data = await bundleApi.validate(bundleDir);
+                    setDiagnostics(data.diagnostics);
+                } catch (fallbackErr) {
+                    setError(`Validation failed: ${errorMessage}`);
+                }
+            } else {
+                setError(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -125,6 +226,7 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         selectedEntity,
         loading,
         error,
+        isMcpMode,
 
         // Actions
         loadBundle,
@@ -137,3 +239,4 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         clearError,
     };
 }
+

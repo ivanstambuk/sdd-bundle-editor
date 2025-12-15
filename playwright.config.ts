@@ -27,6 +27,7 @@ export default defineConfig({
   webServer: useManagedWebServers
     ? [
       {
+        // Legacy HTTP server (fallback for UI)
         command: 'pnpm exec ts-node apps/server/src/index.ts',
         url: 'http://localhost:3000/health',
         reuseExistingServer: !process.env.CI,
@@ -40,6 +41,20 @@ export default defineConfig({
         },
       },
       {
+        // MCP server (primary for Phase 4.4 MCP-first UI)
+        command: 'node packages/mcp-server/dist/index.js --http --port 3001',
+        url: 'http://localhost:3001/health',
+        reuseExistingServer: !process.env.CI,
+        stdout: 'pipe',
+        stderr: 'pipe',
+        timeout: 60_000,
+        env: {
+          ...process.env,
+          SDD_SAMPLE_BUNDLE_PATH: process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle',
+        },
+      },
+      {
+        // Web dev server
         command: 'pnpm --filter @sdd-bundle-editor/web dev',
         url: 'http://localhost:5173',
         reuseExistingServer: !process.env.CI,
@@ -50,3 +65,4 @@ export default defineConfig({
     ]
     : undefined,
 });
+

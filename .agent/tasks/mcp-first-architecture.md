@@ -8,7 +8,7 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 - **No Git integration** – validation happens before write, user commits externally
 - Single MCP server serves both UI (via HTTP/SSE) and external agents (via stdio)
 
-## Status: � Phases 1, 3, 4, 6 Complete
+## Status: ✅ Phases 1, 2, 3, 4, 6 Complete
 
 ---
 
@@ -41,17 +41,19 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 
 ---
 
-## Phase 2: Add HTTP (SSE) Transport to MCP Server (⏳ Pending)
+## Phase 2: Add HTTP (SSE) Transport to MCP Server ✅
 
 ### 2.1 Add SSE transport option
-- [ ] Add `--http` flag to MCP server CLI
-- [ ] Implement SSE transport alongside stdio
-- [ ] Expose at `/mcp` endpoint
-- [ ] Support both transports simultaneously (stdio for Claude, HTTP for UI)
+- [x] Add `--http` flag to MCP server CLI
+- [x] Implement SSE transport alongside stdio (Streamable HTTP transport)
+- [x] Expose at `/mcp` endpoint
+- [x] Support both transports simultaneously (stdio for Claude, HTTP for UI)
 
 ### 2.2 Update MCP server startup
-- [ ] `packages/mcp-server/src/index.ts` - add HTTP mode
-- [ ] Document new startup modes in README
+- [x] `packages/mcp-server/src/index.ts` - add HTTP mode
+- [x] `packages/mcp-server/src/http-transport.ts` - HTTP transport implementation
+- [x] Document new startup modes in README
+
 
 ---
 
@@ -178,7 +180,7 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 - [x] `pnpm build` succeeds
 - [ ] `pnpm test` passes (unit tests) - pending unit test updates
 - [x] `pnpm test:e2e` passes (updated E2E tests) - 10/10 passing
-- [ ] MCP server starts with HTTP transport
+- [x] MCP server starts with HTTP transport
 - [x] `apply_changes` tool works via MCP Inspector
 - [x] UI loads entities in read-only mode
 - [ ] External LLM (Claude/Copilot) can modify bundle via MCP
@@ -191,6 +193,7 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 | Phase | Items Completed |
 |-------|-----------------|
 | Phase 1 | `apply_changes` tool, `deleteEntity` function |
+| Phase 2 | HTTP/SSE transport with `--http` flag, Streamable HTTP |
 | Phase 3 | Removed all agent routes, git integration from server |
 | Phase 4 | Simplified UI to read-only, removed AgentPanel |
 | Phase 6 | Updated E2E tests, 10/10 passing |
@@ -199,11 +202,10 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 
 | Phase | Remaining Items |
 |-------|-----------------|
-| Phase 1 | Unit tests for apply_changes |
-| Phase 2 | HTTP/SSE transport (full phase) |
-| Phase 4 | UI to use MCP protocol directly |
+| Phase 1.3 | Unit tests for apply_changes |
+| Phase 4.4 | UI to use MCP protocol directly |
 | Phase 5 | MCP test CLI (full phase) |
-| Phase 6 | MCP-based E2E tests |
+| Phase 6.3 | MCP-based E2E tests |
 | Phase 7 | Documentation updates (full phase) |
 
 ---

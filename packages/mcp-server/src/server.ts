@@ -2010,8 +2010,11 @@ Be specific about what needs to be done to resolve each issue.`;
         );
     }
 
-    async start() {
-        // Load all bundles
+    /**
+     * Load all configured bundles into memory.
+     * This is separated from transport startup to allow flexibility.
+     */
+    async loadBundles(): Promise<void> {
         for (const config of this.bundleConfigs) {
             console.error(`Loading bundle: ${config.id} from ${config.path}...`);
             try {
@@ -2043,14 +2046,43 @@ Be specific about what needs to be done to resolve each issue.`;
         }
 
         if (this.bundles.size === 0) {
-            console.error("No bundles loaded successfully. Exiting.");
-            process.exit(1);
+            throw new Error("No bundles loaded successfully.");
         }
 
         console.error(`\nLoaded ${this.bundles.size} bundle(s) successfully.`);
+    }
 
+    /**
+     * Get the underlying McpServer instance.
+     * Useful for connecting to custom transports (HTTP, WebSocket, etc.)
+     */
+    getUnderlyingServer(): McpServer {
+        return this.server;
+    }
+
+    /**
+     * Get loaded bundles (for sharing state with HTTP transport).
+     */
+    getLoadedBundles(): Map<string, LoadedBundle> {
+        return this.bundles;
+    }
+
+    /**
+     * Start the MCP server on stdio transport.
+     * This is the primary mode for use with Claude Desktop and other MCP clients.
+     */
+    async startStdio(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         console.error("SDD MCP Server running on stdio");
+    }
+
+    /**
+     * Legacy start method for backward compatibility.
+     * Loads bundles and starts on stdio transport.
+     */
+    async start(): Promise<void> {
+        await this.loadBundles();
+        await this.startStdio();
     }
 }

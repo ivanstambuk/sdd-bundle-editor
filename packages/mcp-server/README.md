@@ -107,6 +107,68 @@ bundles:
 
 See `bundles.example.yaml` for a complete example.
 
+#### Mode 4: HTTP/SSE Transport (For Web Clients)
+
+The server can also run in HTTP mode using the MCP Streamable HTTP transport. This is useful for:
+- Web UI integration without a stdio bridge
+- Testing MCP tools via curl
+- Browser-based MCP clients
+
+```bash
+# Start HTTP server on default port (3001)
+node packages/mcp-server/dist/index.js --http /path/to/bundle
+
+# Custom port
+node packages/mcp-server/dist/index.js --http --port 3002 /path/to/bundle
+
+# With config file
+node packages/mcp-server/dist/index.js --http --config bundles.yaml
+```
+
+**HTTP Endpoints:**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/sessions` | GET | List active sessions |
+| `/mcp` | POST | MCP protocol endpoint (initialize, tool calls) |
+| `/mcp` | GET | SSE stream for server notifications |
+| `/mcp` | DELETE | Session termination |
+
+**Example Session:**
+
+```bash
+# 1. Initialize session
+curl -X POST http://localhost:3001/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{
+    "protocolVersion":"2024-11-05",
+    "capabilities":{},
+    "clientInfo":{"name":"curl","version":"1.0"}
+  }}'
+
+# Response includes Mcp-Session-Id header
+
+# 2. Call a tool with the session ID
+curl -X POST http://localhost:3001/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "Mcp-Session-Id: <session-id-from-step-1>" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{
+    "name":"list_bundles",
+    "arguments":{}
+  }}'
+```
+
+**Environment Variables:**
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MCP_HTTP_PORT` | HTTP server port | 3001 |
+| `SDD_SAMPLE_BUNDLE_PATH` | Default bundle path | /home/ivan/dev/sdd-sample-bundle |
+
+
 ---
 
 ## Using with Multiple Bundles
@@ -395,9 +457,10 @@ Add to `~/.config/claude/claude_desktop_config.json`:
 ```
 packages/mcp-server/
 ├── src/
-│   ├── index.ts       # Entry point, argument parsing
-│   ├── server.ts      # MCP server with multi-bundle support
-│   └── types.ts       # TypeScript types and Zod schemas
+│   ├── index.ts          # Entry point, argument parsing
+│   ├── server.ts         # MCP server with multi-bundle support
+│   ├── http-transport.ts # HTTP/SSE transport for web clients
+│   └── types.ts          # TypeScript types and Zod schemas
 ├── scripts/
 │   ├── verify-context.ts      # Test script for get_context
 │   └── verify-conformance.ts  # Test script for get_conformance_context
@@ -408,5 +471,7 @@ packages/mcp-server/
 The server uses:
 - `@modelcontextprotocol/sdk` for MCP protocol handling
 - `@sdd-bundle-editor/core-model` for bundle loading and validation
+- `express` for HTTP server (HTTP mode)
 - `zod` for input validation
 - `js-yaml` for config file parsing
+

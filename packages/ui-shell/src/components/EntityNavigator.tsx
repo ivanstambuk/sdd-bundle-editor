@@ -8,15 +8,45 @@ interface EntityNavigatorProps {
   onSelect(entity: UiEntity): void;
 }
 
-// Entity type icons for VS Code compact style
+// Entity type icons - semantically meaningful emojis for each type
 const ENTITY_ICONS: Record<string, string> = {
-  Feature: '📄',
+  // Core entities
+  Feature: '⭐',
   Requirement: '📋',
   Task: '✓',
   ADR: '📝',
-  Profile: '👤',
-  Fixture: '⚙️',
+  Decision: '⚖️',
+
+  // Architecture entities
+  Component: '🧩',
   Protocol: '🔗',
+  DataSchema: '📊',
+
+  // People & roles
+  Actor: '🎭',
+  Profile: '👤',
+  Viewpoint: '👁️',
+
+  // Scenarios & behavior
+  Scenario: '🎬',
+  View: '🖼️',
+  Fixture: '⚙️',
+
+  // Governance
+  Principle: '📜',
+  Policy: '📑',
+  Constraint: '🚧',
+  Risk: '⚠️',
+  Threat: '🛡️',
+
+  // Questions & issues
+  OpenQuestion: '❓',
+  ErrorCode: '🚨',
+
+  // Observability
+  TelemetrySchema: '📈',
+  TelemetryContract: '📉',
+  HealthCheckSpec: '💓',
 };
 
 export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorProps) {

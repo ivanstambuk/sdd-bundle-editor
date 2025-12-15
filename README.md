@@ -257,11 +257,33 @@ The project has transitioned to the **MCP-First Architecture**.
 - ✅ `apply_changes` tool for atomic batch modifications
 - ✅ Multi-bundle support
 - ✅ Schema-driven validation and linting
+- ✅ **UI uses MCP protocol directly** (Phase 4.4)
 
 **Architecture:**
-- UI is read-only (no direct editing)
-- All modifications via MCP tools
+
+```
+┌──────────┐     MCP Protocol      ┌────────────┐
+│  Web UI  │ ────────────────────▶ │ MCP Server │
+│ (React)  │ ◀──────────────────── │ (port 3001)│
+└──────────┘    HTTP POST + SSE    └────────────┘
+      │                                   │
+      │ (fallback if MCP fails)           │
+      ▼                                   ▼
+┌──────────┐                       ┌────────────┐
+│  Legacy  │                       │  Bundle    │
+│  Server  │                       │  Files     │
+│(port 3000)│                      └────────────┘
+└──────────┘
+```
+
+- UI loads data via MCP tools (`list_bundles`, `read_entity`, etc.)
+- Falls back to legacy HTTP server if MCP unavailable
+- Header shows `🔗 MCP` or `📡 HTTP` status
 - Users manage Git commits externally
+
+**URL Parameters:**
+- `?mcpUrl=<url>` - Override MCP server URL
+- `?useMcp=false` - Force legacy HTTP mode
 
 Use `IMPLEMENTATION_TRACKER.md` to track and coordinate further work.
 

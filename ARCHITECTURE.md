@@ -218,12 +218,46 @@ The UI uses a **dark theme** with CSS custom properties defined in `apps/web/src
 
 ## Current Architecture: MCP-First
 
-The editor now follows an **MCP-first architecture** where the UI is a read-only viewer and all modifications happen via MCP tools:
+The editor follows an **MCP-first architecture** where the UI communicates directly with the MCP server for all data operations:
 
-1. User browses entities and diagnostics in read-only UI
-2. AI (Claude/Copilot) uses MCP tools to propose/apply changes
-3. Changes validated atomically via `apply_changes`
-4. User manages Git commits externally
+### Architecture Flow
+
+```
+┌──────────┐     MCP Protocol      ┌────────────┐
+│  Web UI  │ ────────────────────▶ │ MCP Server │
+│ (React)  │ ◀──────────────────── │ (port 3001)│
+└──────────┘    HTTP POST + SSE    └────────────┘
+      │                                   │
+      │ (fallback if MCP fails)           │
+      ▼                                   ▼
+┌──────────┐                       ┌────────────┐
+│  Legacy  │                       │  Bundle    │
+│  Server  │                       │  Files     │
+│(port 3000)│                      └────────────┘
+└──────────┘
+```
+
+### UI Data Flow
+
+1. **MCP Client** (`mcpClient.ts`) - Handles MCP session management and tool calls
+2. **MCP Bundle API** (`mcpBundleApi.ts`) - Translates UI operations to MCP tools:
+   - `load()` → `list_bundles` + `list_entities` + `read_entity`
+   - `validate()` → `validate_bundle`
+3. **useBundleState Hook** - Uses MCP API by default, falls back to legacy HTTP
+4. **Status Indicator** - Header shows `🔗 MCP` or `📡 HTTP` mode
+
+### URL Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `?mcpUrl=<url>` | Override MCP server URL (default: `http://localhost:3001`) |
+| `?useMcp=false` | Force legacy HTTP mode |
+| `?bundleDir=<path>` | Bundle directory path |
+
+### Dual Server Mode
+
+For E2E tests and development, both servers run concurrently:
+- **MCP Server** (port 3001) - Primary data source via MCP protocol
+- **Legacy Server** (port 3000) - Fallback for compatibility
 
 This provides complete validation before writes while giving users full Git control.
-

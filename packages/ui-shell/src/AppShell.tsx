@@ -211,7 +211,7 @@ export function AppShell() {
 
       {/* Bottom Panel - Diagnostics */}
       <div className="bottom-panel">
-        <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} />
+        <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} />
       </div>
     </div>
   );

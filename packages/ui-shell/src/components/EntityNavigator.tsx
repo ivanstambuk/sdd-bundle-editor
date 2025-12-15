@@ -1,53 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
-import { formatEntityType } from '../utils/formatText';
+import { getEntityDisplayName, getEntityIcon } from '../utils/schemaMetadata';
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
   selected?: { entityType: string; id: string };
   onSelect(entity: UiEntity): void;
 }
-
-// Entity type icons - semantically meaningful emojis for each type
-const ENTITY_ICONS: Record<string, string> = {
-  // Core entities
-  Feature: '⭐',
-  Requirement: '📋',
-  Task: '✓',
-  ADR: '📝',
-  Decision: '⚖️',
-
-  // Architecture entities
-  Component: '🧩',
-  Protocol: '🔗',
-  DataSchema: '📊',
-
-  // People & roles
-  Actor: '🎭',
-  Profile: '👤',
-  Viewpoint: '👁️',
-
-  // Scenarios & behavior
-  Scenario: '🎬',
-  View: '🖼️',
-  Fixture: '⚙️',
-
-  // Governance
-  Principle: '📜',
-  Policy: '📑',
-  Constraint: '🚧',
-  Risk: '⚠️',
-  Threat: '🛡️',
-
-  // Questions & issues
-  OpenQuestion: '❓',
-  ErrorCode: '🚨',
-
-  // Observability
-  TelemetrySchema: '📈',
-  TelemetryContract: '📉',
-  HealthCheckSpec: '💓',
-};
 
 export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorProps) {
   // Track which entity groups are collapsed
@@ -59,6 +18,18 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
       setCollapsedGroups(new Set(Object.keys(bundle.entities)));
     }
   }, [bundle]);
+
+  // Build metadata lookup from schemas - no fallback, reads from schema or uses raw type
+  const getMetadata = useMemo(() => {
+    const schemas = bundle?.schemas ?? {};
+    return (entityType: string) => {
+      const schema = schemas[entityType];
+      return {
+        displayName: getEntityDisplayName(schema) ?? entityType, // Raw type if no metadata
+        icon: getEntityIcon(schema), // undefined if no metadata
+      };
+    };
+  }, [bundle?.schemas]);
 
   if (!bundle) {
     return (
@@ -90,7 +61,7 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
       <h2>Entities</h2>
       {entries.map(([entityType, entities]) => {
         const isCollapsed = collapsedGroups.has(entityType);
-        const icon = ENTITY_ICONS[entityType] || '📄';
+        const { displayName, icon } = getMetadata(entityType);
         const count = entities.length;
 
         return (
@@ -106,8 +77,8 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
               data-testid={`entity-group-${entityType}`}
             >
               <span className="entity-group-chevron">{isCollapsed ? '▸' : '▾'}</span>
-              <span className="entity-group-icon">{icon}</span>
-              <span className="entity-group-name">{formatEntityType(entityType)}</span>
+              {icon && <span className="entity-group-icon">{icon}</span>}
+              <span className="entity-group-name">{displayName}</span>
               <span className="entity-group-count">{count}</span>
             </button>
             {!isCollapsed && (

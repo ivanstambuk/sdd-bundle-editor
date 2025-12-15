@@ -1,16 +1,24 @@
 import { useState } from 'react';
 import type { UiDiagnostic } from '../types';
-import { formatEntityType } from '../utils/formatText';
+import { getEntityDisplayName } from '../utils/schemaMetadata';
 
 interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
   entityTypes: string[];
+  schemas?: Record<string, unknown>;
 }
 
-export function DiagnosticsPanel({ diagnostics, entityTypes }: DiagnosticsPanelProps) {
+export function DiagnosticsPanel({ diagnostics, entityTypes, schemas }: DiagnosticsPanelProps) {
   // Filter state - now managed within the panel
   const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
   const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
+
+  // Helper to get display name from schema
+  const getDisplayName = (entityType: string): string => {
+    if (!entityType || entityType === '(bundle)') return entityType;
+    const schema = schemas?.[entityType];
+    return getEntityDisplayName(schema) ?? entityType;
+  };
 
   // Apply filters
   const filteredDiagnostics = diagnostics.filter((d) => {
@@ -75,7 +83,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes }: DiagnosticsPanelP
           >
             <option value="all">All Types</option>
             {entityTypes.map((t) => (
-              <option key={t} value={t}>{formatEntityType(t)}</option>
+              <option key={t} value={t}>{getDisplayName(t)}</option>
             ))}
           </select>
         </div>
@@ -89,7 +97,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes }: DiagnosticsPanelP
       ) : (
         groups.map(([entityType, group]) => (
           <div key={entityType} className="diagnostic-group">
-            <h3 className="diagnostic-group-title">{formatEntityType(entityType)}</h3>
+            <h3 className="diagnostic-group-title">{getDisplayName(entityType)}</h3>
             <ul className="diagnostic-list">
               {group.map((d, idx) => (
                 // eslint-disable-next-line react/no-array-index-key
@@ -97,7 +105,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes }: DiagnosticsPanelP
                   <span className="diagnostic-severity">{d.severity}</span>
                   <span className="diagnostic-message">
                     {d.message}
-                    {d.entityId && <> ({formatEntityType(d.entityType || '')} {d.entityId})</>}
+                    {d.entityId && <> ({getDisplayName(d.entityType || '')} {d.entityId})</>}
                     {d.path && <> @ {d.path}</>}
                   </span>
                   {d.code && <span className="diagnostic-code">[{d.code}]</span>}

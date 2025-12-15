@@ -192,15 +192,49 @@ From the repo root:
 - `pnpm --filter @sdd-bundle-editor/server build`
 - `node apps/server/dist/index.js`
 
-The server exposes:
+The server exposes **read-only** endpoints for bundle browsing:
 
 - `GET /health` – health check endpoint for monitoring and Playwright readiness detection.
-- `GET /bundle`
-- `POST /bundle/validate`
-- `POST /bundle/save`
-- `POST /ai/generate`, `POST /ai/fix-errors` (wired to a no-op AI provider; Git discipline enforced).
+- `GET /bundle` – load bundle with entities, schemas, reference graph, diagnostics
+
+> **MCP-First Architecture**: All write operations (create, update, delete entities) are now handled via the MCP Server, not HTTP routes. See the MCP Server section below.
 
 Keep new routes thin and delegate logic to core packages.
+
+---
+
+### MCP Server (Model Context Protocol)
+
+The MCP Server is the primary interface for AI-driven bundle modifications. It supports both stdio (for Claude Desktop, Copilot) and HTTP transports.
+
+**Starting the MCP Server:**
+
+```bash
+# Stdio mode (for Claude Desktop, VS Code Copilot)
+node packages/mcp-server/dist/index.js /path/to/bundle
+
+# HTTP mode (for web clients, testing)
+node packages/mcp-server/dist/index.js --http --port 3001 /path/to/bundle
+```
+
+**Key Tools:**
+
+| Tool | Description |
+|------|-------------|
+| `list_bundles` | List all loaded bundles |
+| `read_entity` | Read entity by type and ID |
+| `list_entities` | List all entity IDs |
+| `search_entities` | Search across all bundles |
+| `validate_bundle` | Validate and return diagnostics |
+| `apply_changes` | **Atomic batch changes** (create/update/delete) |
+
+**Important**: The `apply_changes` tool is the only way to modify bundle files. It:
+- Validates all changes before writing
+- Supports dry-run mode for previewing
+- Reports errors with `changeIndex` attribution
+
+See `packages/mcp-server/README.md` for full documentation.
+
 
 ---
 
@@ -364,94 +398,37 @@ ls -la artifacts/*.png
 ### E2E Testing Patterns (MANDATORY)
 
 > [!IMPORTANT]
-> All E2E tests share a single backend server with persistent agent state. Follow these patterns to avoid flaky tests.
-
-#### Agent State Management
-
-**PATTERN 1: Reset agent state via URL param (RECOMMENDED)**
-
-The application supports a `resetAgent=true` query parameter that triggers a hard reset of the agent backend state on load. Use this in `beforeEach` to guarantee a deterministic starting state.
-
-```typescript
-test.beforeEach(async ({ page }) => {
-    const bundlePath = getSampleBundlePath();
-    // This ensures the agent backend is idle and memory is cleared
-    await page.goto(`/?bundleDir=${bundlePath}&debug=true&resetAgent=true`);
-    
-    // Now safe to click Start immediately without checking status
-    await page.getByTestId('agent-start-btn').click();
-});
-```
-
-**PATTERN 2: Reset agent state before each test (Alternative)**
-
-Every test that interacts with the agent backend MUST reset state in `beforeEach` if not using `resetAgent=true`:
-
-```typescript
-test.beforeEach(async ({ page }) => {
-    // Reset agent state to ensure clean state
-    await page.goto('/');
-    await page.evaluate(async () => {
-        await fetch('/agent/abort', { method: 'POST' });
-    });
-});
-```
-
-**PATTERN 3: Configure agent via UI, not API**
-
-Configure the agent via UI selectors AFTER page load, not via API calls before navigation:
-
-```typescript
-// ✅ CORRECT - Configure via UI after page load
-await page.goto(`/?bundleDir=${bundlePath}&debug=true`);
-await page.waitForSelector('.app-shell', { timeout: 10000 });
-await page.click('[data-testid="agent-settings-btn"]');
-await page.selectOption('.form-control', 'mock');
-await page.click('[data-testid="agent-save-config-btn"]');
-
-// ❌ WRONG - Pre-configuring via API often fails in full suite
-await page.evaluate(async () => {
-    await fetch('/agent/config', { ... });  // May be overwritten by other tests
-});
-await page.goto('/');
-```
-
-**Why this matters**: When tests run serially, API calls made before `page.goto()` may be affected by previous tests' lingering state or race conditions.
+> The UI is now **read-only**. E2E tests cover bundle browsing, entity navigation, and diagnostics.
 
 #### External Bundle Fixture
 
 **MANDATORY**: Use the shared fixture from `e2e/bundle-test-fixture.ts`:
 
 ```typescript
-import { createTempBundle, cleanupTempBundle, getSampleBundlePath } from './bundle-test-fixture';
+import { getSampleBundlePath } from './bundle-test-fixture';
 
-// For tests that MODIFY the bundle (use temp copy)
-let tempBundleDir: string;
-test.beforeEach(async () => {
-    tempBundleDir = await createTempBundle('sdd-test-prefix-');
-});
-test.afterEach(async () => {
-    await cleanupTempBundle(tempBundleDir);
-});
-
-// For READ-ONLY tests (use external bundle directly)
+// Use external bundle directly (read-only)
 const bundleDir = getSampleBundlePath();
+
+test('loads entities', async ({ page }) => {
+    await page.goto(`/?bundleDir=${bundleDir}`);
+    await page.waitForSelector('.entity-list');
+    // ... assertions
+});
 ```
 
 **Environment Variable**: `SDD_SAMPLE_BUNDLE_PATH` controls the bundle location. Default: `/home/ivan/dev/sdd-sample-bundle`.
 
-#### Mock Agent Requirements
+#### Test Categories
 
-- **Use `debug=true`** in URL for mock agent: `/?bundleDir=${path}&debug=true`
-- Mock agent is only enabled in debug mode for security
-- The mock agent triggers proposals when message contains "change"
+1. **Read-Only Tests** - Test entity navigation, details display, diagnostics
+2. **Screenshot Tests** - Capture UI screenshots for visual verification
+3. **MCP Tests** - Test MCP tools via HTTP transport (optional)
 
 #### Why Tests Run Serially
 
-The `playwright.config.ts` sets `workers: 1` and `fullyParallel: false`. **Do NOT change this** without understanding that:
-- All tests share a single server process
-- Agent state is global (one conversation at a time)
-- Parallel tests cause race conditions on `/agent/*` endpoints
+The `playwright.config.ts` sets `workers: 1` and `fullyParallel: false`. This ensures consistent ordering and avoids resource contention.
+
 
 ---
 

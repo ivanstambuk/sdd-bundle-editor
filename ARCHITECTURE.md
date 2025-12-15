@@ -102,13 +102,15 @@ The `sdd-ref` custom format is registered with Ajv for schema validation.
 ### 3. Minimal Lint Interface
 `core-lint` deliberately avoids importing `core-model` types. It defines a minimal `LintBundle` shape to keep the lint engine decoupled and testable.
 
-### 4. Git Discipline for AI Operations
-AI-driven modifications require:
-- Clean working tree (no uncommitted changes)
-- Non-protected branch (not `main`)
-- Automatic commit after successful changes
+### 4. MCP-First Architecture
+Bundle modifications are done exclusively via the MCP Server:
+- **No HTTP write endpoints** – Server is read-only
+- **MCP `apply_changes` tool** – Atomic batch operations with validation
+- **External Git management** – Users commit changes manually
+- **Dual transport** – Stdio for Claude/Copilot, HTTP for web clients
 
-This ensures AI operations are always reviewable and reversible.
+This ensures AI operations are validated and users maintain full Git control.
+
 
 ### 5. Health Endpoint for Playwright
 The server exposes `GET /health` specifically for Playwright's `webServer` configuration to detect when the server is ready.
@@ -120,14 +122,27 @@ The server exposes `GET /health` specifically for Playwright's `webServer` confi
 
 ## API Endpoints
 
+### HTTP Server (Read-Only)
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/health` | GET | Health check for readiness detection |
 | `/bundle` | GET | Load bundle snapshot (manifest, entities, diagnostics, schemas, refGraph) |
-| `/bundle/validate` | POST | Run validation and return diagnostics |
-| `/bundle/save` | POST | Validate and persist changes (stub for now) |
-| `/ai/generate` | POST | AI-driven bundle generation (requires non-main branch) |
-| `/ai/fix-errors` | POST | AI-driven error fixing (requires non-main branch) |
+
+### MCP Server (Write Operations)
+
+All bundle modifications happen via MCP tools:
+
+| Tool | Description |
+|------|-------------|
+| `list_bundles` | List all loaded bundles |
+| `read_entity` | Read entity by type and ID |
+| `list_entities` | List all entity IDs |
+| `search_entities` | Search across bundles |
+| `validate_bundle` | Validate and return diagnostics |
+| `get_context` | Get entity with related dependencies |
+| `apply_changes` | Atomic batch create/update/delete |
+
 
 ---
 
@@ -135,17 +150,18 @@ The server exposes `GET /health` specifically for Playwright's `webServer` confi
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Header: Logo + Title + Actions (Compile Spec, AI Generate) │
+│  Header: Logo + Title + Actions (Compile Spec)              │
 ├──────────────┬──────────────────────────────────────────────┤
 │  Sidebar     │  Main Content                                 │
-│  - Filters   │  - Entity Details (RJSF form)                │
+│  - Filters   │  - Entity Details (read-only RJSF form)      │
 │  - Entity    │  - Outgoing/Incoming References               │
-│    Navigator │  - AI Panels (when active)                    │
+│    Navigator │  - Domain Knowledge                           │
 │              │                                               │
 ├──────────────┴──────────────────────────────────────────────┤
-│  Bottom Panel: Diagnostics                                   │
+│  Bottom Panel: Diagnostics + Read-Only Banner               │
 └─────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Entity Navigator
 - Entities grouped by type
@@ -200,13 +216,14 @@ The UI uses a **dark theme** with CSS custom properties defined in `apps/web/src
 
 ---
 
-## Future Direction: Agent-First Editing
+## Current Architecture: MCP-First
 
-The planned evolution (Phase 8) shifts the editor to a **read-only viewer** where all modifications happen through conversational AI:
+The editor now follows an **MCP-first architecture** where the UI is a read-only viewer and all modifications happen via MCP tools:
 
-1. User describes intent in natural language
-2. Agent proposes structured changes
-3. User reviews and accepts/rejects
-4. Changes are applied, linted, and auto-committed
+1. User browses entities and diagnostics in read-only UI
+2. AI (Claude/Copilot) uses MCP tools to propose/apply changes
+3. Changes validated atomically via `apply_changes`
+4. User manages Git commits externally
 
-This maintains Git discipline while enabling natural language editing.
+This provides complete validation before writes while giving users full Git control.
+

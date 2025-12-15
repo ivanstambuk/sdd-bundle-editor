@@ -121,101 +121,43 @@ node apps/server/dist/index.js
 
 Key endpoints (default base URL: `http://localhost:3000`):
 
-- `GET /bundle` – returns `{ bundle, diagnostics }` snapshot.
-- `GET /agent/status` – current conversation state and git status.
-- `POST /agent/start` – initialize conversation (requires clean git state).
-- `POST /agent/message` – send message to agent.
-- `POST /agent/accept` – apply proposed changes, lint, and commit.
-- `POST /agent/rollback` – revert uncommitted changes from the current session.
+- `GET /health` – Health check for Playwright and monitoring
+- `GET /bundle` – Load bundle with entities, schemas, reference graph, diagnostics
 
-> **Git Discipline**: The server enforces a strict "Clean Working Tree" policy. You cannot start an agent conversation if there are uncommitted changes.
-
----
-
-## Development Workflow
-
-### Running the Full Stack
-
-From the repo root, run:
-
-```bash
-pnpm dev
-```
-
-This starts **three concurrent processes**:
-- **[server]** (blue) – Backend API server
-- **[web]** (green) – Webpack dev server for the UI
-- **[ui-shell]** (yellow) – TypeScript compiler in watch mode
-
-**Why watch mode by default?**
-The `packages/ui-shell` is consumed as a **compiled library**. When AI agents (or you) edit React components, those changes must be compiled from `src/` to `dist/` before the browser can use them. Watch mode ensures this happens automatically.
-
-**Alternative (lighter weight, no auto-compile):**
-```bash
-pnpm dev:simple
-```
-
-Use this if you're only working on the backend and want to save CPU resources. If you make changes to `ui-shell`, you'll need to manually rebuild:
-```bash
-pnpm --filter @sdd-bundle-editor/ui-shell build
-```
-
-### Agent-First Workflow
-
-The editor is designed to be a **Read-Only Viewer** by default. You cannot directly edit fields in the forms. Instead, you interact with an AI Agent to modify the bundle.
-
-1.  **View & Navigate**: Browse entities, references, and diagnostics in read-only mode.
-2.  **Open Agent**: Press **`Ctrl+J`** or click the **"Edit via Agent"** button.
-3.  **Chat**: Describe your intent (e.g., "Add a requirement for login").
-4.  **Review**: The agent proposes changes. Review the diffs.
-5.  **Accept**: Click "Apply Changes". The agent applies edits, runs linter, and **automatically commits** if successful.
-
-### Features
-
-- **Read-only mode UI prevents accidental schema edits when working with the AI agent.
-- **Contextual Actions**: "Fix with Agent" buttons on diagnostic errors.
-- **Error Recovery**: Network handling and "Discard Changes" (rollback) capability.
-- **Diagnostics**: Real-time validation and linting feedback.
-
----
-
-## Keyboard Shortcuts
-
-### Global Shortcuts
-- **`Ctrl+J` / `Cmd+J`** - Toggle Agent Panel (AI chat interface)
-- **`Ctrl+B` / `Cmd+B`** - Toggle Sidebar (entity navigator)
-- **`Ctrl+P` / `Cmd+P`** - Quick Search (entity finder)
-
-### UI Features
-- **Resizable Sidebar** - Drag right edge to resize (200-500px range)
-- **Collapsible Groups** - Click entity type headers to expand/collapse
-- **Breadcrumb Navigation** - Shows current location: Bundle > EntityType > EntityID
+> **Read-Only**: The HTTP server is now read-only. All write operations are handled via MCP.
 
 ---
 
 ## MCP Server (AI Integration)
 
-The project includes an MCP (Model Context Protocol) server that exposes bundle data to AI assistants like GitHub Copilot and Claude Desktop.
+The project uses an **MCP-first architecture** where all bundle modifications are done via the MCP Server, accessible to AI assistants like GitHub Copilot and Claude Desktop.
 
 ### Quick Start
 
 ```bash
-# Test with MCP Inspector
-npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /path/to/your/bundle
+# Build and test with MCP Inspector
+pnpm build
+npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /path/to/bundle
+
+# Or run in HTTP mode for web clients
+node packages/mcp-server/dist/index.js --http --port 3001 /path/to/bundle
 ```
 
 ### Available Tools
 
 | Tool | Description |
 |------|-------------|
+| `list_bundles` | List all loaded bundles |
 | `read_entity` | Read a specific entity by type and ID |
 | `list_entities` | List all entity IDs |
 | `get_context` | Get entity with all related dependencies |
-| `get_conformance_context` | Get profile conformance rules |
+| `search_entities` | Search across all bundles |
+| `validate_bundle` | Validate and return diagnostics |
+| `apply_changes` | **Atomic batch changes** (create/update/delete with validation) |
 
-### VS Code + GitHub Copilot
+### Configuration
 
-Create `.vscode/mcp.json` in your project:
+**VS Code + GitHub Copilot** - Create `.vscode/mcp.json`:
 
 ```json
 {
@@ -232,27 +174,95 @@ Create `.vscode/mcp.json` in your project:
 }
 ```
 
-Then in Copilot Chat (Agent Mode), use `#get_context`, `#read_entity`, etc. to invoke tools.
+Then in Copilot Chat (Agent Mode), use `#apply_changes`, `#read_entity`, etc.
+
+**Claude Desktop** - Add to `~/.config/claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "sdd-bundle": {
+      "command": "node",
+      "args": [
+        "/home/ivan/dev/sdd-bundle-editor/packages/mcp-server/dist/index.js",
+        "/path/to/your/bundle"
+      ]
+    }
+  }
+}
+```
 
 See [`packages/mcp-server/README.md`](packages/mcp-server/README.md) for full documentation.
 
 ---
 
+## Development Workflow
 
-## Status and next work
+### Running the Full Stack
 
-The project has transitioned to the **Agent-First** architecture (Phase 8).
+From the repo root, run:
+
+```bash
+pnpm dev
+```
+
+This starts **three concurrent processes**:
+- **[server]** (blue) – Backend API server (read-only)
+- **[web]** (green) – Webpack dev server for the UI
+- **[ui-shell]** (yellow) – TypeScript compiler in watch mode
+
+**Why watch mode by default?**
+The `packages/ui-shell` is consumed as a **compiled library**. When you edit React components, those changes must be compiled from `src/` to `dist/` before the browser can use them. Watch mode ensures this happens automatically.
+
+**Alternative (lighter weight, no auto-compile):**
+```bash
+pnpm dev:simple
+```
+
+### Read-Only UI
+
+The UI is a **read-only viewer** for browsing and inspecting bundles:
+
+1. **Navigate**: Browse entities by type in the sidebar
+2. **View Details**: See entity data, references, and diagnostics
+3. **Validate**: Click "Compile Spec" to run validation
+
+To **modify** bundles, use MCP tools via Claude Desktop, GitHub Copilot, or curl to the HTTP endpoint.
+
+### Keyboard Shortcuts
+
+- **`Ctrl+B` / `Cmd+B`** - Toggle Sidebar
+- **`Ctrl+P` / `Cmd+P`** - Quick Search
+
+
+---
+
+---
+
+## UI Features
+
+- **Resizable Sidebar** - Drag right edge to resize (200-500px range)
+- **Collapsible Groups** - Click entity type headers to expand/collapse
+- **Breadcrumb Navigation** - Shows current location: Bundle > EntityType > EntityID
+
+---
+
+## Status
+
+The project has transitioned to the **MCP-First Architecture**.
 
 **Completed:**
-- ✅ Core Agent Protocol (Start/Message/Accept/Abort).
-- ✅ Change Application Service with automatic Git commits.
-- ✅ Read-Only UI with `Ctrl+J` agent panel toggle.
-- ✅ Error Recovery and Rollback (`/agent/rollback`).
+- ✅ Read-Only UI for bundle browsing and viewing
+- ✅ MCP Server with stdio and HTTP transports
+- ✅ `apply_changes` tool for atomic batch modifications
+- ✅ Multi-bundle support
+- ✅ Schema-driven validation and linting
 
-**In Progress / Planned:**
-- Real AI Provider integration (currently using a stub/mock).
-- Enhanced standard library of bundle types.
-- VS Code extension integration.
+**Architecture:**
+- UI is read-only (no direct editing)
+- All modifications via MCP tools
+- Users manage Git commits externally
 
 Use `IMPLEMENTATION_TRACKER.md` to track and coordinate further work.
+
 

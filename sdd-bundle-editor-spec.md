@@ -329,33 +329,44 @@ Gates are lint rules that block saving. Any `error` severity diagnostic is a gat
 
 ---
 
-## 7. AI Integration & Git Discipline
+## 7. AI Integration via MCP
 
-### 7.1 Agent-First Editing (Phase 8)
+### 7.1 MCP-First Architecture
 
-> **Key paradigm shift**: All modifications happen through conversational AI rather than direct editing.
+> **Key paradigm shift**: All modifications happen through MCP tools, not HTTP endpoints.
 
 - The UI is a **read-only viewer**.
-- Users describe changes in natural language.
-- AI proposes structured changes.
-- Users review and accept/reject via conversation.
-- Only after agreement are files modified, linted, and committed.
+- All writes via `apply_changes` MCP tool.
+- Users manage Git commits externally.
 
-### 7.2 Git Requirements
+### 7.2 MCP Server
 
-1. **Git repo required** for AI operations.
-2. **Non-protected branch**: Must not be on `main` or other protected branches.
-3. **Clean working tree**: All changes must be committed before AI invocation.
-4. **Automatic commit**: After successful changes (passing lint), changes are auto-committed.
+The MCP Server provides bundle access to AI assistants:
 
-### 7.3 AI Workflow
+| Transport | Use Case |
+|-----------|----------|
+| **stdio** | Claude Desktop, VS Code Copilot |
+| **HTTP/SSE** | Web clients, programmatic access |
 
-1. User initiates conversation (Git status validated).
-2. User describes intent in natural language.
-3. AI proposes `ProposedChange[]` with entity modifications.
-4. UI shows diff-style preview.
-5. User accepts, rejects, or requests modifications.
-6. On accept: changes applied, lint run, auto-commit on success.
+### 7.3 Key Tools
+
+| Tool | Description |
+|------|-------------|
+| `list_bundles` | List all loaded bundles |
+| `read_entity` | Read entity by type and ID |
+| `list_entities` | List all entity IDs |
+| `search_entities` | Search across bundles |
+| `validate_bundle` | Validate and return diagnostics |
+| `apply_changes` | Atomic batch create/update/delete |
+
+### 7.4 apply_changes Flow
+
+1. AI proposes changes (create/update/delete operations)
+2. MCP Server validates all changes atomically
+3. If valid: files written to disk
+4. If invalid: error returned with `changeIndex` attribution
+5. User commits changes via normal Git workflow
+
 
 ---
 

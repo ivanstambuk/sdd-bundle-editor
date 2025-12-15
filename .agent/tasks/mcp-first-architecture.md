@@ -8,7 +8,7 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 - **No Git integration** – validation happens before write, user commits externally
 - Single MCP server serves both UI (via HTTP/SSE) and external agents (via stdio)
 
-## Status: ✅ Phases 1, 2, 3, 4, 6 Complete
+## Status: ✅ Phases 1, 2, 3, 4, 6, 7 Complete
 
 ---
 
@@ -152,26 +152,30 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 
 ---
 
-## Phase 7: Update Documentation (⏳ Pending)
+## Phase 7: Update Documentation ✅
 
 ### 7.1 Update AGENTS.md
-- [ ] Remove git discipline section
-- [ ] Update development workflow
-- [ ] Document MCP-first architecture
+- [x] Remove git discipline section
+- [x] Update development workflow
+- [x] Document MCP-first architecture
+- [x] Add MCP Server section with tools table
+- [x] Simplify E2E testing patterns (read-only UI)
 
 ### 7.2 Update README.md
-- [ ] Update architecture description
-- [ ] Update API endpoints (remove agent routes)
-- [ ] Document MCP server usage for writes
+- [x] Update architecture description
+- [x] Update API endpoints (remove agent routes)
+- [x] Document MCP server usage for writes
+- [x] Add HTTP mode documentation
 
 ### 7.3 Update ARCHITECTURE.md
-- [ ] Reflect new MCP-first design
-- [ ] Remove agent flow diagrams
-- [ ] Add MCP integration diagrams
+- [x] Reflect new MCP-first design
+- [x] Remove agent flow diagrams
+- [x] Add MCP integration section
+- [x] Update UI Layout diagram
 
 ### 7.4 Update sdd-bundle-editor-spec.md
-- [ ] Remove git requirements section
-- [ ] Update AI integration section
+- [x] Remove git requirements section
+- [x] Update AI integration section to MCP tools
 
 ---
 
@@ -197,6 +201,7 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 | Phase 3 | Removed all agent routes, git integration from server |
 | Phase 4 | Simplified UI to read-only, removed AgentPanel |
 | Phase 6 | Updated E2E tests, 10/10 passing |
+| Phase 7 | Updated AGENTS.md, README.md, ARCHITECTURE.md, spec.md |
 
 ## Remaining Work
 
@@ -206,7 +211,6 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 | Phase 4.4 | UI to use MCP protocol directly |
 | Phase 5 | MCP test CLI (full phase) |
 | Phase 6.3 | MCP-based E2E tests |
-| Phase 7 | Documentation updates (full phase) |
 
 ---
 

@@ -44,6 +44,64 @@ For any new feature or change that impacts the User Interface (UI), the followin
     *   **Inspect Results**: Verify the screenshot exists and embed it in your `walkthrough.md` or completion report to demonstrate the result to the user.
 4.  **No Skipping**: Do NOT skip these tests or ask the user to test manually. You must validate the feature yourself before successful hand-off.
 
+### Post-UI-Change Verification (MANDATORY)
+
+After ANY change to UI components or CSS, you MUST:
+
+1.  **Test with `pnpm dev` (NOT just E2E)**:
+    - E2E tests use Playwright's managed servers which may mask issues
+    - Run `SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev` and verify manually
+    - This catches issues in the normal development workflow
+
+2.  **Run Visual Regression Tests**:
+    ```bash
+    pnpm test:visual
+    ```
+    If baselines need updating after intentional changes:
+    ```bash
+    pnpm test:visual:update
+    ```
+
+3.  **Verify Layout Measurements**:
+    - For layout changes, use `boundingBox()` to verify dimensions
+    - Check that elements span expected widths/heights
+    - Verify grid/flex layouts work correctly
+
+**Why this matters**: E2E tests can pass while the UI is visually broken. The managed Playwright servers may start additional services that mask missing dependencies.
+
+### CSS-First Rule for UI Components
+
+When adding new UI elements with layout implications:
+
+1.  **NEVER use inline styles for layout properties** (grid, flex, position, width, height, margin, padding)
+2.  **Always add CSS classes to `styles.css` FIRST** before adding the JSX
+3.  **Verify grid integration**:
+    - Check `grid-template-rows` / `grid-template-columns` match the DOM structure
+    - New full-width elements need `grid-column: 1 / -1`
+4.  **Use design system variables**: Always use `--color-*`, `--spacing-*`, `--font-size-*` variables
+5.  **Test with dark theme**: The app uses a dark theme by default; light colors will clash
+
+**Example of what NOT to do**:
+```tsx
+// ❌ BAD: Inline styles bypass CSS grid and design system
+<div style={{ background: '#f0f9ff', padding: '8px 16px' }}>
+```
+
+**Example of correct approach**:
+```tsx
+// ✅ GOOD: CSS class in styles.css with proper grid integration
+<div className="info-banner">
+```
+
+```css
+/* styles.css */
+.info-banner {
+  grid-column: 1 / -1;  /* Span full width */
+  background: var(--color-bg-tertiary);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+```
+
 ---
 
 ### Debug-First Workflow for UI/CSS Issues

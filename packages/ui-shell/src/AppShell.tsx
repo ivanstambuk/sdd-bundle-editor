@@ -178,7 +178,16 @@ export function AppShell() {
       <ResizableSidebar isCollapsed={sidebarCollapsed}>
         <div className="sidebar-section">
           {bundleLoading && <span className="status-loading">Loading...</span>}
-          {bundleError && <div className="status-error">Error: {bundleError}</div>}
+          {bundleError && (
+            <div className="status-error" data-testid="bundle-error">
+              <strong>⚠️ Error:</strong> {bundleError}
+              {bundleError.includes('fetch') && (
+                <div className="error-hint">
+                  💡 Backend server may not be running. Try: <code>pnpm dev</code>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="controls">
             <div className="filter-group">

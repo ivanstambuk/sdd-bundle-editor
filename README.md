@@ -63,6 +63,35 @@ pnpm test
 
 This runs `tsc` and `vitest` across all workspaces.
 
+### Development modes
+
+```bash
+# Standard development (legacy HTTP only)
+SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev
+
+# With MCP server (for testing MCP mode)
+SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev:mcp
+
+# Minimal (no ui-shell watch)
+SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev:simple
+```
+
+### Testing
+
+```bash
+# Unit tests
+pnpm test
+
+# E2E tests (starts all servers automatically)
+pnpm test:e2e
+
+# Visual regression tests
+pnpm test:visual
+
+# Update visual baselines after intentional changes
+pnpm test:visual:update
+```
+
 ---
 
 ## External Bundle Setup

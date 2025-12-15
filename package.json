@@ -10,10 +10,13 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "concurrently -n server,web,ui-shell -c blue,green,yellow \"pnpm exec ts-node apps/server/src/index.ts\" \"pnpm --filter @sdd-bundle-editor/web dev\" \"pnpm --filter @sdd-bundle-editor/ui-shell watch\"",
+    "dev:mcp": "concurrently -n server,mcp,web,ui-shell -c blue,magenta,green,yellow \"pnpm exec ts-node apps/server/src/index.ts\" \"pnpm --filter @sdd-bundle-editor/mcp-server start:http\" \"pnpm --filter @sdd-bundle-editor/web dev\" \"pnpm --filter @sdd-bundle-editor/ui-shell watch\"",
     "dev:simple": "concurrently -n server,web -c blue,green \"pnpm exec ts-node apps/server/src/index.ts\" \"pnpm --filter @sdd-bundle-editor/web dev\"",
     "test": "pnpm -r test",
     "test:coverage": "vitest run --coverage",
     "test:coverage:ci": "vitest run --coverage --coverage.reporter=lcov",
+    "test:visual": "playwright test e2e/visual-regression.spec.ts",
+    "test:visual:update": "playwright test e2e/visual-regression.spec.ts --update-snapshots",
     "lint": "pnpm -r lint",
     "test:e2e": "playwright test"
   },

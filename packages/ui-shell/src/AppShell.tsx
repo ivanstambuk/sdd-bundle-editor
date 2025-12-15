@@ -57,8 +57,6 @@ export function AppShell() {
   } = useBundleState(bundleDir);
 
   // UI state
-  const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
-  const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'entity' | 'domain'>('entity');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -91,13 +89,6 @@ export function AppShell() {
     navigateToEntity(entityType, entityId);
     setViewMode('entity');
   };
-
-  // Filtered diagnostics
-  const filteredDiagnostics = diagnostics.filter((d: UiDiagnostic) => {
-    if (severityFilter !== 'all' && d.severity !== severityFilter) return false;
-    if (entityTypeFilter !== 'all' && d.entityType !== entityTypeFilter) return false;
-    return true;
-  });
 
   const entityTypes = bundle ? Object.keys(bundle.entities) : [];
 
@@ -188,34 +179,6 @@ export function AppShell() {
               )}
             </div>
           )}
-
-          <div className="controls">
-            <div className="filter-group">
-              <span className="filter-label">Severity:</span>
-              <select
-                className="filter-select"
-                value={severityFilter}
-                onChange={(e) => setSeverityFilter(e.target.value as 'all' | 'error' | 'warning')}
-              >
-                <option value="all">All</option>
-                <option value="error">Errors</option>
-                <option value="warning">Warnings</option>
-              </select>
-            </div>
-            <div className="filter-group">
-              <span className="filter-label">Type:</span>
-              <select
-                className="filter-select"
-                value={entityTypeFilter}
-                onChange={(e) => setEntityTypeFilter(e.target.value)}
-              >
-                <option value="all">All</option>
-                {entityTypes.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-          </div>
         </div>
         <div className="sidebar-section">
           <EntityNavigator
@@ -248,7 +211,7 @@ export function AppShell() {
 
       {/* Bottom Panel - Diagnostics */}
       <div className="bottom-panel">
-        <DiagnosticsPanel diagnostics={filteredDiagnostics} />
+        <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} />
       </div>
     </div>
   );

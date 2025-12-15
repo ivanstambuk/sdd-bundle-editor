@@ -31,13 +31,13 @@ const sampleDiagnostics: UiDiagnostic[] = [
 
 describe('DiagnosticsPanel', () => {
   it('renders placeholder when there are no diagnostics', () => {
-    render(<DiagnosticsPanel diagnostics={[]} />);
+    render(<DiagnosticsPanel diagnostics={[]} entityTypes={[]} />);
 
     expect(screen.getByText(/No diagnostics/i)).toBeInTheDocument();
   });
 
   it('groups diagnostics by entity type and renders details', () => {
-    render(<DiagnosticsPanel diagnostics={sampleDiagnostics} />);
+    render(<DiagnosticsPanel diagnostics={sampleDiagnostics} entityTypes={['Feature', 'Requirement']} />);
 
     expect(screen.getByText('Diagnostics')).toBeInTheDocument();
 

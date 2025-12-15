@@ -1,11 +1,24 @@
+import { useState } from 'react';
 import type { UiDiagnostic } from '../types';
 import { formatEntityType } from '../utils/formatText';
 
 interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
+  entityTypes: string[];
 }
 
-export function DiagnosticsPanel({ diagnostics }: DiagnosticsPanelProps) {
+export function DiagnosticsPanel({ diagnostics, entityTypes }: DiagnosticsPanelProps) {
+  // Filter state - now managed within the panel
+  const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
+  const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
+
+  // Apply filters
+  const filteredDiagnostics = diagnostics.filter((d) => {
+    if (severityFilter !== 'all' && d.severity !== severityFilter) return false;
+    if (entityTypeFilter !== 'all' && d.entityType !== entityTypeFilter) return false;
+    return true;
+  });
+
   if (!diagnostics.length) {
     return (
       <div className="diagnostics-panel">
@@ -17,9 +30,10 @@ export function DiagnosticsPanel({ diagnostics }: DiagnosticsPanelProps) {
     );
   }
 
+  // Group filtered diagnostics by entity type
   const byEntityType = new Map<string, UiDiagnostic[]>();
 
-  for (const d of diagnostics) {
+  for (const d of filteredDiagnostics) {
     const key = d.entityType ?? '(bundle)';
     const existing = byEntityType.get(key);
     if (existing) {
@@ -37,27 +51,62 @@ export function DiagnosticsPanel({ diagnostics }: DiagnosticsPanelProps) {
     <div className="diagnostics-panel">
       <div className="diagnostics-header">
         <h2 className="diagnostics-title">Diagnostics</h2>
-        <span className="text-muted text-sm">{diagnostics.length} issue{diagnostics.length !== 1 ? 's' : ''}</span>
-      </div>
-      {groups.map(([entityType, group]) => (
-        <div key={entityType} className="diagnostic-group">
-          <h3 className="diagnostic-group-title">{formatEntityType(entityType)}</h3>
-          <ul className="diagnostic-list">
-            {group.map((d, idx) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <li key={idx} className={`diagnostic-item ${d.severity}`}>
-                <span className="diagnostic-severity">{d.severity}</span>
-                <span className="diagnostic-message">
-                  {d.message}
-                  {d.entityId && <> ({formatEntityType(d.entityType || '')} {d.entityId})</>}
-                  {d.path && <> @ {d.path}</>}
-                </span>
-                {d.code && <span className="diagnostic-code">[{d.code}]</span>}
-              </li>
+        <span className="diagnostics-count">
+          {filteredDiagnostics.length} of {diagnostics.length} issue{diagnostics.length !== 1 ? 's' : ''}
+        </span>
+
+        <div className="diagnostics-filters">
+          <select
+            className="filter-select"
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value as 'all' | 'error' | 'warning')}
+            data-testid="severity-filter"
+          >
+            <option value="all">All Severities</option>
+            <option value="error">Errors</option>
+            <option value="warning">Warnings</option>
+          </select>
+
+          <select
+            className="filter-select"
+            value={entityTypeFilter}
+            onChange={(e) => setEntityTypeFilter(e.target.value)}
+            data-testid="entity-type-filter"
+          >
+            <option value="all">All Types</option>
+            {entityTypes.map((t) => (
+              <option key={t} value={t}>{formatEntityType(t)}</option>
             ))}
-          </ul>
+          </select>
         </div>
-      ))}
+      </div>
+
+      {filteredDiagnostics.length === 0 ? (
+        <div className="diagnostics-empty">
+          <span className="diagnostics-empty-icon">🔍</span>
+          <span>No diagnostics match the current filters.</span>
+        </div>
+      ) : (
+        groups.map(([entityType, group]) => (
+          <div key={entityType} className="diagnostic-group">
+            <h3 className="diagnostic-group-title">{formatEntityType(entityType)}</h3>
+            <ul className="diagnostic-list">
+              {group.map((d, idx) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <li key={idx} className={`diagnostic-item ${d.severity}`}>
+                  <span className="diagnostic-severity">{d.severity}</span>
+                  <span className="diagnostic-message">
+                    {d.message}
+                    {d.entityId && <> ({formatEntityType(d.entityType || '')} {d.entityId})</>}
+                    {d.path && <> @ {d.path}</>}
+                  </span>
+                  {d.code && <span className="diagnostic-code">[{d.code}]</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      )}
     </div>
   );
 }

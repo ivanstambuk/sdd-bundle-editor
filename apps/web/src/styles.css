@@ -807,13 +807,45 @@ body {
 .diagnostics-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .diagnostics-title {
   font-size: var(--font-size-lg);
   font-weight: 600;
+}
+
+.diagnostics-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.diagnostics-filters {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-left: auto;
+}
+
+.diagnostics-filters .filter-select {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.diagnostics-filters .filter-select:hover {
+  border-color: var(--color-accent);
+}
+
+.diagnostics-filters .filter-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-light);
 }
 
 .diagnostics-empty {

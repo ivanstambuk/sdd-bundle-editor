@@ -16,18 +16,29 @@ const log = createLogger('useBundleState');
 
 /**
  * Detect if we should use MCP or legacy API.
- * MCP is used when mcpUrl param is present or when running against MCP server.
+ * 
+ * MCP mode is used when:
+ * - mcpUrl param is present in URL
+ * - useMcp=true param is present in URL
+ * 
+ * Otherwise, defaults to legacy HTTP API for compatibility.
+ * The fallback from MCP to legacy happens automatically if MCP fails.
  */
 function shouldUseMcpApi(): boolean {
     if (typeof window !== 'undefined') {
         const params = new URLSearchParams(window.location.search);
-        // Use MCP if mcpUrl param is present, or if useMcp=true
+        // Use MCP only if explicitly requested via URL param
         if (params.get('mcpUrl') || params.get('useMcp') === 'true') {
             return true;
         }
+        // Explicitly disable MCP if useMcp=false
+        if (params.get('useMcp') === 'false') {
+            return false;
+        }
     }
-    // Default to MCP mode in MCP-first architecture
-    return true;
+    // Default to legacy HTTP mode for compatibility
+    // (MCP server may not always be running alongside the legacy server)
+    return false;
 }
 
 /**

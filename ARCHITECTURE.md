@@ -141,6 +141,7 @@ All bundle modifications happen via MCP tools:
 | `search_entities` | Search across bundles |
 | `validate_bundle` | Validate and return diagnostics |
 | `get_context` | Get entity with related dependencies |
+| `get_conformance_context` | Get conformance rules and audit templates from a Profile |
 | `apply_changes` | Atomic batch create/update/delete |
 
 

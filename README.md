@@ -151,6 +151,7 @@ node packages/mcp-server/dist/index.js --http --port 3001 /path/to/bundle
 | `read_entity` | Read a specific entity by type and ID |
 | `list_entities` | List all entity IDs |
 | `get_context` | Get entity with all related dependencies |
+| `get_conformance_context` | Get conformance rules and audit templates from a Profile |
 | `search_entities` | Search across all bundles |
 | `validate_bundle` | Validate and return diagnostics |
 | `apply_changes` | **Atomic batch changes** (create/update/delete with validation) |

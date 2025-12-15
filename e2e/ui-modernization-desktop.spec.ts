@@ -5,11 +5,11 @@ test.describe('UI Modernization - Desktop', () => {
     const bundlePath = getSampleBundlePath();
 
     test.beforeEach(async ({ page }) => {
-        await page.goto(`/?bundleDir=${encodeURIComponent(bundlePath)}&resetAgent=true`);
+        await page.goto(`/?bundleDir=${encodeURIComponent(bundlePath)}`);
         await page.waitForSelector('.app-shell', { timeout: 10000 });
     });
 
-    test('Antigravity Dark theme and balanced density', async ({ page }) => {
+    test('Dark theme and balanced density', async ({ page }) => {
         // Verify dark background colors
         const appShell = page.locator('.app-shell');
         const bgColor = await appShell.evaluate((el) => {
@@ -27,10 +27,10 @@ test.describe('UI Modernization - Desktop', () => {
         expect(fontSize).toBe('14px');
 
         // Capture screenshot
-        await page.screenshot({ path: 'artifacts/desktop-antigravity-theme.png', fullPage: true });
+        await page.screenshot({ path: 'artifacts/desktop-theme.png', fullPage: true });
     });
 
-    test('VS Code minimal header with breadcrumb', async ({ page }) => {
+    test('Minimal header with breadcrumb', async ({ page }) => {
         // Verify header height is reduced (48px)
         const header = page.locator('.app-header');
         const headerBox = await header.boundingBox();
@@ -43,11 +43,6 @@ test.describe('UI Modernization - Desktop', () => {
         // Verify hamburger menu button exists
         const hamburger = page.locator('[data-testid="sidebar-toggle"]');
         await expect(hamburger).toBeVisible();
-
-        // Verify icon buttons (no text labels)
-        const agentToggle = page.locator('[data-testid="agent-toggle"]');
-        const agentText = await agentToggle.textContent();
-        expect(agentText?.trim()).toBe('🤖'); // Only icon, no "Agent" text
 
         // Expand Requirement group first (groups start collapsed)
         await page.click('[data-testid="entity-group-Requirement"]');
@@ -64,7 +59,7 @@ test.describe('UI Modernization - Desktop', () => {
         await page.screenshot({ path: 'artifacts/desktop-header-breadcrumb.png' });
     });
 
-    test('VS Code compact entity tree with icons', async ({ page }) => {
+    test('Compact entity tree with icons', async ({ page }) => {
         // Verify entity group headers are buttons
         const groupHeader = page.locator('.entity-group-header').first();
         await expect(groupHeader).toHaveCSS('cursor', 'pointer');
@@ -178,5 +173,15 @@ test.describe('UI Modernization - Desktop', () => {
 
         // Capture full UI for density comparison
         await page.screenshot({ path: 'artifacts/desktop-full-density.png', fullPage: true });
+    });
+
+    test('Read-only banner is visible', async ({ page }) => {
+        // Verify the read-only banner is displayed
+        const banner = page.locator('[data-testid="read-only-banner"]');
+        await expect(banner).toBeVisible();
+
+        const bannerText = await banner.textContent();
+        expect(bannerText).toContain('Read-Only');
+        expect(bannerText).toContain('MCP');
     });
 });

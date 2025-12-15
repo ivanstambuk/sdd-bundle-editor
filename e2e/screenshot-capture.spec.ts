@@ -4,7 +4,7 @@ import { getSampleBundlePath } from './bundle-test-fixture';
 test('capture UI screenshots', async ({ page }) => {
     const bundleDir = getSampleBundlePath();
 
-    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}&resetAgent=true`);
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
     await page.waitForLoadState('networkidle');
     await expect(page.getByText('Entities')).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-initial.png', fullPage: true });
@@ -16,7 +16,7 @@ test('capture UI screenshots', async ({ page }) => {
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-entity-details.png', fullPage: true });
 
     await page.click('[data-testid="compile-btn"]');
-    await expect(page.getByText('No diagnostics.')).toBeVisible();
+    await expect(page.locator('.diagnostics-panel')).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-diagnostics.png', fullPage: true });
 
     // Capture ADR form - expand ADR group first

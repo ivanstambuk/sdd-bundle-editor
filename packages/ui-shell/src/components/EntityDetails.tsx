@@ -8,14 +8,11 @@ interface EntityDetailsProps {
   entity: UiEntity | null;
   readOnly?: boolean;
   onNavigate?: (entityType: string, entityId: string) => void;
-  onEditRequest?: () => void;
   diagnostics?: UiDiagnostic[];
-  onFixDiagnostics?: (entity: UiEntity, diagnostics: UiDiagnostic[]) => void;
 }
 
-export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequest, diagnostics = [], onFixDiagnostics }: EntityDetailsProps) {
+export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
   if (!bundle || !entity) {
-    // ... empty state ...
     return (
       <div className="entity-details">
         <div className="entity-placeholder">
@@ -31,7 +28,6 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
   const errorCount = diagnostics.filter(d => d.severity === 'error').length;
   const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
 
-  // ... schema and graph logic ...
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
 
   const outgoing =
@@ -45,7 +41,6 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
   const widgets: Record<string, any> = {};
 
   if (schema && typeof schema.properties === 'object') {
-    // ... schema parsing ...
     const props = schema.properties as Record<string, any>;
     for (const [propName, propSchema] of Object.entries(props)) {
       const ps = propSchema as any;
@@ -90,35 +85,16 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
           <span className="entity-id">{entity.id}</span>
         </div>
         <div className="entity-header-actions">
-          {hasDiagnostics && onFixDiagnostics && (
-            <button
-              className="btn btn-sm btn-warning"
-              onClick={() => onFixDiagnostics(entity, diagnostics)}
-              title={`Ask agent to fix ${errorCount} errors, ${warningCount} warnings`}
-              data-testid="fix-with-agent-btn"
-            >
-              🪄 Fix with Agent
-            </button>
-          )}
-          {readOnly && onEditRequest && (
-            <button
-              className="btn btn-sm btn-secondary"
-              onClick={onEditRequest}
-              title="Ask the agent to modify this entity"
-              data-testid="edit-via-agent-btn"
-            >
-              Edit via Agent
-            </button>
+          {hasDiagnostics && (
+            <span className="diagnostics-badge" title={`${errorCount} errors, ${warningCount} warnings`}>
+              {errorCount > 0 && <span className="error-count">⛔ {errorCount}</span>}
+              {warningCount > 0 && <span className="warning-count">⚠️ {warningCount}</span>}
+            </span>
           )}
         </div>
       </div>
 
       <div className="entity-details-body">
-        {readOnly && (
-          <div className="read-only-banner">
-            Read-Only View
-          </div>
-        )}
         {schema ? (
           <AnyForm
             schema={schema as any}
@@ -135,8 +111,8 @@ export function EntityDetails({ bundle, entity, readOnly, onNavigate, onEditRequ
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             onError={() => { }}
           >
-            {/* Hide submit button in read-only mode by passing empty fragment */}
-            {readOnly ? <></> : undefined}
+            {/* Hide submit button in read-only mode */}
+            <></>
           </AnyForm>
         ) : (
           <div className="entity-no-schema">

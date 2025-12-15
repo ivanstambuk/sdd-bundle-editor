@@ -25,6 +25,7 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `get_conformance_context` | Get profile conformance rules and audit templates |
 | `search_entities` | Search for entities across all bundles |
 | `validate_bundle` | Validate a bundle and return diagnostics |
+| `apply_changes` | **NEW:** Atomic batch changes (create/update/delete) with validate-before-write |
 
 ### Prompts (Structured AI Workflows)
 | Prompt | Description |

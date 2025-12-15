@@ -106,22 +106,25 @@ describe('EntityDetails', () => {
     expect(screen.queryByTestId('rjsf-form')).not.toBeInTheDocument();
     expect(screen.getByText(/Schema not found for entity type/)).toBeInTheDocument();
   });
-  it('renders read-only view when readOnly prop is true', () => {
+
+  it('shows diagnostics badge when entity has diagnostics', () => {
     const bundle = makeBundleWithSchema();
     const entity = bundle.entities.Feature[0];
-    const mockOnEdit = vi.fn();
+    const diagnostics = [
+      { severity: 'error' as const, message: 'Test error', entityType: 'Feature', entityId: 'FEAT-001' },
+      { severity: 'warning' as const, message: 'Test warning', entityType: 'Feature', entityId: 'FEAT-001' },
+    ];
 
     render(
       <EntityDetails
         bundle={bundle}
         entity={entity}
-        readOnly={true}
-        onEditRequest={mockOnEdit}
+        diagnostics={diagnostics}
       />
     );
 
-    expect(screen.getByText('Read-Only View')).toBeInTheDocument();
-    expect(screen.getByText('Edit via Agent')).toBeInTheDocument();
+    // Check for error and warning counts in the badge
+    expect(screen.getByText('⛔ 1')).toBeInTheDocument();
+    expect(screen.getByText('⚠️ 1')).toBeInTheDocument();
   });
 });
-

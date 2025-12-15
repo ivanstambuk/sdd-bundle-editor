@@ -4,7 +4,6 @@
  */
 
 export { useBundleState, type UseBundleStateReturn } from './useBundleState';
-export { useAgentState, type UseAgentStateReturn } from './useAgentState';
 export {
     useKeyboardShortcuts,
     formatShortcut,

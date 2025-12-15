@@ -109,6 +109,53 @@ export async function saveEntity(entity: Entity): Promise<void> {
 }
 
 /**
+ * Deletes an entity from the bundle (in-memory) and optionally from disk.
+ * 
+ * @param bundle - The bundle to remove the entity from
+ * @param entityType - Type of entity to delete
+ * @param entityId - ID of the entity to delete
+ * @param deleteFile - If true, also delete the file from disk (default: false for in-memory only)
+ * @returns The deleted entity, or undefined if not found
+ */
+export async function deleteEntity(
+    bundle: Bundle,
+    entityType: string,
+    entityId: string,
+    deleteFile: boolean = false
+): Promise<Entity | undefined> {
+    const entityMap = bundle.entities.get(entityType);
+    if (!entityMap) {
+        return undefined;
+    }
+
+    const entity = entityMap.get(entityId);
+    if (!entity) {
+        return undefined;
+    }
+
+    // Remove from bundle's entity map
+    entityMap.delete(entityId);
+
+    // Remove from id registry if present
+    bundle.idRegistry.delete(entityId);
+
+    // Optionally delete the file from disk
+    if (deleteFile && entity.filePath) {
+        try {
+            await fs.unlink(entity.filePath);
+        } catch (err) {
+            // File might not exist on disk yet (newly created but not saved)
+            // Ignore ENOENT errors
+            if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+                throw err;
+            }
+        }
+    }
+
+    return entity;
+}
+
+/**
  * Applies a proposed change to the bundle in-memory.
  * Returns the modified bundle (mutates in place for simplicity in this context, 
  * or we could clone if immutability is required - but bundle is large).

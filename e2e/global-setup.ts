@@ -1,8 +1,8 @@
 /**
- * Playwright Global Setup - Pre-configures the mock agent before tests run.
+ * Playwright Global Setup - Verifies backend is ready before tests run.
  * 
- * This ensures consistent agent state at the start of the test suite.
- * Individual tests can still reset/reconfigure as needed.
+ * The UI is now read-only - agent endpoints have been removed.
+ * We only need to verify the server is up and responding.
  */
 
 import { request } from '@playwright/test';
@@ -28,30 +28,10 @@ async function globalSetup() {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
-        if (!serverReady) {
-            console.warn('⚠️ Backend server not ready after 30s - skipping mock agent pre-configuration');
-            return;
-        }
-
-        // Reset agent state to ensure clean slate
-        const resetResponse = await requestContext.post('/agent/reset');
-        if (!resetResponse.ok()) {
-            console.warn('⚠️ Failed to reset agent state in global setup');
-            return;
-        }
-
-        // Pre-configure mock agent backend
-        const configResponse = await requestContext.post('/agent/config', {
-            data: {
-                type: 'mock',
-                options: {}
-            }
-        });
-
-        if (configResponse.ok()) {
-            console.log('✅ Global setup: Mock agent pre-configured');
+        if (serverReady) {
+            console.log('✅ Global setup: Backend server is ready');
         } else {
-            console.warn('⚠️ Failed to pre-configure mock agent in global setup');
+            console.warn('⚠️ Backend server not ready after 30s');
         }
     } catch (error) {
         console.warn('⚠️ Global setup error (non-fatal):', error);

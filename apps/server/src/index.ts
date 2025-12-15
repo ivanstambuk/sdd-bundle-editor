@@ -1,5 +1,4 @@
 // Load environment variables from .env file FIRST before any other imports
-// This ensures agent configuration persists across server restarts
 import 'dotenv/config';
 
 import Fastify from 'fastify';
@@ -7,7 +6,6 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { loadBundleWithSchemaValidation } from '@sdd-bundle-editor/core-model';
 import { BundleError, SddErrorCode } from '@sdd-bundle-editor/shared-types';
-import { agentRoutes } from './routes/agent';
 
 import { registerOpenAPI } from './openapi';
 import { registerErrorHandler } from './error-handler';
@@ -143,7 +141,8 @@ export async function createServer() {
     }
   });
 
-  await fastify.register(agentRoutes);
+  // Note: Agent routes have been removed. All writes now happen via MCP.
+  // The UI is read-only for browsing entities.
 
   return fastify;
 }

@@ -1,4 +1,5 @@
 import type { UiDiagnostic } from '../types';
+import { formatEntityType } from '../utils/formatText';
 
 interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
@@ -40,7 +41,7 @@ export function DiagnosticsPanel({ diagnostics }: DiagnosticsPanelProps) {
       </div>
       {groups.map(([entityType, group]) => (
         <div key={entityType} className="diagnostic-group">
-          <h3 className="diagnostic-group-title">{entityType}</h3>
+          <h3 className="diagnostic-group-title">{formatEntityType(entityType)}</h3>
           <ul className="diagnostic-list">
             {group.map((d, idx) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -48,7 +49,7 @@ export function DiagnosticsPanel({ diagnostics }: DiagnosticsPanelProps) {
                 <span className="diagnostic-severity">{d.severity}</span>
                 <span className="diagnostic-message">
                   {d.message}
-                  {d.entityId && <> ({d.entityType} {d.entityId})</>}
+                  {d.entityId && <> ({formatEntityType(d.entityType || '')} {d.entityId})</>}
                   {d.path && <> @ {d.path}</>}
                 </span>
                 {d.code && <span className="diagnostic-code">[{d.code}]</span>}

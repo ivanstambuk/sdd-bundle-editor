@@ -1,5 +1,6 @@
 import React from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
+import { formatEntityType } from '../utils/formatText';
 
 interface BreadcrumbProps {
     bundle: UiBundleSnapshot | null;
@@ -16,7 +17,7 @@ export function Breadcrumb({ bundle, selectedEntity }: BreadcrumbProps) {
             {selectedEntity && (
                 <>
                     <span className="breadcrumb-separator">›</span>
-                    <span className="breadcrumb-item">{selectedEntity.entityType}</span>
+                    <span className="breadcrumb-item">{formatEntityType(selectedEntity.entityType)}</span>
                     <span className="breadcrumb-separator">›</span>
                     <span className="breadcrumb-item breadcrumb-current">{selectedEntity.id}</span>
                 </>

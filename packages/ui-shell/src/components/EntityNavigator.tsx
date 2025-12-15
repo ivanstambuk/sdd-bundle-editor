@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
+import { formatEntityType } from '../utils/formatText';
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
@@ -76,7 +77,7 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
             >
               <span className="entity-group-chevron">{isCollapsed ? '▸' : '▾'}</span>
               <span className="entity-group-icon">{icon}</span>
-              <span className="entity-group-name">{entityType}</span>
+              <span className="entity-group-name">{formatEntityType(entityType)}</span>
               <span className="entity-group-count">{count}</span>
             </button>
             {!isCollapsed && (

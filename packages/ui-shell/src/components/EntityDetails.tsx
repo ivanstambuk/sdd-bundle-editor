@@ -2,6 +2,7 @@ import Form from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { SddRefWidget } from './SddRefWidget';
+import { formatEntityType } from '../utils/formatText';
 
 interface EntityDetailsProps {
   bundle: UiBundleSnapshot | null;
@@ -80,7 +81,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       <div className="entity-details-header">
         <div className="entity-header-left">
           <span className="entity-type-badge" data-type={entity.entityType}>
-            {entity.entityType}
+            {formatEntityType(entity.entityType)}
           </span>
           <span className="entity-id">{entity.id}</span>
         </div>
@@ -116,7 +117,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           </AnyForm>
         ) : (
           <div className="entity-no-schema">
-            <p className="text-muted">Schema not found for entity type "{entity.entityType}".</p>
+            <p className="text-muted">Schema not found for entity type "{formatEntityType(entity.entityType)}".</p>
             <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
           </div>
         )}
@@ -137,7 +138,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     title={`Navigate to ${edge.toEntityType} ${edge.toId}`}
                     data-testid={`outgoing-ref-${edge.toEntityType}-${edge.toId}`}
                   >
-                    <span className="reference-link-type">{edge.toEntityType}</span>
+                    <span className="reference-link-type">{formatEntityType(edge.toEntityType)}</span>
                     <span className="reference-link-id">{edge.toId}</span>
                   </button>
                 </li>
@@ -162,7 +163,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     title={`Navigate to ${edge.fromEntityType} ${edge.fromId}`}
                     data-testid={`incoming-ref-${edge.fromEntityType}-${edge.fromId}`}
                   >
-                    <span className="reference-link-type">{edge.fromEntityType}</span>
+                    <span className="reference-link-type">{formatEntityType(edge.fromEntityType)}</span>
                     <span className="reference-link-id">{edge.fromId}</span>
                   </button>
                   <span className="reference-arrow">via</span>

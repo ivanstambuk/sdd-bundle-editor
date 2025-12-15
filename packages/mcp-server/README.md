@@ -168,6 +168,38 @@ curl -X POST http://localhost:3001/mcp \
 | `MCP_HTTP_PORT` | HTTP server port | 3001 |
 | `SDD_SAMPLE_BUNDLE_PATH` | Default bundle path | /home/ivan/dev/sdd-sample-bundle |
 
+#### MCP Test CLI
+
+A command-line tool for testing MCP tools via HTTP transport:
+
+```bash
+# First, start the server in HTTP mode
+pnpm start:http
+
+# Then use the CLI in another terminal
+cd packages/mcp-server
+
+# Check health
+pnpm mcp-cli health
+
+# List bundles
+pnpm mcp-cli list_bundles
+
+# Read an entity
+pnpm mcp-cli read_entity -t Requirement -i REQ-001
+
+# Search entities
+pnpm mcp-cli search_entities -q "authentication"
+
+# Validate bundle
+pnpm mcp-cli validate_bundle
+
+# Apply changes (dry-run)
+pnpm mcp-cli apply_changes --dry-run -c '[{"operation":"update","bundleId":"my-bundle","entityType":"Requirement","entityId":"REQ-001","data":{"title":"Updated"}}]'
+
+# Output as JSON
+pnpm mcp-cli list_bundles --json
+```
 
 ---
 

@@ -8,7 +8,7 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 - **No Git integration** – validation happens before write, user commits externally
 - Single MCP server serves both UI (via HTTP/SSE) and external agents (via stdio)
 
-## Status: ✅ Phases 1, 2, 3, 4, 6, 7 Complete
+## Status: ✅ Phases 1, 2, 3, 4, 5, 6, 7 Complete
 
 ---
 
@@ -109,22 +109,30 @@ Migrate SDD Bundle Editor from HTTP API + Git-based agent flow to MCP-first arch
 
 ---
 
-## Phase 5: Add MCP Test CLI (⏳ Pending)
+## Phase 5: Add MCP Test CLI ✅
 
 ### 5.1 Create test client
-- [ ] New package or script: `packages/mcp-server/scripts/mcp-cli.ts`
-- [ ] Connect to MCP server via stdio
-- [ ] Interactive REPL or command-line tool calls
-- [ ] Support: `apply_changes`, `read_entity`, etc.
+- [x] New script: `packages/mcp-server/scripts/mcp-cli.ts`
+- [x] Connect to MCP server via HTTP transport
+- [x] Command-line tool calls for all MCP tools
+- [x] Support: `apply_changes`, `read_entity`, `list_bundles`, `search_entities`, `validate_bundle`
+- [x] Added `pnpm mcp-cli` and `pnpm start:http` scripts
 
 ### 5.2 Example usage
 ```bash
-# Test apply_changes
-pnpm mcp-cli apply_changes --changes '[{"operation":"update",...}]'
+# Test health
+pnpm mcp-cli health
 
-# Test with dryRun
-pnpm mcp-cli apply_changes --dryRun --changes '[...]'
+# Test list_bundles
+pnpm mcp-cli list_bundles --json
+
+# Test read_entity
+pnpm mcp-cli read_entity -t Requirement -i REQ-001
+
+# Test apply_changes with dryRun
+pnpm mcp-cli apply_changes --dry-run -c '[...]'
 ```
+
 
 ---
 
@@ -200,6 +208,7 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 | Phase 2 | HTTP/SSE transport with `--http` flag, Streamable HTTP |
 | Phase 3 | Removed all agent routes, git integration from server |
 | Phase 4 | Simplified UI to read-only, removed AgentPanel |
+| Phase 5 | MCP test CLI (`mcp-cli.ts`) for HTTP transport testing |
 | Phase 6 | Updated E2E tests, 10/10 passing |
 | Phase 7 | Updated AGENTS.md, README.md, ARCHITECTURE.md, spec.md |
 
@@ -209,7 +218,6 @@ pnpm mcp-cli apply_changes --dryRun --changes '[...]'
 |-------|-----------------|
 | Phase 1.3 | Unit tests for apply_changes |
 | Phase 4.4 | UI to use MCP protocol directly |
-| Phase 5 | MCP test CLI (full phase) |
 | Phase 6.3 | MCP-based E2E tests |
 
 ---

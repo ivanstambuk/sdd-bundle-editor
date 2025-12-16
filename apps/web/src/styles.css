@@ -3204,6 +3204,91 @@ input:checked+.slider:before {
 }
 
 /* ========================================
+   Custom RJSF Field Template Styles
+   ======================================== */
+.rjsf-field {
+  margin-bottom: var(--spacing-md);
+}
+
+.rjsf-field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.rjsf-field-label label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.required-asterisk {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.field-help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  cursor: help;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.field-help-icon:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+/* Native tooltip styling - browser default, enhanced with CSS where possible */
+.field-help-icon[title] {
+  position: relative;
+}
+
+.rjsf-field-content {
+  /* Ensure inputs have consistent styling */
+}
+
+.rjsf-field-content input,
+.rjsf-field-content textarea,
+.rjsf-field-content select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.rjsf-field-content input:focus,
+.rjsf-field-content textarea:focus,
+.rjsf-field-content select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.rjsf-field-content input:disabled,
+.rjsf-field-content textarea:disabled,
+.rjsf-field-content select:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.rjsf-field-content textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* ========================================
    Code Block & YAML Viewer Styles
    ======================================== */
 .code-block {

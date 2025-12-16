@@ -65,8 +65,78 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     bundle.refGraph.edges.filter((e) => e.toEntityType === entity.entityType && e.toId === entity.id) ??
     [];
 
-  const uiSchema: Record<string, unknown> = {};
-  const widgets: Record<string, any> = {};
+  const uiSchema: Record<string, unknown> = {
+    // Hide root-level title and description (already shown in entity header)
+    'ui:title': ' ',  // Space to effectively hide (empty string doesn't work)
+    'ui:description': ' ',
+  };
+
+  // Convert camelCase/PascalCase to Title Case with proper word boundaries
+  const formatLabel = (label: string): string => {
+    if (!label) return '';
+    return label
+      // Insert space before uppercase letters (camelCase boundary)
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      // Insert space before sequences like "ID" or "API" followed by lowercase
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      // Capitalize first letter
+      .replace(/^./, s => s.toUpperCase())
+      // Handle common abbreviations
+      .replace(/\bId\b/g, 'ID')
+      .replace(/\bIds\b/g, 'IDs')
+      .replace(/\bApi\b/g, 'API')
+      .replace(/\bUrl\b/g, 'URL');
+  };
+
+  // Custom field template with tooltip descriptions
+  const CustomFieldTemplate = (props: any) => {
+    const { id, label, required, children, rawDescription, schema } = props;
+
+    // Skip rendering for hidden fields
+    if (schema?.['ui:widget'] === 'hidden' || schema?.['ui:field'] === 'hiddenField') {
+      return null;
+    }
+
+    const formattedLabel = formatLabel(label || '');
+    const hasDescription = rawDescription && rawDescription.trim();
+
+    return (
+      <div className="rjsf-field">
+        <div className="rjsf-field-label">
+          <label htmlFor={id}>
+            {formattedLabel}
+            {required && <span className="required-asterisk">*</span>}
+          </label>
+          {hasDescription && (
+            <span className="field-help-icon" title={rawDescription}>
+              ⓘ
+            </span>
+          )}
+        </div>
+        <div className="rjsf-field-content">
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  // Hidden widget for scalar fields - returns nothing
+  const HiddenWidget = () => null;
+
+  // Hidden field template for array fields - returns nothing
+  const HiddenFieldTemplate = () => null;
+
+  const widgets: Record<string, any> = {
+    hidden: HiddenWidget,
+  };
+
+  const fields: Record<string, any> = {
+    hiddenField: HiddenFieldTemplate,
+  };
+
+  const templates: Record<string, any> = {
+    FieldTemplate: CustomFieldTemplate,
+  };
 
   if (schema && typeof schema.properties === 'object') {
     const props = schema.properties as Record<string, any>;
@@ -83,7 +153,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         ps.items.type === 'string' &&
         ps.items.format === 'sdd-ref'
       ) {
-        uiSchema[propName] = { 'ui:widget': 'hidden' };
+        uiSchema[propName] = { 'ui:field': 'hiddenField' };
       } else if (ps && ps['ui:widget']) {
         uiSchema[propName] = { 'ui:widget': ps['ui:widget'] };
       }
@@ -123,6 +193,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           formData={entity.data}
           uiSchema={uiSchema}
           widgets={widgets}
+          fields={fields}
+          templates={templates}
           validator={validator}
           readonly={readOnly}
           disabled={readOnly}

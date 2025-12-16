@@ -15,8 +15,8 @@ interface EntityDetailsProps {
 
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
   // Collapsible state for reference sections
-  const [usesCollapsed, setUsesCollapsed] = useState(false);
-  const [usedByCollapsed, setUsedByCollapsed] = useState(false);
+  const [usesCollapsed, setUsesCollapsed] = useState(true);
+  const [usedByCollapsed, setUsedByCollapsed] = useState(true);
 
   if (!bundle || !entity) {
     return (

@@ -310,13 +310,138 @@ body {
   padding: var(--spacing-lg);
 }
 
-/* Bottom Panel */
+/* Bottom Panel - Deprecated, now using ResizableBottomPanel */
 .bottom-panel {
   grid-column: 1 / -1;
   background: var(--color-bg-secondary);
   border-top: 1px solid var(--color-border);
   max-height: 300px;
   overflow-y: auto;
+}
+
+/* ========================================
+   Resizable Bottom Panel
+   ======================================== */
+.resizable-bottom-panel {
+  grid-column: 1 / -1;
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.15s ease-out;
+  position: relative;
+}
+
+.resizable-bottom-panel.collapsed {
+  transition: height 0.15s ease-out;
+}
+
+.resizable-bottom-panel.resizing {
+  transition: none;
+  user-select: none;
+}
+
+/* Resize Handle */
+.resizable-bottom-panel .resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  background: transparent;
+  z-index: 10;
+  transition: background 0.15s ease;
+}
+
+.resizable-bottom-panel .resize-handle:hover,
+.resizable-bottom-panel.resizing .resize-handle {
+  background: var(--color-accent);
+}
+
+/* Panel Header */
+.resizable-bottom-panel .panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  height: 32px;
+  background: var(--color-bg-tertiary);
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.resizable-bottom-panel .panel-header:hover {
+  background: var(--color-bg-hover);
+}
+
+.resizable-bottom-panel .panel-chevron {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  width: 12px;
+}
+
+.resizable-bottom-panel .panel-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.resizable-bottom-panel .panel-badge {
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+}
+
+.resizable-bottom-panel .panel-badge.has-issues {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.resizable-bottom-panel .panel-badge.success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.resizable-bottom-panel .panel-shortcut {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.resizable-bottom-panel .panel-header:hover .panel-shortcut {
+  opacity: 1;
+}
+
+/* Panel Content */
+.resizable-bottom-panel .panel-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Hide internal header when inside resizable panel */
+.resizable-bottom-panel .diagnostics-header {
+  margin-top: var(--spacing-xs);
+}
+
+.resizable-bottom-panel .diagnostics-title {
+  display: none;
+}
+
+.resizable-bottom-panel .diagnostics-count {
+  display: none;
 }
 
 /* ========================================

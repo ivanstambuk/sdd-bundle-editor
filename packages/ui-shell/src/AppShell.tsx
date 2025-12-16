@@ -14,6 +14,7 @@ import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
 import { DiagnosticsPanel } from './components/DiagnosticsPanel';
+import { ResizableBottomPanel } from './components/ResizableBottomPanel';
 import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
 import { Breadcrumb } from './components/Breadcrumb';
 import { ResizableSidebar } from './components/ResizableSidebar';
@@ -210,9 +211,17 @@ export function AppShell() {
       </main>
 
       {/* Bottom Panel - Diagnostics */}
-      <div className="bottom-panel">
+      <ResizableBottomPanel
+        title="Diagnostics"
+        badgeCount={diagnostics.length}
+        defaultHeight={200}
+        minHeight={32}
+        maxHeight={500}
+        storageKey="diagnostics-panel"
+        autoHide={false}
+      >
         <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} />
-      </div>
+      </ResizableBottomPanel>
     </div>
   );
 }

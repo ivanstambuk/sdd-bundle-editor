@@ -90,10 +90,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Custom field template with tooltip descriptions
   const CustomFieldTemplate = (props: any) => {
-    const { id, label, required, children, rawDescription, schema } = props;
+    const { id, label, required, children, rawDescription, uiSchema } = props;
 
-    // Skip rendering for hidden fields
-    if (schema?.['ui:widget'] === 'hidden' || schema?.['ui:field'] === 'hiddenField') {
+    // Skip rendering for hidden fields (ref fields are shown in Dependency Graph tab)
+    if (uiSchema?.['ui:widget'] === 'hidden' || uiSchema?.['ui:field'] === 'hiddenField') {
       return null;
     }
 
@@ -120,6 +120,27 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
+  // Custom array field template - strips the redundant title/description 
+  // (already shown by FieldTemplate), just renders items
+  const CustomArrayFieldTemplate = (props: any) => {
+    const { items, canAdd, onAddClick, readonly, disabled } = props;
+    const showAddButton = canAdd && !readonly && !disabled;
+    return (
+      <div className="rjsf-array">
+        {items.map((item: any) => item.children)}
+        {showAddButton && (
+          <button
+            type="button"
+            className="rjsf-array-add-btn"
+            onClick={onAddClick}
+          >
+            + Add Item
+          </button>
+        )}
+      </div>
+    );
+  };
+
   // Hidden widget for scalar fields - returns nothing
   const HiddenWidget = () => null;
 
@@ -136,6 +157,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   const templates: Record<string, any> = {
     FieldTemplate: CustomFieldTemplate,
+    ArrayFieldTemplate: CustomArrayFieldTemplate,
   };
 
   if (schema && typeof schema.properties === 'object') {

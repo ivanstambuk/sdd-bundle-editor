@@ -3251,10 +3251,6 @@ input:checked+.slider:before {
   position: relative;
 }
 
-.rjsf-field-content {
-  /* Ensure inputs have consistent styling */
-}
-
 .rjsf-field-content input,
 .rjsf-field-content textarea,
 .rjsf-field-content select {
@@ -3286,6 +3282,35 @@ input:checked+.slider:before {
 .rjsf-field-content textarea {
   min-height: 80px;
   resize: vertical;
+}
+
+/* Array field styles */
+.rjsf-array {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.rjsf-array .rjsf-field {
+  margin-bottom: 0;
+}
+
+.rjsf-array-add-btn {
+  align-self: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.rjsf-array-add-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* ========================================

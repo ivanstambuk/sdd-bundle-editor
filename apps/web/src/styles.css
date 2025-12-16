@@ -3313,6 +3313,30 @@ input:checked+.slider:before {
   color: var(--color-accent);
 }
 
+/* Chips layout for tags and short label arrays */
+.rjsf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.rjsf-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.rjsf-chips-empty {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 /* ========================================
    Code Block & YAML Viewer Styles
    ======================================== */

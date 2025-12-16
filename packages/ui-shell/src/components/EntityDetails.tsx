@@ -120,11 +120,29 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Custom array field template - strips the redundant title/description 
-  // (already shown by FieldTemplate), just renders items
+  // Custom array field template - supports displayHint for different layouts
   const CustomArrayFieldTemplate = (props: any) => {
-    const { items, canAdd, onAddClick, readonly, disabled } = props;
+    const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
     const showAddButton = canAdd && !readonly && !disabled;
+    const displayHint = schema?.displayHint;
+
+    // Chips layout for tags and short label arrays
+    if (displayHint === 'chips' && Array.isArray(formData)) {
+      return (
+        <div className="rjsf-chips">
+          {formData.map((item: string, index: number) => (
+            <span key={index} className="rjsf-chip">
+              {item}
+            </span>
+          ))}
+          {formData.length === 0 && (
+            <span className="rjsf-chips-empty">No items</span>
+          )}
+        </div>
+      );
+    }
+
+    // Default: full row per item
     return (
       <div className="rjsf-array">
         {items.map((item: any) => item.children)}

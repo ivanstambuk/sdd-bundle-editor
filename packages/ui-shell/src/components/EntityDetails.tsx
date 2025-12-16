@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Form from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
-import { SddRefWidget } from './SddRefWidget';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 
 interface EntityDetailsProps {
@@ -56,8 +55,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const props = schema.properties as Record<string, any>;
     for (const [propName, propSchema] of Object.entries(props)) {
       const ps = propSchema as any;
+      // Hide single reference fields - they're shown in "Uses" section
       if (ps && ps.type === 'string' && ps.format === 'sdd-ref') {
-        uiSchema[propName] = { 'ui:widget': 'SddRefSingle' };
+        uiSchema[propName] = { 'ui:widget': 'hidden' };
+        // Hide array reference fields - they're shown in "Uses" section
       } else if (
         ps &&
         ps.type === 'array' &&
@@ -65,18 +66,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         ps.items.type === 'string' &&
         ps.items.format === 'sdd-ref'
       ) {
-        uiSchema[propName] = { 'ui:widget': 'SddRefMulti' };
+        uiSchema[propName] = { 'ui:widget': 'hidden' };
       } else if (ps && ps['ui:widget']) {
         uiSchema[propName] = { 'ui:widget': ps['ui:widget'] };
       }
     }
-
-    widgets.SddRefSingle = (props: any) => (
-      <SddRefWidget {...props} bundle={bundle} multiple={false} />
-    );
-    widgets.SddRefMulti = (props: any) => (
-      <SddRefWidget {...props} bundle={bundle} multiple />
-    );
   }
 
   const handleReferenceClick = (entityType: string, entityId: string) => {

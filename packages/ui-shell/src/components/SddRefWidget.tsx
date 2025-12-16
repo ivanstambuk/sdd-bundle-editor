@@ -13,7 +13,15 @@ interface SddRefWidgetProps {
 }
 
 function getTargetEntities(bundle: UiBundleSnapshot, schema: Record<string, unknown>): UiEntity[] {
-  const targets = (schema as any)['x-refTargets'] as string[] | undefined;
+  // For array widgets, x-refTargets is in schema.items, not at root level
+  const schemaAny = schema as any;
+  let targets = schemaAny['x-refTargets'] as string[] | undefined;
+
+  // Check items schema for arrays (e.g., adrIds is an array with items that have x-refTargets)
+  if (!targets && schemaAny.items && schemaAny.items['x-refTargets']) {
+    targets = schemaAny.items['x-refTargets'] as string[];
+  }
+
   const entityTypes = Array.isArray(targets) && targets.length > 0 ? targets : Object.keys(bundle.entities);
 
   const result: UiEntity[] = [];
@@ -26,6 +34,7 @@ function getTargetEntities(bundle: UiBundleSnapshot, schema: Record<string, unkn
   }
   return result.sort((a, b) => a.id.localeCompare(b.id));
 }
+
 
 export function SddRefWidget(props: SddRefWidgetProps) {
   const { id, value, onChange, disabled, readonly, schema, bundle, multiple } = props;

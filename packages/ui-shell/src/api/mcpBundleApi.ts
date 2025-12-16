@@ -217,6 +217,8 @@ export class McpBundleApi {
             telemetrySchemaIds: 'TelemetrySchema',
             openQuestionIds: 'OpenQuestion',
             openQuestionId: 'OpenQuestion',
+            adrIds: 'ADR',
+            adrId: 'ADR',
         };
 
         for (const [field, targetType] of Object.entries(refPatterns)) {

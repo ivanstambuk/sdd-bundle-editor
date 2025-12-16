@@ -41,10 +41,10 @@ describe('DiagnosticsPanel', () => {
 
     expect(screen.getByText('Diagnostics')).toBeInTheDocument();
 
-    // group headings
+    // group headings - use getAllByText since 'Feature' and 'Requirement' also appear in entity links
     expect(screen.getByText('(bundle)')).toBeInTheDocument();
-    expect(screen.getByText('Feature')).toBeInTheDocument();
-    expect(screen.getByText('Requirement')).toBeInTheDocument();
+    expect(screen.getAllByText('Feature').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Requirement').length).toBeGreaterThanOrEqual(1);
 
     // some representative content
     expect(screen.getByText(/Bundle is invalid/)).toBeInTheDocument();

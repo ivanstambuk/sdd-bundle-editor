@@ -43,6 +43,10 @@ describe('EntityNavigator', () => {
     expect(screen.getByText('Feature')).toBeInTheDocument();
     expect(screen.getByText('Task')).toBeInTheDocument();
 
+    // Groups are collapsed by default - expand the Feature group first
+    fireEvent.click(screen.getByTestId('entity-group-Feature'));
+
+    // Now the entity item should be visible
     fireEvent.click(screen.getByRole('button', { name: 'FEAT-001' }));
 
     expect(handleSelect).toHaveBeenCalledTimes(1);
@@ -62,6 +66,9 @@ describe('EntityNavigator', () => {
         onSelect={handleSelect}
       />,
     );
+
+    // Groups are collapsed by default - expand the Feature group first
+    fireEvent.click(screen.getByTestId('entity-group-Feature'));
 
     const button = screen.getByRole('button', { name: 'FEAT-001' });
     expect(button).toHaveClass('selected');

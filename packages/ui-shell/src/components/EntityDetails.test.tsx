@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { EntityDetails } from './EntityDetails';
 import type { UiBundleSnapshot, UiEntity } from '../types';
@@ -88,9 +88,18 @@ describe('EntityDetails', () => {
     expect(screen.getByText('Feature')).toBeInTheDocument();
     expect(screen.getByText('FEAT-001')).toBeInTheDocument();
     expect(screen.getByTestId('rjsf-form')).toBeInTheDocument();
-    expect(screen.getByText('Outgoing references')).toBeInTheDocument();
+
+    // Reference sections are now called "Uses" and "Used By"
+    expect(screen.getByText('Uses')).toBeInTheDocument();
+    expect(screen.getByText('Used By')).toBeInTheDocument();
+
+    // Expand the Uses section (collapsed by default)
+    fireEvent.click(screen.getByTestId('uses-toggle'));
     expect(screen.getByText('Requirement')).toBeInTheDocument();
     expect(screen.getByText('REQ-001')).toBeInTheDocument();
+
+    // Expand the Used By section (collapsed by default)
+    fireEvent.click(screen.getByTestId('used-by-toggle'));
     expect(screen.getByText('Task')).toBeInTheDocument();
     expect(screen.getByText('TASK-001')).toBeInTheDocument();
     expect(screen.getByText('via')).toBeInTheDocument();

@@ -3226,7 +3226,8 @@ input:checked+.slider:before {
   color: var(--color-text-primary);
 }
 
-.yaml-actions {
+.yaml-actions,
+.json-actions {
   display: flex;
   justify-content: flex-end;
   margin-bottom: var(--spacing-sm);
@@ -3359,8 +3360,13 @@ input:checked+.slider:before {
   border-bottom-color: var(--color-accent);
 }
 
-.yaml-viewer {
+.yaml-viewer,
+.json-viewer {
   padding: var(--spacing-sm);
+}
+
+.json-block {
+  color: var(--color-text-primary);
 }
 
 /* ========================================

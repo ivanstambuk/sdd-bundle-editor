@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import {
   type CoverageRule,
+  type DescriptiveIdRule,
   type EnumValueRule,
   type HasLinkRule,
   type LintConfig,
@@ -330,6 +331,53 @@ function runQualityCheckRule(bundle: LintBundle, ruleName: string, rule: Quality
   return diagnostics;
 }
 
+/**
+ * Checks if an entity ID is purely numeric (like FEAT-001, REQ-42)
+ * Pattern that triggers warning: PREFIX-N+ where N is all digits
+ * OK patterns: PREFIX-word, PREFIX-word-001, PREFIX-001-word
+ */
+function runDescriptiveIdRule(bundle: LintBundle, ruleName: string, rule: DescriptiveIdRule): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  // Pattern for pure numeric suffix: PREFIX-digits only
+  const pureNumericPattern = /^[A-Z]+-\d+$/;
+
+  const entityTypes = rule.targetEntities ?? Array.from(bundle.entities.keys());
+
+  for (const entityType of entityTypes) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      if (pureNumericPattern.test(entity.id)) {
+        diagnostics.push({
+          code: ruleName,
+          message: `Entity ID "${entity.id}" uses numeric suffix only. Prefer descriptive IDs like "${entity.id.replace(/-\d+$/, '-' + getDescriptiveHint(entityType))}"`,
+          severity: rule.severity ?? 'warning',
+          entityType,
+          entityId: entity.id,
+          source: 'lint',
+        });
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
+function getDescriptiveHint(entityType: string): string {
+  const hints: Record<string, string> = {
+    Feature: 'user-auth',
+    Requirement: 'password-min-length',
+    Task: 'implement-login',
+    Scenario: 'login-success',
+    Decision: 'use-jwt',
+    Component: 'auth-service',
+    ADR: 'auth-strategy',
+  };
+  return hints[entityType] ?? 'descriptive-name';
+}
+
 export function runLintRules(bundle: LintBundle, config: LintConfig | undefined): LintDiagnostic[] {
   if (!config?.rules) return [];
   const diagnostics: LintDiagnostic[] = [];
@@ -357,6 +405,9 @@ export function runLintRules(bundle: LintBundle, config: LintConfig | undefined)
         break;
       case 'quality-check':
         diagnostics.push(...runQualityCheckRule(bundle, name, rule));
+        break;
+      case 'descriptive-id':
+        diagnostics.push(...runDescriptiveIdRule(bundle, name, rule));
         break;
       default:
         break;

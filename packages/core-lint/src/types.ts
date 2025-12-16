@@ -1,7 +1,7 @@
 export type LintSeverity = 'error' | 'warning';
 
 export interface LintRuleBase {
-  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check';
+  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id';
   severity?: LintSeverity;
 }
 
@@ -68,7 +68,17 @@ export interface QualityCheckRule extends LintRuleBase {
   };
 }
 
-export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule;
+/**
+ * Enforces descriptive entity IDs over pure numeric ones.
+ * Pattern: PREFIX-descriptive-part (e.g., FEAT-user-auth, REQ-password-min-length)
+ * Warns on: PREFIX-NNN (e.g., FEAT-001, REQ-42)
+ */
+export interface DescriptiveIdRule extends LintRuleBase {
+  type: 'descriptive-id';
+  targetEntities?: string[]; // If omitted, applies to all entity types
+}
+
+export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule;
 
 export interface FeatureConfig {
   enabled?: boolean;

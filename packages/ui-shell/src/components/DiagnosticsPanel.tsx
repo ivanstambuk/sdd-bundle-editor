@@ -6,9 +6,10 @@ interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
   entityTypes: string[];
   schemas?: Record<string, unknown>;
+  onNavigate?: (entityType: string, entityId: string) => void;
 }
 
-export function DiagnosticsPanel({ diagnostics, entityTypes, schemas }: DiagnosticsPanelProps) {
+export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate }: DiagnosticsPanelProps) {
   // Filter state - now managed within the panel
   const [severityFilter, setSeverityFilter] = useState<'all' | 'error' | 'warning'>('all');
   const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
@@ -112,7 +113,16 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas }: Diagnost
                   <span className="diagnostic-severity">{d.severity}</span>
                   <span className="diagnostic-message">
                     {d.message}
-                    {d.entityId && <> ({getDisplayName(d.entityType || '')} {d.entityId})</>}
+                    {d.entityId && d.entityType && (
+                      <> (<button
+                        type="button"
+                        className="diagnostic-entity-link"
+                        onClick={() => onNavigate?.(d.entityType!, d.entityId!)}
+                        data-testid={`diagnostic-link-${d.entityId}`}
+                      >
+                        {getDisplayName(d.entityType)} {d.entityId}
+                      </button>)</>
+                    )}
                     {d.path && <> @ {d.path}</>}
                   </span>
                   {d.code && <span className="diagnostic-code">[{d.code}]</span>}

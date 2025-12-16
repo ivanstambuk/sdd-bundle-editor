@@ -247,7 +247,7 @@ export function AppShell() {
             label: 'Diagnostics',
             badge: diagnostics.length > 0 ? diagnostics.length : undefined,
             badgeType: diagnostics.some(d => d.severity === 'error') ? 'error' : 'warning',
-            content: <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} />,
+            content: <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} onNavigate={handleNavigate} />,
           },
           {
             id: 'output',

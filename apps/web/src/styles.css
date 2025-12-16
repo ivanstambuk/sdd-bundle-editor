@@ -1027,6 +1027,12 @@ body {
   gap: var(--spacing-md);
 }
 
+.entity-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .entity-type-badge {
   display: inline-flex;
   align-items: center;

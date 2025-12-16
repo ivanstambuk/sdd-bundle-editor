@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Form from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
+import yaml from 'js-yaml';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 
@@ -13,9 +14,13 @@ interface EntityDetailsProps {
 }
 
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
-  // Collapsible state for reference sections
+  // Collapsible state for all sections
   const [usesCollapsed, setUsesCollapsed] = useState(true);
   const [usedByCollapsed, setUsedByCollapsed] = useState(true);
+  const [schemaCollapsed, setSchemaCollapsed] = useState(true);
+  const [yamlCollapsed, setYamlCollapsed] = useState(true);
+  const [graphCollapsed, setGraphCollapsed] = useState(true);
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   if (!bundle || !entity) {
     return (
@@ -79,7 +84,22 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     }
   };
 
+  const handleCopyYaml = async () => {
+    try {
+      const yamlContent = yaml.dump(entity.data, { indent: 2, lineWidth: -1 });
+      await navigator.clipboard.writeText(yamlContent);
+      setCopyFeedback('Copied!');
+      setTimeout(() => setCopyFeedback(null), 2000);
+    } catch {
+      setCopyFeedback('Failed to copy');
+      setTimeout(() => setCopyFeedback(null), 2000);
+    }
+  };
+
   const AnyForm = Form as any;
+
+  // Generate YAML for display
+  const yamlContent = yaml.dump(entity.data, { indent: 2, lineWidth: -1 });
 
   return (
     <div className="entity-details">
@@ -209,8 +229,140 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
           </div>
         )}
+
+        {/* Schema Preview section */}
+        <div className={`references-section collapsible ${schemaCollapsed ? 'collapsed' : ''}`}>
+          <button
+            type="button"
+            className="references-header"
+            onClick={() => setSchemaCollapsed(!schemaCollapsed)}
+            data-testid="schema-toggle"
+          >
+            <span className="references-chevron">{schemaCollapsed ? '▶' : '▼'}</span>
+            <span className="references-title">Schema</span>
+            <span className="references-count">{schema ? '📋' : '—'}</span>
+          </button>
+          {!schemaCollapsed && (
+            <div className="references-content">
+              {schema ? (
+                <pre className="code-block">{JSON.stringify(schema, null, 2)}</pre>
+              ) : (
+                <div className="reference-empty">No schema available</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Raw YAML section */}
+        <div className={`references-section collapsible ${yamlCollapsed ? 'collapsed' : ''}`}>
+          <button
+            type="button"
+            className="references-header"
+            onClick={() => setYamlCollapsed(!yamlCollapsed)}
+            data-testid="yaml-toggle"
+          >
+            <span className="references-chevron">{yamlCollapsed ? '▶' : '▼'}</span>
+            <span className="references-title">Raw YAML</span>
+            <span className="references-count">📄</span>
+          </button>
+          {!yamlCollapsed && (
+            <div className="references-content">
+              <div className="yaml-actions">
+                <button
+                  type="button"
+                  className="copy-button"
+                  onClick={handleCopyYaml}
+                  data-testid="copy-yaml-button"
+                >
+                  {copyFeedback || '📋 Copy'}
+                </button>
+              </div>
+              <pre className="code-block yaml-block">{yamlContent}</pre>
+            </div>
+          )}
+        </div>
+
+        {/* Dependency Graph section */}
+        <div className={`references-section collapsible ${graphCollapsed ? 'collapsed' : ''}`}>
+          <button
+            type="button"
+            className="references-header"
+            onClick={() => setGraphCollapsed(!graphCollapsed)}
+            data-testid="graph-toggle"
+          >
+            <span className="references-chevron">{graphCollapsed ? '▶' : '▼'}</span>
+            <span className="references-title">Dependency Graph</span>
+            <span className="references-count">🔗</span>
+          </button>
+          {!graphCollapsed && (
+            <div className="references-content">
+              <div className="dependency-graph">
+                {/* Current entity as root */}
+                <div className="graph-node graph-root">
+                  <span className="entity-type-badge" data-type={entity.entityType}>
+                    {getDisplayName(entity.entityType)}
+                  </span>
+                  <span className="graph-node-id">{entity.id}</span>
+                </div>
+
+                {/* Outgoing (Uses) */}
+                {outgoing.length > 0 && (
+                  <div className="graph-branch">
+                    <div className="graph-branch-label">Uses →</div>
+                    <div className="graph-children">
+                      {outgoing.map((edge, idx) => (
+                        <button
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={idx}
+                          type="button"
+                          className="graph-node graph-child"
+                          onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
+                          data-testid={`graph-uses-${edge.toId}`}
+                        >
+                          <span className="entity-type-badge" data-type={edge.toEntityType}>
+                            {getDisplayName(edge.toEntityType)}
+                          </span>
+                          <span className="graph-node-id">{edge.toId}</span>
+                          <span className="graph-field">({edge.fromField})</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Incoming (Used By) */}
+                {incoming.length > 0 && (
+                  <div className="graph-branch">
+                    <div className="graph-branch-label">← Used By</div>
+                    <div className="graph-children">
+                      {incoming.map((edge, idx) => (
+                        <button
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={idx}
+                          type="button"
+                          className="graph-node graph-child"
+                          onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
+                          data-testid={`graph-usedby-${edge.fromId}`}
+                        >
+                          <span className="entity-type-badge" data-type={edge.fromEntityType}>
+                            {getDisplayName(edge.fromEntityType)}
+                          </span>
+                          <span className="graph-node-id">{edge.fromId}</span>
+                          <span className="graph-field">({edge.fromField})</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {outgoing.length === 0 && incoming.length === 0 && (
+                  <div className="reference-empty">No dependencies</div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-

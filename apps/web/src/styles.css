@@ -3206,8 +3206,84 @@ input:checked+.slider:before {
 /* ========================================
    Custom RJSF Field Template Styles
    ======================================== */
+
+/* Form container uses CSS grid */
+form.rjsf {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+/* Default field spans all columns */
 .rjsf-field {
-  margin-bottom: var(--spacing-md);
+  grid-column: span 4;
+}
+
+/* Small fields (enums, short strings ≤30 chars) - 1 column */
+.rjsf-field-small {
+  grid-column: span 1;
+}
+
+/* Medium fields (31-80 chars) - 2 columns */
+.rjsf-field-medium {
+  grid-column: span 2;
+}
+
+/* Large fields (title alongside ID) - 3 columns */
+.rjsf-field-large {
+  grid-column: span 3;
+}
+
+/* Full width fields (multiline, arrays, objects) - 4 columns */
+.rjsf-field-full {
+  grid-column: span 4;
+}
+
+/* Responsive: on smaller screens, reduce columns */
+@media (max-width: 900px) {
+
+  form.rjsf,
+  .rjsf-object {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rjsf-field-small {
+    grid-column: span 1;
+  }
+
+  .rjsf-field-medium,
+  .rjsf-field-large,
+  .rjsf-field-full {
+    grid-column: span 2;
+  }
+
+  /* Keep nested objects using flexbox */
+  .rjsf-object .rjsf-object {
+    display: flex;
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+
+  form.rjsf,
+  .rjsf-object {
+    grid-template-columns: 1fr;
+  }
+
+  .rjsf-field-small,
+  .rjsf-field-medium,
+  .rjsf-field-large,
+  .rjsf-field-full {
+    grid-column: span 1;
+  }
+
+  /* Keep nested objects using flexbox */
+  .rjsf-object .rjsf-object {
+    display: flex;
+    grid-column: span 1;
+  }
 }
 
 .rjsf-field-label {
@@ -3279,18 +3355,53 @@ input:checked+.slider:before {
   cursor: not-allowed;
 }
 
+/* Select widget with tooltip */
+.rjsf-select-with-tooltip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rjsf-select-with-tooltip select {
+  max-width: 220px;
+  min-width: 150px;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.rjsf-select-with-tooltip select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
 .rjsf-field-content textarea {
   min-height: 80px;
   resize: vertical;
 }
 
-/* Object field styles (for nested objects like qualityAttributes) */
+/* Object field styles - grid layout for form fields */
 .rjsf-object {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+/* Nested objects (like qualityAttributes) should stack vertically with indent */
+.rjsf-object .rjsf-object {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
   padding-left: var(--spacing-sm);
   border-left: 2px solid var(--color-border);
+  grid-column: span 4;
+  /* Nested objects span full width */
 }
 
 /* Checkbox fields - simple inline with color states */
@@ -3359,14 +3470,6 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
 }
 
-/* Object fields - simple column layout */
-.rjsf-object {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  padding: 0;
-  border-left: none;
-}
 
 .rjsf-object>.rjsf-checkbox-field {
   margin: 0;

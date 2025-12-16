@@ -14,17 +14,17 @@ test.describe('Basic bundle UI flow', () => {
     await expect(page.getByTestId('entity-group-Requirement')).toBeVisible();
     await expect(page.getByTestId('entity-group-Task')).toBeVisible();
 
-    // Expand Feature group and check entity button
+    // Expand Feature group and check entity button (uses entity-item-{type}-{id} format)
     await page.getByTestId('entity-group-Feature').click();
-    await expect(page.getByTestId('entity-FEAT-001')).toBeVisible();
+    await expect(page.getByTestId('entity-item-Feature-FEAT-demo-basic')).toBeVisible();
 
     // Expand Requirement group 
     await page.getByTestId('entity-group-Requirement').click();
-    await expect(page.getByTestId('entity-REQ-001')).toBeVisible();
+    await expect(page.getByTestId('entity-item-Requirement-REQ-audit-logging')).toBeVisible();
 
     // Expand Task group
     await page.getByTestId('entity-group-Task').click();
-    await expect(page.getByTestId('entity-TASK-001')).toBeVisible();
+    await expect(page.getByTestId('entity-item-Task-TASK-impl-auth')).toBeVisible();
   });
 
   test('selects an entity and shows schema-driven details with references', async ({ page }) => {
@@ -32,13 +32,13 @@ test.describe('Basic bundle UI flow', () => {
 
     // Expand Feature group first (groups are collapsed by default)
     await page.getByTestId('entity-group-Feature').click();
-    await page.getByTestId('entity-FEAT-001').click();
+    await page.getByTestId('entity-item-Feature-FEAT-demo-basic').click();
 
     // New design has separate type badge and ID
     await expect(page.locator('.entity-type-badge').filter({ hasText: 'Feature' })).toBeVisible();
-    await expect(page.locator('.entity-id').filter({ hasText: 'FEAT-001' })).toBeVisible();
-    await expect(page.locator('.references-title').filter({ hasText: 'Outgoing references' })).toBeVisible();
-    await expect(page.locator('.references-title').filter({ hasText: 'Incoming references' })).toBeVisible();
+    await expect(page.locator('.entity-id').filter({ hasText: 'FEAT-demo-basic' })).toBeVisible();
+    // Check for Dependency Graph tab (reference sections moved there)
+    await expect(page.getByTestId('tab-graph')).toBeVisible();
   });
 
   test('Compile Spec shows diagnostics panel', async ({ page }) => {

@@ -1,9 +1,18 @@
 import { useState } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
-import validator from '@rjsf/validator-ajv8';
+import { customizeValidator } from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
+
+// Create a custom validator that allows our schema extension keywords
+// Without this, AJV strict mode throws "unknown keyword" errors
+const validator = customizeValidator({
+  ajvOptionsOverrides: {
+    // Allow custom keywords used in SDD schemas for UI hints
+    keywords: ['displayHint', 'enumDescriptions', 'displayName'],
+  },
+});
 
 interface EntityDetailsProps {
   bundle: UiBundleSnapshot | null;
@@ -121,11 +130,37 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       );
     }
 
+    // Determine field size class based purely on schema properties
+    // No field name hard-coding - editor is schema-driven
+    const getFieldSizeClass = () => {
+      // Multiline fields always span full width
+      if (schema?.displayHint === 'multiline') return 'rjsf-field-full';
+      // Arrays and objects span full width
+      if (schema?.type === 'array' || schema?.type === 'object') return 'rjsf-field-full';
+      // Enums are compact (1 column)
+      if (schema?.enum) return 'rjsf-field-small';
+      // Use maxLength to determine size:
+      // - ≤30: small (1 col) - IDs, short codes
+      // - 31-50: medium (2 cols) - medium text
+      // - 51-100: large (3 cols) - titles, names
+      // - >100: full (4 cols) - descriptions
+      const maxLen = schema?.maxLength;
+      if (maxLen !== undefined) {
+        if (maxLen <= 30) return 'rjsf-field-small';
+        if (maxLen <= 50) return 'rjsf-field-medium';
+        if (maxLen <= 100) return 'rjsf-field-large';
+        return 'rjsf-field-full';
+      }
+      // No maxLength specified - default to full width
+      return 'rjsf-field-full';
+    };
+
     const formattedLabel = formatLabel(label || '');
     const hasDescription = rawDescription && rawDescription.trim();
+    const sizeClass = getFieldSizeClass();
 
     return (
-      <div className="rjsf-field">
+      <div className={`rjsf-field ${sizeClass}`}>
         <div className="rjsf-field-label">
           <label htmlFor={id}>
             {formattedLabel}
@@ -229,9 +264,40 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
+  // Custom select widget - shows tooltip with description for current value
+  const CustomSelectWidget = (props: any) => {
+    const { id, value, onChange, options, disabled, readonly, schema } = props;
+    const enumDescriptions = schema?.enumDescriptions as Record<string, string> | undefined;
+    const currentDescription = enumDescriptions?.[value];
+
+    return (
+      <div className="rjsf-select-with-tooltip">
+        <select
+          id={id}
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled || readonly}
+        >
+          <option value="">Select...</option>
+          {options.enumOptions?.map((opt: any) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        {currentDescription && (
+          <span className="field-help-icon" title={currentDescription}>
+            ⓘ
+          </span>
+        )}
+      </div>
+    );
+  };
+
   const widgets: Record<string, any> = {
     hidden: HiddenWidget,
     CheckboxWidget: CustomCheckboxWidget,
+    SelectWidget: CustomSelectWidget,
   };
 
   const fields: Record<string, any> = {
@@ -263,6 +329,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         uiSchema[propName] = { 'ui:field': 'hiddenField' };
       } else if (ps && ps['ui:widget']) {
         uiSchema[propName] = { 'ui:widget': ps['ui:widget'] };
+      }
+
+      // displayHint: "multiline" renders as textarea
+      if (ps && ps.type === 'string' && ps.displayHint === 'multiline') {
+        uiSchema[propName] = { 'ui:widget': 'textarea' };
       }
     }
   }
@@ -296,6 +367,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       {/* Entity form/properties */}
       {schema ? (
         <AnyForm
+          className="rjsf"
           schema={schema as any}
           formData={entity.data}
           uiSchema={uiSchema}

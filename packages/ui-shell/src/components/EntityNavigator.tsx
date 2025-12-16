@@ -4,11 +4,13 @@ import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetada
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
-  selected?: { entityType: string; id: string };
+  selected?: { entityType: string; id: string } | null;
+  selectedType?: string | null;
   onSelect(entity: UiEntity): void;
+  onSelectType?(entityType: string): void;
 }
 
-export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorProps) {
+export function EntityNavigator({ bundle, selected, selectedType, onSelect, onSelectType }: EntityNavigatorProps) {
   // Track which entity groups are collapsed
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -44,7 +46,9 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
 
   const entries = Object.entries(bundle.entities);
 
-  const toggleGroup = (entityType: string) => {
+  const toggleGroup = (entityType: string, e: React.MouseEvent) => {
+    // Only toggle if clicking the chevron area
+    e.stopPropagation();
     setCollapsedGroups((prev) => {
       const next = new Set(prev);
       if (next.has(entityType)) {
@@ -56,13 +60,27 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
     });
   };
 
+  const handleTypeClick = (entityType: string) => {
+    // When clicking the entity type header (not chevron), select the type to show schema
+    if (onSelectType) {
+      onSelectType(entityType);
+    }
+    // Also expand the group
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      next.delete(entityType);
+      return next;
+    });
+  };
+
   return (
-    <div className="entity-navigator">
+    <div className="entity-navigator" data-testid="entity-navigator">
       <h2>Entities</h2>
       {entries.map(([entityType, entities]) => {
         const isCollapsed = collapsedGroups.has(entityType);
         const { displayName, icon } = getMetadata(entityType);
         const count = entities.length;
+        const isTypeSelected = selectedType === entityType && !selected;
 
         return (
           <div
@@ -70,17 +88,27 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
             className={`entity-group ${isCollapsed ? 'collapsed' : ''}`}
             data-type={entityType}
           >
-            <button
-              type="button"
-              className="entity-group-header"
-              onClick={() => toggleGroup(entityType)}
-              data-testid={`entity-group-${entityType}`}
-            >
-              <span className="entity-group-chevron">{isCollapsed ? '▸' : '▾'}</span>
-              {icon && <span className="entity-group-icon">{icon}</span>}
-              <span className="entity-group-name">{displayName}</span>
-              <span className="entity-group-count">{count}</span>
-            </button>
+            <div className={`entity-group-header-wrapper ${isTypeSelected ? 'selected' : ''}`}>
+              <button
+                type="button"
+                className="entity-group-chevron-btn"
+                onClick={(e) => toggleGroup(entityType, e)}
+                data-testid={`entity-group-chevron-${entityType}`}
+                aria-label={isCollapsed ? `Expand ${displayName}` : `Collapse ${displayName}`}
+              >
+                <span className="entity-group-chevron">{isCollapsed ? '▸' : '▾'}</span>
+              </button>
+              <button
+                type="button"
+                className="entity-group-header"
+                onClick={() => handleTypeClick(entityType)}
+                data-testid={`entity-group-${entityType}`}
+              >
+                {icon && <span className="entity-group-icon">{icon}</span>}
+                <span className="entity-group-name">{displayName}</span>
+                <span className="entity-group-count">{count}</span>
+              </button>
+            </div>
             {!isCollapsed && (
               <ul className="entity-list">
                 {entities.map((entity) => {
@@ -91,7 +119,7 @@ export function EntityNavigator({ bundle, selected, onSelect }: EntityNavigatorP
                       <button
                         type="button"
                         className={`entity-btn ${isSelected ? 'selected' : ''}`}
-                        data-testid={`entity-${entity.id}`}
+                        data-testid={`entity-item-${entityType}-${entity.id}`}
                         onClick={() => onSelect(entity)}
                       >
                         {entity.id}

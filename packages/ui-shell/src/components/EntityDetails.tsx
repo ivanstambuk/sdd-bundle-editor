@@ -90,11 +90,35 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Custom field template with tooltip descriptions
   const CustomFieldTemplate = (props: any) => {
-    const { id, label, required, children, rawDescription, uiSchema } = props;
+    const { id, label, required, children, rawDescription, uiSchema, schema } = props;
 
     // Skip rendering for hidden fields (ref fields are shown in Dependency Graph tab)
     if (uiSchema?.['ui:widget'] === 'hidden' || uiSchema?.['ui:field'] === 'hiddenField') {
       return null;
+    }
+
+    // Detect array item fields (IDs like "root_acceptanceCriteria_0")
+    // These should just render the input without our wrapper/label
+    const isArrayItem = id && /_\d+$/.test(id);
+    if (isArrayItem) {
+      return <div className="rjsf-array-item-content">{children}</div>;
+    }
+
+    // Detect boolean fields inside objects (checkboxes in qualityAttributes)
+    // Render with optional tooltip if description exists
+    const isCheckbox = schema?.type === 'boolean';
+    if (isCheckbox) {
+      const checkboxDescription = schema?.description || rawDescription;
+      return (
+        <div className="rjsf-checkbox-field">
+          {children}
+          {checkboxDescription && (
+            <span className="field-help-icon" title={checkboxDescription}>
+              ⓘ
+            </span>
+          )}
+        </div>
+      );
     }
 
     const formattedLabel = formatLabel(label || '');
@@ -165,8 +189,49 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   // Hidden field template for array fields - returns nothing
   const HiddenFieldTemplate = () => null;
 
+  // Custom object field template - strips duplicate title/description
+  // (parent FieldTemplate already shows these)
+  const CustomObjectFieldTemplate = (props: any) => {
+    const { properties } = props;
+    return (
+      <div className="rjsf-object">
+        {properties.map((prop: any) => prop.content)}
+      </div>
+    );
+  };
+
+  // Custom array field item template - removes "FieldName-N" labels
+  const CustomArrayFieldItemTemplate = (props: any) => {
+    const { children } = props;
+    return (
+      <div className="rjsf-array-item">
+        {children}
+      </div>
+    );
+  };
+
+  // Custom checkbox widget - shows property name as label (not description)
+  const CustomCheckboxWidget = (props: any) => {
+    const { id, value, onChange, label, disabled, readonly } = props;
+    const formattedLabel = formatLabel(label || '');
+
+    return (
+      <label htmlFor={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: readonly ? 'default' : 'pointer' }}>
+        <input
+          type="checkbox"
+          id={id}
+          checked={!!value}
+          onChange={(e) => onChange(e.target.checked)}
+          disabled={disabled || readonly}
+        />
+        <span style={{ textTransform: 'capitalize' }}>{formattedLabel}</span>
+      </label>
+    );
+  };
+
   const widgets: Record<string, any> = {
     hidden: HiddenWidget,
+    CheckboxWidget: CustomCheckboxWidget,
   };
 
   const fields: Record<string, any> = {
@@ -176,6 +241,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   const templates: Record<string, any> = {
     FieldTemplate: CustomFieldTemplate,
     ArrayFieldTemplate: CustomArrayFieldTemplate,
+    ObjectFieldTemplate: CustomObjectFieldTemplate,
+    ArrayFieldItemTemplate: CustomArrayFieldItemTemplate,
   };
 
   if (schema && typeof schema.properties === 'object') {

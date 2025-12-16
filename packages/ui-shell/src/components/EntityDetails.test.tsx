@@ -79,7 +79,7 @@ describe('EntityDetails', () => {
     expect(screen.getByText(/No entity selected/i)).toBeInTheDocument();
   });
 
-  it('renders schema-driven form and reference lists when schema is available', () => {
+  it('renders schema-driven form and tabs when schema is available', () => {
     const bundle = makeBundleWithSchema();
     const entity = bundle.entities.Feature[0];
 
@@ -89,21 +89,10 @@ describe('EntityDetails', () => {
     expect(screen.getByText('FEAT-001')).toBeInTheDocument();
     expect(screen.getByTestId('rjsf-form')).toBeInTheDocument();
 
-    // Reference sections are now called "Uses" and "Used By"
-    expect(screen.getByText('Uses')).toBeInTheDocument();
-    expect(screen.getByText('Used By')).toBeInTheDocument();
-
-    // Expand the Uses section (collapsed by default)
-    fireEvent.click(screen.getByTestId('uses-toggle'));
-    expect(screen.getByText('Requirement')).toBeInTheDocument();
-    expect(screen.getByText('REQ-001')).toBeInTheDocument();
-
-    // Expand the Used By section (collapsed by default)
-    fireEvent.click(screen.getByTestId('used-by-toggle'));
-    expect(screen.getByText('Task')).toBeInTheDocument();
-    expect(screen.getByText('TASK-001')).toBeInTheDocument();
-    expect(screen.getByText('via')).toBeInTheDocument();
-    expect(screen.getAllByText('requirement').length).toBeGreaterThan(0);
+    // Check that tabs are present
+    expect(screen.getByTestId('tab-details')).toBeInTheDocument();
+    expect(screen.getByTestId('tab-graph')).toBeInTheDocument();
+    expect(screen.getByTestId('tab-yaml')).toBeInTheDocument();
   });
 
   it('falls back to JSON view when no schema is available', () => {

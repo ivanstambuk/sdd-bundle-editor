@@ -18,10 +18,6 @@ type EntityTab = 'details' | 'graph' | 'yaml';
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
   // Active tab state
   const [activeTab, setActiveTab] = useState<EntityTab>('details');
-
-  // Collapsible state for reference sections (in details tab)
-  const [usesCollapsed, setUsesCollapsed] = useState(true);
-  const [usedByCollapsed, setUsedByCollapsed] = useState(true);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   if (!bundle || !entity) {
@@ -106,88 +102,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   // Render the Details tab content
   const renderDetailsTab = () => (
     <>
-      {/* Uses section */}
-      <div className={`references-section collapsible ${usesCollapsed ? 'collapsed' : ''}`}>
-        <button
-          type="button"
-          className="references-header"
-          onClick={() => setUsesCollapsed(!usesCollapsed)}
-          data-testid="uses-toggle"
-        >
-          <span className="references-chevron">{usesCollapsed ? '▶' : '▼'}</span>
-          <span className="references-title">Uses</span>
-          <span className="references-count">{outgoing.length}</span>
-        </button>
-        {!usesCollapsed && (
-          <div className="references-content">
-            {outgoing.length > 0 ? (
-              <ul className="references-list">
-                {outgoing.map((edge, idx) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={idx} className="reference-item">
-                    <span className="reference-field">{edge.fromField}</span>
-                    <span className="reference-arrow">→</span>
-                    <button
-                      type="button"
-                      className="reference-link"
-                      onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
-                      title={`Navigate to ${edge.toEntityType} ${edge.toId}`}
-                      data-testid={`outgoing-ref-${edge.toEntityType}-${edge.toId}`}
-                    >
-                      <span className="reference-link-type">{getDisplayName(edge.toEntityType)}</span>
-                      <span className="reference-link-id">{edge.toId}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="reference-empty">No outgoing references</div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Used By section */}
-      <div className={`references-section collapsible ${usedByCollapsed ? 'collapsed' : ''}`}>
-        <button
-          type="button"
-          className="references-header"
-          onClick={() => setUsedByCollapsed(!usedByCollapsed)}
-          data-testid="used-by-toggle"
-        >
-          <span className="references-chevron">{usedByCollapsed ? '▶' : '▼'}</span>
-          <span className="references-title">Used By</span>
-          <span className="references-count">{incoming.length}</span>
-        </button>
-        {!usedByCollapsed && (
-          <div className="references-content">
-            {incoming.length > 0 ? (
-              <ul className="references-list">
-                {incoming.map((edge, idx) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={idx} className="reference-item">
-                    <button
-                      type="button"
-                      className="reference-link"
-                      onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
-                      title={`Navigate to ${edge.fromEntityType} ${edge.fromId}`}
-                      data-testid={`incoming-ref-${edge.fromEntityType}-${edge.fromId}`}
-                    >
-                      <span className="reference-link-type">{getDisplayName(edge.fromEntityType)}</span>
-                      <span className="reference-link-id">{edge.fromId}</span>
-                    </button>
-                    <span className="reference-arrow">via</span>
-                    <span className="reference-field">{edge.fromField}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="reference-empty">No incoming references</div>
-            )}
-          </div>
-        )}
-      </div>
-
       {/* Entity form/properties */}
       {schema ? (
         <AnyForm

@@ -14,7 +14,9 @@ import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
 import { DiagnosticsPanel } from './components/DiagnosticsPanel';
-import { ResizableBottomPanel } from './components/ResizableBottomPanel';
+import { TabbedBottomPanel, type BottomPanelTab } from './components/TabbedBottomPanel';
+import { OutputPanel, useOutputLog } from './components/OutputPanel';
+import { SearchResultsPanel, type SearchResult } from './components/SearchResultsPanel';
 import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
 import { Breadcrumb } from './components/Breadcrumb';
 import { ResizableSidebar } from './components/ResizableSidebar';
@@ -60,6 +62,33 @@ export function AppShell() {
   // UI state
   const [viewMode, setViewMode] = useState<'entity' | 'domain'>('entity');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  // Output log
+  const outputLog = useOutputLog();
+
+  // Log bundle events
+  useEffect(() => {
+    if (bundle) {
+      const entityCount = Object.values(bundle.entities).reduce((sum, map) => sum + Object.keys(map).length, 0);
+      outputLog.success(`Bundle loaded: ${entityCount} entities`, 'Bundle');
+    }
+  }, [bundle]);
+
+  useEffect(() => {
+    if (diagnostics.length > 0) {
+      const errors = diagnostics.filter(d => d.severity === 'error').length;
+      const warnings = diagnostics.filter(d => d.severity === 'warning').length;
+      outputLog.info(`Validation complete: ${errors} errors, ${warnings} warnings`, 'Validation');
+    }
+  }, [diagnostics]);
+
+  useEffect(() => {
+    if (bundleError) {
+      outputLog.error(bundleError, 'Bundle');
+    }
+  }, [bundleError]);
 
   // Keyboard shortcuts
   useKeyboardShortcuts(useMemo(() => [
@@ -210,18 +239,37 @@ export function AppShell() {
         </div>
       </main>
 
-      {/* Bottom Panel - Diagnostics */}
-      <ResizableBottomPanel
-        title="Diagnostics"
-        badgeCount={diagnostics.length}
-        defaultHeight={200}
-        minHeight={32}
-        maxHeight={500}
-        storageKey="diagnostics-panel"
-        autoHide={false}
-      >
-        <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} />
-      </ResizableBottomPanel>
+      {/* Bottom Panel - Tabbed */}
+      <TabbedBottomPanel
+        tabs={[
+          {
+            id: 'diagnostics',
+            label: 'Diagnostics',
+            badge: diagnostics.length > 0 ? diagnostics.length : undefined,
+            badgeType: diagnostics.some(d => d.severity === 'error') ? 'error' : 'warning',
+            content: <DiagnosticsPanel diagnostics={diagnostics} entityTypes={entityTypes} schemas={bundle?.schemas} />,
+          },
+          {
+            id: 'output',
+            label: 'Output',
+            badge: outputLog.entries.length > 0 ? outputLog.entries.length : undefined,
+            content: <OutputPanel entries={outputLog.entries} />,
+          },
+          {
+            id: 'search',
+            label: 'Search',
+            badge: searchResults.length > 0 ? searchResults.length : undefined,
+            content: (
+              <SearchResultsPanel
+                query={searchQuery}
+                results={searchResults}
+                onNavigate={handleNavigate}
+              />
+            ),
+          },
+        ]}
+        defaultTab="diagnostics"
+      />
     </div>
   );
 }

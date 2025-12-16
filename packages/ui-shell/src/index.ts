@@ -4,4 +4,7 @@ export { EntityDetails } from './components/EntityDetails';
 export { DiagnosticsPanel } from './components/DiagnosticsPanel';
 export { Breadcrumb } from './components/Breadcrumb';
 export { ResizableBottomPanel } from './components/ResizableBottomPanel';
+export { TabbedBottomPanel, type BottomPanelTab } from './components/TabbedBottomPanel';
+export { OutputPanel, useOutputLog, type OutputEntry } from './components/OutputPanel';
+export { SearchResultsPanel, type SearchResult } from './components/SearchResultsPanel';
 export * from './types';

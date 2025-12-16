@@ -24,9 +24,42 @@ export interface UiRefEdge {
   toId: string;
 }
 
+export interface UiBundleManifest {
+  metadata?: {
+    name?: string;
+    bundleType?: string;
+    version?: string;
+    description?: string;
+  };
+}
+
+export interface UiEntityTypeConfig {
+  entityType: string;
+  idField?: string;
+  schemaPath?: string;
+  directory?: string;
+  filePattern?: string;
+  role?: string;
+}
+
+export interface UiRelationConfig {
+  name: string;
+  fromEntity: string;
+  fromField: string;
+  toEntity: string;
+  cardinality?: string;
+}
+
+export interface UiBundleTypeDefinition {
+  bundleType?: string;
+  version?: string;
+  entities?: UiEntityTypeConfig[];
+  relations?: UiRelationConfig[];
+}
+
 export interface UiBundleSnapshot {
-  manifest: unknown;
-  bundleTypeDefinition?: unknown;
+  manifest: UiBundleManifest;
+  bundleTypeDefinition?: UiBundleTypeDefinition;
   entities: Record<string, UiEntity[]>;
   refGraph: {
     edges: UiRefEdge[];

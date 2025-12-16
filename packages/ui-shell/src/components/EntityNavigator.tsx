@@ -6,11 +6,21 @@ interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
   selected?: { entityType: string; id: string } | null;
   selectedType?: string | null;
+  selectedBundle?: boolean;
   onSelect(entity: UiEntity): void;
   onSelectType?(entityType: string): void;
+  onSelectBundle?(): void;
 }
 
-export function EntityNavigator({ bundle, selected, selectedType, onSelect, onSelectType }: EntityNavigatorProps) {
+export function EntityNavigator({
+  bundle,
+  selected,
+  selectedType,
+  selectedBundle,
+  onSelect,
+  onSelectType,
+  onSelectBundle
+}: EntityNavigatorProps) {
   // Track which entity groups are collapsed
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -45,6 +55,8 @@ export function EntityNavigator({ bundle, selected, selectedType, onSelect, onSe
   }
 
   const entries = Object.entries(bundle.entities);
+  const bundleName = bundle.manifest?.metadata?.name || 'Bundle';
+  const totalEntities = Object.values(bundle.entities).reduce((sum, arr) => sum + arr.length, 0);
 
   const toggleGroup = (entityType: string, e: React.MouseEvent) => {
     // Only toggle if clicking the chevron area
@@ -73,8 +85,26 @@ export function EntityNavigator({ bundle, selected, selectedType, onSelect, onSe
     });
   };
 
+  const handleBundleClick = () => {
+    if (onSelectBundle) {
+      onSelectBundle();
+    }
+  };
+
   return (
     <div className="entity-navigator" data-testid="entity-navigator">
+      {/* Bundle header */}
+      <button
+        type="button"
+        className={`bundle-nav-header ${selectedBundle ? 'selected' : ''}`}
+        onClick={handleBundleClick}
+        data-testid="bundle-header"
+      >
+        <span className="bundle-nav-icon">📦</span>
+        <span className="bundle-nav-name">{bundleName}</span>
+        <span className="bundle-nav-count">{totalEntities}</span>
+      </button>
+
       <h2>Entities</h2>
       {entries.map(([entityType, entities]) => {
         const isCollapsed = collapsedGroups.has(entityType);

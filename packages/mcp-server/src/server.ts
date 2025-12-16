@@ -148,6 +148,49 @@ export class SddMcpServer {
             }
         );
 
+        // Tool: get_bundle_schema
+        this.server.tool(
+            "get_bundle_schema",
+            "Get the bundle type definition (metaschema) for a bundle. Returns entity type configurations, relationships between entities, and bundle metadata. Use to understand how entities relate to each other.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+            },
+            async ({ bundleId }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                const bundleDef = loaded.bundle.bundleTypeDefinition;
+                const manifest = loaded.bundle.manifest;
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify({
+                            bundleId: loaded.id,
+                            manifest: {
+                                name: manifest.metadata?.name,
+                                bundleType: manifest.metadata?.bundleType,
+                                version: manifest.metadata?.version,
+                                description: manifest.metadata?.description,
+                            },
+                            bundleTypeDefinition: bundleDef,
+                        }, null, 2),
+                    }],
+                };
+            }
+        );
+
         // Tool: read_entity
         this.server.tool(
             "read_entity",

@@ -14,6 +14,7 @@ import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
 import { EntityTypeDetails } from './components/EntityTypeDetails';
+import { BundleOverview } from './components/BundleOverview';
 import { DiagnosticsPanel } from './components/DiagnosticsPanel';
 import { TabbedBottomPanel, type BottomPanelTab } from './components/TabbedBottomPanel';
 import { OutputPanel, useOutputLog } from './components/OutputPanel';
@@ -61,7 +62,7 @@ export function AppShell() {
   } = useBundleState(bundleDir);
 
   // UI state
-  const [viewMode, setViewMode] = useState<'entity' | 'entityType' | 'domain'>('entity');
+  const [viewMode, setViewMode] = useState<'entity' | 'entityType' | 'bundle' | 'domain'>('entity');
   const [selectedEntityType, setSelectedEntityType] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -217,6 +218,7 @@ export function AppShell() {
             bundle={bundle}
             selected={viewMode === 'entity' && selectedEntity ? { entityType: selectedEntity.entityType, id: selectedEntity.id } : null}
             selectedType={viewMode === 'entityType' ? selectedEntityType : null}
+            selectedBundle={viewMode === 'bundle'}
             onSelect={(e) => {
               selectEntity(e);
               setSelectedEntityType(null);
@@ -227,6 +229,11 @@ export function AppShell() {
               selectEntity(null);
               setViewMode('entityType');
             }}
+            onSelectBundle={() => {
+              selectEntity(null);
+              setSelectedEntityType(null);
+              setViewMode('bundle');
+            }}
           />
         </div>
       </ResizableSidebar>
@@ -236,6 +243,8 @@ export function AppShell() {
         <div className="content-area">
           {viewMode === 'domain' && bundle?.domainMarkdown ? (
             <DomainKnowledgePanel content={bundle.domainMarkdown} />
+          ) : viewMode === 'bundle' ? (
+            <BundleOverview bundle={bundle} />
           ) : viewMode === 'entityType' && selectedEntityType ? (
             <EntityTypeDetails
               bundle={bundle}

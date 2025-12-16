@@ -183,42 +183,141 @@ export class McpBundleApi {
         data: Record<string, unknown>,
         edges: UiRefEdge[]
     ): void {
-        // Common reference field patterns
+        // Common reference field patterns - standardized relationship field names
         const refPatterns: Record<string, string> = {
-            featureIds: 'Feature',
+            // Standardized Feature references
+            realizesFeatureIds: 'Feature',
+            belongsToFeatureIds: 'Feature',
+            implementsFeatureIds: 'Feature',
+            supportsFeatureIds: 'Feature',
+            affectsFeatureIds: 'Feature',
+            requiresFeatures: 'Feature',
+            optionalFeatures: 'Feature',
+            featureIds: 'Feature', // backward compatibility
             featureId: 'Feature',
-            requirementIds: 'Requirement',
+
+            // Standardized Requirement references
+            fulfillsRequirementIds: 'Requirement',
+            validatesRequirementIds: 'Requirement',
+            implementsRequirements: 'Requirement',
+            coversRequirements: 'Requirement',
+            constrainsRequirements: 'Requirement',
+            guidesRequirements: 'Requirement',
+            appliesToRequirements: 'Requirement',
+            mitigatedByRequirements: 'Requirement',
+            relatedRequirements: 'Requirement',
+            touchesRequirements: 'Requirement',
+            ownsRequirements: 'Requirement',
+            realizedByComponents: 'Component',
+            refinesRequirements: 'Requirement',
+            requirementIds: 'Requirement', // backward compatibility
             requirementId: 'Requirement',
+
+            // Standardized ADR references
+            governedByAdrIds: 'ADR',
+            guidesAdrs: 'ADR',
+            relatedAdrs: 'ADR',
+            touchesAdrs: 'ADR',
+            documentedInAdrs: 'ADR',
+            supersedes: 'ADR',
+            adrIds: 'ADR', // backward compatibility
+            adrId: 'ADR',
+
+            // Component references
+            dependsOn: 'Component',
+            usesComponents: 'Component',
+            relatedComponents: 'Component',
+            affectsComponents: 'Component',
+            constrainsComponents: 'Component',
+            appliesToComponents: 'Component',
             componentIds: 'Component',
             componentId: 'Component',
-            taskIds: 'Task',
-            taskId: 'Task',
+
+            // Protocol references
+            providesProtocols: 'Protocol',
+            consumesProtocols: 'Protocol',
+            usesProtocols: 'Protocol',
+            providedByComponents: 'Component',
+            consumedByComponents: 'Component',
+            appliesToProtocols: 'Protocol',
+            affectsProtocols: 'Protocol',
+            documentedInProtocols: 'Protocol',
+            usedInProtocols: 'Protocol',
             protocolIds: 'Protocol',
             protocolId: 'Protocol',
+
+            // Task references
+            taskIds: 'Task',
+            taskId: 'Task',
+
+            // Profile references
             profileIds: 'Profile',
             profileId: 'Profile',
+
+            // Actor references
+            ownerId: 'Actor',
             actorId: 'Actor',
             actorIds: 'Actor',
+
+            // Threat references
+            relatedThreats: 'Threat',
+            relatedToRisks: 'Risk',
             threatIds: 'Threat',
             threatId: 'Threat',
+
+            // Risk references
             riskIds: 'Risk',
             riskId: 'Risk',
+
+            // Policy references
+            derivedFromPolicy: 'Policy',
             policyIds: 'Policy',
             policyId: 'Policy',
+
+            // Principle references
             principleIds: 'Principle',
             principleId: 'Principle',
+
+            // Constraint references
+            enforcedByConstraints: 'Constraint',
+            boundByConstraints: 'Constraint',
             constraintIds: 'Constraint',
             constraintId: 'Constraint',
+
+            // Hierarchy references
+            parentId: 'Requirement',
+
+            // DataSchema references
             dataSchemaId: 'DataSchema',
             dataSchemaIds: 'DataSchema',
             inputSchemaId: 'DataSchema',
             outputSchemaId: 'DataSchema',
+            problemDetailsSchemaId: 'DataSchema',
+
+            // TelemetrySchema references
             telemetrySchemaId: 'TelemetrySchema',
             telemetrySchemaIds: 'TelemetrySchema',
+            referencedInTelemetrySchemas: 'TelemetrySchema',
+
+            // Scenario references
+            usesFixtures: 'Fixture',
+            constrainsScenarios: 'Scenario',
+            relatedScenarios: 'Scenario',
+            touchesScenarios: 'Scenario',
+            appliesToScenarios: 'Scenario',
+            raisedInScenarios: 'Scenario',
+            coveredByScenarios: 'Scenario',
+            scenarioId: 'Scenario',
+
+            // Viewpoint and View references
+            viewpointId: 'Viewpoint',
+
+            // ErrorCode references
+            linkedErrorCodes: 'ErrorCode',
+
+            // OpenQuestion references
             openQuestionIds: 'OpenQuestion',
             openQuestionId: 'OpenQuestion',
-            adrIds: 'ADR',
-            adrId: 'ADR',
         };
 
         for (const [field, targetType] of Object.entries(refPatterns)) {

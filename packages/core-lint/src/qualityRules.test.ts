@@ -254,7 +254,7 @@ describe('quality-check rule', () => {
         const bundle = {
             entities: new Map([
                 ['Requirement', new Map([
-                    ['REQ-001', { id: 'REQ-001', entityType: 'Requirement', data: { id: 'REQ-001', featureIds: [] } }],
+                    ['REQ-001', { id: 'REQ-001', entityType: 'Requirement', data: { id: 'REQ-001', realizesFeatureIds: [] } }],
                 ])],
             ]),
             idRegistry: new Map(),
@@ -275,7 +275,32 @@ describe('quality-check rule', () => {
         expect(diagnostics.some(d => d.code === 'req-quality.traceable')).toBe(true);
     });
 
-    it('passes traceable check when featureIds present', () => {
+    it('passes traceable check when realizesFeatureIds present', () => {
+        const bundle = {
+            entities: new Map([
+                ['Requirement', new Map([
+                    ['REQ-001', { id: 'REQ-001', entityType: 'Requirement', data: { id: 'REQ-001', realizesFeatureIds: ['FEAT-001'] } }],
+                ])],
+            ]),
+            idRegistry: new Map(),
+            refGraph: { edges: [] },
+        };
+
+        const config: LintConfig = {
+            rules: {
+                'req-quality': {
+                    type: 'quality-check',
+                    targetEntities: ['Requirement'],
+                    checks: { traceable: true },
+                },
+            },
+        };
+
+        const diagnostics = runLintRules(bundle, config);
+        expect(diagnostics).toHaveLength(0);
+    });
+
+    it('passes traceable check when legacy featureIds present (backward compatibility)', () => {
         const bundle = {
             entities: new Map([
                 ['Requirement', new Map([

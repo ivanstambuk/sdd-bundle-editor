@@ -8,7 +8,7 @@ function makeBundle() {
   requirements.set('REQ-001', {
     id: 'REQ-001',
     entityType: 'Requirement',
-    data: { id: 'REQ-001', title: 'bad title', featureIds: [] },
+    data: { id: 'REQ-001', title: 'bad title', realizesFeatureIds: [] },
     filePath: 'bundle/requirements/REQ-001.yaml',
   });
   entities.set('Requirement', requirements);
@@ -45,7 +45,7 @@ describe('core-lint rules', () => {
         requirementMustHaveFeature: {
           type: 'has-link',
           fromEntity: 'Requirement',
-          viaField: 'featureIds',
+          viaField: 'realizesFeatureIds',
           minLinks: 1,
         },
       },

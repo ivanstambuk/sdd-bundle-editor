@@ -62,9 +62,9 @@ export interface QualityCheckRule extends LintRuleBase {
   targetEntities: string[]; // Usually ['Requirement']
   checks: {
     atomic?: boolean;      // Warn if description too long or has multiple verbs
-    traceable?: boolean;   // Warn if covered_by_scenarios/featureIds empty
+    traceable?: boolean;   // Warn if covered_by_scenarios/realizesFeatureIds empty (supports legacy featureIds)
     complete?: boolean;    // Warn if required fields missing
-    verifiable?: boolean;  // Warn if no acceptanceCriteria AND no featureIds
+    verifiable?: boolean;  // Warn if no acceptanceCriteria AND no realizesFeatureIds (supports legacy featureIds)
   };
 }
 

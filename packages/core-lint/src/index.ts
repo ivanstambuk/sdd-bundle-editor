@@ -269,20 +269,21 @@ function runQualityCheckRule(bundle: LintBundle, ruleName: string, rule: Quality
         }
       }
 
-      // Traceable check: should have featureIds or covered_by_scenarios
+      // Traceable check: should have realizesFeatureIds (or legacy featureIds) or covered_by_scenarios
       if (rule.checks.traceable) {
-        const featureIds = data.featureIds;
+        // Support both new standardized name and legacy name for backward compatibility
+        const realizesFeatureIds = data.realizesFeatureIds ?? data.featureIds;
         const scenarios = data.covered_by_scenarios;
-        const hasFeatures = featureIds && Array.isArray(featureIds) && featureIds.length > 0;
+        const hasFeatures = realizesFeatureIds && Array.isArray(realizesFeatureIds) && realizesFeatureIds.length > 0;
         const hasScenarios = scenarios && Array.isArray(scenarios) && scenarios.length > 0;
         if (!hasFeatures && !hasScenarios) {
           diagnostics.push({
             code: `${ruleName}.traceable`,
-            message: `${entityType} "${entity.id}" has no traceability links (featureIds or covered_by_scenarios is empty).`,
+            message: `${entityType} "${entity.id}" has no traceability links (realizesFeatureIds or covered_by_scenarios is empty).`,
             severity: ruleSeverity(rule),
             entityType,
             entityId: entity.id,
-            field: 'featureIds',
+            field: 'realizesFeatureIds',
             source: 'lint',
           });
         }
@@ -307,12 +308,13 @@ function runQualityCheckRule(bundle: LintBundle, ruleName: string, rule: Quality
         }
       }
 
-      // Verifiable check: should have acceptanceCriteria OR featureIds
+      // Verifiable check: should have acceptanceCriteria OR realizesFeatureIds (or legacy featureIds)
       if (rule.checks.verifiable) {
         const criteria = data.acceptanceCriteria;
-        const featureIds = data.featureIds;
+        // Support both new standardized name and legacy name for backward compatibility
+        const realizesFeatureIds = data.realizesFeatureIds ?? data.featureIds;
         const hasCriteria = criteria && Array.isArray(criteria) && criteria.length > 0;
-        const hasFeatures = featureIds && Array.isArray(featureIds) && featureIds.length > 0;
+        const hasFeatures = realizesFeatureIds && Array.isArray(realizesFeatureIds) && realizesFeatureIds.length > 0;
 
         if (!hasCriteria && !hasFeatures) {
           diagnostics.push({

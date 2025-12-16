@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Form from '@rjsf/core';
 import validator from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
@@ -13,6 +14,10 @@ interface EntityDetailsProps {
 }
 
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
+  // Collapsible state for reference sections
+  const [usesCollapsed, setUsesCollapsed] = useState(false);
+  const [usedByCollapsed, setUsedByCollapsed] = useState(false);
+
   if (!bundle || !entity) {
     return (
       <div className="entity-details">
@@ -102,6 +107,89 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       </div>
 
       <div className="entity-details-body">
+        {/* Uses section - at the top */}
+        <div className={`references-section collapsible ${usesCollapsed ? 'collapsed' : ''}`}>
+          <button
+            type="button"
+            className="references-header"
+            onClick={() => setUsesCollapsed(!usesCollapsed)}
+            data-testid="uses-toggle"
+          >
+            <span className="references-chevron">{usesCollapsed ? '▶' : '▼'}</span>
+            <span className="references-title">Uses</span>
+            <span className="references-count">{outgoing.length}</span>
+          </button>
+          {!usesCollapsed && (
+            <div className="references-content">
+              {outgoing.length > 0 ? (
+                <ul className="references-list">
+                  {outgoing.map((edge, idx) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <li key={idx} className="reference-item">
+                      <span className="reference-field">{edge.fromField}</span>
+                      <span className="reference-arrow">→</span>
+                      <button
+                        type="button"
+                        className="reference-link"
+                        onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
+                        title={`Navigate to ${edge.toEntityType} ${edge.toId}`}
+                        data-testid={`outgoing-ref-${edge.toEntityType}-${edge.toId}`}
+                      >
+                        <span className="reference-link-type">{getDisplayName(edge.toEntityType)}</span>
+                        <span className="reference-link-id">{edge.toId}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="reference-empty">No outgoing references</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Used By section */}
+        <div className={`references-section collapsible ${usedByCollapsed ? 'collapsed' : ''}`}>
+          <button
+            type="button"
+            className="references-header"
+            onClick={() => setUsedByCollapsed(!usedByCollapsed)}
+            data-testid="used-by-toggle"
+          >
+            <span className="references-chevron">{usedByCollapsed ? '▶' : '▼'}</span>
+            <span className="references-title">Used By</span>
+            <span className="references-count">{incoming.length}</span>
+          </button>
+          {!usedByCollapsed && (
+            <div className="references-content">
+              {incoming.length > 0 ? (
+                <ul className="references-list">
+                  {incoming.map((edge, idx) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <li key={idx} className="reference-item">
+                      <button
+                        type="button"
+                        className="reference-link"
+                        onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
+                        title={`Navigate to ${edge.fromEntityType} ${edge.fromId}`}
+                        data-testid={`incoming-ref-${edge.fromEntityType}-${edge.fromId}`}
+                      >
+                        <span className="reference-link-type">{getDisplayName(edge.fromEntityType)}</span>
+                        <span className="reference-link-id">{edge.fromId}</span>
+                      </button>
+                      <span className="reference-arrow">via</span>
+                      <span className="reference-field">{edge.fromField}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="reference-empty">No incoming references</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Entity form/properties */}
         {schema ? (
           <AnyForm
             schema={schema as any}
@@ -127,61 +215,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
           </div>
         )}
-
-        <div className="references-section">
-          <h3 className="references-title">Outgoing references</h3>
-          {outgoing.length > 0 ? (
-            <ul className="references-list">
-              {outgoing.map((edge, idx) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <li key={idx} className="reference-item">
-                  <span className="reference-field">{edge.fromField}</span>
-                  <span className="reference-arrow">→</span>
-                  <button
-                    type="button"
-                    className="reference-link"
-                    onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
-                    title={`Navigate to ${edge.toEntityType} ${edge.toId}`}
-                    data-testid={`outgoing-ref-${edge.toEntityType}-${edge.toId}`}
-                  >
-                    <span className="reference-link-type">{getDisplayName(edge.toEntityType)}</span>
-                    <span className="reference-link-id">{edge.toId}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="reference-empty">No outgoing references</div>
-          )}
-        </div>
-
-        <div className="references-section">
-          <h3 className="references-title">Incoming references</h3>
-          {incoming.length > 0 ? (
-            <ul className="references-list">
-              {incoming.map((edge, idx) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <li key={idx} className="reference-item">
-                  <button
-                    type="button"
-                    className="reference-link"
-                    onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
-                    title={`Navigate to ${edge.fromEntityType} ${edge.fromId}`}
-                    data-testid={`incoming-ref-${edge.fromEntityType}-${edge.fromId}`}
-                  >
-                    <span className="reference-link-type">{getDisplayName(edge.fromEntityType)}</span>
-                    <span className="reference-link-id">{edge.fromId}</span>
-                  </button>
-                  <span className="reference-arrow">via</span>
-                  <span className="reference-field">{edge.fromField}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="reference-empty">No incoming references</div>
-          )}
-        </div>
       </div>
     </div>
   );
 }
+

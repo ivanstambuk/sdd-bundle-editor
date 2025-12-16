@@ -36,7 +36,7 @@ export class McpBundleApi {
 
     /**
      * Load a bundle using MCP tools.
-     * This calls list_bundles, list_entities, and read_entity to construct the full bundle.
+     * Uses get_bundle_snapshot for efficient single-call loading.
      */
     async load(bundleDir: string): Promise<BundleResponse> {
         // Step 1: List bundles to find the one matching our bundleDir
@@ -55,68 +55,50 @@ export class McpBundleApi {
 
         this.bundleId = targetBundle.id;
 
-        // Step 2: Get entity types and load all entities
-        const entityTypes = targetBundle.entityTypes;
-        const entities: Record<string, UiEntity[]> = {};
-        const edges: UiRefEdge[] = [];
-
-        for (const entityType of entityTypes) {
-            // Get all entity IDs for this type
-            const idsResult = await this.client.callTool<string[]>('list_entities', {
-                bundleId: this.bundleId,
-                entityType,
-            });
-
-            if (idsResult.isError || !idsResult.data) {
-                entities[entityType] = [];
-                continue;
-            }
-
-            const entityIds = idsResult.data;
-            const typeEntities: UiEntity[] = [];
-
-            // Load each entity
-            for (const id of entityIds) {
-                const entityResult = await this.client.callTool<Record<string, unknown>>('read_entity', {
-                    bundleId: this.bundleId,
-                    entityType,
-                    id,
-                });
-
-                if (!entityResult.isError && entityResult.data) {
-                    const data = entityResult.data;
-                    typeEntities.push({
-                        id: id,
-                        entityType,
-                        filePath: '', // MCP doesn't expose file paths directly
-                        data,
-                    });
-
-                    // Extract references for the ref graph
-                    this.extractReferences(entityType, id, data, edges);
-                }
-            }
-
-            entities[entityType] = typeEntities;
-        }
-
-        // Step 3: Get diagnostics via validate_bundle
-        const validateResult = await this.client.callTool<McpValidationResult>('validate_bundle', {
+        // Step 2: Get complete bundle snapshot in a single call
+        const snapshotResult = await this.client.callTool<{
+            bundleId: string;
+            manifest: unknown;
+            bundleTypeDefinition: unknown;
+            entities: Record<string, Array<Record<string, unknown>>>;
+            schemas: Record<string, unknown>;
+            refGraph: { edges: Array<{ fromEntityType: string; fromId: string; fromField: string; toEntityType: string; toId: string }> };
+            diagnostics: Array<{ severity: 'error' | 'warning'; message: string; entityType?: string; entityId?: string; code?: string }>;
+        }>('get_bundle_snapshot', {
             bundleId: this.bundleId,
+            includeSchemas: true,
+            includeRefGraph: true,
+            includeDiagnostics: true,
         });
 
-        const diagnostics: UiDiagnostic[] = [];
-        if (!validateResult.isError && validateResult.data?.diagnostics) {
-            for (const d of validateResult.data.diagnostics) {
-                diagnostics.push({
-                    severity: d.severity,
-                    message: d.message,
-                    entityType: d.entityType,
-                    entityId: d.entityId,
-                    code: d.code,
-                });
-            }
+        if (snapshotResult.isError || !snapshotResult.data) {
+            throw new Error('Failed to load bundle snapshot from MCP server');
         }
+
+        const snapshot = snapshotResult.data;
+
+        // Transform entities to UiEntity format
+        const entities: Record<string, UiEntity[]> = {};
+        for (const [entityType, entityList] of Object.entries(snapshot.entities)) {
+            entities[entityType] = entityList.map(data => ({
+                id: String(data.id),
+                entityType,
+                filePath: '', // MCP doesn't expose file paths
+                data,
+            }));
+        }
+
+        // Transform refGraph edges
+        const edges: UiRefEdge[] = snapshot.refGraph?.edges || [];
+
+        // Transform diagnostics
+        const diagnostics: UiDiagnostic[] = (snapshot.diagnostics || []).map(d => ({
+            severity: d.severity,
+            message: d.message,
+            entityType: d.entityType,
+            entityId: d.entityId,
+            code: d.code,
+        }));
 
         // Build the bundle snapshot
         const bundle: UiBundleSnapshot = {
@@ -127,9 +109,10 @@ export class McpBundleApi {
                     description: targetBundle.description,
                 },
             },
+            bundleTypeDefinition: snapshot.bundleTypeDefinition as UiBundleSnapshot['bundleTypeDefinition'],
             entities,
             refGraph: { edges },
-            // Note: schemas and domainMarkdown would need additional MCP resource calls
+            schemas: snapshot.schemas,
         };
 
         return { bundle, diagnostics };
@@ -171,172 +154,6 @@ export class McpBundleApi {
         }
 
         return { diagnostics };
-    }
-
-    /**
-     * Extract reference edges from entity data.
-     * Looks for common reference patterns like featureIds, requirementIds, etc.
-     */
-    private extractReferences(
-        fromType: string,
-        fromId: string,
-        data: Record<string, unknown>,
-        edges: UiRefEdge[]
-    ): void {
-        // Common reference field patterns - standardized relationship field names
-        const refPatterns: Record<string, string> = {
-            // Standardized Feature references
-            realizesFeatureIds: 'Feature',
-            belongsToFeatureIds: 'Feature',
-            implementsFeatureIds: 'Feature',
-            supportsFeatureIds: 'Feature',
-            affectsFeatureIds: 'Feature',
-            requiresFeatures: 'Feature',
-            optionalFeatures: 'Feature',
-            featureIds: 'Feature', // backward compatibility
-            featureId: 'Feature',
-
-            // Standardized Requirement references
-            fulfillsRequirementIds: 'Requirement',
-            validatesRequirementIds: 'Requirement',
-            implementsRequirements: 'Requirement',
-            coversRequirements: 'Requirement',
-            constrainsRequirements: 'Requirement',
-            guidesRequirements: 'Requirement',
-            appliesToRequirements: 'Requirement',
-            mitigatedByRequirements: 'Requirement',
-            relatedRequirements: 'Requirement',
-            touchesRequirements: 'Requirement',
-            ownsRequirements: 'Requirement',
-            realizedByComponents: 'Component',
-            refinesRequirements: 'Requirement',
-            requirementIds: 'Requirement', // backward compatibility
-            requirementId: 'Requirement',
-
-            // Standardized ADR references
-            governedByAdrIds: 'ADR',
-            guidesAdrs: 'ADR',
-            relatedAdrs: 'ADR',
-            touchesAdrs: 'ADR',
-            documentedInAdrs: 'ADR',
-            supersedes: 'ADR',
-            adrIds: 'ADR', // backward compatibility
-            adrId: 'ADR',
-
-            // Component references
-            dependsOn: 'Component',
-            usesComponents: 'Component',
-            relatedComponents: 'Component',
-            affectsComponents: 'Component',
-            constrainsComponents: 'Component',
-            appliesToComponents: 'Component',
-            componentIds: 'Component',
-            componentId: 'Component',
-
-            // Protocol references
-            providesProtocols: 'Protocol',
-            consumesProtocols: 'Protocol',
-            usesProtocols: 'Protocol',
-            providedByComponents: 'Component',
-            consumedByComponents: 'Component',
-            appliesToProtocols: 'Protocol',
-            affectsProtocols: 'Protocol',
-            documentedInProtocols: 'Protocol',
-            usedInProtocols: 'Protocol',
-            protocolIds: 'Protocol',
-            protocolId: 'Protocol',
-
-            // Task references
-            taskIds: 'Task',
-            taskId: 'Task',
-
-            // Profile references
-            profileIds: 'Profile',
-            profileId: 'Profile',
-
-            // Actor references
-            ownerId: 'Actor',
-            actorId: 'Actor',
-            actorIds: 'Actor',
-
-            // Threat references
-            relatedThreats: 'Threat',
-            relatedToRisks: 'Risk',
-            threatIds: 'Threat',
-            threatId: 'Threat',
-
-            // Risk references
-            riskIds: 'Risk',
-            riskId: 'Risk',
-
-            // Policy references
-            derivedFromPolicy: 'Policy',
-            policyIds: 'Policy',
-            policyId: 'Policy',
-
-            // Principle references
-            principleIds: 'Principle',
-            principleId: 'Principle',
-
-            // Constraint references
-            enforcedByConstraints: 'Constraint',
-            boundByConstraints: 'Constraint',
-            constraintIds: 'Constraint',
-            constraintId: 'Constraint',
-
-            // Hierarchy references
-            parentId: 'Requirement',
-
-            // DataSchema references
-            dataSchemaId: 'DataSchema',
-            dataSchemaIds: 'DataSchema',
-            inputSchemaId: 'DataSchema',
-            outputSchemaId: 'DataSchema',
-            problemDetailsSchemaId: 'DataSchema',
-
-            // TelemetrySchema references
-            telemetrySchemaId: 'TelemetrySchema',
-            telemetrySchemaIds: 'TelemetrySchema',
-            referencedInTelemetrySchemas: 'TelemetrySchema',
-
-            // Scenario references
-            usesFixtures: 'Fixture',
-            constrainsScenarios: 'Scenario',
-            relatedScenarios: 'Scenario',
-            touchesScenarios: 'Scenario',
-            appliesToScenarios: 'Scenario',
-            raisedInScenarios: 'Scenario',
-            coveredByScenarios: 'Scenario',
-            scenarioId: 'Scenario',
-
-            // Viewpoint and View references
-            viewpointId: 'Viewpoint',
-
-            // ErrorCode references
-            linkedErrorCodes: 'ErrorCode',
-
-            // OpenQuestion references
-            openQuestionIds: 'OpenQuestion',
-            openQuestionId: 'OpenQuestion',
-        };
-
-        for (const [field, targetType] of Object.entries(refPatterns)) {
-            const value = data[field];
-            if (value) {
-                const ids = Array.isArray(value) ? value : [value];
-                for (const toId of ids) {
-                    if (typeof toId === 'string') {
-                        edges.push({
-                            fromEntityType: fromType,
-                            fromId,
-                            fromField: field,
-                            toEntityType: targetType,
-                            toId,
-                        });
-                    }
-                }
-            }
-        }
     }
 
     /**

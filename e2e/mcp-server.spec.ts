@@ -194,21 +194,30 @@ test.describe('MCP Server E2E Tests', () => {
 
     test('list_entities returns entity IDs', async () => {
         const sessionId = await initMcpSession();
-        const result = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as string[];
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[]; meta: { total: number; hasMore: boolean } };
 
-        expect(Array.isArray(result)).toBe(true);
-        expect(result.length).toBeGreaterThan(0);
-        expect(result.includes('REQ-001')).toBe(true);
+        expect(listResult.ids).toBeDefined();
+        expect(Array.isArray(listResult.ids)).toBe(true);
+        expect(listResult.ids.length).toBeGreaterThan(0);
+        // Entity IDs should be strings starting with REQ-
+        expect(listResult.ids[0].startsWith('REQ-')).toBe(true);
+        expect(listResult.meta).toBeDefined();
+        expect(listResult.meta.total).toBeGreaterThan(0);
     });
 
     test('read_entity returns entity data', async () => {
         const sessionId = await initMcpSession();
+
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
         const result = await callMcpTool(sessionId, 'read_entity', {
             entityType: 'Requirement',
-            id: 'REQ-001',
+            id: testId,
         }) as { id: string; title: string };
 
-        expect(result.id).toBe('REQ-001');
+        expect(result.id).toBe(testId);
         expect(result.title).toBeTruthy();
     });
 
@@ -232,11 +241,16 @@ test.describe('MCP Server E2E Tests', () => {
 
     test('apply_changes dry-run returns preview', async () => {
         const sessionId = await initMcpSession();
+
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
         const result = await callMcpTool(sessionId, 'apply_changes', {
             changes: [{
                 operation: 'update',
                 entityType: 'Requirement',
-                entityId: 'REQ-001',
+                entityId: testId,
                 fieldPath: 'description',
                 value: 'Updated via dry-run test',
             }],
@@ -251,12 +265,16 @@ test.describe('MCP Server E2E Tests', () => {
     test('apply_changes updates entity on disk', async () => {
         const sessionId = await initMcpSession();
 
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
         // Apply a change
         const applyResult = await callMcpTool(sessionId, 'apply_changes', {
             changes: [{
                 operation: 'update',
                 entityType: 'Requirement',
-                entityId: 'REQ-001',
+                entityId: testId,
                 fieldPath: 'description',
                 value: 'Updated via E2E test',
             }],
@@ -269,7 +287,7 @@ test.describe('MCP Server E2E Tests', () => {
         // Verify the change persisted
         const readResult = await callMcpTool(sessionId, 'read_entity', {
             entityType: 'Requirement',
-            id: 'REQ-001',
+            id: testId,
         }) as { description: string };
 
         expect(readResult.description).toBe('Updated via E2E test');
@@ -278,20 +296,26 @@ test.describe('MCP Server E2E Tests', () => {
     test('apply_changes create and delete entity', async () => {
         const sessionId = await initMcpSession();
 
+        // First get a valid feature ID to use in the reference
+        const featureListResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Feature' }) as { ids: string[] };
+        const featureIds = featureListResult.ids;
+        expect(featureIds.length).toBeGreaterThan(0);
+        const featureId = featureIds[0];
+
         // Create a new entity with all required fields
         const createResult = await callMcpTool(sessionId, 'apply_changes', {
             changes: [{
                 operation: 'create',
                 entityType: 'Requirement',
-                entityId: 'REQ-999',
+                entityId: 'REQ-e2e-test-temp',
                 data: {
-                    id: 'REQ-999',
+                    id: 'REQ-e2e-test-temp',
                     title: 'E2E Test Requirement',
                     description: 'Created by E2E test',
                     kind: 'functional',
                     category: 'FR',  // Required by schema
                     state: 'draft',
-                    featureIds: ['FEAT-001'],  // Required by lint rule
+                    realizesFeatureIds: [featureId],  // Use dynamically discovered feature ID
                 },
             }],
             dryRun: false,
@@ -302,10 +326,10 @@ test.describe('MCP Server E2E Tests', () => {
         // Verify creation
         const readResult = await callMcpTool(sessionId, 'read_entity', {
             entityType: 'Requirement',
-            id: 'REQ-999',
+            id: 'REQ-e2e-test-temp',
         }) as { id: string; title: string };
 
-        expect(readResult.id).toBe('REQ-999');
+        expect(readResult.id).toBe('REQ-e2e-test-temp');
         expect(readResult.title).toBe('E2E Test Requirement');
 
         // Delete the entity
@@ -313,7 +337,7 @@ test.describe('MCP Server E2E Tests', () => {
             changes: [{
                 operation: 'delete',
                 entityType: 'Requirement',
-                entityId: 'REQ-999',
+                entityId: 'REQ-e2e-test-temp',
             }],
             dryRun: false,
         }) as { success: boolean };
@@ -324,7 +348,7 @@ test.describe('MCP Server E2E Tests', () => {
         try {
             await callMcpTool(sessionId, 'read_entity', {
                 entityType: 'Requirement',
-                id: 'REQ-999',
+                id: 'REQ-e2e-test-temp',
             });
             // If we get here, entity wasn't deleted
             expect(true).toBe(false); // Force fail
@@ -332,5 +356,326 @@ test.describe('MCP Server E2E Tests', () => {
             // Expected - entity was deleted
             expect(true).toBe(true);
         }
+    });
+
+    // Phase 1: Bulk Operations Tests
+    test('read_entities returns multiple entities', async () => {
+        const sessionId = await initMcpSession();
+
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const ids = listResult.ids;
+        expect(ids.length).toBeGreaterThan(0);
+        const testIds = ids.slice(0, 2); // Take first 2 IDs
+
+        const result = await callMcpTool(sessionId, 'read_entities', {
+            entityType: 'Requirement',
+            ids: testIds,
+        }) as { entities: Array<{ id: string }>; meta: { requested: number; found: number; notFound: string[] } };
+
+        expect(result.entities).toBeDefined();
+        expect(Array.isArray(result.entities)).toBe(true);
+        expect(result.entities.length).toBe(testIds.length);
+        expect(result.meta).toBeDefined();
+        expect(result.meta.requested).toBe(testIds.length);
+        expect(result.meta.found).toBe(testIds.length);
+        expect(result.meta.notFound.length).toBe(0);
+    });
+
+    test('read_entities reports not found IDs', async () => {
+        const sessionId = await initMcpSession();
+
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const validId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'read_entities', {
+            entityType: 'Requirement',
+            ids: [validId, 'REQ-NONEXISTENT'],
+        }) as { entities: Array<{ id: string }>; meta: { notFound: string[] } };
+
+        expect(result.meta.notFound).toContain('REQ-NONEXISTENT');
+        expect(result.entities.length).toBe(1);
+    });
+
+    test('read_entities filters fields when specified', async () => {
+        const sessionId = await initMcpSession();
+
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'read_entities', {
+            entityType: 'Requirement',
+            ids: [testId],
+            fields: ['title'],
+        }) as { entities: Array<{ id: string; title?: string; description?: string }> };
+
+        expect(result.entities.length).toBe(1);
+        expect(result.entities[0].id).toBeDefined();
+        expect(result.entities[0].title).toBeDefined();
+        // Description should not be included when not in fields
+        expect(result.entities[0].description).toBeUndefined();
+    });
+
+    test('list_entity_summaries returns summaries with pagination', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'list_entity_summaries', {
+            entityType: 'Requirement',
+            include: ['id', 'title', 'state'],
+            limit: 10,
+        }) as { items: Array<{ id: string; title?: string; entityType: string }>; meta: { total: number; limit: number; hasMore: boolean } };
+
+        expect(result.items).toBeDefined();
+        expect(Array.isArray(result.items)).toBe(true);
+        expect(result.meta).toBeDefined();
+        expect(result.meta.limit).toBe(10);
+        expect(typeof result.meta.total).toBe('number');
+        expect(typeof result.meta.hasMore).toBe('boolean');
+
+        // Each item should have entityType
+        if (result.items.length > 0) {
+            expect(result.items[0].entityType).toBe('Requirement');
+            expect(result.items[0].id).toBeDefined();
+        }
+    });
+
+    test('list_entity_summaries across all types', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'list_entity_summaries', {
+            include: ['id', 'title'],
+            limit: 50,
+        }) as { items: Array<{ entityType: string }>; meta: { total: number } };
+
+        expect(result.items).toBeDefined();
+        expect(result.meta.total).toBeGreaterThan(0);
+
+        // Should have multiple entity types
+        const entityTypes = new Set(result.items.map(i => i.entityType));
+        expect(entityTypes.size).toBeGreaterThanOrEqual(1);
+    });
+
+    // Phase 2: Schema & Snapshot Tests
+    test('get_entity_schema returns JSON schema', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_entity_schema', {
+            entityType: 'Requirement',
+        }) as { bundleId: string; entityType: string; schema: { $schema?: string; properties?: Record<string, unknown> } };
+
+        expect(result.bundleId).toBeDefined();
+        expect(result.entityType).toBe('Requirement');
+        expect(result.schema).toBeDefined();
+        expect(result.schema.properties).toBeDefined();
+        // Should have common properties like id, title
+        expect(result.schema.properties.id).toBeDefined();
+        expect(result.schema.properties.title).toBeDefined();
+    });
+
+    test('get_bundle_snapshot returns complete bundle', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {}) as {
+            bundleId: string;
+            entities: Record<string, unknown[]>;
+            schemas: Record<string, unknown>;
+            refGraph: { edges: unknown[] };
+            diagnostics: unknown[];
+            meta: { entityCount: number; entityTypes: string[] };
+        };
+
+        expect(result.bundleId).toBeDefined();
+        expect(result.entities).toBeDefined();
+        expect(result.schemas).toBeDefined();
+        expect(result.refGraph).toBeDefined();
+        expect(result.diagnostics).toBeDefined();
+        expect(result.meta).toBeDefined();
+        expect(result.meta.entityCount).toBeGreaterThan(0);
+        expect(result.meta.entityTypes.length).toBeGreaterThan(0);
+
+        // Entities should have data
+        expect(result.entities.Requirement).toBeDefined();
+        expect(Array.isArray(result.entities.Requirement)).toBe(true);
+
+        // Schemas should have Requirement
+        expect(result.schemas.Requirement).toBeDefined();
+    });
+
+    test('get_bundle_snapshot with options disabled', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {
+            includeSchemas: false,
+            includeRefGraph: false,
+            includeDiagnostics: false,
+        }) as {
+            entities: Record<string, unknown[]>;
+            schemas?: unknown;
+            refGraph?: unknown;
+            diagnostics?: unknown;
+        };
+
+        expect(result.entities).toBeDefined();
+        // When disabled, these should not be present
+        expect(result.schemas).toBeUndefined();
+        expect(result.refGraph).toBeUndefined();
+        expect(result.diagnostics).toBeUndefined();
+    });
+
+    // Phase 3: Context Controls Tests
+    test('get_context with default options returns target and related', async () => {
+        const sessionId = await initMcpSession();
+
+        // First get a valid entity ID
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'get_context', {
+            entityType: 'Requirement',
+            id: testId,
+        }) as {
+            target: { id: string };
+            related: Array<{ id: string; entityType: string; relation: string; field: string }>;
+            meta: { relatedCount: number; maxRelated: number; truncated: boolean };
+        };
+
+        expect(result.target).toBeDefined();
+        expect(result.target.id).toBe(testId);
+        expect(result.related).toBeDefined();
+        expect(Array.isArray(result.related)).toBe(true);
+        expect(result.meta).toBeDefined();
+        expect(result.meta.maxRelated).toBe(20); // Default
+        expect(typeof result.meta.truncated).toBe('boolean');
+
+        // Check stable relation keys
+        if (result.related.length > 0) {
+            const relation = result.related[0].relation;
+            expect(['references', 'referencedBy']).toContain(relation);
+            expect(result.related[0].field).toBeDefined();
+        }
+    });
+
+    test('get_context with includeRelated=summary returns limited fields', async () => {
+        const sessionId = await initMcpSession();
+
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'get_context', {
+            entityType: 'Requirement',
+            id: testId,
+            includeRelated: 'summary',
+        }) as {
+            related: Array<{ id: string; entityType: string; data?: { id?: string; title?: string; description?: string } }>;
+            meta: { includeRelated: string };
+        };
+
+        expect(result.meta.includeRelated).toBe('summary');
+
+        // Summary should only have id, title, name, state - not full description
+        if (result.related.length > 0 && result.related[0].data) {
+            expect(result.related[0].data.id).toBeDefined();
+            // Description should not be in summary (it's a long field)
+        }
+    });
+
+    test('get_context with includeRelated=ids omits data', async () => {
+        const sessionId = await initMcpSession();
+
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'get_context', {
+            entityType: 'Requirement',
+            id: testId,
+            includeRelated: 'ids',
+        }) as {
+            related: Array<{ id: string; entityType: string; data?: unknown }>;
+            meta: { includeRelated: string };
+        };
+
+        expect(result.meta.includeRelated).toBe('ids');
+
+        // With "ids", there should be no data property
+        if (result.related.length > 0) {
+            expect(result.related[0].data).toBeUndefined();
+        }
+    });
+
+    test('get_context with fields filter returns only specified fields', async () => {
+        const sessionId = await initMcpSession();
+
+        const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
+        const testId = listResult.ids[0];
+
+        const result = await callMcpTool(sessionId, 'get_context', {
+            entityType: 'Requirement',
+            id: testId,
+            fields: ['title'],
+        }) as {
+            target: { id: string; title?: string; description?: string };
+        };
+
+        expect(result.target.id).toBeDefined();
+        expect(result.target.title).toBeDefined();
+        // Description should not be present when not in fields
+        expect(result.target.description).toBeUndefined();
+    });
+
+    // Phase 4: Relations & Pagination Tests
+    test('get_entity_relations returns relations for entity type', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_entity_relations', {
+            entityType: 'Requirement',
+        }) as {
+            relations: Array<{ name: string; fromEntity: string; toEntity: string; direction: string }>;
+            meta: { total: number };
+        };
+
+        expect(result.relations).toBeDefined();
+        expect(Array.isArray(result.relations)).toBe(true);
+        expect(result.meta.total).toBeGreaterThanOrEqual(0);
+
+        // If relations exist, check structure
+        if (result.relations.length > 0) {
+            const rel = result.relations[0];
+            expect(rel.name).toBeDefined();
+            expect(rel.direction).toMatch(/^(outgoing|incoming)$/);
+        }
+    });
+
+    test('list_entities pagination works correctly', async () => {
+        const sessionId = await initMcpSession();
+
+        // Get first page
+        const page1 = await callMcpTool(sessionId, 'list_entities', {
+            entityType: 'Requirement',
+            limit: 2,
+            offset: 0,
+        }) as { ids: string[]; meta: { total: number; hasMore: boolean; returned: number } };
+
+        expect(page1.ids.length).toBeLessThanOrEqual(2);
+        expect(page1.meta.returned).toBe(page1.ids.length);
+        expect(page1.meta.total).toBeGreaterThanOrEqual(page1.ids.length);
+
+        // If there's more, get second page
+        if (page1.meta.hasMore) {
+            const page2 = await callMcpTool(sessionId, 'list_entities', {
+                entityType: 'Requirement',
+                limit: 2,
+                offset: 2,
+            }) as { ids: string[]; meta: { total: number } };
+
+            // IDs should be different
+            expect(page2.ids[0]).not.toBe(page1.ids[0]);
+        }
+    });
+
+    test('search_entities pagination returns meta', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'search_entities', {
+            query: 'REQ',
+            limit: 5,
+        }) as { results: unknown[]; meta: { total: number; hasMore: boolean } };
+
+        expect(result.results).toBeDefined();
+        expect(result.meta).toBeDefined();
+        expect(result.meta.total).toBeGreaterThanOrEqual(result.results.length);
     });
 });

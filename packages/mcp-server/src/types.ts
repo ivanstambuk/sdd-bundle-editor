@@ -42,3 +42,30 @@ export interface LoadedBundle {
     bundle: import("@sdd-bundle-editor/core-model").Bundle;
     diagnostics: BundleDiagnostic[];
 }
+
+/**
+ * Standardized response metadata for MCP tools.
+ * Included in responses that may be paginated or truncated.
+ */
+export interface McpResponseMeta {
+    /** Total items available (before pagination) */
+    total?: number;
+    /** Items returned in this response */
+    returned?: number;
+    /** Limit applied to the request */
+    limit?: number;
+    /** Offset applied for pagination */
+    offset?: number;
+    /** Whether more items are available */
+    hasMore?: boolean;
+    /** Number of requested items (for bulk reads) */
+    requested?: number;
+    /** Number of items found (for bulk reads) */
+    found?: number;
+    /** IDs not found (for bulk reads) */
+    notFound?: string[];
+    /** Whether response was truncated due to size */
+    partial?: boolean;
+    /** Fields that were truncated */
+    truncatedFields?: string[];
+}

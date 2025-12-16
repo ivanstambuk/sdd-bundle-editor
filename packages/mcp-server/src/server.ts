@@ -191,6 +191,158 @@ export class SddMcpServer {
             }
         );
 
+        // Tool: get_entity_schema
+        this.server.tool(
+            "get_entity_schema",
+            "Get the JSON schema for a specific entity type. Use for form rendering or understanding entity structure. Returns the complete JSON schema including properties, required fields, and custom extensions like x-sdd-ui.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+            },
+            async ({ bundleId, entityType }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                // Get schema path from manifest
+                const schemaRelPath = loaded.bundle.manifest.spec?.schemas?.documents?.[entityType];
+                if (!schemaRelPath) {
+                    return {
+                        content: [{ type: "text", text: `No schema defined for entity type: ${entityType}` }],
+                        isError: true,
+                    };
+                }
+
+                // Load schema from disk
+                try {
+                    const schemaPath = path.join(loaded.path, schemaRelPath);
+                    const schemaContent = await fs.readFile(schemaPath, 'utf8');
+                    const schema = JSON.parse(schemaContent);
+
+                    return {
+                        content: [{
+                            type: "text",
+                            text: JSON.stringify({
+                                bundleId: loaded.id,
+                                entityType,
+                                schema,
+                            }, null, 2),
+                        }],
+                    };
+                } catch (err) {
+                    return {
+                        content: [{ type: "text", text: `Failed to load schema for ${entityType}: ${String(err)}` }],
+                        isError: true,
+                    };
+                }
+            }
+        );
+
+        // Tool: get_bundle_snapshot
+        this.server.tool(
+            "get_bundle_snapshot",
+            "Get a complete bundle snapshot with all entities, schemas, refGraph, and diagnostics in a single call. Optimized for UI initial load - much more efficient than multiple calls.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                includeSchemas: z.boolean().default(true).describe("Include JSON schemas for each entity type"),
+                includeRefGraph: z.boolean().default(true).describe("Include reference graph edges"),
+                includeDiagnostics: z.boolean().default(true).describe("Include validation diagnostics"),
+            },
+            async ({ bundleId, includeSchemas, includeRefGraph, includeDiagnostics }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                const bundle = loaded.bundle;
+
+                // Build entities map
+                const entities: Record<string, Array<Record<string, unknown>>> = {};
+                let entityCount = 0;
+                for (const [entityType, entityMap] of bundle.entities) {
+                    entities[entityType] = [];
+                    for (const entity of entityMap.values()) {
+                        entities[entityType].push({
+                            id: entity.id,
+                            entityType: entity.entityType,
+                            ...entity.data,
+                        });
+                        entityCount++;
+                    }
+                }
+
+                // Build schemas map if requested
+                let schemas: Record<string, unknown> | undefined;
+                if (includeSchemas) {
+                    schemas = {};
+                    const schemaDocs = bundle.manifest.spec?.schemas?.documents ?? {};
+                    for (const [entityType, schemaRelPath] of Object.entries(schemaDocs)) {
+                        try {
+                            const schemaPath = path.join(loaded.path, schemaRelPath);
+                            const schemaContent = await fs.readFile(schemaPath, 'utf8');
+                            schemas[entityType] = JSON.parse(schemaContent);
+                        } catch {
+                            // Schema loading failed - skip silently
+                        }
+                    }
+                }
+
+                // Build response
+                const snapshot: Record<string, unknown> = {
+                    bundleId: loaded.id,
+                    manifest: bundle.manifest,
+                    bundleTypeDefinition: bundle.bundleTypeDefinition,
+                    entities,
+                };
+
+                if (includeSchemas && schemas) {
+                    snapshot.schemas = schemas;
+                }
+
+                if (includeRefGraph) {
+                    snapshot.refGraph = bundle.refGraph;
+                }
+
+                if (includeDiagnostics) {
+                    snapshot.diagnostics = loaded.diagnostics;
+                }
+
+                // Add meta for UI
+                snapshot.meta = {
+                    entityCount,
+                    entityTypes: Array.from(bundle.entities.keys()),
+                    schemaCount: schemas ? Object.keys(schemas).length : 0,
+                    diagnosticCount: loaded.diagnostics.length,
+                };
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify(snapshot, null, 2),
+                    }],
+                };
+            }
+        );
+
         // Tool: read_entity
         this.server.tool(
             "read_entity",
@@ -240,15 +392,91 @@ export class SddMcpServer {
             }
         );
 
+        // Tool: read_entities (bulk read)
+        this.server.tool(
+            "read_entities",
+            "Read multiple entities in a single call. Use when you need 2-50 entities and already know their IDs. Much more efficient than calling read_entity multiple times.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+                ids: z.array(z.string()).max(50).describe("Entity IDs to fetch (max 50)"),
+                fields: z.array(z.string()).optional().describe("Specific fields to return (optional, returns all if not specified)"),
+            },
+            async ({ bundleId, entityType, ids, fields }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                const entitiesOfType = loaded.bundle.entities.get(entityType);
+                if (!entitiesOfType) {
+                    return {
+                        content: [{ type: "text", text: `Unknown entity type: ${entityType}` }],
+                        isError: true,
+                    };
+                }
+
+                const entities: Array<Record<string, unknown>> = [];
+                const notFound: string[] = [];
+
+                for (const id of ids) {
+                    const entity = entitiesOfType.get(id);
+                    if (entity) {
+                        let entityData: Record<string, unknown> = { bundleId: loaded.id, ...entity.data };
+
+                        // Filter fields if specified
+                        if (fields && fields.length > 0) {
+                            const filtered: Record<string, unknown> = { id: entity.id };
+                            for (const field of fields) {
+                                if (field in entityData) {
+                                    filtered[field] = entityData[field];
+                                }
+                            }
+                            entityData = filtered;
+                        }
+
+                        entities.push(entityData);
+                    } else {
+                        notFound.push(id);
+                    }
+                }
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify({
+                            entities,
+                            meta: {
+                                requested: ids.length,
+                                found: entities.length,
+                                notFound,
+                            },
+                        }, null, 2),
+                    }],
+                };
+            }
+        );
+
         // Tool: list_entities
         this.server.tool(
             "list_entities",
-            "List all entities in a bundle. Use to discover available entity IDs, see what entity types exist, or get an overview of bundle contents. Without entityType filter, shows all available types. With filter, shows all IDs of that type.",
+            "List all entity IDs in a bundle with optional pagination. Use to discover available entity IDs, see what entity types exist, or get an overview of bundle contents. Without entityType filter, shows all available types. With filter, shows all IDs of that type.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to list from all bundles)"),
                 entityType: z.string().optional().describe("Filter by entity type"),
+                limit: z.number().max(500).default(100).describe("Maximum number of IDs to return (default: 100, max: 500)"),
+                offset: z.number().default(0).describe("Starting offset for pagination"),
             },
-            async ({ bundleId, entityType }) => {
+            async ({ bundleId, entityType, limit, offset }) => {
                 // Special case: list from all bundles
                 if (bundleId === "all" || (!bundleId && !this.isSingleBundleMode())) {
                     const result: Record<string, any> = {};
@@ -279,11 +507,31 @@ export class SddMcpServer {
 
                 if (entityType) {
                     const entitiesOfType = loaded.bundle.entities.get(entityType);
-                    if (!entitiesOfType) return { content: [{ type: "text", text: "[]" }] };
+                    if (!entitiesOfType) {
+                        return {
+                            content: [{
+                                type: "text",
+                                text: JSON.stringify({
+                                    ids: [],
+                                    meta: { total: 0, limit, offset, hasMore: false },
+                                }, null, 2),
+                            }],
+                        };
+                    }
 
-                    const ids = Array.from(entitiesOfType.keys());
+                    const allIds = Array.from(entitiesOfType.keys());
+                    const total = allIds.length;
+                    const paginatedIds = allIds.slice(offset, offset + limit);
+                    const hasMore = offset + limit < total;
+
                     return {
-                        content: [{ type: "text", text: JSON.stringify(ids, null, 2) }]
+                        content: [{
+                            type: "text",
+                            text: JSON.stringify({
+                                ids: paginatedIds,
+                                meta: { total, limit, offset, returned: paginatedIds.length, hasMore },
+                            }, null, 2),
+                        }],
                     };
                 }
 
@@ -294,17 +542,171 @@ export class SddMcpServer {
             }
         );
 
+        // Tool: list_entity_summaries
+        this.server.tool(
+            "list_entity_summaries",
+            "List entities with summary fields (id, title, state, tags). Better than list_entities when you need to select relevant items without loading full entity data. Supports pagination.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().optional().describe("Filter by entity type"),
+                include: z.array(z.string()).default(["id", "title"]).describe("Fields to include in summaries"),
+                limit: z.number().default(50).describe("Max results (default 50, max 200)"),
+                offset: z.number().default(0).describe("Pagination offset"),
+            },
+            async ({ bundleId, entityType, include, limit, offset }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                // Clamp limit to max 200
+                const effectiveLimit = Math.min(limit, 200);
+
+                // Collect entities from all types or just the specified type
+                const allItems: Array<{ entityType: string;[key: string]: unknown }> = [];
+                const typesToScan = entityType
+                    ? [[entityType, loaded.bundle.entities.get(entityType)] as const].filter(([_, v]) => v)
+                    : Array.from(loaded.bundle.entities.entries());
+
+                for (const [eType, entities] of typesToScan) {
+                    if (!entities) continue;
+                    for (const [eId, entity] of entities) {
+                        const summary: Record<string, unknown> = { entityType: eType };
+                        const data = entity.data as Record<string, unknown>;
+
+                        // Always include id
+                        summary.id = eId;
+
+                        // Include requested fields
+                        for (const field of include) {
+                            if (field in data) {
+                                summary[field] = data[field];
+                            }
+                        }
+
+                        allItems.push(summary as { entityType: string;[key: string]: unknown });
+                    }
+                }
+
+                // Apply pagination
+                const total = allItems.length;
+                const paginatedItems = allItems.slice(offset, offset + effectiveLimit);
+                const hasMore = offset + effectiveLimit < total;
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify({
+                            items: paginatedItems,
+                            meta: {
+                                total,
+                                limit: effectiveLimit,
+                                offset,
+                                returned: paginatedItems.length,
+                                hasMore,
+                            },
+                        }, null, 2),
+                    }],
+                };
+            }
+        );
+
+        // Tool: get_entity_relations
+        this.server.tool(
+            "get_entity_relations",
+            "Get the relationships defined for an entity type. Use to understand how entities connect to each other. Returns relation definitions from the bundle-type specification.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().optional().describe("Filter by entity type (optional, shows all relations if not specified)"),
+                direction: z.enum(["outgoing", "incoming", "both"]).default("both").describe("Filter by direction: outgoing (this type references other), incoming (other types reference this), both (all)"),
+            },
+            async ({ bundleId, entityType, direction }) => {
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return {
+                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
+                            isError: true,
+                        };
+                    }
+                    return {
+                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
+                        isError: true,
+                    };
+                }
+
+                const bundleDef = loaded.bundle.bundleTypeDefinition;
+                if (!bundleDef || !bundleDef.relations) {
+                    return {
+                        content: [{ type: "text", text: `No relations defined in bundle: ${loaded.id}` }],
+                    };
+                }
+
+                // Filter relations based on entityType and direction
+                const relations = bundleDef.relations.filter(rel => {
+                    if (!entityType) return true;
+
+                    const isOutgoing = rel.fromEntity === entityType;
+                    const isIncoming = rel.toEntity === entityType;
+
+                    if (direction === "outgoing") return isOutgoing;
+                    if (direction === "incoming") return isIncoming;
+                    return isOutgoing || isIncoming;
+                });
+
+                // Transform to a more useful format
+                const formatted = relations.map(rel => ({
+                    name: rel.name,
+                    fromEntity: rel.fromEntity,
+                    fromField: rel.fromField,
+                    toEntity: rel.toEntity,
+                    multiplicity: rel.multiplicity,
+                    // Add computed direction relative to the queried entityType
+                    ...(entityType && {
+                        direction: rel.fromEntity === entityType ? "outgoing" : "incoming",
+                    }),
+                }));
+
+                return {
+                    content: [{
+                        type: "text",
+                        text: JSON.stringify({
+                            bundleId: loaded.id,
+                            entityType: entityType || "all",
+                            direction,
+                            relations: formatted,
+                            meta: {
+                                total: formatted.length,
+                            },
+                        }, null, 2),
+                    }],
+                };
+            }
+        );
+
         // Tool: get_context
         this.server.tool(
             "get_context",
-            "Get an entity with all its related dependencies via graph traversal. Use when you need to understand how an entity connects to others - what it depends on and what depends on it. Returns the target entity plus all directly related entities (Requirements, Tasks, Features, Components, etc.).",
+            "Get an entity with related dependencies. Supports sizing controls to prevent truncation. Use when you need to understand how an entity connects to others.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 entityType: z.string().describe("Entity type"),
                 id: z.string().describe("Entity ID"),
-                depth: z.number().default(1).describe("Depth of traversal (default: 1)"),
+                depth: z.number().max(3).default(1).describe("Depth of traversal (default: 1, max: 3)"),
+                maxRelated: z.number().max(100).default(20).describe("Max related entities to return (default: 20, max: 100)"),
+                includeRelated: z.enum(["full", "summary", "ids"]).default("full").describe("Detail level for related entities: full (all fields), summary (id, title, state), ids (just IDs)"),
+                fields: z.array(z.string()).optional().describe("Specific fields to return for target entity"),
             },
-            async ({ bundleId, entityType, id, depth }) => {
+            async ({ bundleId, entityType, id, depth, maxRelated, includeRelated, fields }) => {
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
@@ -331,36 +733,95 @@ export class SddMcpServer {
                 }
 
                 // Graph traversal to find related entities
-                const relatedEntities: Array<{ relation: string, entity: any }> = [];
+                interface RelatedItem {
+                    id: string;
+                    entityType: string;
+                    relation: string;  // Stable key: "references" or "referencedBy"
+                    field: string;     // The field name that creates the relationship
+                    data?: unknown;    // Full data, summary, or omitted based on includeRelated
+                }
+
+                const relatedEntities: RelatedItem[] = [];
                 const visited = new Set<string>();
                 visited.add(`${entityType}:${id}`);
+                let totalRelated = 0;
+                let truncated = false;
 
                 // Helper to add related entity
-                const addRelated = (eType: string, eId: string, relation: string) => {
+                const addRelated = (eType: string, eId: string, relation: string, field: string) => {
+                    if (totalRelated >= maxRelated) {
+                        truncated = true;
+                        return;
+                    }
+
                     const key = `${eType}:${eId}`;
                     if (visited.has(key)) return;
                     visited.add(key);
 
                     const entity = bundle.entities.get(eType)?.get(eId);
                     if (entity) {
-                        relatedEntities.push({ relation, entity: entity.data });
+                        const item: RelatedItem = {
+                            id: eId,
+                            entityType: eType,
+                            relation,
+                            field,
+                        };
+
+                        // Add data based on includeRelated setting
+                        if (includeRelated === "full") {
+                            item.data = entity.data;
+                        } else if (includeRelated === "summary") {
+                            const data = entity.data as Record<string, unknown>;
+                            item.data = {
+                                id: data.id,
+                                title: data.title,
+                                name: data.name,
+                                state: data.state,
+                            };
+                        }
+                        // For "ids", we don't add data property
+
+                        relatedEntities.push(item);
+                        totalRelated++;
                     }
                 };
 
-                // Direct outgoing/incoming references
+                // Direct outgoing/incoming references using stable relation keys
                 for (const edge of bundle.refGraph.edges) {
                     if (edge.fromEntityType === entityType && edge.fromId === id) {
-                        addRelated(edge.toEntityType, edge.toId, `Reference to ${edge.toEntityType}`);
+                        // Outgoing reference: this entity references the target
+                        addRelated(edge.toEntityType, edge.toId, "references", edge.fromField);
                     }
                     if (edge.toEntityType === entityType && edge.toId === id) {
-                        addRelated(edge.fromEntityType, edge.fromId, `Referenced by ${edge.fromEntityType}`);
+                        // Incoming reference: target is referenced by this entity
+                        addRelated(edge.fromEntityType, edge.fromId, "referencedBy", edge.fromField);
                     }
+                }
+
+                // Prepare target entity data
+                let targetData: unknown = targetEntity.data;
+                if (fields && fields.length > 0) {
+                    const data = targetEntity.data as Record<string, unknown>;
+                    const filtered: Record<string, unknown> = { id: data.id };
+                    for (const f of fields) {
+                        if (f in data) {
+                            filtered[f] = data[f];
+                        }
+                    }
+                    targetData = filtered;
                 }
 
                 const output = {
                     bundleId: loaded.id,
-                    target: targetEntity.data,
+                    target: targetData,
                     related: relatedEntities,
+                    meta: {
+                        relatedCount: relatedEntities.length,
+                        maxRelated,
+                        truncated,
+                        includeRelated,
+                        depth,
+                    },
                 };
 
                 return {
@@ -468,13 +929,15 @@ export class SddMcpServer {
         // Tool: search_entities
         this.server.tool(
             "search_entities",
-            "Search for entities across all bundles by keyword. Use when user asks about something by name, topic, or keyword rather than exact ID. Searches entity IDs, titles, statements, and descriptions. Returns matching entities with their bundle and type.",
+            "Search for entities across all bundles by keyword with pagination. Use when user asks about something by name, topic, or keyword rather than exact ID. Searches entity IDs, titles, statements, and descriptions. Returns matching entities with their bundle and type.",
             {
                 query: z.string().describe("Search query (searches in entity IDs and titles)"),
                 entityType: z.string().optional().describe("Filter by entity type"),
                 bundleId: z.string().optional().describe("Filter by bundle ID"),
+                limit: z.number().max(100).default(50).describe("Maximum number of results to return (default: 50, max: 100)"),
+                offset: z.number().default(0).describe("Starting offset for pagination"),
             },
-            async ({ query, entityType, bundleId }) => {
+            async ({ query, entityType, bundleId, limit, offset }) => {
                 const results: Array<{
                     bundleId: string;
                     entityType: string;
@@ -515,10 +978,25 @@ export class SddMcpServer {
                     }
                 }
 
+                // Apply pagination
+                const total = results.length;
+                const paginatedResults = results.slice(offset, offset + limit);
+                const hasMore = offset + limit < total;
+
                 return {
                     content: [{
                         type: "text",
-                        text: JSON.stringify({ query, resultCount: results.length, results }, null, 2),
+                        text: JSON.stringify({
+                            query,
+                            results: paginatedResults,
+                            meta: {
+                                total,
+                                limit,
+                                offset,
+                                returned: paginatedResults.length,
+                                hasMore,
+                            },
+                        }, null, 2),
                     }],
                 };
             }

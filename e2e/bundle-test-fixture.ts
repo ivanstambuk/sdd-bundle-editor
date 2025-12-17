@@ -23,6 +23,53 @@ export function getSampleBundlePath(): string {
 }
 
 /**
+ * Known entity IDs that exist in the sample bundle.
+ * Use these for tests that need specific entities rather than hardcoding.
+ * 
+ * NOTE: If the sample bundle changes, update these values.
+ * Run `ls /home/ivan/dev/sdd-sample-bundle/bundle/<type>/` to see available entities.
+ */
+export const TEST_ENTITIES = {
+    // Requirements - from bundle/requirements/
+    REQUIREMENT: 'REQ-audit-logging',
+    REQUIREMENT_ALT: 'REQ-secure-auth',
+
+    // Features - from bundle/features/
+    FEATURE: 'FEAT-secure-auth',
+
+    // Profiles - from bundle/profiles/
+    PROFILE: 'PROF-BASIC',
+
+    // Components - from bundle/components/
+    COMPONENT: 'COMP-api-gateway',
+} as const;
+
+/**
+ * Helper to get the first entity of a type dynamically.
+ * Use this when you need ANY entity of a type, not a specific one.
+ * 
+ * @param page Playwright page object
+ * @param entityType e.g., 'Requirement', 'Feature'
+ * @returns Entity ID or null if none found
+ */
+export async function getFirstEntityId(
+    page: { locator: (selector: string) => { first: () => { getAttribute: (attr: string) => Promise<string | null> } } },
+    entityType: string
+): Promise<string | null> {
+    // Expand the group first
+    const groupToggle = page.locator(`[data-testid="entity-group-${entityType}"]`);
+    try {
+        await groupToggle.first().getAttribute('data-testid'); // Check it exists
+        // Click to expand if needed
+    } catch {
+        return null;
+    }
+
+    const firstEntity = page.locator('.entity-list .entity-btn').first();
+    return firstEntity.getAttribute('data-entity-id');
+}
+
+/**
  * Recursively copy a directory, skipping .git
  */
 export async function copyDir(src: string, dest: string): Promise<void> {

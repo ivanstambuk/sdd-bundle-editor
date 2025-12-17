@@ -42,7 +42,8 @@ export default defineConfig({
       },
       {
         // MCP server (primary for Phase 4.4 MCP-first UI)
-        command: 'node packages/mcp-server/dist/index.js --http --port 3001',
+        // Pre-build to ensure dist/ is up-to-date
+        command: 'pnpm --filter @sdd-bundle-editor/mcp-server build && node packages/mcp-server/dist/index.js --http --port 3001',
         url: 'http://localhost:3001/health',
         reuseExistingServer: !process.env.CI,
         stdout: 'pipe',

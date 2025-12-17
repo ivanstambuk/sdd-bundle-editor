@@ -6,7 +6,8 @@
     "dev": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
     "lint": "eslint \"src/**/*.{ts,tsx}\" || true",
-    "test": "vitest"
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@sdd-bundle-editor/ui-shell": "workspace:*",

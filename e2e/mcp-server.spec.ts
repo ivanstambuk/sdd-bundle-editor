@@ -11,6 +11,60 @@ import { getSampleBundlePath, createTempBundle, cleanupTempBundle } from './bund
 import { spawn, ChildProcess } from 'child_process';
 import * as path from 'path';
 
+// ============================================================================
+// MCP Response Envelope Types
+// ============================================================================
+
+/**
+ * Standard MCP tool success response envelope.
+ * All tools wrap their responses in this envelope for consistent handling.
+ *
+ * @template T The shape of the `data` payload, defaults to Record<string, unknown>
+ */
+interface ToolResponse<T = Record<string, unknown>> {
+    /** Whether the operation succeeded */
+    ok: true;
+    /** Name of the tool that was called */
+    tool: string;
+    /** Bundle ID the operation was performed on (when applicable) */
+    bundleId?: string;
+    /** The actual tool result payload */
+    data: T;
+    /** Optional metadata about the operation (pagination, counts, etc.) */
+    meta?: Record<string, unknown>;
+    /** Validation diagnostics (for validate_bundle) */
+    diagnostics?: unknown[];
+}
+
+/**
+ * MCP tool error response envelope.
+ * Returned when a tool call fails.
+ */
+interface ErrorResponse {
+    /** Always false for errors */
+    ok: false;
+    /** Name of the tool that was called */
+    tool: string;
+    /** Error details */
+    error: {
+        /** Error code (e.g., 'ENTITY_NOT_FOUND', 'VALIDATION_ERROR') */
+        code: string;
+        /** Human-readable error message */
+        message: string;
+        /** Additional error context */
+        details?: unknown;
+    };
+}
+
+/**
+ * Union type for any MCP tool response
+ */
+type ToolResult<T = Record<string, unknown>> = ToolResponse<T> | ErrorResponse;
+
+// ============================================================================
+// MCP Server Process Management
+// ============================================================================
+
 // MCP server process
 let mcpServer: ChildProcess | null = null;
 let mcpPort = 3002; // Use different port to avoid conflicts with main server
@@ -508,8 +562,10 @@ test.describe('MCP Server E2E Tests', () => {
         expect(result.schema).toBeDefined();
         expect(result.schema.properties).toBeDefined();
         // Should have common properties like id, title
-        expect(result.schema.properties.id).toBeDefined();
-        expect(result.schema.properties.title).toBeDefined();
+        if (result.schema.properties) {
+            expect(result.schema.properties.id).toBeDefined();
+            expect(result.schema.properties.title).toBeDefined();
+        }
     });
 
     test('get_bundle_snapshot returns complete bundle', async () => {

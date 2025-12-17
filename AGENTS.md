@@ -727,6 +727,81 @@ loggerConfig();
 
 ---
 
+### Test Scripts Reference
+
+The project provides several test scripts for different scenarios:
+
+| Script | Purpose |
+|--------|---------|
+| `pnpm test` | Run all unit tests (fast, ~15s) |
+| `pnpm test:watch` | Run tests in watch mode (interactive development) |
+| `pnpm test:smoke` | Quick validation: MCP unit tests + core E2E scenarios (~30s) |
+| `pnpm test:e2e` | Full E2E test suite (~3-5 min) |
+| `pnpm test:e2e:smoke` | Subset of E2E tests for quick validation |
+| `pnpm test:visual` | Visual regression tests (screenshot comparison) |
+| `pnpm test:visual:update` | Update visual regression baselines |
+
+**When to use each:**
+- **After code changes**: `pnpm test` (always)
+- **Quick sanity check**: `pnpm test:smoke` (includes MCP + key E2E tests)
+- **Before committing UI changes**: `pnpm test:e2e` (full suite)
+- **After intentional visual changes**: `pnpm test:visual:update`
+
+**Test fixtures and helpers** (in `e2e/bundle-test-fixture.ts`):
+- `getSampleBundlePath()` – Returns path to external sample bundle
+- `TEST_ENTITIES` – Known entity IDs for tests (e.g., `TEST_ENTITIES.REQUIREMENT`)
+- `getFirstEntityId(page, entityType)` – Dynamically get first entity of a type
+- `createTempBundle(prefix)` – Create isolated temp bundle for write tests
+- `cleanupTempBundle(tempDir)` – Clean up temp bundle after tests
+
+---
+
+### Session Context Files
+
+**Where to track ongoing work:**
+
+| File | Purpose |
+|------|---------|
+| `PENDING_IMPROVEMENTS.md` | Current session's task list with checkboxes |
+| `IMPLEMENTATION_TRACKER.md` | Long-term backlog and roadmap |
+| `.gemini/task.md` | Agent's internal task tracking (if used) |
+| `.gemini/walkthrough.md` | Step-by-step implementation notes |
+
+**At session end, ALWAYS:**
+1. Update `PENDING_IMPROVEMENTS.md` with completed/remaining items
+2. Commit all working changes
+3. Clean up any temp files or artifacts not needed for next session
+
+---
+
+### Common Pitfalls (Avoid These!)
+
+1. **Forgetting to rebuild after TypeScript changes**
+   - Symptom: Code changes don't take effect
+   - Fix: Run `pnpm build` or specific package build
+
+2. **Using `browser_subagent` tool**
+   - Symptom: `ECONNREFUSED 127.0.0.1:9222`
+   - Fix: Use Playwright E2E tests instead (see AI-driven browser testing section)
+
+3. **Hardcoding entity IDs in tests**
+   - Symptom: Tests break when sample bundle changes
+   - Fix: Use `TEST_ENTITIES` constants or `getFirstEntityId()` helper
+
+4. **Running `vitest` without `run` flag**
+   - Symptom: Tests hang waiting for input
+   - Fix: All package.json scripts now use `vitest run`
+
+5. **Editing sample bundle directly**
+   - Symptom: Tests pollute the external bundle
+   - Fix: Use `createTempBundle()` for write operations
+
+6. **Missing `--passWithNoTests` in packages without tests**
+   - Symptom: `pnpm test` fails with "No test files found"
+   - Fix: Already fixed in all package.json files
+
+---
+
 ### Session Handover / Handoff Protocol
 
 When the user says "session handover", you must perform two distinct actions:

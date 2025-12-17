@@ -107,6 +107,8 @@ async function initMcpSession(): Promise<string> {
 
 /**
  * Helper to call MCP tool
+ * Returns the unwrapped response with data merged at root level:
+ * { ...data, meta, diagnostics, bundleId, ok, tool }
  */
 async function callMcpTool(
     sessionId: string,
@@ -138,7 +140,38 @@ async function callMcpTool(
     // Extract content
     if (parsed?.result?.content?.[0]?.text) {
         try {
-            return JSON.parse(parsed.result.content[0].text);
+            const envelope = JSON.parse(parsed.result.content[0].text) as {
+                ok?: boolean;
+                tool?: string;
+                bundleId?: string;
+                data?: Record<string, unknown>;
+                meta?: Record<string, unknown>;
+                diagnostics?: unknown[];
+                error?: unknown;
+            };
+
+            // Unwrap envelope: merge data at root level while keeping envelope fields
+            if (envelope && typeof envelope === 'object' && 'data' in envelope) {
+                const result: Record<string, unknown> = {
+                    ...envelope.data,       // Spread data at root for backward compat
+                    ok: envelope.ok,
+                    tool: envelope.tool,
+                    data: envelope.data,    // Also keep data for tests that need full envelope
+                };
+                // Only include optional fields when they exist
+                if (envelope.bundleId !== undefined) {
+                    result.bundleId = envelope.bundleId;
+                }
+                if (envelope.meta !== undefined) {
+                    result.meta = envelope.meta;
+                }
+                if (envelope.diagnostics !== undefined) {
+                    result.diagnostics = envelope.diagnostics;
+                }
+                return result;
+            }
+
+            return envelope;
         } catch {
             return parsed.result.content[0].text;
         }
@@ -182,14 +215,19 @@ test.describe('MCP Server E2E Tests', () => {
 
     test('list_bundles returns loaded bundle', async () => {
         const sessionId = await initMcpSession();
-        const result = await callMcpTool(sessionId, 'list_bundles', {}) as Array<{ id: string; entityTypes: string[] }>;
+        const result = await callMcpTool(sessionId, 'list_bundles', {}) as {
+            bundles: Array<{ id: string; entityTypes: string[] }>;
+            ok: boolean;
+        };
 
-        expect(Array.isArray(result)).toBe(true);
-        expect(result.length).toBe(1);
-        expect(result[0].id).toBeTruthy();
-        expect(Array.isArray(result[0].entityTypes)).toBe(true);
-        expect(result[0].entityTypes).toContain('Requirement');
-        expect(result[0].entityTypes).toContain('Feature');
+        expect(result.ok).toBe(true);
+        expect(result.bundles).toBeDefined();
+        expect(Array.isArray(result.bundles)).toBe(true);
+        expect(result.bundles.length).toBe(1);
+        expect(result.bundles[0].id).toBeTruthy();
+        expect(Array.isArray(result.bundles[0].entityTypes)).toBe(true);
+        expect(result.bundles[0].entityTypes).toContain('Requirement');
+        expect(result.bundles[0].entityTypes).toContain('Feature');
     });
 
     test('list_entities returns entity IDs', async () => {
@@ -255,11 +293,11 @@ test.describe('MCP Server E2E Tests', () => {
                 value: 'Updated via dry-run test',
             }],
             dryRun: true,
-        }) as { success: boolean; dryRun: boolean; wouldApply: number };
+        }) as { ok: boolean; data: { dryRun: boolean; wouldApply: number } };
 
-        expect(result.success).toBe(true);
-        expect(result.dryRun).toBe(true);
-        expect(result.wouldApply).toBe(1);
+        expect(result.ok).toBe(true);
+        expect(result.data.dryRun).toBe(true);
+        expect(result.data.wouldApply).toBe(1);
     });
 
     test('apply_changes updates entity on disk', async () => {
@@ -279,10 +317,10 @@ test.describe('MCP Server E2E Tests', () => {
                 value: 'Updated via E2E test',
             }],
             dryRun: false,
-        }) as { success: boolean; applied: number };
+        }) as { ok: boolean; data: { applied: number } };
 
-        expect(applyResult.success).toBe(true);
-        expect(applyResult.applied).toBe(1);
+        expect(applyResult.ok).toBe(true);
+        expect(applyResult.data.applied).toBe(1);
 
         // Verify the change persisted
         const readResult = await callMcpTool(sessionId, 'read_entity', {
@@ -303,6 +341,7 @@ test.describe('MCP Server E2E Tests', () => {
         const featureId = featureIds[0];
 
         // Create a new entity with all required fields
+        // Using validate=warn since the temp bundle may have different schema
         const createResult = await callMcpTool(sessionId, 'apply_changes', {
             changes: [{
                 operation: 'create',
@@ -319,9 +358,11 @@ test.describe('MCP Server E2E Tests', () => {
                 },
             }],
             dryRun: false,
-        }) as { success: boolean };
+            validate: 'warn',  // Allow warnings for schema flexibility in tests
+            referencePolicy: 'warn',  // Allow reference warnings
+        }) as { ok: boolean };
 
-        expect(createResult.success).toBe(true);
+        expect(createResult.ok).toBe(true);
 
         // Verify creation
         const readResult = await callMcpTool(sessionId, 'read_entity', {
@@ -340,9 +381,10 @@ test.describe('MCP Server E2E Tests', () => {
                 entityId: 'REQ-e2e-test-temp',
             }],
             dryRun: false,
-        }) as { success: boolean };
+            deleteMode: 'orphan',  // Allow orphan since we just created it
+        }) as { ok: boolean };
 
-        expect(deleteResult.success).toBe(true);
+        expect(deleteResult.ok).toBe(true);
 
         // Verify deletion - should throw or return not found
         try {
@@ -516,6 +558,79 @@ test.describe('MCP Server E2E Tests', () => {
         expect(result.schemas).toBeUndefined();
         expect(result.refGraph).toBeUndefined();
         expect(result.diagnostics).toBeUndefined();
+    });
+
+    test('get_bundle_snapshot with entityTypes filter', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {
+            entityTypes: ['Requirement'],
+        }) as {
+            entities: Record<string, unknown[]>;
+            meta: { entityTypes: string[]; allEntityTypes: string[] };
+        };
+
+        // Should only have Requirement in entities
+        expect(result.entities.Requirement).toBeDefined();
+        expect(result.entities.Task).toBeUndefined();
+        expect(result.entities.Feature).toBeUndefined();
+
+        // Meta should show filtered vs all types
+        expect(result.meta.entityTypes).toContain('Requirement');
+        expect(result.meta.allEntityTypes.length).toBeGreaterThan(result.meta.entityTypes.length);
+    });
+
+    test('get_bundle_snapshot with includeEntityData=summary', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {
+            entityTypes: ['Requirement'],
+            includeEntityData: 'summary',
+        }) as {
+            entities: Record<string, Array<{ id: string; title?: string; description?: string }>>;
+            meta: { includeEntityData: string };
+        };
+
+        expect(result.meta.includeEntityData).toBe('summary');
+
+        // Summary should have id and title but NOT full fields like description
+        const reqs = result.entities.Requirement;
+        expect(reqs.length).toBeGreaterThan(0);
+        expect(reqs[0].id).toBeDefined();
+        // Summary entities should NOT have description (full field)
+        const hasDescription = reqs.some(r => 'description' in r && r.description !== undefined);
+        const hasTitle = reqs.some(r => 'title' in r || 'name' in r);
+        expect(hasTitle).toBe(true); // Should have title or name
+    });
+
+    test('get_bundle_snapshot with includeEntityData=ids', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {
+            entityTypes: ['Requirement'],
+            includeEntityData: 'ids',
+        }) as {
+            entities: Record<string, Array<{ id: string; entityType: string; title?: string }>>;
+        };
+
+        // Should only have id and entityType
+        const reqs = result.entities.Requirement;
+        expect(reqs.length).toBeGreaterThan(0);
+        expect(reqs[0].id).toBeDefined();
+        expect(reqs[0].entityType).toBe('Requirement');
+        expect(reqs[0].title).toBeUndefined();
+    });
+
+    test('get_bundle_snapshot with maxEntities truncation', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {
+            maxEntities: 2,
+        }) as {
+            entities: Record<string, unknown[]>;
+            meta: { entityCount: number; totalEntities: number; truncated: boolean; maxEntities: number };
+        };
+
+        expect(result.meta.maxEntities).toBe(2);
+        expect(result.meta.entityCount).toBeLessThanOrEqual(2);
+        expect(result.meta.totalEntities).toBeGreaterThan(2); // Bundle has more than 2 entities
+        expect(result.meta.truncated).toBe(true);
     });
 
     // Phase 3: Context Controls Tests

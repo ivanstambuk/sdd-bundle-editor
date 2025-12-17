@@ -16,16 +16,54 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 - **`domain-knowledge`** - Aggregated domain knowledge from all bundles
 
 ### Tools
+
 | Tool | Description |
 |------|-------------|
-| `list_bundles` | List all loaded bundles with their metadata |
+| `list_bundles` | List all loaded bundles with metadata and entity counts |
+| `get_bundle_schema` | Get the bundle type definition (metaschema) for a bundle |
+| `get_entity_schema` | Get the JSON schema for a specific entity type |
+| `get_bundle_snapshot` | Get complete bundle with entities, schemas, refGraph (supports filtering) |
 | `read_entity` | Read a specific entity by bundle, type and ID |
-| `list_entities` | List all entity IDs (filter by bundle/type) |
+| `read_entities` | Bulk read multiple entities by ID (more efficient than multiple read_entity calls) |
+| `list_entities` | List all entity IDs (filter by bundle/type, with stable ordering) |
+| `list_entity_summaries` | List entities with summary fields (id, title, state) |
+| `get_entity_relations` | Get relationships defined for an entity type |
 | `get_context` | Graph traversal to get entity with dependencies |
 | `get_conformance_context` | Get profile conformance rules and audit templates |
 | `search_entities` | Search for entities across all bundles |
 | `validate_bundle` | Validate a bundle and return diagnostics |
-| `apply_changes` | **NEW:** Atomic batch changes (create/update/delete) with validate-before-write |
+| `apply_changes` | Atomic batch changes (create/update/delete) with schema validation |
+
+#### Response Envelope
+
+All tools return a standardized response envelope:
+
+```json
+{
+  "ok": true,
+  "tool": "read_entity",
+  "bundleId": "my-bundle",
+  "data": { ... },
+  "meta": { ... },
+  "diagnostics": []
+}
+```
+
+For errors:
+
+```json
+{
+  "ok": false,
+  "tool": "read_entity",
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Entity not found: Requirement/REQ-999",
+    "details": { "entityType": "Requirement", "entityId": "REQ-999" }
+  }
+}
+```
+
+**Error Codes:** `BAD_REQUEST`, `NOT_FOUND`, `VALIDATION_ERROR`, `REFERENCE_ERROR`, `DELETE_BLOCKED`, `INTERNAL`
 
 ### Prompts (Structured AI Workflows)
 | Prompt | Description |
@@ -41,6 +79,85 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `diff-bundles` | Compare two bundles and highlight differences |
 | `create-roadmap` | Generate implementation roadmap from specifications |
 | `bundle-health` | Analyze bundle health and generate a report |
+
+---
+
+## Tool Reference
+
+### apply_changes
+
+Atomic batch changes with schema validation, reference integrity, and safety defaults.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `changes` | object[] | required | Array of operations |
+| `dryRun` | boolean | `true` | Preview without writing (safety default) |
+| `validate` | `strict`/`warn`/`none` | `strict` | Schema validation mode |
+| `referencePolicy` | `strict`/`warn`/`none` | `strict` | Reference integrity checking |
+| `deleteMode` | `restrict`/`orphan` | `restrict` | Block deletion if referenced |
+
+**Change Operations:**
+
+```json
+{
+  "changes": [
+    { "operation": "create", "entityType": "Requirement", "entityId": "REQ-NEW", "data": { "title": "New Req" } },
+    { "operation": "update", "entityType": "Requirement", "entityId": "REQ-001", "fieldPath": "priority", "value": "high" },
+    { "operation": "delete", "entityType": "Requirement", "entityId": "REQ-OLD" }
+  ],
+  "dryRun": false
+}
+```
+
+**Validation Behavior:**
+
+- `strict`: Rejects invalid entities, unknown fields, broken references
+- `warn`: Returns diagnostics but allows operation
+- `none`: Skips validation (not recommended)
+
+### get_bundle_snapshot
+
+Get a complete bundle snapshot optimized for initial loads.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID |
+| `entityTypes` | string[] | all | Filter to specific types |
+| `includeEntityData` | `full`/`summary`/`ids` | `full` | Entity data detail level |
+| `includeSchemas` | boolean | `true` | Include JSON schemas |
+| `includeRefGraph` | boolean | `true` | Include reference graph |
+| `includeDiagnostics` | boolean | `true` | Include validation diagnostics |
+| `maxEntities` | number | 5000 | Truncation limit (max 10000) |
+
+**Example (lightweight snapshot):**
+
+```json
+{
+  "entityTypes": ["Requirement", "Task"],
+  "includeEntityData": "summary",
+  "includeSchemas": false,
+  "maxEntities": 100
+}
+```
+
+**Meta Response:**
+
+```json
+{
+  "meta": {
+    "entityCount": 100,
+    "totalEntities": 500,
+    "truncated": true,
+    "entityTypes": ["Requirement", "Task"],
+    "allEntityTypes": ["Requirement", "Task", "Feature", "Component"]
+  }
+}
+```
 
 ---
 

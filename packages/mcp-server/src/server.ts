@@ -1,8 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, deleteEntity, applyChange } from "@sdd-bundle-editor/core-model";
+import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, deleteEntity, applyChange, compileDocumentSchemas, validateEntityWithSchemas } from "@sdd-bundle-editor/core-model";
 import { z } from "zod";
 import { BundleConfig, LoadedBundle } from "./types.js";
+import { toolSuccess, toolError, type Diagnostic as ResponseDiagnostic } from "./response-helpers.js";
 import * as path from "path";
 import * as fs from "fs/promises";
 
@@ -130,6 +131,7 @@ export class SddMcpServer {
             "List all loaded specification bundles. Use this first to discover what bundles are available, their IDs, entity types, and metadata. Returns bundle IDs needed for other tool calls in multi-bundle mode.",
             {},
             async () => {
+                const TOOL_NAME = "list_bundles";
                 const bundleList = Array.from(this.bundles.values()).map(b => ({
                     id: b.id,
                     name: b.bundle.manifest.metadata.name,
@@ -138,13 +140,14 @@ export class SddMcpServer {
                     description: b.description,
                     path: b.path,
                     entityTypes: Array.from(b.bundle.entities.keys()),
+                    entityCount: Array.from(b.bundle.entities.values()).reduce((sum, m) => sum + m.size, 0),
                 }));
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify(bundleList, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    bundles: bundleList,
+                }, {
+                    meta: { count: bundleList.length },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -156,38 +159,30 @@ export class SddMcpServer {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
             },
             async ({ bundleId }) => {
+                const TOOL_NAME = "get_bundle_schema";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundleDef = loaded.bundle.bundleTypeDefinition;
                 const manifest = loaded.bundle.manifest;
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            bundleId: loaded.id,
-                            manifest: {
-                                name: manifest.metadata?.name,
-                                bundleType: manifest.metadata?.bundleType,
-                                version: manifest.metadata?.version,
-                                description: manifest.metadata?.description,
-                            },
-                            bundleTypeDefinition: bundleDef,
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    manifest: {
+                        name: manifest.metadata?.name,
+                        bundleType: manifest.metadata?.bundleType,
+                        version: manifest.metadata?.version,
+                        description: manifest.metadata?.description,
+                    },
+                    bundleTypeDefinition: bundleDef,
+                }, {
+                    bundleId: loaded.id,
+                    diagnostics: [],
+                });
             }
         );
 
@@ -200,27 +195,19 @@ export class SddMcpServer {
                 entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
             },
             async ({ bundleId, entityType }) => {
+                const TOOL_NAME = "get_entity_schema";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 // Get schema path from manifest
                 const schemaRelPath = loaded.bundle.manifest.spec?.schemas?.documents?.[entityType];
                 if (!schemaRelPath) {
-                    return {
-                        content: [{ type: "text", text: `No schema defined for entity type: ${entityType}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `No schema defined for entity type: ${entityType}`, { bundleId: loaded.id, entityType });
                 }
 
                 // Load schema from disk
@@ -229,21 +216,15 @@ export class SddMcpServer {
                     const schemaContent = await fs.readFile(schemaPath, 'utf8');
                     const schema = JSON.parse(schemaContent);
 
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                bundleId: loaded.id,
-                                entityType,
-                                schema,
-                            }, null, 2),
-                        }],
-                    };
+                    return toolSuccess(TOOL_NAME, {
+                        entityType,
+                        schema,
+                    }, {
+                        bundleId: loaded.id,
+                        diagnostics: [],
+                    });
                 } catch (err) {
-                    return {
-                        content: [{ type: "text", text: `Failed to load schema for ${entityType}: ${String(err)}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "INTERNAL", `Failed to load schema for ${entityType}: ${String(err)}`, { entityType });
                 }
             }
         );
@@ -251,51 +232,89 @@ export class SddMcpServer {
         // Tool: get_bundle_snapshot
         this.server.tool(
             "get_bundle_snapshot",
-            "Get a complete bundle snapshot with all entities, schemas, refGraph, and diagnostics in a single call. Optimized for UI initial load - much more efficient than multiple calls.",
+            "Get a complete bundle snapshot with all entities, schemas, refGraph, and diagnostics in a single call. Optimized for UI initial load - much more efficient than multiple calls. Use entityTypes to filter, includeEntityData to control payload size, and maxEntities to prevent truncation.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityTypes: z.array(z.string()).optional().describe("Filter to specific entity types (e.g., ['Requirement', 'Task']). Returns all types if not specified."),
+                includeEntityData: z.enum(["full", "summary", "ids"]).default("full").describe("Entity data detail: full (all fields), summary (id, title, state), ids (just IDs)"),
                 includeSchemas: z.boolean().default(true).describe("Include JSON schemas for each entity type"),
                 includeRefGraph: z.boolean().default(true).describe("Include reference graph edges"),
                 includeDiagnostics: z.boolean().default(true).describe("Include validation diagnostics"),
+                maxEntities: z.number().max(10000).default(5000).describe("Maximum entities to return before truncation (default: 5000, max: 10000)"),
             },
-            async ({ bundleId, includeSchemas, includeRefGraph, includeDiagnostics }) => {
+            async ({ bundleId, entityTypes, includeEntityData, includeSchemas, includeRefGraph, includeDiagnostics, maxEntities }) => {
+                const TOOL_NAME = "get_bundle_snapshot";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundle = loaded.bundle;
 
-                // Build entities map
+                // Determine which types to include
+                const typesToInclude = entityTypes
+                    ? entityTypes.filter(t => bundle.entities.has(t))
+                    : Array.from(bundle.entities.keys());
+
+                // Build entities map with size controls
                 const entities: Record<string, Array<Record<string, unknown>>> = {};
                 let entityCount = 0;
-                for (const [entityType, entityMap] of bundle.entities) {
+                let totalEntities = 0;
+                let truncated = false;
+
+                for (const entityType of typesToInclude.sort()) { // Stable ordering
+                    const entityMap = bundle.entities.get(entityType);
+                    if (!entityMap) continue;
+
                     entities[entityType] = [];
-                    for (const entity of entityMap.values()) {
-                        entities[entityType].push({
-                            id: entity.id,
-                            entityType: entity.entityType,
-                            ...entity.data,
-                        });
+                    const sortedIds = Array.from(entityMap.keys()).sort(); // Stable ordering
+
+                    for (const id of sortedIds) {
+                        totalEntities++;
+                        if (entityCount >= maxEntities) {
+                            truncated = true;
+                            continue; // Still count total but don't add
+                        }
+
+                        const entity = entityMap.get(id)!;
+                        let entityData: Record<string, unknown>;
+
+                        if (includeEntityData === "full") {
+                            entityData = {
+                                id: entity.id,
+                                entityType: entity.entityType,
+                                ...entity.data,
+                            };
+                        } else if (includeEntityData === "summary") {
+                            const data = entity.data as Record<string, unknown>;
+                            entityData = {
+                                id: entity.id,
+                                entityType: entity.entityType,
+                                title: data.title,
+                                name: data.name,
+                                state: data.state,
+                            };
+                        } else {
+                            // ids only
+                            entityData = { id: entity.id, entityType: entity.entityType };
+                        }
+
+                        entities[entityType].push(entityData);
                         entityCount++;
                     }
                 }
 
-                // Build schemas map if requested
+                // Build schemas map if requested (only for included types)
                 let schemas: Record<string, unknown> | undefined;
                 if (includeSchemas) {
                     schemas = {};
                     const schemaDocs = bundle.manifest.spec?.schemas?.documents ?? {};
-                    for (const [entityType, schemaRelPath] of Object.entries(schemaDocs)) {
+                    for (const entityType of typesToInclude.sort()) {
+                        const schemaRelPath = schemaDocs[entityType];
+                        if (!schemaRelPath) continue;
                         try {
                             const schemaPath = path.join(loaded.path, schemaRelPath);
                             const schemaContent = await fs.readFile(schemaPath, 'utf8');
@@ -306,40 +325,37 @@ export class SddMcpServer {
                     }
                 }
 
-                // Build response
-                const snapshot: Record<string, unknown> = {
-                    bundleId: loaded.id,
+                // Build response data
+                const snapshotData: Record<string, unknown> = {
                     manifest: bundle.manifest,
                     bundleTypeDefinition: bundle.bundleTypeDefinition,
                     entities,
                 };
 
                 if (includeSchemas && schemas) {
-                    snapshot.schemas = schemas;
+                    snapshotData.schemas = schemas;
                 }
 
                 if (includeRefGraph) {
-                    snapshot.refGraph = bundle.refGraph;
+                    snapshotData.refGraph = bundle.refGraph;
                 }
 
-                if (includeDiagnostics) {
-                    snapshot.diagnostics = loaded.diagnostics;
-                }
-
-                // Add meta for UI
-                snapshot.meta = {
-                    entityCount,
-                    entityTypes: Array.from(bundle.entities.keys()),
-                    schemaCount: schemas ? Object.keys(schemas).length : 0,
-                    diagnosticCount: loaded.diagnostics.length,
-                };
-
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify(snapshot, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, snapshotData, {
+                    bundleId: loaded.id,
+                    meta: {
+                        entityCount,
+                        totalEntities,
+                        entityTypes: typesToInclude.sort(),
+                        allEntityTypes: Array.from(bundle.entities.keys()).sort(),
+                        schemaCount: schemas ? Object.keys(schemas).length : 0,
+                        diagnosticCount: loaded.diagnostics.length,
+                        includeEntityData,
+                        maxEntities,
+                        truncated,
+                    },
+                    // Only include diagnostics if requested - undefined will be omitted from response
+                    diagnostics: includeDiagnostics ? loaded.diagnostics : undefined,
+                });
             }
         );
 
@@ -353,42 +369,34 @@ export class SddMcpServer {
                 id: z.string().describe("Entity ID"),
             },
             async ({ bundleId, entityType, id }) => {
+                const TOOL_NAME = "read_entity";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const entitiesOfType = loaded.bundle.entities.get(entityType);
                 if (!entitiesOfType) {
-                    return {
-                        content: [{ type: "text", text: `Unknown entity type: ${entityType}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Unknown entity type: ${entityType}`, { bundleId: loaded.id, entityType });
                 }
 
                 const entity = entitiesOfType.get(id);
                 if (!entity) {
-                    return {
-                        content: [{ type: "text", text: `Entity not found: ${id}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Entity not found: ${id}`, { bundleId: loaded.id, entityType, entityId: id });
                 }
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({ bundleId: loaded.id, ...entity.data }, null, 2),
-                    }],
-                };
+                // Return entity with entityType for consistency
+                return toolSuccess(TOOL_NAME, {
+                    id: entity.id,
+                    entityType: entity.entityType,
+                    ...entity.data,
+                }, {
+                    bundleId: loaded.id,
+                    diagnostics: [],
+                });
             }
         );
 
@@ -403,26 +411,18 @@ export class SddMcpServer {
                 fields: z.array(z.string()).optional().describe("Specific fields to return (optional, returns all if not specified)"),
             },
             async ({ bundleId, entityType, ids, fields }) => {
+                const TOOL_NAME = "read_entities";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const entitiesOfType = loaded.bundle.entities.get(entityType);
                 if (!entitiesOfType) {
-                    return {
-                        content: [{ type: "text", text: `Unknown entity type: ${entityType}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Unknown entity type: ${entityType}`, { bundleId: loaded.id, entityType });
                 }
 
                 const entities: Array<Record<string, unknown>> = [];
@@ -431,7 +431,7 @@ export class SddMcpServer {
                 for (const id of ids) {
                     const entity = entitiesOfType.get(id);
                     if (entity) {
-                        let entityData: Record<string, unknown> = { bundleId: loaded.id, ...entity.data };
+                        let entityData: Record<string, unknown> = { ...entity.data };
 
                         // Filter fields if specified
                         if (fields && fields.length > 0) {
@@ -450,19 +450,18 @@ export class SddMcpServer {
                     }
                 }
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            entities,
-                            meta: {
-                                requested: ids.length,
-                                found: entities.length,
-                                notFound,
-                            },
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    entityType,
+                    entities,
+                }, {
+                    bundleId: loaded.id,
+                    meta: {
+                        requested: ids.length,
+                        found: entities.length,
+                        notFound,
+                    },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -477,68 +476,59 @@ export class SddMcpServer {
                 offset: z.number().default(0).describe("Starting offset for pagination"),
             },
             async ({ bundleId, entityType, limit, offset }) => {
+                const TOOL_NAME = "list_entities";
+
                 // Special case: list from all bundles
                 if (bundleId === "all" || (!bundleId && !this.isSingleBundleMode())) {
-                    const result: Record<string, any> = {};
+                    const bundleData: Record<string, any> = {};
                     for (const [bId, loaded] of this.bundles) {
                         if (entityType) {
                             const entities = loaded.bundle.entities.get(entityType);
                             if (entities) {
-                                result[bId] = Array.from(entities.keys());
+                                bundleData[bId] = Array.from(entities.keys()).sort(); // Stable ordering
                             }
                         } else {
-                            result[bId] = {
-                                entityTypes: Array.from(loaded.bundle.entities.keys()),
+                            bundleData[bId] = {
+                                entityTypes: Array.from(loaded.bundle.entities.keys()).sort(), // Stable ordering
                             };
                         }
                     }
-                    return {
-                        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-                    };
+                    return toolSuccess(TOOL_NAME, bundleData, {
+                        meta: { bundleCount: this.bundles.size },
+                        diagnostics: [],
+                    });
                 }
 
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 if (entityType) {
                     const entitiesOfType = loaded.bundle.entities.get(entityType);
-                    if (!entitiesOfType) {
-                        return {
-                            content: [{
-                                type: "text",
-                                text: JSON.stringify({
-                                    ids: [],
-                                    meta: { total: 0, limit, offset, hasMore: false },
-                                }, null, 2),
-                            }],
-                        };
-                    }
-
-                    const allIds = Array.from(entitiesOfType.keys());
+                    const allIds = entitiesOfType ? Array.from(entitiesOfType.keys()).sort() : []; // Stable ordering
                     const total = allIds.length;
                     const paginatedIds = allIds.slice(offset, offset + limit);
                     const hasMore = offset + limit < total;
 
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                ids: paginatedIds,
-                                meta: { total, limit, offset, returned: paginatedIds.length, hasMore },
-                            }, null, 2),
-                        }],
-                    };
+                    return toolSuccess(TOOL_NAME, {
+                        entityType,
+                        ids: paginatedIds,
+                    }, {
+                        bundleId: loaded.id,
+                        meta: { total, limit, offset, returned: paginatedIds.length, hasMore },
+                        diagnostics: [],
+                    });
                 }
 
-                const allTypes = Array.from(loaded.bundle.entities.keys());
-                return {
-                    content: [{ type: "text", text: `Available types in ${loaded.id}: ${allTypes.join(", ")}` }]
-                };
+                const allTypes = Array.from(loaded.bundle.entities.keys()).sort(); // Stable ordering
+                return toolSuccess(TOOL_NAME, {
+                    entityTypes: allTypes,
+                }, {
+                    bundleId: loaded.id,
+                    meta: { typeCount: allTypes.length },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -554,32 +544,29 @@ export class SddMcpServer {
                 offset: z.number().default(0).describe("Pagination offset"),
             },
             async ({ bundleId, entityType, include, limit, offset }) => {
+                const TOOL_NAME = "list_entity_summaries";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 // Clamp limit to max 200
                 const effectiveLimit = Math.min(limit, 200);
 
-                // Collect entities from all types or just the specified type
+                // Collect entities from all types or just the specified type (with stable ordering)
                 const allItems: Array<{ entityType: string;[key: string]: unknown }> = [];
                 const typesToScan = entityType
                     ? [[entityType, loaded.bundle.entities.get(entityType)] as const].filter(([_, v]) => v)
-                    : Array.from(loaded.bundle.entities.entries());
+                    : Array.from(loaded.bundle.entities.entries()).sort((a, b) => a[0].localeCompare(b[0]));
 
                 for (const [eType, entities] of typesToScan) {
                     if (!entities) continue;
-                    for (const [eId, entity] of entities) {
+                    const sortedKeys = Array.from(entities.keys()).sort(); // Stable ordering
+                    for (const eId of sortedKeys) {
+                        const entity = entities.get(eId)!;
                         const summary: Record<string, unknown> = { entityType: eType };
                         const data = entity.data as Record<string, unknown>;
 
@@ -602,21 +589,19 @@ export class SddMcpServer {
                 const paginatedItems = allItems.slice(offset, offset + effectiveLimit);
                 const hasMore = offset + effectiveLimit < total;
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            items: paginatedItems,
-                            meta: {
-                                total,
-                                limit: effectiveLimit,
-                                offset,
-                                returned: paginatedItems.length,
-                                hasMore,
-                            },
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    items: paginatedItems,
+                }, {
+                    bundleId: loaded.id,
+                    meta: {
+                        total,
+                        limit: effectiveLimit,
+                        offset,
+                        returned: paginatedItems.length,
+                        hasMore,
+                    },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -630,25 +615,26 @@ export class SddMcpServer {
                 direction: z.enum(["outgoing", "incoming", "both"]).default("both").describe("Filter by direction: outgoing (this type references other), incoming (other types reference this), both (all)"),
             },
             async ({ bundleId, entityType, direction }) => {
+                const TOOL_NAME = "get_entity_relations";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundleDef = loaded.bundle.bundleTypeDefinition;
                 if (!bundleDef || !bundleDef.relations) {
-                    return {
-                        content: [{ type: "text", text: `No relations defined in bundle: ${loaded.id}` }],
-                    };
+                    return toolSuccess(TOOL_NAME, {
+                        entityType: entityType || "all",
+                        direction,
+                        relations: [],
+                    }, {
+                        bundleId: loaded.id,
+                        meta: { total: 0 },
+                        diagnostics: [],
+                    });
                 }
 
                 // Filter relations based on entityType and direction
@@ -676,20 +662,15 @@ export class SddMcpServer {
                     }),
                 }));
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            bundleId: loaded.id,
-                            entityType: entityType || "all",
-                            direction,
-                            relations: formatted,
-                            meta: {
-                                total: formatted.length,
-                            },
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    entityType: entityType || "all",
+                    direction,
+                    relations: formatted,
+                }, {
+                    bundleId: loaded.id,
+                    meta: { total: formatted.length },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -707,18 +688,13 @@ export class SddMcpServer {
                 fields: z.array(z.string()).optional().describe("Specific fields to return for target entity"),
             },
             async ({ bundleId, entityType, id, depth, maxRelated, includeRelated, fields }) => {
+                const TOOL_NAME = "get_context";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundle = loaded.bundle;
@@ -726,10 +702,7 @@ export class SddMcpServer {
                 const targetEntity = targetEntities?.get(id);
 
                 if (!targetEntity) {
-                    return {
-                        content: [{ type: "text", text: `Entity not found: ${entityType}/${id}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Entity not found: ${entityType}/${id}`, { bundleId: loaded.id, entityType, entityId: id });
                 }
 
                 // Graph traversal to find related entities
@@ -811,10 +784,11 @@ export class SddMcpServer {
                     targetData = filtered;
                 }
 
-                const output = {
-                    bundleId: loaded.id,
+                return toolSuccess(TOOL_NAME, {
                     target: targetData,
                     related: relatedEntities,
+                }, {
+                    bundleId: loaded.id,
                     meta: {
                         relatedCount: relatedEntities.length,
                         maxRelated,
@@ -822,14 +796,8 @@ export class SddMcpServer {
                         includeRelated,
                         depth,
                     },
-                };
-
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify(output, null, 2),
-                    }],
-                };
+                    diagnostics: [],
+                });
             }
         );
 
@@ -842,18 +810,13 @@ export class SddMcpServer {
                 profileId: z.string().optional().describe("Profile ID (optional, lists all profiles if not specified)"),
             },
             async ({ bundleId, profileId }) => {
+                const TOOL_NAME = "get_conformance_context";
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundle = loaded.bundle;
@@ -862,26 +825,32 @@ export class SddMcpServer {
                 // Case 1: List all profiles if no ID provided
                 if (!profileId) {
                     if (!profiles || profiles.size === 0) {
-                        return { content: [{ type: "text", text: `No profiles found in bundle: ${loaded.id}` }] };
+                        return toolSuccess(TOOL_NAME, {
+                            profiles: [],
+                        }, {
+                            bundleId: loaded.id,
+                            meta: { count: 0 },
+                            diagnostics: [],
+                        });
                     }
-                    const summary = Array.from(profiles.values()).map(p => ({
-                        bundleId: loaded.id,
+                    const profileSummaries = Array.from(profiles.values()).map(p => ({
                         id: p.id,
                         title: p.data.title,
                         description: p.data.description
                     }));
-                    return {
-                        content: [{ type: "text", text: JSON.stringify(summary, null, 2) }]
-                    };
+                    return toolSuccess(TOOL_NAME, {
+                        profiles: profileSummaries,
+                    }, {
+                        bundleId: loaded.id,
+                        meta: { count: profileSummaries.length },
+                        diagnostics: [],
+                    });
                 }
 
                 // Case 2: Get specific profile context
                 const profile = profiles?.get(profileId);
                 if (!profile) {
-                    return {
-                        content: [{ type: "text", text: `Profile not found: ${profileId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Profile not found: ${profileId}`, { bundleId: loaded.id, profileId });
                 }
 
                 const data = profile.data as any;
@@ -904,25 +873,21 @@ export class SddMcpServer {
                     return expanded;
                 });
 
-                const context = {
-                    bundleId: loaded.id,
-                    metadata: {
+                return toolSuccess(TOOL_NAME, {
+                    profile: {
                         id: profile.id,
                         title: data.title,
-                        description: data.description
+                        description: data.description,
                     },
                     auditTemplate: data.auditTemplate,
                     rules: expandedRules,
                     requiredFeatures,
-                    optionalFeatures: data.optionalFeatures
-                };
-
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify(context, null, 2),
-                    }],
-                };
+                    optionalFeatures: data.optionalFeatures,
+                }, {
+                    bundleId: loaded.id,
+                    meta: { ruleCount: expandedRules.length },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -938,6 +903,7 @@ export class SddMcpServer {
                 offset: z.number().default(0).describe("Starting offset for pagination"),
             },
             async ({ query, entityType, bundleId, limit, offset }) => {
+                const TOOL_NAME = "search_entities";
                 const results: Array<{
                     bundleId: string;
                     entityType: string;
@@ -983,22 +949,19 @@ export class SddMcpServer {
                 const paginatedResults = results.slice(offset, offset + limit);
                 const hasMore = offset + limit < total;
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            query,
-                            results: paginatedResults,
-                            meta: {
-                                total,
-                                limit,
-                                offset,
-                                returned: paginatedResults.length,
-                                hasMore,
-                            },
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    query,
+                    results: paginatedResults,
+                }, {
+                    meta: {
+                        total,
+                        limit,
+                        offset,
+                        returned: paginatedResults.length,
+                        hasMore,
+                    },
+                    diagnostics: [],
+                });
             }
         );
 
@@ -1010,6 +973,8 @@ export class SddMcpServer {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to validate all bundles)"),
             },
             async ({ bundleId }) => {
+                const TOOL_NAME = "validate_bundle";
+
                 // Validate all bundles
                 if (bundleId === "all" || (!bundleId && !this.isSingleBundleMode())) {
                     const allDiagnostics: Array<{
@@ -1025,7 +990,7 @@ export class SddMcpServer {
                         for (const d of loaded.diagnostics) {
                             allDiagnostics.push({
                                 bundleId: bId,
-                                severity: d.severity,
+                                severity: d.severity as "error" | "warning" | "info",
                                 message: d.message,
                                 entityType: d.entityType,
                                 entityId: d.entityId,
@@ -1037,345 +1002,490 @@ export class SddMcpServer {
                     const errorCount = allDiagnostics.filter(d => d.severity === 'error').length;
                     const warnCount = allDiagnostics.filter(d => d.severity === 'warning').length;
 
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                summary: {
-                                    bundlesChecked: this.bundles.size,
-                                    totalErrors: errorCount,
-                                    totalWarnings: warnCount,
-                                    isValid: errorCount === 0,
-                                },
-                                diagnostics: allDiagnostics,
-                            }, null, 2),
-                        }],
-                    };
+                    return toolSuccess(TOOL_NAME, {
+                        summary: {
+                            bundlesChecked: this.bundles.size,
+                            totalErrors: errorCount,
+                            totalWarnings: warnCount,
+                            isValid: errorCount === 0,
+                        },
+                    }, {
+                        meta: { bundleCount: this.bundles.size },
+                        diagnostics: allDiagnostics as any, // Extended with bundleId
+                    });
                 }
 
                 // Validate single bundle
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId or use 'all'. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId or use 'all'.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const errorCount = loaded.diagnostics.filter(d => d.severity === 'error').length;
                 const warnCount = loaded.diagnostics.filter(d => d.severity === 'warning').length;
 
-                return {
-                    content: [{
-                        type: "text",
-                        text: JSON.stringify({
-                            bundleId: loaded.id,
-                            summary: {
-                                totalErrors: errorCount,
-                                totalWarnings: warnCount,
-                                isValid: errorCount === 0,
-                            },
-                            diagnostics: loaded.diagnostics,
-                        }, null, 2),
-                    }],
-                };
+                return toolSuccess(TOOL_NAME, {
+                    summary: {
+                        totalErrors: errorCount,
+                        totalWarnings: warnCount,
+                        isValid: errorCount === 0,
+                    },
+                }, {
+                    bundleId: loaded.id,
+                    diagnostics: loaded.diagnostics,
+                });
             }
         );
 
         // Tool: apply_changes - Atomic batch changes with validate-before-write
         this.server.tool(
             "apply_changes",
-            "Apply multiple changes to a bundle atomically. Supports create, update, and delete operations. All changes are validated together before any files are written - either all succeed or none are applied. Use for modifying entities safely. Returns detailed diagnostics on failure with changeIndex indicating which change caused each error.",
+            "Apply multiple changes to a bundle atomically. Supports create, update, and delete operations. All changes are validated against schemas and reference integrity before writing. dryRun defaults to true for safety - set to false to actually write changes. Returns detailed diagnostics on failure with changeIndex indicating which change caused each error.",
             {
                 bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
                 changes: z.array(z.object({
                     operation: z.enum(["create", "update", "delete"]).describe("Type of operation"),
                     entityType: z.string().describe("Entity type (e.g., 'Requirement', 'Task', 'Feature')"),
                     entityId: z.string().describe("Entity ID"),
-                    fieldPath: z.string().optional().describe("For updates: dot-notation path to field (e.g., 'description', 'metadata.priority')"),
+                    fieldPath: z.string().optional().describe("For updates: dot-notation path to field (e.g., 'description', 'priority'). Field MUST exist in schema."),
                     value: z.any().optional().describe("For updates: new value for the field. For creates: ignored if 'data' is provided"),
                     data: z.any().optional().describe("For creates: complete entity data object"),
                 })).describe("Array of changes to apply atomically"),
-                dryRun: z.boolean().default(false).describe("If true, validate and return preview without writing files"),
+                dryRun: z.boolean().default(true).describe("If true (default), validate and return preview without writing files. Set to false to actually write."),
+                validate: z.enum(["strict", "warn", "none"]).optional().describe("Schema validation: strict (default for writes), warn (default for dryRun), none"),
+                referencePolicy: z.enum(["strict", "warn", "none"]).optional().describe("Reference integrity: strict (default for writes), warn (default for dryRun), none"),
+                deleteMode: z.enum(["restrict", "orphan"]).default("restrict").describe("Delete behavior: restrict (fail if referenced), orphan (allow dangling refs)"),
             },
-            async ({ bundleId, changes, dryRun }) => {
+            async ({ bundleId, changes, dryRun, validate: validateParam, referencePolicy: refPolicyParam, deleteMode }) => {
+                const TOOL_NAME = "apply_changes";
+
                 const loaded = this.getBundle(bundleId);
                 if (!loaded) {
                     if (!bundleId && !this.isSingleBundleMode()) {
-                        return {
-                            content: [{ type: "text", text: `Multiple bundles loaded. Please specify bundleId. Available: ${this.getBundleIds().join(", ")}` }],
-                            isError: true,
-                        };
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
                     }
-                    return {
-                        content: [{ type: "text", text: `Bundle not found: ${bundleId}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
                 }
 
                 const bundleDir = loaded.path;
+                const effectiveBundleId = loaded.id;
 
-                // We need to work on a fresh copy of the bundle to avoid corrupting the in-memory state on failure
-                // Reload the bundle from disk for modification
+                // Determine effective validation modes based on dryRun
+                const effectiveValidate = validateParam ?? (dryRun ? "warn" : "strict");
+                const effectiveRefPolicy = refPolicyParam ?? (dryRun ? "warn" : "strict");
+
+                // Load a fresh working bundle copy
                 let workingBundle: Bundle;
                 try {
                     const { bundle } = await loadBundleWithSchemaValidation(bundleDir);
                     workingBundle = bundle;
                 } catch (err) {
-                    return {
-                        content: [{ type: "text", text: `Failed to load bundle for modification: ${err instanceof Error ? err.message : String(err)}` }],
-                        isError: true,
-                    };
+                    return toolError(TOOL_NAME, "INTERNAL", `Failed to load bundle for modification: ${err instanceof Error ? err.message : String(err)}`);
                 }
 
-                // Track which entities are modified by which change
-                const changeToEntity = new Map<number, string[]>();
+                // Compile schemas for validation
+                let compiledSchemas;
+                try {
+                    compiledSchemas = await compileDocumentSchemas(bundleDir, workingBundle.manifest);
+                } catch (err) {
+                    return toolError(TOOL_NAME, "INTERNAL", `Failed to compile schemas: ${err instanceof Error ? err.message : String(err)}`);
+                }
+
+                // Load raw schemas for field existence checking
+                const rawSchemas = new Map<string, Record<string, unknown>>();
+                for (const [entityType, relPath] of Object.entries(workingBundle.manifest.spec?.schemas?.documents ?? {})) {
+                    try {
+                        const schemaPath = path.join(bundleDir, relPath);
+                        const schemaContent = await fs.readFile(schemaPath, 'utf8');
+                        rawSchemas.set(entityType, JSON.parse(schemaContent));
+                    } catch {
+                        // Schema loading failed - skip
+                    }
+                }
+
+                // Track results per change
+                interface ChangeResult {
+                    index: number;
+                    operation: string;
+                    entityType: string;
+                    entityId: string;
+                    status: "would_apply" | "applied" | "error";
+                    resultEntity?: unknown;
+                    affectedFiles?: string[];
+                    diagnostics: ResponseDiagnostic[];
+                    error?: { code: string; message: string };
+                }
+
+                const results: ChangeResult[] = [];
                 const modifiedFiles: string[] = [];
                 const deletedFiles: string[] = [];
-                const errors: Array<{ changeIndex: number; message: string }> = [];
+                let hasBlockingErrors = false;
 
-                // Apply all changes to in-memory bundle
+                // Helper to check if a field path exists in schema
+                function fieldExistsInSchema(schema: Record<string, unknown>, fieldPath: string): boolean {
+                    const parts = fieldPath.split(".");
+                    let current: any = schema;
+
+                    for (const part of parts) {
+                        if (!current.properties) return false;
+                        if (!(part in current.properties)) return false;
+                        current = current.properties[part];
+                    }
+                    return true;
+                }
+
+                // Helper to extract sdd-ref fields from entity data
+                function extractRefs(data: Record<string, unknown>, schema: Record<string, unknown>): Array<{ field: string; targetId: string }> {
+                    const refs: Array<{ field: string; targetId: string }> = [];
+                    const props = (schema as any).properties || {};
+
+                    for (const [field, fieldSchema] of Object.entries(props)) {
+                        const fs = fieldSchema as any;
+                        const fieldValue = data[field];
+                        if (!fieldValue) continue;
+
+                        // Check for format: sdd-ref
+                        if (fs.format === "sdd-ref" && typeof fieldValue === "string") {
+                            refs.push({ field, targetId: fieldValue });
+                        }
+                        // Check for array of refs
+                        if (fs.type === "array" && fs.items?.format === "sdd-ref" && Array.isArray(fieldValue)) {
+                            for (const targetId of fieldValue) {
+                                if (typeof targetId === "string") {
+                                    refs.push({ field, targetId });
+                                }
+                            }
+                        }
+                    }
+                    return refs;
+                }
+
+                // Process each change
                 for (let i = 0; i < changes.length; i++) {
                     const change = changes[i];
-                    const entityKey = `${change.entityType}:${change.entityId}`;
+                    const result: ChangeResult = {
+                        index: i,
+                        operation: change.operation,
+                        entityType: change.entityType,
+                        entityId: change.entityId,
+                        status: "would_apply",
+                        diagnostics: [],
+                    };
+                    results.push(result);
 
-                    if (!changeToEntity.has(i)) {
-                        changeToEntity.set(i, []);
-                    }
-                    changeToEntity.get(i)!.push(entityKey);
+                    const schema = rawSchemas.get(change.entityType);
 
                     try {
                         switch (change.operation) {
                             case "create": {
-                                const entityData = change.data ?? {};
-                                const entity = createEntity(workingBundle, bundleDir, change.entityType, change.entityId, entityData);
-                                if (!modifiedFiles.includes(entity.filePath)) {
-                                    modifiedFiles.push(entity.filePath);
+                                const entityData = change.data ?? { id: change.entityId };
+
+                                // Validate schema if not none
+                                if (effectiveValidate !== "none" && schema) {
+                                    // Create entity in-memory first
+                                    const entity = createEntity(workingBundle, bundleDir, change.entityType, change.entityId, entityData);
+
+                                    // Validate against schema
+                                    const schemaDiags = validateEntityWithSchemas(compiledSchemas, entity);
+                                    for (const d of schemaDiags) {
+                                        result.diagnostics.push({
+                                            severity: d.severity,
+                                            code: d.code,
+                                            message: d.message,
+                                            entityType: change.entityType,
+                                            entityId: change.entityId,
+                                            field: d.path,
+                                        });
+                                    }
+
+                                    if (schemaDiags.some(d => d.severity === "error") && effectiveValidate === "strict") {
+                                        result.status = "error";
+                                        result.error = { code: "VALIDATION_ERROR", message: "Schema validation failed" };
+                                        hasBlockingErrors = true;
+                                        continue;
+                                    }
+
+                                    result.resultEntity = entity.data;
+                                    result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                                    if (!modifiedFiles.includes(entity.filePath)) {
+                                        modifiedFiles.push(entity.filePath);
+                                    }
+                                } else {
+                                    // No validation - just create
+                                    const entity = createEntity(workingBundle, bundleDir, change.entityType, change.entityId, entityData);
+                                    result.resultEntity = entity.data;
+                                    result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                                    if (!modifiedFiles.includes(entity.filePath)) {
+                                        modifiedFiles.push(entity.filePath);
+                                    }
+                                }
+
+                                // Check reference integrity for create
+                                if (effectiveRefPolicy !== "none" && schema) {
+                                    const refs = extractRefs(entityData, schema);
+                                    for (const ref of refs) {
+                                        if (!workingBundle.idRegistry.has(ref.targetId)) {
+                                            result.diagnostics.push({
+                                                severity: effectiveRefPolicy === "strict" ? "error" : "warning",
+                                                code: "REFERENCE_ERROR",
+                                                message: `Reference to non-existent entity: ${ref.targetId}`,
+                                                entityType: change.entityType,
+                                                entityId: change.entityId,
+                                                field: ref.field,
+                                            });
+                                            if (effectiveRefPolicy === "strict") {
+                                                result.status = "error";
+                                                result.error = { code: "REFERENCE_ERROR", message: `Broken reference: ${ref.field} -> ${ref.targetId}` };
+                                                hasBlockingErrors = true;
+                                            }
+                                        }
+                                    }
                                 }
                                 break;
                             }
+
                             case "update": {
                                 if (!change.fieldPath) {
-                                    errors.push({ changeIndex: i, message: `Update operation requires fieldPath` });
+                                    result.status = "error";
+                                    result.error = { code: "BAD_REQUEST", message: "Update operation requires fieldPath" };
+                                    hasBlockingErrors = true;
                                     continue;
                                 }
+
+                                // Non-upserting: check if field exists in schema
+                                if (effectiveValidate !== "none" && schema) {
+                                    if (!fieldExistsInSchema(schema, change.fieldPath)) {
+                                        result.status = "error";
+                                        result.error = {
+                                            code: "VALIDATION_ERROR",
+                                            message: `Field '${change.fieldPath}' does not exist in ${change.entityType} schema. Updates cannot create new fields.`
+                                        };
+                                        result.diagnostics.push({
+                                            severity: "error",
+                                            code: "VALIDATION_ERROR",
+                                            message: `Unknown field: ${change.fieldPath}`,
+                                            entityType: change.entityType,
+                                            entityId: change.entityId,
+                                            field: change.fieldPath,
+                                        });
+                                        hasBlockingErrors = true;
+                                        continue;
+                                    }
+                                }
+
+                                // Apply change in-memory
                                 applyChange(workingBundle, {
                                     entityType: change.entityType,
                                     entityId: change.entityId,
                                     fieldPath: change.fieldPath,
                                     newValue: change.value,
-                                    originalValue: null, // Not used for in-memory apply
+                                    originalValue: null,
                                 });
+
                                 const entityMap = workingBundle.entities.get(change.entityType);
                                 const entity = entityMap?.get(change.entityId);
-                                if (entity && !modifiedFiles.includes(entity.filePath)) {
+
+                                if (!entity) {
+                                    result.status = "error";
+                                    result.error = { code: "NOT_FOUND", message: `Entity not found: ${change.entityType}/${change.entityId}` };
+                                    hasBlockingErrors = true;
+                                    continue;
+                                }
+
+                                // Validate the updated entity against schema
+                                if (effectiveValidate !== "none") {
+                                    const schemaDiags = validateEntityWithSchemas(compiledSchemas, entity);
+                                    for (const d of schemaDiags) {
+                                        result.diagnostics.push({
+                                            severity: d.severity,
+                                            code: d.code,
+                                            message: d.message,
+                                            entityType: change.entityType,
+                                            entityId: change.entityId,
+                                            field: d.path,
+                                        });
+                                    }
+
+                                    if (schemaDiags.some(d => d.severity === "error") && effectiveValidate === "strict") {
+                                        result.status = "error";
+                                        result.error = { code: "VALIDATION_ERROR", message: "Schema validation failed after update" };
+                                        hasBlockingErrors = true;
+                                        continue;
+                                    }
+                                }
+
+                                // Check reference integrity for the updated field if it's a ref
+                                if (effectiveRefPolicy !== "none" && schema) {
+                                    const refs = extractRefs(entity.data as Record<string, unknown>, schema);
+                                    for (const ref of refs) {
+                                        if (!workingBundle.idRegistry.has(ref.targetId)) {
+                                            result.diagnostics.push({
+                                                severity: effectiveRefPolicy === "strict" ? "error" : "warning",
+                                                code: "REFERENCE_ERROR",
+                                                message: `Reference to non-existent entity: ${ref.targetId}`,
+                                                entityType: change.entityType,
+                                                entityId: change.entityId,
+                                                field: ref.field,
+                                            });
+                                            if (effectiveRefPolicy === "strict") {
+                                                result.status = "error";
+                                                result.error = { code: "REFERENCE_ERROR", message: `Broken reference: ${ref.field} -> ${ref.targetId}` };
+                                                hasBlockingErrors = true;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                result.resultEntity = entity.data;
+                                result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                                if (!modifiedFiles.includes(entity.filePath)) {
                                     modifiedFiles.push(entity.filePath);
                                 }
                                 break;
                             }
+
                             case "delete": {
                                 const entityMap = workingBundle.entities.get(change.entityType);
                                 const entity = entityMap?.get(change.entityId);
-                                if (entity && entityMap) {
-                                    deletedFiles.push(entity.filePath);
-                                    // Remove from bundle (in-memory only for now)
-                                    entityMap.delete(change.entityId);
-                                    workingBundle.idRegistry.delete(change.entityId);
+
+                                if (!entity) {
+                                    result.status = "error";
+                                    result.error = { code: "NOT_FOUND", message: `Entity not found: ${change.entityType}/${change.entityId}` };
+                                    hasBlockingErrors = true;
+                                    continue;
                                 }
+
+                                // Check for incoming references if deleteMode is restrict
+                                if (deleteMode === "restrict") {
+                                    const incomingRefs: Array<{ fromType: string; fromId: string; field: string }> = [];
+                                    for (const edge of workingBundle.refGraph.edges) {
+                                        if (edge.toId === change.entityId && edge.toEntityType === change.entityType) {
+                                            incomingRefs.push({
+                                                fromType: edge.fromEntityType,
+                                                fromId: edge.fromId,
+                                                field: edge.fromField,
+                                            });
+                                        }
+                                    }
+
+                                    if (incomingRefs.length > 0) {
+                                        result.status = "error";
+                                        result.error = {
+                                            code: "DELETE_BLOCKED",
+                                            message: `Cannot delete: ${incomingRefs.length} entity/entities reference this ${change.entityType}`
+                                        };
+                                        result.diagnostics.push({
+                                            severity: "error",
+                                            code: "DELETE_BLOCKED",
+                                            message: `Referenced by: ${incomingRefs.map(r => `${r.fromType}:${r.fromId}.${r.field}`).join(", ")}`,
+                                            entityType: change.entityType,
+                                            entityId: change.entityId,
+                                        });
+                                        hasBlockingErrors = true;
+                                        continue;
+                                    }
+                                }
+
+                                deletedFiles.push(entity.filePath);
+                                result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+
+                                // Remove from bundle in-memory
+                                entityMap!.delete(change.entityId);
+                                workingBundle.idRegistry.delete(change.entityId);
                                 break;
                             }
                         }
                     } catch (err) {
-                        errors.push({ changeIndex: i, message: err instanceof Error ? err.message : String(err) });
+                        result.status = "error";
+                        result.error = { code: "INTERNAL", message: err instanceof Error ? err.message : String(err) };
+                        hasBlockingErrors = true;
                     }
                 }
 
-                // If there were errors during apply, return them without validating
-                if (errors.length > 0) {
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                success: false,
-                                phase: "apply",
-                                errors: errors.map(e => ({
-                                    changeIndex: e.changeIndex,
-                                    entityType: changes[e.changeIndex].entityType,
-                                    entityId: changes[e.changeIndex].entityId,
-                                    message: e.message,
-                                })),
-                                changesSummary: changes.map((c, i) => ({
-                                    index: i,
-                                    operation: c.operation,
-                                    entityType: c.entityType,
-                                    entityId: c.entityId,
-                                    status: errors.some(e => e.changeIndex === i) ? "error" : "pending",
-                                })),
-                            }, null, 2),
-                        }],
-                        isError: true,
-                    };
+                // If strict mode and there are errors, fail atomically
+                if (hasBlockingErrors) {
+                    return toolError(
+                        TOOL_NAME,
+                        "VALIDATION_ERROR",
+                        `${results.filter(r => r.status === "error").length} change(s) failed validation`,
+                        {
+                            dryRun,
+                            validate: effectiveValidate,
+                            referencePolicy: effectiveRefPolicy,
+                            results
+                        }
+                    );
                 }
 
-                // Validate the modified bundle
-                // We need to save to temp files first, then validate, then either commit or rollback
-                // For now, let's reload and validate from the in-memory state by re-running validation
-                const { diagnostics } = await loadBundleWithSchemaValidation(bundleDir);
+                // Dry run - return preview
+                if (dryRun) {
+                    return toolSuccess(TOOL_NAME, {
+                        dryRun: true,
+                        validate: effectiveValidate,
+                        referencePolicy: effectiveRefPolicy,
+                        wouldApply: changes.length,
+                        wouldModify: modifiedFiles.map(f => path.relative(bundleDir, f)),
+                        wouldDelete: deletedFiles.map(f => path.relative(bundleDir, f)),
+                        results,
+                    }, {
+                        bundleId: effectiveBundleId,
+                        meta: { changesCount: changes.length },
+                        diagnostics: results.flatMap(r => r.diagnostics),
+                    });
+                }
 
-                // We can't validate the in-memory bundle directly without writing to disk first
-                // So for validation, we need to either:
-                // 1. Write files temporarily and validate, then rollback if failed
-                // 2. Or implement pure in-memory validation
-                // For now, let's do a simpler approach: write files, validate, delete on failure
-
-                if (!dryRun) {
-                    // Write modified entities to disk
-                    for (const change of changes) {
-                        if (change.operation === "create" || change.operation === "update") {
-                            const entityMap = workingBundle.entities.get(change.entityType);
-                            const entity = entityMap?.get(change.entityId);
-                            if (entity) {
-                                // Ensure directory exists
-                                const dir = path.dirname(entity.filePath);
-                                await fs.mkdir(dir, { recursive: true });
-                                await saveEntity(entity);
-                            }
+                // Actually write changes to disk
+                for (const change of changes) {
+                    if (change.operation === "create" || change.operation === "update") {
+                        const entityMap = workingBundle.entities.get(change.entityType);
+                        const entity = entityMap?.get(change.entityId);
+                        if (entity) {
+                            const dir = path.dirname(entity.filePath);
+                            await fs.mkdir(dir, { recursive: true });
+                            await saveEntity(entity);
                         }
                     }
+                }
 
-                    // Delete files for delete operations
-                    for (const filePath of deletedFiles) {
-                        try {
-                            await fs.unlink(filePath);
-                        } catch (err) {
-                            // Ignore ENOENT
-                            if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
-                                throw err;
-                            }
+                // Delete files
+                for (const filePath of deletedFiles) {
+                    try {
+                        await fs.unlink(filePath);
+                    } catch (err) {
+                        if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+                            throw err;
                         }
                     }
-
-                    // Validate the bundle after changes
-                    const { diagnostics: postDiagnostics } = await loadBundleWithSchemaValidation(bundleDir);
-                    const errorDiagnostics = postDiagnostics.filter(d => d.severity === 'error');
-
-                    if (errorDiagnostics.length > 0) {
-                        // Validation failed - need to rollback
-                        // For now, we'll return the errors and let the user fix
-                        // In a more sophisticated implementation, we'd restore from backup
-
-                        // Attribute diagnostics to changes
-                        const attributedDiagnostics = errorDiagnostics.map(d => {
-                            // Find which change affected this entity
-                            let changeIndex: number | null = null;
-                            for (const [idx, entities] of changeToEntity) {
-                                const entityKey = `${d.entityType}:${d.entityId}`;
-                                if (entities.includes(entityKey)) {
-                                    changeIndex = idx;
-                                    break;
-                                }
-                            }
-                            return {
-                                ...d,
-                                changeIndex,
-                            };
-                        });
-
-                        return {
-                            content: [{
-                                type: "text",
-                                text: JSON.stringify({
-                                    success: false,
-                                    phase: "validation",
-                                    message: "Changes were written but validation failed. Manual intervention may be needed.",
-                                    diagnostics: attributedDiagnostics,
-                                    changesSummary: changes.map((c, i) => ({
-                                        index: i,
-                                        operation: c.operation,
-                                        entityType: c.entityType,
-                                        entityId: c.entityId,
-                                        status: attributedDiagnostics.some(d => d.changeIndex === i) ? "invalid" : "applied",
-                                    })),
-                                }, null, 2),
-                            }],
-                            isError: true,
-                        };
-                    }
-
-                    // Reload the bundle into our cache
-                    const { bundle: reloadedBundle, diagnostics: reloadedDiagnostics } = await loadBundleWithSchemaValidation(bundleDir);
-                    loaded.bundle = reloadedBundle;
-                    loaded.diagnostics = reloadedDiagnostics;
-
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                success: true,
-                                applied: changes.length,
-                                modifiedFiles: modifiedFiles.map(f => path.relative(bundleDir, f)),
-                                deletedFiles: deletedFiles.map(f => path.relative(bundleDir, f)),
-                                changesSummary: changes.map((c, i) => ({
-                                    index: i,
-                                    operation: c.operation,
-                                    entityType: c.entityType,
-                                    entityId: c.entityId,
-                                    status: "applied",
-                                })),
-                            }, null, 2),
-                        }],
-                    };
-                } else {
-                    // Dry run - return preview without writing
-                    return {
-                        content: [{
-                            type: "text",
-                            text: JSON.stringify({
-                                success: true,
-                                dryRun: true,
-                                wouldApply: changes.length,
-                                wouldModify: modifiedFiles.map(f => path.relative(bundleDir, f)),
-                                wouldDelete: deletedFiles.map(f => path.relative(bundleDir, f)),
-                                preview: changes.map((c, i) => {
-                                    if (c.operation === "create") {
-                                        return {
-                                            index: i,
-                                            operation: "create",
-                                            entityType: c.entityType,
-                                            entityId: c.entityId,
-                                            data: c.data,
-                                        };
-                                    } else if (c.operation === "update") {
-                                        const entityMap = workingBundle.entities.get(c.entityType);
-                                        const entity = entityMap?.get(c.entityId);
-                                        return {
-                                            index: i,
-                                            operation: "update",
-                                            entityType: c.entityType,
-                                            entityId: c.entityId,
-                                            fieldPath: c.fieldPath,
-                                            newValue: c.value,
-                                            currentEntity: entity?.data,
-                                        };
-                                    } else {
-                                        return {
-                                            index: i,
-                                            operation: "delete",
-                                            entityType: c.entityType,
-                                            entityId: c.entityId,
-                                        };
-                                    }
-                                }),
-                            }, null, 2),
-                        }],
-                    };
                 }
+
+                // Reload bundle into cache
+                const { bundle: reloadedBundle, diagnostics: reloadedDiagnostics } = await loadBundleWithSchemaValidation(bundleDir);
+                loaded.bundle = reloadedBundle;
+                loaded.diagnostics = reloadedDiagnostics;
+
+                // Update result statuses
+                for (const r of results) {
+                    if (r.status === "would_apply") {
+                        r.status = "applied";
+                    }
+                }
+
+                return toolSuccess(TOOL_NAME, {
+                    dryRun: false,
+                    validate: effectiveValidate,
+                    referencePolicy: effectiveRefPolicy,
+                    applied: changes.length,
+                    modifiedFiles: modifiedFiles.map(f => path.relative(bundleDir, f)),
+                    deletedFiles: deletedFiles.map(f => path.relative(bundleDir, f)),
+                    results,
+                }, {
+                    bundleId: effectiveBundleId,
+                    meta: { changesCount: changes.length },
+                    diagnostics: results.flatMap(r => r.diagnostics),
+                });
             }
         );
     }

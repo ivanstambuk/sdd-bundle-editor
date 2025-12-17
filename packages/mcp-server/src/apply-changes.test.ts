@@ -95,6 +95,7 @@ spec:
         "title": "Requirement",
         "type": "object",
         "required": ["id", "title"],
+        "additionalProperties": false,
         "properties": {
             "id": { "type": "string", "pattern": "^REQ-[0-9]{3}$" },
             "title": { "type": "string", "minLength": 1 },
@@ -233,7 +234,10 @@ describe('apply_changes functionality', () => {
             expect(entity?.data.priority).toBe('high');
         });
 
-        it('should add a new field', async () => {
+        // Note: the apply_changes MCP tool now rejects unknown fields (non-upserting).
+        // The underlying applyChange function still allows it, but validation at the MCP layer prevents it.
+        // This test verifies the raw function still works for backward compatibility.
+        it('should add a new field at low level (MCP tool would reject)', async () => {
             const { bundle } = await loadBundleWithSchemaValidation(testBundleDir);
 
             applyChange(bundle, {

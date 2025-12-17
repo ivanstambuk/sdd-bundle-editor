@@ -63,6 +63,38 @@ curl -X POST http://localhost:3001/mcp \
 
 ---
 
+## Test Webpack Proxy to MCP
+
+**Problem**: Browser requests to `/mcp` not reaching MCP server at 3001.
+
+```bash
+# Test if webpack proxy is forwarding /mcp to MCP server
+curl -s "http://localhost:5173/mcp" -X POST \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}' \
+  | head -c 500
+
+# If working, you'll see: [HTTP] New session initialization request
+# If not working, you'll get connection refused or HTML error page
+```
+
+---
+
+## Kill Stale E2E Servers
+
+**Problem**: `reuseExistingServer: true` reuses old server with wrong config.
+
+```bash
+# Kill all test servers before debugging
+pkill -f "mcp-server" 2>/dev/null
+pkill -f webpack 2>/dev/null
+pkill -f "ts-node" 2>/dev/null
+sleep 2 && echo "Servers killed"
+```
+
+---
+
 ## Finding Entity Files in Sample Bundle
 
 ```bash

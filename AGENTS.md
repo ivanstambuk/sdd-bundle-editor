@@ -804,6 +804,17 @@ The project provides several test scripts for different scenarios:
    - Symptom: `pnpm test` fails with "No test files found"
    - Fix: Already fixed in all package.json files
 
+7. **MCP response envelope structure confusion**
+   - Symptom: `result.data.find is not a function` or similar errors
+   - Root cause: MCP tools return `{ok, tool, data: {actual_payload}}`
+   - Fix: Access `result.data.data.bundles`, not `result.data.bundles`
+   - See: [MCP Envelope Pattern](#mcp-envelope-pattern)
+
+8. **Webpack proxy not forwarding MCP requests**
+   - Symptom: MCP requests fail in browser but work via curl to 3001
+   - Root cause: `getMcpServerUrl()` returns absolute URL instead of relative
+   - Fix: Return empty string for browser context, use relative `/mcp` path
+
 ---
 
 ### Proactive Retrospective (Delivery Improvements)

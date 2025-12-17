@@ -9,7 +9,9 @@ import type { UiBundleSnapshot, UiDiagnostic, UiEntity, UiRefEdge } from '../typ
 import {
     McpClient,
     createMcpClient,
+    unwrapMcpEnvelope,
     type McpBundle,
+    type McpEnvelope,
     type McpValidationResult
 } from './mcpClient';
 

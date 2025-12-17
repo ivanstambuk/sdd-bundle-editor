@@ -22,7 +22,8 @@
     "lint": "pnpm -r lint",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test e2e/mcp-server.spec.ts --grep 'list_bundles|read_entity|health'",
-    "test:smoke": "pnpm --filter @sdd-bundle-editor/mcp-server test && pnpm test:e2e:smoke"
+    "test:smoke": "pnpm --filter @sdd-bundle-editor/mcp-server test && pnpm test:e2e:smoke",
+    "kill:servers": "pkill -f 'mcp-server' 2>/dev/null; pkill -f webpack 2>/dev/null; pkill -f 'ts-node' 2>/dev/null; echo 'Stale servers killed'"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

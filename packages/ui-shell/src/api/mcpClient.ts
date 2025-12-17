@@ -23,6 +23,55 @@ interface McpToolResult<T = unknown> {
 }
 
 /**
+ * MCP tool response envelope structure.
+ * 
+ * All MCP tools return: { ok: boolean, tool: string, data: T }
+ * The actual payload is at `.data`, not directly on the result.
+ * 
+ * IMPORTANT: After callTool<McpEnvelope<T>>, access payload via:
+ *   result.data.data  (NOT result.data)
+ */
+export interface McpEnvelope<T = unknown> {
+    ok: boolean;
+    tool: string;
+    data: T;
+    bundleId?: string;
+    meta?: Record<string, unknown>;
+    diagnostics?: Array<{ severity: string; message: string }>;
+}
+
+/**
+ * Type-safe unwrapper for MCP envelope responses.
+ * 
+ * Extracts the nested payload from the MCP envelope structure.
+ * Throws if envelope is malformed or indicates error.
+ * 
+ * @example
+ * const result = await client.callTool<McpEnvelope<{ bundles: Bundle[] }>>('list_bundles', {});
+ * const { bundles } = unwrapMcpEnvelope(result, 'list_bundles');
+ */
+export function unwrapMcpEnvelope<T>(
+    result: McpToolResult<McpEnvelope<T>>,
+    toolName: string
+): T {
+    if (result.isError) {
+        throw new Error(`MCP tool ${toolName} returned error`);
+    }
+
+    const envelope = result.data;
+    if (!envelope || !envelope.ok) {
+        const errorMsg = (envelope as unknown as { error?: { message?: string } })?.error?.message;
+        throw new Error(`MCP tool ${toolName} failed: ${errorMsg || 'unknown error'}`);
+    }
+
+    if (envelope.data === undefined) {
+        throw new Error(`MCP tool ${toolName} returned no data`);
+    }
+
+    return envelope.data;
+}
+
+/**
  * Parse SSE response from MCP server
  */
 function parseSSEResponse(text: string): unknown {

@@ -53,7 +53,6 @@ export function AppShell() {
     selectedEntity,
     loading: bundleLoading,
     error: bundleError,
-    isMcpMode,
     loadBundle,
     reloadBundle,
     selectEntity,
@@ -133,10 +132,10 @@ export function AppShell() {
           — To edit entities, use an MCP client (Claude Desktop, VS Code Copilot) connected to the MCP server.
         </span>
         <span
-          className={`mcp-status ${isMcpMode ? 'connected' : 'fallback'}`}
+          className="mcp-status connected"
           data-testid="mcp-status"
         >
-          {isMcpMode ? '🔗 MCP' : '📡 HTTP'}
+          🔗 MCP
         </span>
         <button
           type="button"

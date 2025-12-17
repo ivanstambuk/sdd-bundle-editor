@@ -40,23 +40,32 @@ export class McpBundleApi {
      */
     async load(bundleDir: string): Promise<BundleResponse> {
         // Step 1: List bundles to find the one matching our bundleDir
-        const bundles = await this.client.callTool<McpBundle[]>('list_bundles', {});
+        // MCP response structure: { ok: boolean, tool: string, data: { bundles: [...] } }
+        const bundlesResult = await this.client.callTool<{
+            ok: boolean;
+            tool: string;
+            data: { bundles: McpBundle[] };
+        }>('list_bundles', {});
 
-        if (bundles.isError || !bundles.data || bundles.data.length === 0) {
+        const bundlesData = bundlesResult.data?.data?.bundles;
+        if (bundlesResult.isError || !bundlesData || bundlesData.length === 0) {
             throw new Error('No bundles loaded in MCP server');
         }
 
+        const bundlesList = bundlesData;
+
         // Find bundle by path (bundleDir) or use first/only bundle
-        let targetBundle = bundles.data.find(b => b.path === bundleDir);
+        let targetBundle = bundlesList.find(b => b.path === bundleDir);
         if (!targetBundle) {
             // In single-bundle mode, just use the first bundle
-            targetBundle = bundles.data[0];
+            targetBundle = bundlesList[0];
         }
 
         this.bundleId = targetBundle.id;
 
         // Step 2: Get complete bundle snapshot in a single call
-        const snapshotResult = await this.client.callTool<{
+        // MCP response structure: { ok: boolean, tool: string, data: { bundleId, entities, ... } }
+        type SnapshotData = {
             bundleId: string;
             manifest: unknown;
             bundleTypeDefinition: unknown;
@@ -64,6 +73,12 @@ export class McpBundleApi {
             schemas: Record<string, unknown>;
             refGraph: { edges: Array<{ fromEntityType: string; fromId: string; fromField: string; toEntityType: string; toId: string }> };
             diagnostics: Array<{ severity: 'error' | 'warning'; message: string; entityType?: string; entityId?: string; code?: string }>;
+        };
+
+        const snapshotResult = await this.client.callTool<{
+            ok: boolean;
+            tool: string;
+            data: SnapshotData;
         }>('get_bundle_snapshot', {
             bundleId: this.bundleId,
             includeSchemas: true,
@@ -71,11 +86,11 @@ export class McpBundleApi {
             includeDiagnostics: true,
         });
 
-        if (snapshotResult.isError || !snapshotResult.data) {
+        if (snapshotResult.isError || !snapshotResult.data?.data) {
             throw new Error('Failed to load bundle snapshot from MCP server');
         }
 
-        const snapshot = snapshotResult.data;
+        const snapshot = snapshotResult.data.data;
 
         // Transform entities to UiEntity format
         const entities: Record<string, UiEntity[]> = {};

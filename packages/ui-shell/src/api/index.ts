@@ -2,15 +2,15 @@
  * API layer for SDD Bundle Editor.
  * Re-exports all API clients for convenient importing.
  * 
- * MCP-First Architecture: The UI now uses MCP protocol directly
- * instead of the legacy HTTP bundle API.
+ * MCP-First Architecture: The UI uses MCP protocol directly.
+ * Legacy HTTP bundle API has been removed.
  */
 
-// Legacy HTTP-based API (deprecated, kept for fallback)
+// HTTP utilities (still used by MCP client)
 export { fetchJson, fetchWithRetry } from './fetchUtils';
-export { bundleApi, type BundleResponse, type ValidateResponse, type SaveResponse } from './bundleApi';
 
-// MCP-based API (primary, Phase 4.4)
+// MCP-based API (primary)
 export { McpClient, createMcpClient, getMcpServerUrl } from './mcpClient';
 export type { McpBundle, McpEntity, McpSearchResult, McpValidationResult } from './mcpClient';
-export { McpBundleApi, getMcpBundleApi, mcpBundleApi } from './mcpBundleApi';
+export { McpBundleApi, getMcpBundleApi, mcpBundleApi, type BundleResponse, type ValidateResponse } from './mcpBundleApi';
+

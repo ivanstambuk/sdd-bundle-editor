@@ -42,15 +42,9 @@ module.exports = {
     port: 5173,
     proxy: [
       {
-        // MCP server (primary for MCP-first architecture)
+        // MCP server (MCP-first architecture)
         context: ['/mcp'],
         target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      {
-        // Legacy HTTP server (fallback)
-        context: ['/bundle', '/bundle/validate', '/bundle/save', '/health'],
-        target: 'http://localhost:3000',
         changeOrigin: true,
       },
     ],

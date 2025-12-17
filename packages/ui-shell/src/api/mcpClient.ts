@@ -272,14 +272,21 @@ export function createMcpClient(serverUrl?: string): McpClient {
 
 /**
  * Get MCP server URL from environment or defaults
+ * 
+ * In browser context, returns empty string to use relative paths
+ * which work with webpack proxy. Direct MCP URL can be specified
+ * via ?mcpUrl= query param.
  */
 export function getMcpServerUrl(): string {
-    // In browser, check for query param or use default
+    // In browser, check for query param or use relative path (for webpack proxy)
     if (typeof window !== 'undefined') {
         const params = new URLSearchParams(window.location.search);
         const mcpUrl = params.get('mcpUrl');
         if (mcpUrl) return mcpUrl;
+        // Use empty string for relative paths (webpack proxy will handle /mcp)
+        return '';
     }
-    // Default to localhost:3001 (MCP server HTTP port)
+    // For server-side/testing, use default MCP server port
     return 'http://localhost:3001';
 }
+

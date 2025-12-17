@@ -1488,6 +1488,189 @@ export class SddMcpServer {
                 });
             }
         );
+
+        // Tool: critique_bundle - LLM-based quality critique via MCP sampling
+        this.server.tool(
+            "critique_bundle",
+            "Trigger an LLM-based quality critique of the bundle for AI consumability and completeness. Uses MCP sampling to request the client's LLM to evaluate the spec. Returns scored findings. Requires client to support MCP sampling capability.",
+            {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                threshold: z.number().min(1).max(10).default(5).describe("Minimum score (1-10) to include in findings. Higher = stricter."),
+            },
+            async ({ bundleId, threshold }) => {
+                const TOOL_NAME = "critique_bundle";
+                const loaded = this.getBundle(bundleId);
+                if (!loaded) {
+                    if (!bundleId && !this.isSingleBundleMode()) {
+                        return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: this.getBundleIds() });
+                    }
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
+                }
+
+                const effectiveBundleId = loaded.id;
+
+                // Gather key entities for the critique prompt
+                const bundle = loaded.bundle;
+                const topEntities: string[] = [];
+
+                // Get up to 3 of each major entity type
+                for (const entityType of ["Feature", "Requirement", "Component"]) {
+                    const entities = bundle.entities.get(entityType);
+                    if (entities) {
+                        const ids = Array.from(entities.keys()).slice(0, 3);
+                        topEntities.push(...ids.map(id => `${entityType}:${id}`));
+                    }
+                }
+
+                // Get entity counts for context
+                const entityCounts: Record<string, number> = {};
+                for (const [type, entities] of bundle.entities) {
+                    entityCounts[type] = entities.size;
+                }
+
+                // Get existing diagnostics
+                const existingIssues = loaded.diagnostics
+                    .filter(d => d.severity === "error" || d.severity === "warning")
+                    .slice(0, 5)
+                    .map(d => `[${d.severity}] ${d.entityType || "Bundle"}${d.entityId ? `:${d.entityId}` : ""} - ${d.message}`);
+
+                // Build the critique prompt
+                const critiquePrompt = `You are an SDD (Spec-Driven Development) specification quality auditor.
+Your goal is to evaluate this specification for AI consumability and completeness.
+
+## Bundle to Critique
+- **Bundle ID**: ${effectiveBundleId}
+- **Name**: ${bundle.manifest.metadata.name}
+- **Type**: ${bundle.manifest.metadata.bundleType}
+
+## Entity Counts
+${Object.entries(entityCounts).map(([type, count]) => `- ${type}: ${count}`).join("\n")}
+
+## Key Entities (sample)
+${topEntities.join(", ")}
+
+## Existing Validation Issues
+${existingIssues.length > 0 ? existingIssues.join("\n") : "None detected by schema validation"}
+
+The full spec is available via MCP tools (get_bundle_snapshot, read_entity, list_entities).
+Use them if you need more detail about specific entities.
+
+## Evaluation Criteria
+1. **Completeness**: Every Requirement has rationale, acceptance criteria, and linked Features
+2. **Clarity**: Requirements use unambiguous, testable language (no "should handle appropriately")
+3. **Connectivity**: No orphan entities - everything is connected in the reference graph
+4. **Consistency**: Terminology is consistent across entities
+5. **AI Consumability**: Entities have clear IDs, titles, and structured data
+
+## Response Format
+Respond ONLY with valid JSON (no markdown, no explanation):
+{
+  "overallScore": <1-10>,
+  "verdict": "APPROVED" | "NEEDS_WORK" | "REJECTED",
+  "findings": [
+    {
+      "score": <1-10>,
+      "category": "completeness" | "clarity" | "connectivity" | "consistency" | "consumability",
+      "entityId": "<optional entity ID>",
+      "issue": "<what is wrong>",
+      "suggestion": "<how to fix>"
+    }
+  ]
+}
+
+Scoring Guide:
+- 10: Critical flaw, blocks production use
+- 7-9: Major issue, must fix before merge  
+- 4-6: Minor issue, should fix eventually
+- 1-3: Nitpick, optional improvement`;
+
+                // Try to use MCP sampling
+                try {
+                    // Access the underlying Server to call createMessage
+                    const underlyingServer = this.server.server;
+
+                    const samplingResult = await underlyingServer.createMessage({
+                        messages: [
+                            {
+                                role: "user",
+                                content: { type: "text", text: critiquePrompt }
+                            }
+                        ],
+                        maxTokens: 2000,
+                        includeContext: "thisServer",
+                    });
+
+                    // Parse the response
+                    let critique: {
+                        overallScore: number;
+                        verdict: "APPROVED" | "NEEDS_WORK" | "REJECTED";
+                        findings: Array<{
+                            score: number;
+                            category: string;
+                            entityId?: string;
+                            issue: string;
+                            suggestion: string;
+                        }>;
+                    };
+
+                    try {
+                        const responseText = samplingResult.content.type === "text"
+                            ? samplingResult.content.text
+                            : JSON.stringify(samplingResult.content);
+
+                        // Try to extract JSON from the response (in case LLM wrapped it)
+                        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                        if (!jsonMatch) {
+                            throw new Error("No JSON object found in response");
+                        }
+                        critique = JSON.parse(jsonMatch[0]);
+                    } catch (parseError) {
+                        return toolError(TOOL_NAME, "INTERNAL", `Failed to parse critique response: ${(parseError as Error).message}`, {
+                            bundleId: effectiveBundleId,
+                            rawResponse: samplingResult.content,
+                        });
+                    }
+
+                    // Filter findings by threshold
+                    const actionableFindings = critique.findings.filter(f => f.score >= threshold);
+
+                    return toolSuccess(TOOL_NAME, {
+                        verdict: critique.verdict,
+                        overallScore: critique.overallScore,
+                        threshold,
+                        findings: actionableFindings,
+                        totalFindings: critique.findings.length,
+                        filteredOut: critique.findings.length - actionableFindings.length,
+                    }, {
+                        bundleId: effectiveBundleId,
+                        meta: {
+                            samplingUsed: true,
+                            model: samplingResult.model,
+                        },
+                        diagnostics: [],
+                    });
+
+                } catch (samplingError) {
+                    // Sampling failed - return graceful error with instructions
+                    const errorMessage = (samplingError as Error).message;
+
+                    // Check if it's a "not supported" type error
+                    if (errorMessage.includes("not supported") || errorMessage.includes("capability")) {
+                        return toolError(TOOL_NAME, "BAD_REQUEST",
+                            "MCP sampling is not supported by this client. Critique requires the client to have sampling capability enabled.",
+                            {
+                                bundleId: effectiveBundleId,
+                                hint: "Use Claude Desktop or another MCP client that supports sampling.",
+                            }
+                        );
+                    }
+
+                    return toolError(TOOL_NAME, "INTERNAL", `Sampling request failed: ${errorMessage}`, {
+                        bundleId: effectiveBundleId,
+                    });
+                }
+            }
+        );
     }
 
     /**

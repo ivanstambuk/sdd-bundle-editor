@@ -177,21 +177,9 @@ This phase introduces a fundamental change: **all modifications happen through c
   - [x] Integrated into AppShell layout
   - [x] Keyboard shortcut to open agent panel
 
----
-
-### 8.5 – Error Recovery and Edge Cases
-
-- [x] Handle conversation interruptions:
-  - [x] Dirty Git state detected mid-conversation (health endpoint + UI warning banner)
-  - [x] Network/backend failures during agent communication (fetchWithRetry + error indicator)
-  - [ ] User closes browser/editor during pending changes
-
-- [x] **8.5 Rollback Capability**
-  - [x] Backend: Add `POST /agent/rollback` (revert uncommitted changes, keeps conversation active)
-  - [x] UI: Add "Discard Changes" button to pending changes block
-  - [x] UI: Update `AppShell` to handle rollback and refresh UI state
 
 ---
+
 
 ### 8.6 – Testing and Documentation [DONE]
 
@@ -237,21 +225,6 @@ This phase introduces a fundamental change: **all modifications happen through c
 
 - [ ] Explore VS Code extension for tighter agent integration than web UI
 
-- [ ] **AI Self-Critique Loop**: Iterative spec refinement workflow where:
-  1. AI reviews the current bundle/spec and identifies issues or improvements
-  2. AI proposes changes with explanations
-  3. Human reviews and approves/rejects each change
-  4. Loop continues until AI is satisfied (no further suggestions)
-  5. All approved changes are committed as a batch
-  
-  *This enables "polish until done" workflows where AI drives the refinement process.*
 
-- [ ] **Standalone Bundle Server Mode**: Create a dedicated server application that:
-  1. Serves multiple spec bundles via HTTP (read-only API endpoints)
-  2. Exposes bundle content, schemas, and metadata for MCP tool consumption
-  3. Runs independently of the UI as a headless service
-  4. Could support stdio mode for CLI/MCP integration
-  5. Client applications (including this editor) can connect to consume specs
-  
-  *This enables agents to query and consume spec bundles programmatically via MCP tools.*
+
 

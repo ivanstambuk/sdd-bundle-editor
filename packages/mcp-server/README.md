@@ -33,6 +33,8 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 | `search_entities` | Search for entities across all bundles |
 | `validate_bundle` | Validate a bundle and return diagnostics |
 | `apply_changes` | Atomic batch changes (create/update/delete) with schema validation |
+| `critique_bundle` | LLM-based quality critique via MCP sampling (requires client sampling support) |
+
 
 #### Response Envelope
 
@@ -413,7 +415,76 @@ Validate a bundle and return all diagnostics (errors, warnings).
 }
 ```
 
+### critique_bundle
+
+Trigger an LLM-based quality critique of the bundle using MCP sampling. The server sends a prompt to the client's LLM requesting an evaluation of the spec for AI consumability and completeness.
+
+**Requires:** Client must support MCP sampling capability (Claude Desktop supports this).
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `threshold` | number | 5 | Minimum score (1-10) to include in findings. Higher = stricter. |
+
+**Response (Success):**
+
+```json
+{
+  "ok": true,
+  "data": {
+    "verdict": "NEEDS_WORK",
+    "overallScore": 6,
+    "threshold": 5,
+    "findings": [
+      {
+        "score": 8,
+        "category": "completeness",
+        "entityId": "REQ-AUTH-001",
+        "issue": "Requirement has no acceptance criteria",
+        "suggestion": "Add 'acceptanceCriteria' field with testable conditions"
+      }
+    ],
+    "totalFindings": 5,
+    "filteredOut": 2
+  },
+  "meta": {
+    "samplingUsed": true,
+    "model": "claude-3-sonnet"
+  }
+}
+```
+
+**Verdict Values:**
+- `APPROVED` - Spec meets quality standards
+- `NEEDS_WORK` - Issues found that should be addressed
+- `REJECTED` - Critical flaws that block usage
+
+**Categories:**
+- `completeness` - Missing required fields (rationale, acceptance criteria)
+- `clarity` - Vague or ambiguous language
+- `connectivity` - Orphan entities, missing relationships
+- `consistency` - Inconsistent terminology
+- `consumability` - Poor structure for AI consumption
+
+**Error (Sampling Not Supported):**
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "BAD_REQUEST",
+    "message": "MCP sampling is not supported by this client.",
+    "details": {
+      "hint": "Use Claude Desktop or another MCP client that supports sampling."
+    }
+  }
+}
+```
+
 ---
+
 
 ## Running Locally
 

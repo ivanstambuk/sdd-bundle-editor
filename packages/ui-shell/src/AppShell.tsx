@@ -22,6 +22,7 @@ import { SearchResultsPanel, type SearchResult } from './components/SearchResult
 import { DomainKnowledgePanel } from './components/DomainKnowledgePanel';
 import { Breadcrumb } from './components/Breadcrumb';
 import { ResizableSidebar } from './components/ResizableSidebar';
+import { ThemeToggle } from './components/ThemeToggle';
 import { createLogger } from './utils/logger';
 import { useBundleState, useKeyboardShortcuts } from './hooks';
 
@@ -195,6 +196,8 @@ export function AppShell() {
           >
             ⚡
           </button>
+
+          <ThemeToggle />
         </div>
       </header>
 

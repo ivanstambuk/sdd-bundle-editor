@@ -4,7 +4,7 @@
    CSS Variables / Design Tokens
    ======================================== */
 :root {
-  /* Colors - Antigravity Dark Theme */
+  /* Colors - Antigravity Dark Theme (default) */
   --color-bg-primary: #1a1b26;
   --color-bg-secondary: #16161e;
   --color-bg-tertiary: #24283b;
@@ -17,6 +17,7 @@
   --color-accent: #7aa2f7;
   --color-accent-hover: #7dcfff;
   --color-accent-light: rgba(122, 162, 247, 0.15);
+  --color-accent-secondary: #6366f1;
 
   --color-success: #9ece6a;
   --color-success-bg: rgba(158, 206, 106, 0.15);
@@ -27,6 +28,7 @@
 
   --color-border: #24283b;
   --color-border-light: #2f3549;
+  --color-border-focus: rgba(255, 255, 255, 0.5);
 
   /* Entity type colors - Muted palette */
   --color-feature: #bb9af7;
@@ -35,6 +37,22 @@
   --color-adr: #9ece6a;
   --color-profile: #f7768e;
   --color-fixture: #e0af68;
+
+  /* Code blocks */
+  --color-code-bg: #0f172a;
+  --color-code-text: #e2e8f0;
+  --color-code-inline-bg: rgba(0, 0, 0, 0.2);
+  --color-code-inline-bg-user: rgba(255, 255, 255, 0.2);
+
+  /* Diff colors */
+  --color-diff-old: #fca5a5;
+  --color-diff-old-bg: rgba(62, 27, 27, 0.4);
+  --color-diff-old-border: #ef4444;
+  --color-diff-old-label-bg: rgba(239, 68, 68, 0.15);
+  --color-diff-new: #86efac;
+  --color-diff-new-bg: rgba(27, 62, 32, 0.4);
+  --color-diff-new-border: #22c55e;
+  --color-diff-new-label-bg: rgba(34, 197, 94, 0.15);
 
   /* Spacing - Balanced Density (15% reduction) */
   --spacing-xs: 0.2rem;
@@ -79,6 +97,70 @@
 }
 
 /* ========================================
+   Light Theme
+   ======================================== */
+[data-theme="light"] {
+  /* Backgrounds */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f6f8fa;
+  --color-bg-tertiary: #f0f2f5;
+  --color-bg-hover: #e8eaed;
+
+  /* Text */
+  --color-text-primary: #1f2328;
+  --color-text-secondary: #656d76;
+  --color-text-muted: #8b949e;
+
+  /* Accent - GitHub blue */
+  --color-accent: #0969da;
+  --color-accent-hover: #0550ae;
+  --color-accent-light: rgba(9, 105, 218, 0.12);
+  --color-accent-secondary: #6366f1;
+
+  /* Semantic colors - darker for light backgrounds */
+  --color-success: #1a7f37;
+  --color-success-bg: rgba(26, 127, 55, 0.1);
+  --color-warning: #9a6700;
+  --color-warning-bg: rgba(154, 103, 0, 0.1);
+  --color-error: #cf222e;
+  --color-error-bg: rgba(207, 34, 46, 0.1);
+
+  /* Borders */
+  --color-border: #d1d9e0;
+  --color-border-light: #e1e4e8;
+  --color-border-focus: rgba(0, 0, 0, 0.3);
+
+  /* Entity type colors - Adjusted for light mode contrast */
+  --color-feature: #8250df;
+  --color-requirement: #0969da;
+  --color-task: #bf5700;
+  --color-adr: #1a7f37;
+  --color-profile: #cf222e;
+  --color-fixture: #9a6700;
+
+  /* Code blocks */
+  --color-code-bg: #f6f8fa;
+  --color-code-text: #24292f;
+  --color-code-inline-bg: rgba(175, 184, 193, 0.2);
+  --color-code-inline-bg-user: rgba(0, 0, 0, 0.1);
+
+  /* Diff colors */
+  --color-diff-old: #82071e;
+  --color-diff-old-bg: rgba(255, 129, 130, 0.3);
+  --color-diff-old-border: #cf222e;
+  --color-diff-old-label-bg: rgba(207, 34, 46, 0.12);
+  --color-diff-new: #116329;
+  --color-diff-new-bg: rgba(46, 160, 67, 0.2);
+  --color-diff-new-border: #1a7f37;
+  --color-diff-new-label-bg: rgba(26, 127, 55, 0.12);
+
+  /* Shadows - softer for light backgrounds */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================
    Base Styles
    ======================================== */
 *,
@@ -101,6 +183,8 @@ body {
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
   min-height: 100vh;
+  /* Smooth theme transition */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -182,6 +266,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .header-left,
@@ -250,6 +335,16 @@ body {
   padding: 0;
 }
 
+/* Theme Toggle */
+.theme-toggle {
+  font-size: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+}
+
 /* Sidebar */
 .sidebar {
   position: relative;
@@ -260,7 +355,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 280px;
-  transition: width var(--transition-normal);
+  transition: width var(--transition-normal), background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .sidebar.collapsed {
@@ -303,6 +398,7 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease;
 }
 
 .content-area {
@@ -1796,7 +1892,7 @@ body {
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: var(--font-size-md);
   font-weight: 600;
-  background: linear-gradient(135deg, var(--color-accent), #6366f1);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
   border: none;
   border-radius: var(--radius-lg);
   color: white;
@@ -2049,7 +2145,7 @@ body {
 }
 
 .message.role-user .message-content {
-  background: linear-gradient(135deg, var(--color-accent), #6366f1);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
   color: white;
   border-bottom-right-radius: var(--radius-sm);
   margin-left: var(--spacing-lg);
@@ -2134,23 +2230,22 @@ body {
 
 /* Code blocks */
 .message-content code {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--color-code-inline-bg);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
   font-family: 'SF Mono', 'Fira Code', monospace;
   font-size: 0.9em;
-  color: #e2e8f0;
+  color: var(--color-code-text);
 }
 
 /* User message code blocks (lighter background) */
 .message.role-user .message-content code {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-code-inline-bg-user);
   color: white;
 }
 
 .message-content pre {
-  background: #0f172a;
-  /* Darker background for code blocks */
+  background: var(--color-code-bg);
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
   overflow-x: auto;
@@ -2161,7 +2256,7 @@ body {
 .message-content pre code {
   background: transparent;
   padding: 0;
-  color: #e2e8f0;
+  color: var(--color-code-text);
   font-size: 0.85em;
   white-space: pre;
 }
@@ -2277,7 +2372,7 @@ body {
 
 .send-btn {
   padding: var(--spacing-sm) var(--spacing-lg);
-  background: linear-gradient(135deg, var(--color-accent), #6366f1);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
   border: none;
   border-radius: var(--radius-md);
   color: white;
@@ -2704,11 +2799,11 @@ body {
 }
 
 .diff-old-header .diff-label {
-  color: #fca5a5;
+  color: var(--color-diff-old);
 }
 
 .diff-new-header .diff-label {
-  color: #86efac;
+  color: var(--color-diff-new);
 }
 
 .diff-modal-code {
@@ -2724,13 +2819,13 @@ body {
 }
 
 .diff-old-code {
-  background: rgba(62, 27, 27, 0.3);
-  color: #fca5a5;
+  background: var(--color-diff-old-bg);
+  color: var(--color-diff-old);
 }
 
 .diff-new-code {
-  background: rgba(27, 62, 32, 0.3);
-  color: #86efac;
+  background: var(--color-diff-new-bg);
+  color: var(--color-diff-new);
 }
 
 .diff-modal-rationale {
@@ -2987,19 +3082,19 @@ input:checked+.slider:before {
 }
 
 .diff-old label {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+  background: var(--color-diff-old-label-bg);
+  color: var(--color-diff-old);
 }
 
 .diff-new label {
-  background: rgba(34, 197, 94, 0.15);
-  color: #86efac;
+  background: var(--color-diff-new-label-bg);
+  color: var(--color-diff-new);
 }
 
 .diff-old pre {
-  background: rgba(62, 27, 27, 0.4);
-  color: #fca5a5;
-  border-left: 3px solid #ef4444;
+  background: var(--color-diff-old-bg);
+  color: var(--color-diff-old);
+  border-left: 3px solid var(--color-diff-old-border);
   padding: var(--spacing-sm);
   margin: 0;
   white-space: pre-wrap;
@@ -3011,9 +3106,9 @@ input:checked+.slider:before {
 }
 
 .diff-new pre {
-  background: rgba(27, 62, 32, 0.4);
-  color: #86efac;
-  border-left: 3px solid #22c55e;
+  background: var(--color-diff-new-bg);
+  color: var(--color-diff-new);
+  border-left: 3px solid var(--color-diff-new-border);
   padding: var(--spacing-sm);
   margin: 0;
   white-space: pre-wrap;
@@ -3429,13 +3524,13 @@ form.rjsf {
 
 /* Unchecked hover */
 .rjsf-checkbox-field input[type="checkbox"]:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--color-border-focus);
 }
 
 /* Checked state - green solid box */
 .rjsf-checkbox-field input[type="checkbox"]:checked {
-  background: #22c55e;
-  border-color: #22c55e;
+  background: var(--color-success);
+  border-color: var(--color-success);
 }
 
 /* Checkmark icon */

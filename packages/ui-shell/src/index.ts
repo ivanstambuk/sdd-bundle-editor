@@ -9,4 +9,5 @@ export { ResizableBottomPanel } from './components/ResizableBottomPanel';
 export { TabbedBottomPanel, type BottomPanelTab } from './components/TabbedBottomPanel';
 export { OutputPanel, useOutputLog, type OutputEntry } from './components/OutputPanel';
 export { SearchResultsPanel, type SearchResult } from './components/SearchResultsPanel';
+export { ThemeToggle } from './components/ThemeToggle';
 export * from './types';

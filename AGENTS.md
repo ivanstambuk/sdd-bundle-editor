@@ -830,74 +830,20 @@ Implement now? (y/n)
 
 ### Session Handover / Handoff Protocol
 
-When the user says "session handover", you must perform two distinct actions:
+**Trigger**: User says `/handover`, "session handover", or "handoff"
 
-1.  **Generate the Handover Summary**: Use the template below to provide high-signal context for the next agent. **IMPORTANT**: Output this as a single Markdown code block in your final chat message. Do **NOT** create a `session_handover.md` file.
-2.  **Conduct a Retrospective**: Run `/retro` workflow to identify and propose improvements.
-    *   Use the structured format from `.agent/workflows/retro.md`
-    *   Draft proposals as a numbered list **after** the handover code block
-    *   **DO NOT implement them yet**. Wait for user approval.
+**Action**: Run the `/handover` workflow from `.agent/workflows/handover.md`
 
-#### Handoff Template
+The workflow includes:
+1. Generating a structured handover summary (as code block in chat)
+2. Running `/retro` to capture improvement opportunities
+3. Cleanup verification checklist
 
-```markdown
-# Session Handoff
-
-## 1. Core Context
-- **Project**: SDD Bundle Editor (Monorepo: React UI, Fastify Backend, TypeScript Core)
-- **Goal**: [Current high-level goal, e.g. "Polishing Agent Panel UI"]
-- **Repository State**: `[Clean/Dirty]` (Branch: `[main/feature]`)
-- **Context Source**: Read @[AGENTS.md] for protocols and `IMPLEMENTATION_TRACKER.md` for backlog.
-
-## 2. Recent Changes (This Session)
-- **Implemented**:
-  - [Feature A]: [Brief description]
-  - [Feature B]: [Brief description]
-- **Fixed**:
-  - [Bug X]: [Description]
-- **Verified**:
-  - [Test Suite]: `pnpm test` [Pass/Fail]
-  - [E2E Tests]: `pnpm test:e2e` [Pass/Fail]
-  - [Visuals]: Screenshots in `artifacts/` [Check/Skip]
-
-## 3. Current State & Pending Scope
-- **Active Task**: [What was in progress?]
-- **Pending / Next Up**:
-  - [Task 1]
-  - [Task 2]
-- **Known Issues**:
-  - [Issue Description]
-
-## 4. Operational Notes (For Next Agent)
-- **Environment**: Node 18+, pnpm, Linux.
-- **Gotchas**:
-  - [e.g. "Do not use browser_subagent"]
-  - [e.g. "AppShell requires fixed height"]
-- **Testing Contextual Actions**:
-  - **Regex Locators**: When verifying AI messages or multi-line text, ALWAYS use regex locators (e.g. `getByText(/Fix the following issues/)`) instead of strict string matching. This handles whitespace variations and avoids brittle tests.
-  - **Test IDs**: Use the standard `data-testid` attributes (e.g. `chat-message-user-0`) for selecting specific elements.
-  - **Timing**: Optimistic updates in React state can sometimes race with DOM assertions. Ensure you wait for specific element visibility before asserting content.
-- **Wasted Time / Lessons**:
-  - [e.g. "Spent time debugging X, solution was Y"]
-
-## 5. Immediate Action Items
-1. [First file to check]
-```
-
-#### Retrospective & Process Improvements (Proposals)
-
-After generating the code block above, strictly outside of it, you must conduct a retrospective using the `/retro` workflow format:
-
-```markdown
-## Quick Wins for Next Session
-
-| Action | Effort | Impact | Priority |
-|--------|--------|--------|----------|
-| [Fix X] | 5 min | Saves 10 min/session | 🔴 Do Now |
-| [Add Y] | 15 min | Prevents flaky tests | 🟡 Soon |
-
-Would you like me to implement these now or save to PENDING_IMPROVEMENTS.md?
-```
+**Quick reference**:
+- Full template: `.agent/workflows/handover.md`
+- Always commit before handover
+- DO NOT create a `session_handover.md` file
+- Include `/retro` quick wins table after handover
 
 ---
 

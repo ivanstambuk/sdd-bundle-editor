@@ -802,13 +802,40 @@ The project provides several test scripts for different scenarios:
 
 ---
 
+### Proactive Retrospective (Delivery Improvements)
+
+**Trigger Conditions**: I should PROACTIVELY suggest running `/retro` when:
+1. **Long iterations**: Spent >30 minutes debugging something that should have been faster
+2. **Multiple fix attempts**: Made 3+ attempts to fix the same issue
+3. **Test flakiness**: Had to re-run tests multiple times due to failures
+4. **Context exhaustion**: Near the end of a long session (>1 hour of active work)
+5. **Repeated patterns**: Noticed the same type of issue from previous sessions
+6. **Build/test delays**: Significant time waiting for commands to complete
+
+**How to trigger**: Say `/retro` or "run retrospective" or "what could we improve"
+
+**Output format**: See `.agent/workflows/retro.md` for the full structured workflow.
+
+**Quick format** (when time is short):
+```markdown
+## Quick Retrospective
+
+**Friction**: [What slowed us down]
+**Quick Win**: [One thing to fix now] (Effort: X min, Impact: saves Y min/session)
+
+Implement now? (y/n)
+```
+
+---
+
 ### Session Handover / Handoff Protocol
 
 When the user says "session handover", you must perform two distinct actions:
 
 1.  **Generate the Handover Summary**: Use the template below to provide high-signal context for the next agent. **IMPORTANT**: Output this as a single Markdown code block in your final chat message. Do **NOT** create a `session_handover.md` file.
-2.  **Conduct a Retrospective**: Reflect on the session and propose improvements.
-    *   Draft these proposals as a numbered list **after** the code block.
+2.  **Conduct a Retrospective**: Run `/retro` workflow to identify and propose improvements.
+    *   Use the structured format from `.agent/workflows/retro.md`
+    *   Draft proposals as a numbered list **after** the handover code block
     *   **DO NOT implement them yet**. Wait for user approval.
 
 #### Handoff Template
@@ -859,10 +886,57 @@ When the user says "session handover", you must perform two distinct actions:
 
 #### Retrospective & Process Improvements (Proposals)
 
-After generating the code block above, strictly outside of it, you must conduct a retrospective. Reflect on the session and propose improvements to workflows, documentation, or code.
+After generating the code block above, strictly outside of it, you must conduct a retrospective using the `/retro` workflow format:
 
-*Format:*
-*In this session, I noticed [X] caused friction. I propose:*
-1.  **[Improvement Name]**: [Description]
-2.  **[Improvement Name]**: [Description]
+```markdown
+## Quick Wins for Next Session
+
+| Action | Effort | Impact | Priority |
+|--------|--------|--------|----------|
+| [Fix X] | 5 min | Saves 10 min/session | 🔴 Do Now |
+| [Add Y] | 15 min | Prevents flaky tests | 🟡 Soon |
+
+Would you like me to implement these now or save to PENDING_IMPROVEMENTS.md?
+```
+
+---
+
+### Session Context Location
+
+When resuming from a previous session, context artifacts are stored in:
+```
+/home/ivan/.gemini/antigravity/brain/<conversation-id>/
+├── task.md           # Current task checklist
+├── walkthrough.md    # Implementation notes
+└── implementation_plan.md  # Detailed plan
+```
+
+Find the latest conversation:
+```bash
+ls -t /home/ivan/.gemini/antigravity/brain/ | head -5
+```
+
+---
+
+### Auto-Cleanup on Session Completion
+
+Before ending a session:
+1. Run `pnpm test` to verify no regressions
+2. Run `pnpm test:e2e` for UI changes
+3. Commit with descriptive message
+4. Clean up any temp files in artifacts/
+5. Offer to run `/retro` if significant work was done
+
+---
+
+### Test Scripts Reference
+
+| Command | Description | When to Use |
+|---------|-------------|-------------|
+| `pnpm test` | Run all unit tests (one-shot) | After any code change |
+| `pnpm test:watch` | Run tests in watch mode | During active development |
+| `pnpm test:e2e` | Run full E2E suite (~3 min) | Before committing UI changes |
+| `pnpm test:e2e:smoke` | Quick E2E smoke test (~30s) | Quick sanity check |
+| `pnpm test:smoke` | MCP unit + E2E smoke | Fastest full-stack check |
+| `pnpm test:visual` | Visual regression tests | After CSS/layout changes |
 

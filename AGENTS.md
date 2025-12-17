@@ -864,6 +864,26 @@ ls -t /home/ivan/.gemini/antigravity/brain/ | head -5
 
 ---
 
+### Reusable Patterns & Snippets
+
+Non-trivial code patterns discovered during sessions are saved in `.agent/snippets/`:
+
+```
+.agent/snippets/
+├── test-patterns.md      # E2E test helpers, fixture patterns
+├── response-patterns.md  # API response envelope, error handling
+└── debug-recipes.md      # Diagnostic commands, debugging approaches
+```
+
+**When to check snippets**: Before implementing something that "feels familiar" - it may already be documented.
+
+**When to add snippets**: During `/retro`, extract patterns that:
+- Took >1 attempt to create
+- Were used 2+ times
+- Are project-specific (not general language knowledge)
+
+---
+
 ### Auto-Cleanup on Session Completion
 
 Before ending a session:

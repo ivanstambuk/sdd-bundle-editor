@@ -96,6 +96,53 @@ For each friction point, propose a solution with impact assessment:
 5. **Did tests require too much setup?** → Extract fixture helpers
 6. **Was the API response format surprising?** → Normalize response shapes
 
+## Step 2.6: Snippet Extraction
+
+**IMPORTANT**: Identify non-trivial code patterns created during this session that should be saved for reuse.
+
+**Criteria for extraction** (must meet at least one):
+- Took >1 attempt to create correctly
+- Used 2+ times in this session
+- Complex enough that you'd have to think about it again
+- Project-specific (not general language knowledge)
+
+**NOT worth extracting**:
+- Simple one-liners (grep, sed basics)
+- Standard language patterns you already know
+- One-off debugging commands
+
+```markdown
+## Snippets to Extract
+
+| Snippet | Category | Destination |
+|---------|----------|-------------|
+| [MCP envelope unwrapper] | TypeScript | .agent/snippets/response-patterns.md |
+| [Dynamic entity selection] | E2E Test | .agent/snippets/test-patterns.md |
+| [Session context finder] | Debug | .agent/snippets/debug-recipes.md |
+
+### Snippet Details
+
+**[Snippet Name]**
+```typescript
+// The actual code pattern
+```
+**Why save**: [Took multiple attempts / Used repeatedly / Non-obvious]
+```
+
+## Step 2.7: Anti-Patterns Identified
+
+Document things that DON'T work, to prevent future agents from trying them:
+
+```markdown
+## Anti-Patterns (Don't Do This)
+
+| Don't Do This | Because | Do This Instead |
+|---------------|---------|-----------------|
+| Hardcode `REQ-002` in tests | May not exist in bundle | Use `TEST_ENTITIES.REQUIREMENT` |
+| Expect `diagnostics: undefined` | Envelope uses empty array | Check for `[]` or missing field |
+| Run `pnpm test` without checking mode | May hang in watch mode | Use `pnpm test` (now fixed to run mode) |
+```
+
 ## Step 3: Quick Wins Summary
 
 Create a table sorted by effort/impact ratio (include both process AND architectural items):
@@ -118,7 +165,7 @@ Ask the user which improvements to implement:
 ```markdown
 ## Proposed Actions
 
-I've identified [N] improvements ([X] process, [Y] architectural). Ranked by impact:
+I've identified [N] improvements ([X] process, [Y] architectural, [Z] snippets). Ranked by impact:
 
 ### Process Fixes (Quick Wins)
 1. **[Most impactful]** - [One-line description]
@@ -128,18 +175,22 @@ I've identified [N] improvements ([X] process, [Y] architectural). Ranked by imp
 1. **[Most valuable]** - [One-line description]
 2. **[Second most]** - [One-line description]
 
+### Snippets to Save
+1. **[Pattern name]** → `.agent/snippets/[file].md`
+
 Would you like me to implement:
 - [ ] All process fixes now
-- [ ] Process + one architectural item
+- [ ] Process + snippets
 - [ ] Specific items (list numbers)
 - [ ] Add architectural items to IMPLEMENTATION_TRACKER.md
 ```
 
 ## Step 5: Document for Future
 
-If approved, also update relevant documentation:
+If approved, update relevant documentation:
 - `AGENTS.md` - Add to Common Pitfalls if it's a recurring issue
 - `.agent/workflows/` - Create new workflow if it's a repeatable process
+- `.agent/snippets/` - Add code patterns (test-patterns.md, response-patterns.md, debug-recipes.md)
 - `IMPLEMENTATION_TRACKER.md` - Add architectural improvements as tasks
 - `packages/*/README.md` - Document new patterns or abstractions
 

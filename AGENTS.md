@@ -319,8 +319,12 @@ See `packages/mcp-server/README.md` for full documentation.
 From the repo root:
 
 ```bash
-pnpm dev
+pnpm dev          # Legacy + MCP servers + web + ui-shell watch
+pnpm dev:mcp      # Same as above (explicit MCP)
+pnpm dev:mcp-only # MCP server + web only (no legacy server)
 ```
+
+> **MCP-First Architecture**: The UI now defaults to MCP for all operations. Legacy HTTP endpoints are deprecated and will be removed. Use `pnpm dev:mcp-only` to develop without the legacy server.
 
 This runs the backend server, web dev server, **and** the ui-shell TypeScript compiler in watch mode using `concurrently`. Output is prefixed with `[server]`, `[web]`, and `[ui-shell]` for clarity.
 

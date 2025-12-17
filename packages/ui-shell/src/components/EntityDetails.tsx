@@ -4,6 +4,7 @@ import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
+import { MarkdownWidget } from './MarkdownWidget';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -298,6 +299,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     hidden: HiddenWidget,
     CheckboxWidget: CustomCheckboxWidget,
     SelectWidget: CustomSelectWidget,
+    MarkdownWidget: MarkdownWidget,
   };
 
   const fields: Record<string, any> = {
@@ -334,6 +336,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       // displayHint: "multiline" renders as textarea
       if (ps && ps.type === 'string' && ps.displayHint === 'multiline') {
         uiSchema[propName] = { 'ui:widget': 'textarea' };
+      }
+
+      // displayHint: "markdown" renders with MarkdownWidget
+      if (ps && ps.type === 'string' && ps.displayHint === 'markdown') {
+        uiSchema[propName] = { 'ui:widget': 'MarkdownWidget' };
       }
     }
   }

@@ -4052,3 +4052,307 @@ form input[type="checkbox"] {
   color: var(--color-text-muted);
   font-style: italic;
 }
+
+/* ========================================
+   Markdown Widget
+   ======================================== */
+.markdown-widget {
+  width: 100%;
+}
+
+/* Read-only markdown display */
+.markdown-readonly {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  overflow: auto;
+  max-height: 400px;
+  font-size: var(--font-size-sm);
+  /* Match form text size (13px) */
+  line-height: 1.5;
+}
+
+.markdown-empty {
+  padding: var(--spacing-sm);
+  color: var(--color-text-muted);
+}
+
+/* Markdown content styling */
+.markdown-readonly h1,
+.markdown-readonly h2,
+.markdown-readonly h3,
+.markdown-readonly h4,
+.markdown-readonly h5,
+.markdown-readonly h6 {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-readonly h1 {
+  font-size: var(--font-size-xl);
+}
+
+.markdown-readonly h2 {
+  font-size: var(--font-size-lg);
+}
+
+.markdown-readonly h3 {
+  font-size: var(--font-size-md);
+}
+
+.markdown-readonly h4,
+.markdown-readonly h5,
+.markdown-readonly h6 {
+  font-size: var(--font-size-sm);
+}
+
+.markdown-readonly h1:first-child,
+.markdown-readonly h2:first-child,
+.markdown-readonly h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-readonly p {
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.6;
+}
+
+.markdown-readonly p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-readonly ul,
+.markdown-readonly ol {
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-readonly li {
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.5;
+}
+
+.markdown-readonly li::marker {
+  color: var(--color-accent);
+}
+
+.markdown-readonly code {
+  background: var(--color-bg-secondary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.9em;
+  color: var(--color-accent);
+}
+
+.markdown-readonly pre {
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-readonly pre code {
+  background: none;
+  padding: 0;
+  color: var(--color-text-primary);
+}
+
+.markdown-readonly blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--spacing-md);
+  margin-left: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.markdown-readonly a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.markdown-readonly a:hover {
+  text-decoration: underline;
+  color: var(--color-accent-hover);
+}
+
+.markdown-readonly strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.markdown-readonly em {
+  font-style: italic;
+}
+
+.markdown-readonly hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--spacing-md) 0;
+}
+
+.markdown-readonly table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-readonly th,
+.markdown-readonly td {
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm);
+  text-align: left;
+}
+
+.markdown-readonly th {
+  background: var(--color-bg-secondary);
+  font-weight: 600;
+}
+
+/* Editable markdown widget */
+.markdown-editable {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.markdown-toolbar {
+  display: flex;
+  gap: 2px;
+  padding: var(--spacing-xs);
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.markdown-toggle {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.markdown-toggle:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.markdown-toggle.active {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.markdown-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: var(--spacing-md);
+  background: var(--color-bg-primary);
+  border: none;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  resize: vertical;
+}
+
+.markdown-textarea:focus {
+  outline: none;
+}
+
+.markdown-textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.markdown-preview {
+  padding: var(--spacing-md);
+  background: var(--color-bg-primary);
+  min-height: 150px;
+}
+
+/* Apply markdown styling to preview */
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-preview h1 {
+  font-size: var(--font-size-xl);
+}
+
+.markdown-preview h2 {
+  font-size: var(--font-size-lg);
+}
+
+.markdown-preview h3 {
+  font-size: var(--font-size-md);
+}
+
+.markdown-preview p {
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.6;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.markdown-preview li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.markdown-preview li::marker {
+  color: var(--color-accent);
+}
+
+.markdown-preview code {
+  background: var(--color-bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.9em;
+  color: var(--color-accent);
+}
+
+.markdown-preview pre {
+  background: var(--color-bg-tertiary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.markdown-preview pre code {
+  background: none;
+  padding: 0;
+  color: var(--color-text-primary);
+}
+
+.markdown-preview blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.markdown-preview a {
+  color: var(--color-accent);
+}
+
+.markdown-preview strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}

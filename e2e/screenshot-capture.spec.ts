@@ -11,17 +11,17 @@ test('capture UI screenshots', async ({ page }) => {
 
     // Expand Feature group first (groups start collapsed)
     await page.click('[data-testid="entity-group-Feature"]');
-    await page.click('[data-testid="entity-FEAT-001"]');
-    await expect(page.locator('.entity-id').filter({ hasText: 'FEAT-001' })).toBeVisible();
+    await page.click('[data-testid="entity-item-Feature-FEAT-demo-basic"]');
+    await expect(page.locator('.entity-id').filter({ hasText: 'FEAT-demo-basic' })).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-entity-details.png', fullPage: true });
 
     await page.click('[data-testid="compile-btn"]');
     await expect(page.locator('.diagnostics-panel')).toBeVisible();
     await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-diagnostics.png', fullPage: true });
 
-    // Capture ADR form - expand ADR group first
-    await page.click('[data-testid="entity-group-ADR"]');
-    await page.click('[data-testid="entity-ADR-0001"]');
+    // Capture Requirement with Markdown content
+    await page.click('[data-testid="entity-group-Requirement"]');
+    await page.click('[data-testid="entity-item-Requirement-REQ-secure-auth"]');
     await page.waitForTimeout(500); // Wait for form to render
-    await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-adr-form.png', fullPage: true });
+    await page.screenshot({ path: '/home/ivan/dev/sdd-bundle-editor/test-results/ui-markdown-requirement.png', fullPage: true });
 });

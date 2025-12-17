@@ -568,6 +568,88 @@ test.describe('MCP Server E2E Tests', () => {
         }
     });
 
+    test('get_bundle_schema returns bundle type definition', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_bundle_schema', {}) as {
+            bundleId: string;
+            manifest: { name?: string; bundleType?: string; version?: string };
+            bundleTypeDefinition: { entities?: Record<string, unknown>; relations?: Array<{ name: string; fromEntity: string; toEntity: string }> };
+        };
+
+        expect(result.bundleId).toBeDefined();
+        expect(result.manifest).toBeDefined();
+        expect(result.manifest.bundleType).toBeDefined();
+        expect(result.bundleTypeDefinition).toBeDefined();
+
+        // Should have entities configuration
+        if (result.bundleTypeDefinition.entities) {
+            expect(Object.keys(result.bundleTypeDefinition.entities).length).toBeGreaterThan(0);
+        }
+
+        // Should have relations array
+        if (result.bundleTypeDefinition.relations) {
+            expect(Array.isArray(result.bundleTypeDefinition.relations)).toBe(true);
+        }
+    });
+
+    test('get_conformance_context lists profiles when no profileId', async () => {
+        const sessionId = await initMcpSession();
+        const result = await callMcpTool(sessionId, 'get_conformance_context', {}) as {
+            bundleId: string;
+            profiles: Array<{ id: string; title?: string; description?: string }>;
+            meta: { count: number };
+        };
+
+        expect(result.bundleId).toBeDefined();
+        expect(result.profiles).toBeDefined();
+        expect(Array.isArray(result.profiles)).toBe(true);
+        expect(result.meta).toBeDefined();
+        expect(result.meta.count).toBe(result.profiles.length);
+
+        // If profiles exist, check structure
+        if (result.profiles.length > 0) {
+            expect(result.profiles[0].id).toBeDefined();
+        }
+    });
+
+    test('get_conformance_context returns profile details when profileId specified', async () => {
+        const sessionId = await initMcpSession();
+
+        // First, list profiles to get a valid ID
+        const listResult = await callMcpTool(sessionId, 'get_conformance_context', {}) as {
+            profiles: Array<{ id: string }>;
+        };
+
+        // Skip if no profiles exist in the bundle
+        if (listResult.profiles.length === 0) {
+            console.log('No profiles in bundle, skipping detailed profile test');
+            return;
+        }
+
+        const profileId = listResult.profiles[0].id;
+        const result = await callMcpTool(sessionId, 'get_conformance_context', {
+            profileId,
+        }) as {
+            bundleId: string;
+            profile: { id: string; title?: string; description?: string };
+            rules?: Array<{ ruleId: string; description?: string }>;
+            auditTemplate?: unknown;
+            requiredFeatures?: Array<unknown>;
+            meta: { ruleCount: number };
+        };
+
+        expect(result.bundleId).toBeDefined();
+        expect(result.profile).toBeDefined();
+        expect(result.profile.id).toBe(profileId);
+        expect(result.meta).toBeDefined();
+        expect(typeof result.meta.ruleCount).toBe('number');
+
+        // Rules should be an array if present
+        if (result.rules) {
+            expect(Array.isArray(result.rules)).toBe(true);
+        }
+    });
+
     test('get_bundle_snapshot returns complete bundle', async () => {
         const sessionId = await initMcpSession();
         const result = await callMcpTool(sessionId, 'get_bundle_snapshot', {}) as {

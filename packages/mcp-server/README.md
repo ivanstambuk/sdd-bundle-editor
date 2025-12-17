@@ -159,6 +159,260 @@ Get a complete bundle snapshot optimized for initial loads.
 }
 ```
 
+### get_bundle_schema
+
+Get the bundle type definition (metaschema) to understand entity relationships and bundle structure.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+
+**Response:**
+
+```json
+{
+  "manifest": {
+    "name": "My Specification",
+    "bundleType": "sdd-spec",
+    "version": "1.0.0"
+  },
+  "bundleTypeDefinition": {
+    "entities": { "Requirement": {...}, "Feature": {...} },
+    "relations": [
+      { "name": "realizes", "fromEntity": "Requirement", "fromField": "realizesFeatureIds", "toEntity": "Feature" }
+    ]
+  }
+}
+```
+
+### get_entity_schema
+
+Get the JSON schema for a specific entity type. Useful for form rendering or understanding entity structure.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | required | Entity type (e.g., 'Requirement', 'Task') |
+
+**Response:**
+
+```json
+{
+  "entityType": "Requirement",
+  "schema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+      "id": { "type": "string", "pattern": "^REQ-" },
+      "title": { "type": "string", "maxLength": 100 },
+      "priority": { "type": "string", "enum": ["critical", "high", "medium", "low"] }
+    },
+    "required": ["id", "title"]
+  }
+}
+```
+
+### read_entity
+
+Read complete data for a single entity.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | required | Entity type |
+| `id` | string | required | Entity ID |
+
+### read_entities
+
+Bulk read multiple entities in a single call (more efficient than multiple read_entity calls).
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | required | Entity type |
+| `ids` | string[] | required | Entity IDs to fetch (max 50) |
+| `fields` | string[] | all | Specific fields to return |
+
+**Response includes `meta.notFound`** listing any IDs that weren't found.
+
+### list_entities
+
+List entity IDs with pagination support.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (or 'all' for all bundles) |
+| `entityType` | string | - | Filter by entity type |
+| `limit` | number | 100 | Max IDs to return (max 500) |
+| `offset` | number | 0 | Pagination offset |
+
+**Meta Response:** Includes `total`, `hasMore`, `returned` for pagination.
+
+### list_entity_summaries
+
+List entities with summary fields (id, title, state) - better for selection UIs.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | - | Filter by entity type |
+| `include` | string[] | `["id", "title"]` | Fields to include in summaries |
+| `limit` | number | 50 | Max results (max 200) |
+| `offset` | number | 0 | Pagination offset |
+
+### get_entity_relations
+
+Get relationship definitions for an entity type from the bundle-type specification.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | - | Filter by entity type (shows all if not specified) |
+| `direction` | `outgoing`/`incoming`/`both` | `both` | Filter by relationship direction |
+
+**Response:**
+
+```json
+{
+  "relations": [
+    {
+      "name": "realizes",
+      "fromEntity": "Requirement",
+      "fromField": "realizesFeatureIds",
+      "toEntity": "Feature",
+      "direction": "outgoing"
+    }
+  ]
+}
+```
+
+### get_context
+
+Graph traversal to get an entity with its related dependencies.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `entityType` | string | required | Entity type |
+| `id` | string | required | Entity ID |
+| `depth` | number | 1 | Traversal depth (max 3) |
+| `maxRelated` | number | 20 | Max related entities (max 100) |
+| `includeRelated` | `full`/`summary`/`ids` | `full` | Detail level for related entities |
+| `fields` | string[] | all | Fields to return for target entity |
+
+**Response:**
+
+```json
+{
+  "target": { "id": "REQ-001", "title": "..." },
+  "related": [
+    { "id": "FEAT-001", "entityType": "Feature", "relation": "references", "field": "realizesFeatureIds", "data": {...} }
+  ],
+  "meta": { "relatedCount": 5, "maxRelated": 20, "truncated": false }
+}
+```
+
+### get_conformance_context
+
+Get conformance rules and audit templates from a Profile.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
+| `profileId` | string | - | Profile ID (lists all profiles if not specified) |
+
+**Without profileId (list mode):**
+
+```json
+{
+  "profiles": [
+    { "id": "PROF-SECURITY", "title": "Security Baseline", "description": "..." }
+  ],
+  "meta": { "count": 2 }
+}
+```
+
+**With profileId:**
+
+```json
+{
+  "profile": { "id": "PROF-SECURITY", "title": "Security Baseline" },
+  "rules": [
+    { "ruleId": "SEC-001", "description": "...", "linkedRequirement": "REQ-001", "requirementText": "..." }
+  ],
+  "auditTemplate": { "sections": [...] },
+  "requiredFeatures": [...],
+  "meta": { "ruleCount": 5 }
+}
+```
+
+### search_entities
+
+Search for entities across all bundles by keyword.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | string | required | Search query (searches IDs, titles, descriptions) |
+| `entityType` | string | - | Filter by entity type |
+| `bundleId` | string | - | Filter by bundle ID |
+| `limit` | number | 50 | Max results (max 100) |
+| `offset` | number | 0 | Pagination offset |
+
+**Response:**
+
+```json
+{
+  "results": [
+    { "bundleId": "my-bundle", "entityType": "Requirement", "id": "REQ-001", "title": "...", "match": "title" }
+  ],
+  "meta": { "total": 15, "hasMore": true }
+}
+```
+
+### validate_bundle
+
+Validate a bundle and return all diagnostics (errors, warnings).
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `bundleId` | string | - | Bundle ID (or 'all' to validate all bundles) |
+
+**Response:**
+
+```json
+{
+  "summary": {
+    "totalErrors": 2,
+    "totalWarnings": 5,
+    "isValid": false
+  },
+  "diagnostics": [
+    { "severity": "error", "code": "BROKEN_REFERENCE", "message": "...", "entityType": "Requirement", "entityId": "REQ-001" }
+  ]
+}
+```
+
 ---
 
 ## Running Locally

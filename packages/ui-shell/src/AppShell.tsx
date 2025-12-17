@@ -125,7 +125,7 @@ export function AppShell() {
     : [];
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Info banner - UI is read-only, shows MCP connection status */}
       <div className="info-banner" data-testid="read-only-banner">
         📖 <strong>Read-Only Mode</strong>

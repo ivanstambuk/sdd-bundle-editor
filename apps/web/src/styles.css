@@ -208,6 +208,15 @@ body {
   grid-template-columns: 280px 1fr 420px;
 }
 
+/* When the sidebar is collapsed, shrink its column */
+.app-shell.sidebar-collapsed {
+  grid-template-columns: 50px 1fr;
+}
+
+.app-shell.sidebar-collapsed.with-agent-panel {
+  grid-template-columns: 50px 1fr 420px;
+}
+
 /* Info Banner - Read-only mode indicator */
 .info-banner {
   grid-column: 1 / -1;

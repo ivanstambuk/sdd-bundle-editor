@@ -102,16 +102,7 @@ export function AppShell() {
       handler: () => setSidebarCollapsed(prev => !prev),
       description: 'Toggle Sidebar'
     },
-    {
-      key: 'p',
-      ctrl: true,
-      handler: () => {
-        if (sidebarCollapsed) setSidebarCollapsed(false);
-        setViewMode('entity');
-      },
-      description: 'Quick Search'
-    },
-  ], [sidebarCollapsed]));
+  ], []));
 
   // Initial load
   useEffect(() => {

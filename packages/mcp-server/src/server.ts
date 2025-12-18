@@ -1676,14 +1676,16 @@ Scoring Guide:
                         );
                     }
 
-                    // Check for GitHub Copilot-specific error (doesn't support MCP sampling)
+                    // Check for VS Code model access not configured
+                    // This happens when sampling is supported but no model has been authorized
                     if (errorMessage.includes("Endpoint not found") || errorMessage.includes("model auto")) {
                         return toolError(TOOL_NAME, "BAD_REQUEST",
-                            "GitHub Copilot does not support MCP sampling. The critique_bundle tool requires a client that implements the MCP sampling capability.",
+                            "MCP sampling requires model access authorization. The server needs permission to use your language model.",
                             {
                                 bundleId: effectiveBundleId,
-                                hint: "Use Claude Desktop (which supports MCP sampling), or try the 'bundle-health' prompt instead: /mcp.sdd-bundle.bundle-health",
-                                documentation: "https://modelcontextprotocol.io/docs/concepts/sampling",
+                                solution: "In VS Code: Ctrl+Shift+P → 'MCP: List Servers' → select 'sdd-bundle' → 'Configure Model Access' → enable a model (e.g., GPT-4o)",
+                                alternative: "Or use the 'bundle-health' prompt directly: /mcp.sdd-bundle.bundle-health",
+                                documentation: "https://code.visualstudio.com/docs/copilot/chat/mcp-servers",
                             }
                         );
                     }

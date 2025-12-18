@@ -4,6 +4,7 @@ import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, delet
 import { z } from "zod";
 import { BundleConfig, LoadedBundle } from "./types.js";
 import { toolSuccess, toolError, resourceError, type Diagnostic as ResponseDiagnostic } from "./response-helpers.js";
+import { summarizeEntity, formatEntitiesForPrompt } from "./entity-utils.js";
 import * as path from "path";
 import * as fs from "fs/promises";
 
@@ -1909,39 +1910,6 @@ Scoring Guide:
      * Setup MCP prompts for structured AI workflows
      */
     private setupPrompts() {
-        // Helper: Create a summary of an entity (id, title/name, state) instead of full JSON
-        const summarizeEntity = (data: Record<string, unknown>): Record<string, unknown> => ({
-            id: data.id,
-            title: data.title || data.name || data.statement,
-            state: data.state,
-            ...(data.priority ? { priority: data.priority } : {}),
-        });
-
-        // Helper: Format entities for prompt - either as summaries or limited full data
-        const formatEntitiesForPrompt = (
-            entities: Array<{ data: Record<string, unknown> }>,
-            options: { maxEntities?: number; mode?: "full" | "summary" | "ids" } = {}
-        ): string => {
-            const { maxEntities = 20, mode = "summary" } = options;
-            const limited = entities.slice(0, maxEntities);
-            const truncated = entities.length > maxEntities;
-
-            if (mode === "ids") {
-                const ids = limited.map(e => e.data.id);
-                return ids.join(", ") + (truncated ? ` ... and ${entities.length - maxEntities} more` : "");
-            }
-
-            const formatted = limited.map(e =>
-                mode === "full" ? e.data : summarizeEntity(e.data)
-            );
-
-            let result = JSON.stringify(formatted, null, 2);
-            if (truncated) {
-                result += `\n\n(Showing ${maxEntities} of ${entities.length}. Use read_entity tool for full details.)`;
-            }
-            return result;
-        };
-
         // Prompt 1: implement-requirement
         this.server.prompt(
             "implement-requirement",

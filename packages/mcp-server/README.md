@@ -487,22 +487,31 @@ Trigger an LLM-based quality critique of the bundle using MCP sampling. The serv
 
 If you get `"Endpoint not found for model auto"`, it means VS Code supports sampling but you need to authorize model access:
 
-1. Open Command Palette: `Ctrl+Shift+P`
-2. Run: `MCP: List Servers`
-3. Select: `sdd-bundle`
-4. Choose: `Configure Model Access`
-5. Enable a model (e.g., GPT-4o, Claude Sonnet)
-
-> **⚠️ Client Compatibility Note:**  
-> - **Claude Desktop**: ✅ Full support for MCP sampling (works out of the box)
-> - **VS Code + GitHub Copilot**: ✅ Supports MCP sampling (requires model access configuration - see steps above)
-> - **MCP Inspector**: ❌ Does not support MCP sampling
+> **⚠️ Required One-Time Setup for VS Code:**
 >
-> **Alternative for any client**: Use the `bundle-health` prompt instead:
-> ```
-> /mcp.sdd-bundle.bundle-health
-> ```
-> This provides similar health analysis without requiring sampling capability.
+> Before `critique_bundle` can work, you must configure model access:
+>
+> 1. Open Command Palette: `Ctrl+Shift+P`
+> 2. Run: `MCP: List Servers`
+> 3. Select: `sdd-bundle`
+> 4. Choose: `Configure Model Access`
+> 5. Enable a model (e.g., GPT-4o, GPT-5-mini, Claude Sonnet)
+>
+> This is a security feature - MCP servers cannot use your Copilot subscription without explicit permission.
+
+**Client Compatibility:**
+
+| Client | Sampling Support | Notes |
+|--------|------------------|-------|
+| Claude Desktop | ✅ Works out of the box | No additional setup needed |
+| VS Code + Copilot | ✅ Fully supported | Requires model access configuration (see steps above) |
+| MCP Inspector | ❌ Not supported | Use `bundle-health` prompt instead |
+
+**Alternative for any client**: Use the `bundle-health` prompt instead:
+```
+/mcp.sdd-bundle.bundle-health
+```
+This provides similar health analysis without requiring sampling capability.
 
 ---
 

@@ -882,6 +882,77 @@ Generate an implementation roadmap:
 
 ---
 
+## Prompt Scaling Guidelines
+
+When adding or modifying prompts, follow these guidelines to prevent **context window explosion** with large bundles.
+
+### The Problem
+
+Prompts that embed full entity JSON can easily exceed context limits:
+
+| Bundle Size | Naive Prompt Size | With Scaling |
+|-------------|-------------------|--------------|
+| 10 entities | ~10KB ✅ | ~3KB |
+| 50 entities | ~60KB ⚠️ | ~8KB |
+| 100+ entities | ~150KB+ ❌ | ~15KB |
+
+### Solution: Entity Summarization
+
+Use the `summarizeEntity()` helper to extract key fields instead of embedding full JSON:
+
+```typescript
+// DON'T do this:
+${JSON.stringify(entity.data, null, 2)}  // Could be 500+ bytes per entity
+
+// DO this:
+const summarizeEntity = (data) => ({
+    id: data.id,
+    title: data.title || data.name || data.statement,
+    state: data.state,
+    ...(data.priority ? { priority: data.priority } : {})
+});
+```
+
+### Scaling Rules
+
+1. **Limit entity counts** in prompts:
+   - Related entities: max 10-20
+   - All entities of a type: max 30-50
+   - Dependency traversal: max 20 per direction
+
+2. **Use summaries by default**, full data only for the target entity
+
+3. **Truncate large text fields**:
+   ```typescript
+   const MAX_DOMAIN_CHARS = 4000;
+   if (domainKnowledge.length > MAX_DOMAIN_CHARS) {
+       domainKnowledge = domainKnowledge.substring(0, MAX_DOMAIN_CHARS) + "\n\n... (truncated)";
+   }
+   ```
+
+4. **Include hints for the LLM** to fetch more:
+   ```markdown
+   **Note:** Use `read_entity` tool for full entity details.
+   ```
+
+5. **Show truncation indicators**:
+   ```typescript
+   `${allEntities.length} total${truncated ? `, showing ${MAX}` : ""}`
+   ```
+
+### Current Limits by Prompt
+
+| Prompt | Entity Limit | Data Mode |
+|--------|--------------|-----------|
+| `implement-requirement` | 10 per type | Summary |
+| `audit-profile` | 30 per type | Summary |
+| `trace-dependency` | 20 per direction | ID/title/state only |
+| `suggest-relations` | 40 entities, 100 relations | Summary |
+| `generate-tests` | 10 related | Summary |
+| `create-roadmap` | 20/30/40 by type | Summary |
+
+---
+
 ## VS Code + GitHub Copilot Integration
 
 ### Single Bundle Configuration

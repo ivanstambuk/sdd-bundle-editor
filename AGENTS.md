@@ -788,6 +788,27 @@ The project provides several test scripts for different scenarios:
    - Root cause: `getMcpServerUrl()` returns absolute URL instead of relative
    - Fix: Return empty string for browser context, use relative `/mcp` path
 
+9. **MCP sampling without capability check**
+   - Symptom: Tool hangs indefinitely with thin HTTP clients
+   - Root cause: `createMessage()` called without checking if client supports sampling
+   - Fix: Check capabilities first:
+     ```typescript
+     const caps = this.server.server.getClientCapabilities();
+     if (!caps?.sampling) {
+         return toolError(TOOL_NAME, "UNSUPPORTED_CAPABILITY", "...");
+     }
+     ```
+
+10. **Adding mimeType to MCP tool text content**
+    - Symptom: TypeScript error: "mimeType does not exist in type"
+    - Root cause: MCP SDK `TextContent` type only has `{type, text, annotations?}`
+    - Fix: `mimeType` only works on resources and embedded resources, not tool text content
+
+11. **Inconsistent resource error format**
+    - Symptom: Agents struggle to parse resource errors
+    - Root cause: Resources using `{error, message}` instead of tool format
+    - Fix: Use `{ok: false, error: {code, message, details}}` for all responses (use `resourceError()` helper)
+
 ---
 
 ### Proactive Retrospective (Delivery Improvements)

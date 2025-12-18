@@ -21,7 +21,7 @@ test.describe('Visual Regression Tests', () => {
     test('initial load matches baseline', async ({ page }) => {
         await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
         await page.waitForLoadState('networkidle');
-        await expect(page.getByText('Entities')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByRole('heading', { name: 'Entities' })).toBeVisible({ timeout: 10000 });
 
         // Wait for animations to settle
         await page.waitForTimeout(500);
@@ -36,7 +36,7 @@ test.describe('Visual Regression Tests', () => {
     test('entity selection matches baseline', async ({ page }) => {
         await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
         await page.waitForLoadState('networkidle');
-        await expect(page.getByText('Entities')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByRole('heading', { name: 'Entities' })).toBeVisible({ timeout: 10000 });
 
         // Expand Requirement group and select first entity
         const reqGroup = page.locator('.entity-group-header', { hasText: 'Requirement' });
@@ -60,7 +60,7 @@ test.describe('Visual Regression Tests', () => {
     test('sidebar collapsed matches baseline', async ({ page }) => {
         await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
         await page.waitForLoadState('networkidle');
-        await expect(page.getByText('Entities')).toBeVisible({ timeout: 10000 });
+        await expect(page.getByRole('heading', { name: 'Entities' })).toBeVisible({ timeout: 10000 });
 
         // Collapse sidebar
         await page.locator('[data-testid="sidebar-toggle"]').click();

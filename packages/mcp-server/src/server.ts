@@ -1770,7 +1770,7 @@ Scoring Guide:
                 }
 
                 // Try to use MCP sampling with timeout protection
-                const SAMPLING_TIMEOUT_MS = 30000; // 30 seconds
+                const SAMPLING_TIMEOUT_MS = 120000; // 120 seconds
                 try {
                     const samplingPromise = underlyingServer.createMessage({
                         messages: [
@@ -1858,7 +1858,7 @@ Scoring Guide:
                     // Check for timeout (from our Promise.race)
                     if (errorMessage === "SAMPLING_TIMEOUT") {
                         return toolError(TOOL_NAME, "INTERNAL",
-                            "Sampling request timed out after 30 seconds. The LLM may be overloaded or unresponsive.",
+                            "Sampling request timed out after 120 seconds. The LLM may be overloaded or unresponsive.",
                             {
                                 bundleId: effectiveBundleId,
                                 hint: "Try again later, or use the 'bundle-health' prompt for a faster alternative.",

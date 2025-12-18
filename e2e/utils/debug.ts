@@ -31,16 +31,18 @@ export function debugLog(message: string, ...args: unknown[]): void {
 export function setupApiLogging(page: Page): void {
     if (!isDebugMode()) return;
 
+    const isMcpRequest = (url: string) => url.includes('/mcp') || url.includes('localhost:3001');
+
     page.on('request', request => {
         const url = request.url();
-        if (url.includes('localhost:3000')) {
+        if (isMcpRequest(url)) {
             console.log(`[API →] ${request.method()} ${url}`);
         }
     });
 
     page.on('response', response => {
         const url = response.url();
-        if (url.includes('localhost:3000')) {
+        if (isMcpRequest(url)) {
             const status = response.status();
             const statusIcon = status >= 400 ? '❌' : '✓';
             console.log(`[API ←] ${statusIcon} ${status} ${url}`);
@@ -49,7 +51,7 @@ export function setupApiLogging(page: Page): void {
 
     page.on('requestfailed', request => {
         const url = request.url();
-        if (url.includes('localhost:3000')) {
+        if (isMcpRequest(url)) {
             console.log(`[API ✗] FAILED ${url}: ${request.failure()?.errorText}`);
         }
     });

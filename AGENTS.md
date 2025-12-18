@@ -206,17 +206,17 @@ From the repo root:
 This:
 
 - Builds all core packages (`core-schema`, `core-model`, `core-lint`, `core-ai`, `git-utils`, `ui-shell`).
-- Builds `apps/server` and `apps/web` (webpack bundle for the UI).
+- Builds `apps/web` (webpack bundle for the UI) and `packages/mcp-server`.
 
 If you add new packages, make sure their `build` scripts succeed under `pnpm -r build` before leaving changes.
 
 ### CRITICAL: Build on Interface Change
 If you modify any `types.ts` or interface definition in a core package (e.g., `packages/core-ai/src/types.ts`, `packages/core-model/src/types.ts`), you **MUST** run `pnpm build` immediately.
-- Dependent packages (like `apps/server` or `packages/ui-shell`) consume the *built* declaration files (`dist/*.d.ts`), not the source `src/`.
+- Dependent packages (like `packages/mcp-server` or `packages/ui-shell`) consume the *built* declaration files (`dist/*.d.ts`), not the source `src/`.
 - Consumers will NOT see your changes (and linter will error) until you build the core package.
 
 ### CRITICAL: Always Rebuild After TypeScript Changes
-**The server and other consumers import from `dist/`, NOT from `src/`.**
+**The MCP server and other consumers import from `dist/`, NOT from `src/`.**
 
 After modifying **ANY** TypeScript file in a core package (`packages/*`), you **MUST** rebuild before testing:
 
@@ -230,11 +230,11 @@ pnpm --filter @sdd-bundle-editor/git-utils build
 pnpm build
 ```
 
-**Why this matters**: The dev server uses `ts-node` for `apps/server`, but it imports packages like `@sdd-bundle-editor/core-model` from their compiled `dist/` output. If you edit `packages/core-model/src/write.ts` but don't rebuild, the server still uses the OLD code from `packages/core-model/dist/write.js`.
+**Why this matters**: The MCP server imports packages like `@sdd-bundle-editor/core-model` from their compiled `dist/` output. If you edit `packages/core-model/src/write.ts` but don't rebuild, the server still uses the OLD code from `packages/core-model/dist/write.js`.
 
 **Symptom of forgetting**: Your code changes appear correct, tests pass, but the running server doesn't reflect your changes.
 
-**For ui-shell development**: Use `pnpm dev:watch` instead of `pnpm dev` to automatically rebuild on changes. See "Development mode" section below.
+**For ui-shell development**: `pnpm dev` automatically includes watch mode for ui-shell. See "Development mode" section below.
 
 ---
 
@@ -256,24 +256,6 @@ Use the external sample bundle (default: `/home/ivan/dev/sdd-sample-bundle`) as 
   ls -la /home/ivan/dev/sdd-sample-bundle/schemas
   ```
 - For creating/editing files in the sample bundle, use `echo` with heredocs or `cat` with stdin redirection.
-
----
-
-### Backend server
-
-From the repo root:
-
-- `pnpm --filter @sdd-bundle-editor/server build`
-- `node apps/server/dist/index.js`
-
-The server exposes **read-only** endpoints for bundle browsing:
-
-- `GET /health` – health check endpoint for monitoring and Playwright readiness detection.
-- `GET /bundle` – load bundle with entities, schemas, reference graph, diagnostics
-
-> **MCP-First Architecture**: All write operations (create, update, delete entities) are now handled via the MCP Server, not HTTP routes. See the MCP Server section below.
-
-Keep new routes thin and delegate logic to core packages.
 
 ---
 
@@ -318,39 +300,26 @@ See `packages/mcp-server/README.md` for full documentation.
 
 ---
 
-### Development mode (server + web)
+### Development mode
 
 From the repo root:
 
 ```bash
-pnpm dev          # Legacy + MCP servers + web + ui-shell watch
-pnpm dev:mcp      # Same as above (explicit MCP)
-pnpm dev:mcp-only # MCP server + web only (no legacy server)
+pnpm dev  # MCP server + web + ui-shell watch
 ```
 
-> **MCP-First Architecture**: The UI now defaults to MCP for all operations. Legacy HTTP endpoints are deprecated and will be removed. Use `pnpm dev:mcp-only` to develop without the legacy server.
+This runs the MCP server (port 3001), web dev server (port 5173), **and** the ui-shell TypeScript compiler in watch mode using `concurrently`. Output is prefixed with `[mcp]`, `[web]`, and `[ui-shell]` for clarity.
 
-This runs the backend server, web dev server, **and** the ui-shell TypeScript compiler in watch mode using `concurrently`. Output is prefixed with `[server]`, `[web]`, and `[ui-shell]` for clarity.
-
-**⚠️ IMPORTANT: Watch Mode is Now Default**
-
-As of the recent update, `pnpm dev` automatically includes watch mode for `ui-shell`. This is critical because:
-
-**How ui-shell compilation works:**
+**How the pieces work together:**
 - ✅ Changes to `apps/web/src/**` → **Hot reload** (instant)
-- ✅ Changes to `apps/server/src/**` → Server restarts automatically
 - ✅ Changes to `packages/ui-shell/src/**` → **Auto-rebuild** (1-2 seconds)
+- ⚠️ Changes to `packages/mcp-server/src/**` → Requires restart
 
 The `ui-shell` is a **shared component library** consumed by `apps/web`:
 1. `apps/web/src/index.tsx` imports: `import { AppShell } from '@sdd-bundle-editor/ui-shell'`
 2. This resolves to: `packages/ui-shell/dist/index.js` (the **built** output)
 3. TypeScript must compile `.tsx` → `.js` before webpack can use it
 4. Watch mode automates this compilation step
-
-**If you need to save resources** (e.g., only working on backend):
-```bash
-pnpm dev:simple  # No ui-shell watch, manual rebuild required
-```
 
 **Visual indicator**: Watch the `[ui-shell]` output. When you save a file:
 ```
@@ -362,7 +331,7 @@ pnpm dev:simple  # No ui-shell watch, manual rebuild required
 
 Alternatively, run them separately:
 
-- **Backend only**: `pnpm exec ts-node apps/server/src/index.ts`
+- **MCP Server only**: `pnpm --filter @sdd-bundle-editor/mcp-server start:http`
 - **Web only**: `pnpm --filter @sdd-bundle-editor/web dev`
 
 Notes:
@@ -390,7 +359,7 @@ Notes:
 - For targeted test runs during development, from the repo root:
   - `pnpm --filter @sdd-bundle-editor/core-model test`
   - `pnpm --filter @sdd-bundle-editor/core-lint test`
-  - `pnpm --filter @sdd-bundle-editor/server test`
+  - `pnpm --filter @sdd-bundle-editor/mcp-server test`
   - `pnpm --filter @sdd-bundle-editor/ui-shell test`
 
 ---
@@ -406,14 +375,14 @@ pnpm test:e2e
 ```
 
 Playwright will automatically:
-1. Start the backend server using `ts-node` (dev mode) from the repo root.
-2. Start the web dev server.
-3. Wait for both to be ready (using the `/health` endpoint for the backend).
+1. Build and start the MCP server (port 3001).
+2. Start the web dev server (port 5173).
+3. Wait for both to be ready (using the `/health` endpoint).
 4. Run all tests and then shut down the servers.
 
 **Manual server mode (optional):**
 
-If you already have the server and web UI running from local development, you can skip Playwright's managed servers:
+If you already have the MCP server and web UI running from local development, you can skip Playwright's managed servers:
 
 ```bash
 PW_SKIP_WEB_SERVER=1 pnpm test:e2e

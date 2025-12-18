@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, deleteEntity, applyChange, compileDocumentSchemas, validateEntityWithSchemas } from "@sdd-bundle-editor/core-model";
 import { z } from "zod";
 import { BundleConfig, LoadedBundle } from "./types.js";
-import { toolSuccess, toolError, type Diagnostic as ResponseDiagnostic } from "./response-helpers.js";
+import { toolSuccess, toolError, resourceError, type Diagnostic as ResponseDiagnostic } from "./response-helpers.js";
 import * as path from "path";
 import * as fs from "fs/promises";
 
@@ -147,7 +147,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -180,7 +180,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -193,7 +193,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "NOT_FOUND", message: `Entity not found: ${entityType}/${entityId}` }),
+                            text: JSON.stringify(resourceError("NOT_FOUND", `Entity not found: ${entityType}/${entityId}`, { entityType, entityId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -239,7 +239,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -250,7 +250,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "NOT_FOUND", message: `No schema configured for type: ${entityType}` }),
+                            text: JSON.stringify(resourceError("NOT_FOUND", `No schema configured for type: ${entityType}`, { entityType })),
                             mimeType: "application/json",
                         }],
                     };
@@ -270,7 +270,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify({ error: "INTERNAL", message: `Failed to load schema: ${err}` }),
+                            text: JSON.stringify(resourceError("INTERNAL", `Failed to load schema: ${err}`)),
                             mimeType: "application/json",
                         }],
                     };
@@ -1741,11 +1741,23 @@ Scoring Guide:
 - 4-6: Minor issue, should fix eventually
 - 1-3: Nitpick, optional improvement`;
 
+                // Check if client supports sampling before attempting
+                const underlyingServer = this.server.server;
+                const clientCapabilities = underlyingServer.getClientCapabilities();
+
+                if (!clientCapabilities?.sampling) {
+                    return toolError(TOOL_NAME, "UNSUPPORTED_CAPABILITY",
+                        "MCP sampling is not supported by this client. The critique_bundle tool requires sampling capability.",
+                        {
+                            bundleId: effectiveBundleId,
+                            hint: "Use Claude Desktop or another MCP client that supports sampling.",
+                            alternative: "Use the 'bundle-health' prompt instead: /mcp.sdd-bundle.bundle-health",
+                        }
+                    );
+                }
+
                 // Try to use MCP sampling
                 try {
-                    // Access the underlying Server to call createMessage
-                    const underlyingServer = this.server.server;
-
                     const samplingResult = await underlyingServer.createMessage({
                         messages: [
                             {

@@ -1682,7 +1682,7 @@ Scoring Guide:
                             "GitHub Copilot does not support MCP sampling. The critique_bundle tool requires a client that implements the MCP sampling capability.",
                             {
                                 bundleId: effectiveBundleId,
-                                hint: "Use Claude Desktop (which supports MCP sampling) to run bundle critique. Alternatively, use the 'bundle-health' prompt for manual LLM-assisted review.",
+                                hint: "Use Claude Desktop (which supports MCP sampling), or try the 'bundle-health' prompt instead: /mcp.sdd-bundle.bundle-health",
                                 documentation: "https://modelcontextprotocol.io/docs/concepts/sampling",
                             }
                         );

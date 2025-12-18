@@ -488,7 +488,11 @@ Trigger an LLM-based quality critique of the bundle using MCP sampling. The serv
 > - **GitHub Copilot (VS Code)**: ❌ Does not support MCP sampling
 > - **MCP Inspector**: ❌ Does not support MCP sampling
 >
-> If using GitHub Copilot, use the `bundle-health` prompt instead for manual LLM-assisted review.
+> **For GitHub Copilot users**: Use the `bundle-health` prompt instead. Invoke it in Copilot Chat with:
+> ```
+> /mcp.sdd-bundle.bundle-health
+> ```
+> This provides similar health analysis without requiring sampling capability.
 
 ---
 

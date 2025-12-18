@@ -1431,15 +1431,8 @@ export class SddMcpServer {
                                     }
                                 }
 
-                                // Apply change in-memory
-                                applyChange(workingBundle, {
-                                    entityType: change.entityType,
-                                    entityId: change.entityId,
-                                    fieldPath: change.fieldPath,
-                                    newValue: change.value,
-                                    originalValue: null,
-                                });
-
+                                // Check entity exists BEFORE calling applyChange
+                                // This prevents the applyChange throw from being caught as INTERNAL
                                 const entityMap = workingBundle.entities.get(change.entityType);
                                 const entity = entityMap?.get(change.entityId);
 
@@ -1449,6 +1442,15 @@ export class SddMcpServer {
                                     hasBlockingErrors = true;
                                     continue;
                                 }
+
+                                // Apply change in-memory (entity is guaranteed to exist now)
+                                applyChange(workingBundle, {
+                                    entityType: change.entityType,
+                                    entityId: change.entityId,
+                                    fieldPath: change.fieldPath,
+                                    newValue: change.value,
+                                    originalValue: null,
+                                });
 
                                 // Validate the updated entity against schema
                                 if (effectiveValidate !== "none") {

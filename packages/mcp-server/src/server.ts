@@ -1598,6 +1598,17 @@ Scoring Guide:
                         ],
                         maxTokens: 2000,
                         includeContext: "thisServer",
+                        // Provide model hints for clients that support model selection
+                        // Clients may ignore these preferences per the MCP spec
+                        modelPreferences: {
+                            hints: [
+                                { name: "claude-3-sonnet" },
+                                { name: "claude-3" },
+                                { name: "gpt-4o" },
+                                { name: "gpt-4" },
+                            ],
+                            intelligencePriority: 0.8, // Prefer more capable models for quality critique
+                        },
                     });
 
                     // Parse the response
@@ -1661,6 +1672,18 @@ Scoring Guide:
                             {
                                 bundleId: effectiveBundleId,
                                 hint: "Use Claude Desktop or another MCP client that supports sampling.",
+                            }
+                        );
+                    }
+
+                    // Check for GitHub Copilot-specific error (doesn't support MCP sampling)
+                    if (errorMessage.includes("Endpoint not found") || errorMessage.includes("model auto")) {
+                        return toolError(TOOL_NAME, "BAD_REQUEST",
+                            "GitHub Copilot does not support MCP sampling. The critique_bundle tool requires a client that implements the MCP sampling capability.",
+                            {
+                                bundleId: effectiveBundleId,
+                                hint: "Use Claude Desktop (which supports MCP sampling) to run bundle critique. Alternatively, use the 'bundle-health' prompt for manual LLM-assisted review.",
+                                documentation: "https://modelcontextprotocol.io/docs/concepts/sampling",
                             }
                         );
                     }

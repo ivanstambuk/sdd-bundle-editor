@@ -483,6 +483,13 @@ Trigger an LLM-based quality critique of the bundle using MCP sampling. The serv
 }
 ```
 
+> **⚠️ Client Compatibility Note:**  
+> - **Claude Desktop**: ✅ Full support for MCP sampling
+> - **GitHub Copilot (VS Code)**: ❌ Does not support MCP sampling
+> - **MCP Inspector**: ❌ Does not support MCP sampling
+>
+> If using GitHub Copilot, use the `bundle-health` prompt instead for manual LLM-assisted review.
+
 ---
 
 

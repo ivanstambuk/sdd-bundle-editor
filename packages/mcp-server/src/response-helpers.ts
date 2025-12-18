@@ -56,28 +56,24 @@ export function toolSuccess(
         diagnostics?: Diagnostic[];
     }
 ): { content: Array<{ type: "text"; text: string }>; isError?: boolean } {
-    // Build response object, only including optional fields when present
+    // Build response object with uniform envelope
+    // Always include meta and diagnostics for agent consumability
     const response: Record<string, unknown> = {
         ok: true,
         tool,
         data,
     };
 
-    // Only include bundleId if provided
+    // Only include bundleId if provided (bundle-scoped tools should always provide this)
     if (options?.bundleId !== undefined) {
         response.bundleId = options.bundleId;
     }
 
-    // Only include meta if provided
-    if (options?.meta !== undefined) {
-        response.meta = options.meta;
-    }
+    // Always include meta (default to empty object for uniform envelope)
+    response.meta = options?.meta ?? {};
 
-    // Only include diagnostics if explicitly provided (not undefined)
-    // This allows tools to opt-out of diagnostics in the envelope
-    if (options?.diagnostics !== undefined) {
-        response.diagnostics = options.diagnostics;
-    }
+    // Always include diagnostics (default to empty array for uniform envelope)
+    response.diagnostics = options?.diagnostics ?? [];
 
     return {
         content: [{

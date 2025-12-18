@@ -1564,10 +1564,23 @@ export class SddMcpServer {
 
                 // If strict mode and there are errors, fail atomically
                 if (hasBlockingErrors) {
+                    // Determine most appropriate top-level error code based on per-change errors
+                    const failedResults = results.filter(r => r.status === "error");
+                    let topLevelCode: "NOT_FOUND" | "REFERENCE_ERROR" | "DELETE_BLOCKED" | "VALIDATION_ERROR" = "VALIDATION_ERROR";
+
+                    // Priority: NOT_FOUND > DELETE_BLOCKED > REFERENCE_ERROR > VALIDATION_ERROR
+                    if (failedResults.some(r => r.error?.code === "NOT_FOUND")) {
+                        topLevelCode = "NOT_FOUND";
+                    } else if (failedResults.some(r => r.error?.code === "DELETE_BLOCKED")) {
+                        topLevelCode = "DELETE_BLOCKED";
+                    } else if (failedResults.some(r => r.error?.code === "REFERENCE_ERROR")) {
+                        topLevelCode = "REFERENCE_ERROR";
+                    }
+
                     return toolError(
                         TOOL_NAME,
-                        "VALIDATION_ERROR",
-                        `${results.filter(r => r.status === "error").length} change(s) failed validation`,
+                        topLevelCode,
+                        `${failedResults.length} change(s) failed`,
                         {
                             dryRun,
                             validate: effectiveValidate,
@@ -1756,9 +1769,10 @@ Scoring Guide:
                     );
                 }
 
-                // Try to use MCP sampling
+                // Try to use MCP sampling with timeout protection
+                const SAMPLING_TIMEOUT_MS = 30000; // 30 seconds
                 try {
-                    const samplingResult = await underlyingServer.createMessage({
+                    const samplingPromise = underlyingServer.createMessage({
                         messages: [
                             {
                                 role: "user",
@@ -1779,6 +1793,13 @@ Scoring Guide:
                             intelligencePriority: 0.8, // Prefer more capable models for quality critique
                         },
                     });
+
+                    // Race against timeout to prevent indefinite hangs
+                    const timeoutPromise = new Promise<never>((_, reject) =>
+                        setTimeout(() => reject(new Error("SAMPLING_TIMEOUT")), SAMPLING_TIMEOUT_MS)
+                    );
+
+                    const samplingResult = await Promise.race([samplingPromise, timeoutPromise]);
 
                     // Parse the response
                     let critique: {
@@ -1833,6 +1854,18 @@ Scoring Guide:
                 } catch (samplingError) {
                     // Sampling failed - return graceful error with instructions
                     const errorMessage = (samplingError as Error).message;
+
+                    // Check for timeout (from our Promise.race)
+                    if (errorMessage === "SAMPLING_TIMEOUT") {
+                        return toolError(TOOL_NAME, "INTERNAL",
+                            "Sampling request timed out after 30 seconds. The LLM may be overloaded or unresponsive.",
+                            {
+                                bundleId: effectiveBundleId,
+                                hint: "Try again later, or use the 'bundle-health' prompt for a faster alternative.",
+                                alternative: "Use the 'bundle-health' prompt instead: /mcp.sdd-bundle.bundle-health",
+                            }
+                        );
+                    }
 
                     // Check if it's a capability/sampling not supported error
                     // This covers: "createMessage not found", "sampling not supported", etc.

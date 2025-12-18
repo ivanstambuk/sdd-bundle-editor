@@ -303,13 +303,17 @@ node packages/mcp-server/dist/index.js --http --port 3001 /path/to/bundle
 | `search_entities` | Search across all bundles |
 | `validate_bundle` | Validate and return diagnostics |
 | `apply_changes` | **Atomic batch changes** (create/update/delete) |
+| `critique_bundle` | LLM-based spec quality critique via MCP sampling |
 
 **Important**: The `apply_changes` tool is the only way to modify bundle files. It:
 - Validates all changes before writing
 - Supports dry-run mode for previewing
 - Reports errors with `changeIndex` attribution
 
+**New**: The `critique_bundle` tool uses MCP sampling to request the client's LLM to evaluate the spec for completeness, clarity, and AI consumability. Requires client sampling support (Claude Desktop).
+
 See `packages/mcp-server/README.md` for full documentation.
+
 
 
 ---

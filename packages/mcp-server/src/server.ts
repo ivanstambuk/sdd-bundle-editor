@@ -1909,6 +1909,39 @@ Scoring Guide:
      * Setup MCP prompts for structured AI workflows
      */
     private setupPrompts() {
+        // Helper: Create a summary of an entity (id, title/name, state) instead of full JSON
+        const summarizeEntity = (data: Record<string, unknown>): Record<string, unknown> => ({
+            id: data.id,
+            title: data.title || data.name || data.statement,
+            state: data.state,
+            ...(data.priority ? { priority: data.priority } : {}),
+        });
+
+        // Helper: Format entities for prompt - either as summaries or limited full data
+        const formatEntitiesForPrompt = (
+            entities: Array<{ data: Record<string, unknown> }>,
+            options: { maxEntities?: number; mode?: "full" | "summary" | "ids" } = {}
+        ): string => {
+            const { maxEntities = 20, mode = "summary" } = options;
+            const limited = entities.slice(0, maxEntities);
+            const truncated = entities.length > maxEntities;
+
+            if (mode === "ids") {
+                const ids = limited.map(e => e.data.id);
+                return ids.join(", ") + (truncated ? ` ... and ${entities.length - maxEntities} more` : "");
+            }
+
+            const formatted = limited.map(e =>
+                mode === "full" ? e.data : summarizeEntity(e.data)
+            );
+
+            let result = JSON.stringify(formatted, null, 2);
+            if (truncated) {
+                result += `\n\n(Showing ${maxEntities} of ${entities.length}. Use read_entity tool for full details.)`;
+            }
+            return result;
+        };
+
         // Prompt 1: implement-requirement
         this.server.prompt(
             "implement-requirement",
@@ -1941,11 +1974,12 @@ Scoring Guide:
                     };
                 }
 
-                // Gather related entities
-                const relatedEntities: any[] = [];
-                const relatedTasks: any[] = [];
-                const relatedFeatures: any[] = [];
-                const relatedComponents: any[] = [];
+                // Gather related entities (limit to prevent context explosion)
+                const MAX_RELATED = 10;
+                const relatedEntities: Array<{ data: Record<string, unknown> }> = [];
+                const relatedTasks: Array<{ data: Record<string, unknown> }> = [];
+                const relatedFeatures: Array<{ data: Record<string, unknown> }> = [];
+                const relatedComponents: Array<{ data: Record<string, unknown> }> = [];
 
                 for (const edge of bundle.refGraph.edges) {
                     if (edge.toId === requirementId || edge.fromId === requirementId) {
@@ -1953,16 +1987,21 @@ Scoring Guide:
                         const otherType = edge.toId === requirementId ? edge.fromEntityType : edge.toEntityType;
                         const entity = bundle.entities.get(otherType)?.get(otherId);
                         if (entity) {
-                            if (otherType === "Task") relatedTasks.push(entity.data);
-                            else if (otherType === "Feature") relatedFeatures.push(entity.data);
-                            else if (otherType === "Component") relatedComponents.push(entity.data);
-                            else relatedEntities.push({ type: otherType, ...entity.data });
+                            const wrapped = { data: entity.data as Record<string, unknown> };
+                            if (otherType === "Task") relatedTasks.push(wrapped);
+                            else if (otherType === "Feature") relatedFeatures.push(wrapped);
+                            else if (otherType === "Component") relatedComponents.push(wrapped);
+                            else relatedEntities.push(wrapped);
                         }
                     }
                 }
 
-                // Get domain knowledge if available
-                const domainKnowledge = bundle.domainMarkdown || "";
+                // Get domain knowledge if available (truncate if too long)
+                const MAX_DOMAIN_CHARS = 4000;
+                let domainKnowledge = bundle.domainMarkdown || "";
+                if (domainKnowledge.length > MAX_DOMAIN_CHARS) {
+                    domainKnowledge = domainKnowledge.substring(0, MAX_DOMAIN_CHARS) + "\n\n... (truncated, use bundle resources for full domain knowledge)";
+                }
 
                 const depthInstructions = {
                     overview: "Provide a brief overview with 3-5 bullet points.",
@@ -1970,6 +2009,7 @@ Scoring Guide:
                     "with-code": "Provide a detailed plan with code examples and snippets where appropriate."
                 };
 
+                // Use full data for the target requirement, summaries for related entities
                 const promptContent = `You are helping implement a requirement from an SDD (Spec-Driven Development) bundle.
 
 ## Requirement to Implement
@@ -1978,18 +2018,19 @@ ${JSON.stringify(requirement.data, null, 2)}
 \`\`\`
 
 ## Related Features (${relatedFeatures.length})
-${relatedFeatures.length > 0 ? JSON.stringify(relatedFeatures, null, 2) : "None found"}
+${relatedFeatures.length > 0 ? formatEntitiesForPrompt(relatedFeatures, { maxEntities: MAX_RELATED, mode: "summary" }) : "None found"}
 
 ## Related Components (${relatedComponents.length})
-${relatedComponents.length > 0 ? JSON.stringify(relatedComponents, null, 2) : "None found"}
+${relatedComponents.length > 0 ? formatEntitiesForPrompt(relatedComponents, { maxEntities: MAX_RELATED, mode: "summary" }) : "None found"}
 
 ## Existing Tasks for this Requirement (${relatedTasks.length})
-${relatedTasks.length > 0 ? JSON.stringify(relatedTasks, null, 2) : "None found - you may need to suggest new tasks"}
+${relatedTasks.length > 0 ? formatEntitiesForPrompt(relatedTasks, { maxEntities: MAX_RELATED, mode: "summary" }) : "None found - you may need to suggest new tasks"}
 
 ## Other Related Entities
-${relatedEntities.length > 0 ? JSON.stringify(relatedEntities, null, 2) : "None"}
+${relatedEntities.length > 0 ? formatEntitiesForPrompt(relatedEntities, { maxEntities: MAX_RELATED, mode: "summary" }) : "None"}
 
 ${domainKnowledge ? `## Domain Knowledge\n${domainKnowledge}\n` : ""}
+**Note:** For full entity details, use the \`read_entity\` tool with entityType and entityId.
 
 ## Your Task
 Create an implementation plan for requirement ${requirementId}.
@@ -2159,22 +2200,22 @@ Include:
 
                 const profileData = profile.data as any;
 
-                // Gather all requirements in the bundle
-                const allRequirements = Array.from(bundle.entities.get("Requirement")?.values() || []).map(e => e.data);
-
-                // Gather all components
-                const allComponents = Array.from(bundle.entities.get("Component")?.values() || []).map(e => e.data);
+                // Gather requirements and components (with limits to prevent context explosion)
+                const MAX_ENTITIES = 30; // Limit entities in prompt
+                const allRequirements = Array.from(bundle.entities.get("Requirement")?.values() || []);
+                const allComponents = Array.from(bundle.entities.get("Component")?.values() || []);
 
                 // Get conformance rules
                 const conformanceRules = profileData.conformanceRules || [];
 
-                // Expand linked requirements in rules
+                // Expand linked requirements in rules (use summaries for linked reqs)
                 const expandedRules = conformanceRules.map((rule: any) => {
                     const expanded = { ...rule };
                     if (rule.linkedRequirement) {
                         const req = bundle.entities.get("Requirement")?.get(rule.linkedRequirement);
                         if (req) {
-                            expanded.requirementDetails = req.data;
+                            // Use summary instead of full data
+                            expanded.requirementDetails = summarizeEntity(req.data as Record<string, unknown>);
                         }
                     }
                     return expanded;
@@ -2185,6 +2226,9 @@ Include:
                     "requirements-only": "Focus only on requirements coverage and completeness.",
                     quick: "Provide a quick summary with just the most critical findings."
                 };
+
+                // Adjust entity limit based on scope
+                const entityLimit = scope === "quick" ? 15 : MAX_ENTITIES;
 
                 const promptContent = `You are performing a conformance audit against a profile in an SDD bundle.
 
@@ -2204,17 +2248,15 @@ ${JSON.stringify(expandedRules, null, 2)}
 
 ## Bundle Content to Audit
 
-### Requirements (${allRequirements.length})
-\`\`\`json
-${JSON.stringify(allRequirements, null, 2)}
-\`\`\`
+### Requirements (${allRequirements.length} total)
+${formatEntitiesForPrompt(allRequirements as Array<{ data: Record<string, unknown> }>, { maxEntities: entityLimit, mode: "summary" })}
 
-### Components (${allComponents.length})
-\`\`\`json
-${JSON.stringify(allComponents, null, 2)}
-\`\`\`
+### Components (${allComponents.length} total)
+${formatEntitiesForPrompt(allComponents as Array<{ data: Record<string, unknown> }>, { maxEntities: entityLimit, mode: "summary" })}
 
 ${profileData.auditTemplate ? `## Audit Template\n${profileData.auditTemplate}\n` : ""}
+
+**Note:** Entity summaries shown above. Use \`read_entity\` tool for full entity details if needed.
 
 ## Your Task
 Perform a **${scope}** conformance audit.
@@ -2289,13 +2331,14 @@ Structure your response as:
                             if (edge.fromEntityType === current.type && edge.fromId === current.id) {
                                 const targetEntity = bundle.entities.get(edge.toEntityType)?.get(edge.toId);
                                 if (targetEntity) {
+                                    const data = targetEntity.data as Record<string, unknown>;
                                     upstream.push({
                                         depth: current.depth + 1,
                                         type: edge.toEntityType,
                                         id: edge.toId,
-                                        title: (targetEntity.data as any).title || (targetEntity.data as any).statement || edge.toId,
+                                        title: (data.title || data.name || data.statement || edge.toId) as string,
+                                        state: data.state as string | undefined,
                                         via: edge.fromField,
-                                        data: targetEntity.data
                                     });
                                     if (current.depth < 3) { // Limit depth
                                         queue.push({ type: edge.toEntityType, id: edge.toId, depth: current.depth + 1 });
@@ -2319,13 +2362,14 @@ Structure your response as:
                             if (edge.toEntityType === current.type && edge.toId === current.id) {
                                 const sourceEntity = bundle.entities.get(edge.fromEntityType)?.get(edge.fromId);
                                 if (sourceEntity) {
+                                    const data = sourceEntity.data as Record<string, unknown>;
                                     downstream.push({
                                         depth: current.depth + 1,
                                         type: edge.fromEntityType,
                                         id: edge.fromId,
-                                        title: (sourceEntity.data as any).title || (sourceEntity.data as any).statement || edge.fromId,
+                                        title: (data.title || data.name || data.statement || edge.fromId) as string,
+                                        state: data.state as string | undefined,
                                         via: edge.fromField,
-                                        data: sourceEntity.data
                                     });
                                     if (current.depth < 3) { // Limit depth
                                         queue.push({ type: edge.fromEntityType, id: edge.fromId, depth: current.depth + 1 });
@@ -2335,6 +2379,13 @@ Structure your response as:
                         }
                     }
                 }
+
+                // Limit number of entities shown in prompt
+                const MAX_TRACE_ENTITIES = 20;
+                const limitedUpstream = upstream.slice(0, MAX_TRACE_ENTITIES);
+                const limitedDownstream = downstream.slice(0, MAX_TRACE_ENTITIES);
+                const upstreamTruncated = upstream.length > MAX_TRACE_ENTITIES;
+                const downstreamTruncated = downstream.length > MAX_TRACE_ENTITIES;
 
                 const promptContent = `You are analyzing dependencies for an entity in an SDD bundle.
 
@@ -2349,20 +2400,14 @@ ${JSON.stringify(entity.data, null, 2)}
 ## Upstream Dependencies (What ${entityId} DEPENDS ON) - ${upstream.length} found
 These are entities that ${entityId} references. Changes to these may affect ${entityId}.
 
-${upstream.length > 0 ? upstream.map(u => `### ${u.type}: ${u.id} (depth ${u.depth}, via ${u.via})
-${u.title}
-\`\`\`json
-${JSON.stringify(u.data, null, 2)}
-\`\`\``).join("\n\n") : "No upstream dependencies found - this is a root entity."}
+${limitedUpstream.length > 0 ? limitedUpstream.map(u => `- **${u.type}:${u.id}** (depth ${u.depth}, via \`${u.via}\`) - "${u.title}"${u.state ? ` [${u.state}]` : ""}`).join("\n") : "No upstream dependencies found - this is a root entity."}${upstreamTruncated ? `\n\n... and ${upstream.length - MAX_TRACE_ENTITIES} more (use \`list_entities\` tool to see all)` : ""}
 
 ## Downstream Dependents (What DEPENDS ON ${entityId}) - ${downstream.length} found
 These are entities that reference ${entityId}. Changes to ${entityId} will affect these.
 
-${downstream.length > 0 ? downstream.map(d => `### ${d.type}: ${d.id} (depth ${d.depth}, via ${d.via})
-${d.title}
-\`\`\`json
-${JSON.stringify(d.data, null, 2)}
-\`\`\``).join("\n\n") : "No downstream dependents found - nothing depends on this entity."}
+${limitedDownstream.length > 0 ? limitedDownstream.map(d => `- **${d.type}:${d.id}** (depth ${d.depth}, via \`${d.via}\`) - "${d.title}"${d.state ? ` [${d.state}]` : ""}`).join("\n") : "No downstream dependents found - nothing depends on this entity."}${downstreamTruncated ? `\n\n... and ${downstream.length - MAX_TRACE_ENTITIES} more (use \`list_entities\` tool to see all)` : ""}
+
+**Note:** Use \`read_entity\` tool to get full details for any entity listed above.
 
 ## Your Task
 Analyze this dependency trace and provide:
@@ -2516,31 +2561,45 @@ Provide:
 
                 const bundle = loaded.bundle;
 
-                // Gather all entities for analysis
-                const allEntities: Array<{ type: string; id: string; data: any }> = [];
+                // Gather entities for analysis (limit to prevent context explosion)
+                const MAX_ENTITIES_FOR_ANALYSIS = 40;
+                const allEntities: Array<{ type: string; id: string; summary: Record<string, unknown> }> = [];
                 for (const [type, entities] of bundle.entities) {
                     if (!entityType || type === entityType) {
                         for (const [id, entity] of entities) {
-                            allEntities.push({ type, id, data: entity.data });
+                            if (allEntities.length < MAX_ENTITIES_FOR_ANALYSIS) {
+                                allEntities.push({
+                                    type,
+                                    id,
+                                    summary: summarizeEntity(entity.data as Record<string, unknown>)
+                                });
+                            }
                         }
                     }
                 }
 
-                // Get existing relations
-                const existingRelations = bundle.refGraph.edges.map(e =>
+                const totalEntityCount = Array.from(bundle.entities.values()).reduce((sum, m) => sum + m.size, 0);
+                const entitiesTruncated = totalEntityCount > MAX_ENTITIES_FOR_ANALYSIS;
+
+                // Get existing relations (limit these too)
+                const MAX_RELATIONS = 100;
+                const allRelations = bundle.refGraph.edges;
+                const existingRelations = allRelations.slice(0, MAX_RELATIONS).map(e =>
                     `${e.fromEntityType}:${e.fromId} -> ${e.toEntityType}:${e.toId}`
                 );
+                const relationsTruncated = allRelations.length > MAX_RELATIONS;
 
                 const promptContent = `You are analyzing an SDD bundle to suggest missing relationships.
 
 ## Bundle: ${loaded.id}
 
-## Entities to Analyze (${allEntities.length})
-${allEntities.map(e => `### ${e.type}: ${e.id}
-${JSON.stringify(e.data, null, 2)}`).join("\n\n")}
+## Entities to Analyze (${totalEntityCount} total${entitiesTruncated ? `, showing ${MAX_ENTITIES_FOR_ANALYSIS}` : ""})
+${allEntities.map(e => `- **${e.type}:${e.id}** - "${e.summary.title || e.id}"${e.summary.state ? ` [${e.summary.state}]` : ""}`).join("\n")}${entitiesTruncated ? `\n\n... and ${totalEntityCount - MAX_ENTITIES_FOR_ANALYSIS} more (use \`list_entities\` tool to see all)` : ""}
 
-## Existing Relations (${existingRelations.length})
-${existingRelations.join("\n") || "No relations found"}
+## Existing Relations (${allRelations.length} total${relationsTruncated ? `, showing ${MAX_RELATIONS}` : ""})
+${existingRelations.join("\n") || "No relations found"}${relationsTruncated ? `\n\n... and ${allRelations.length - MAX_RELATIONS} more` : ""}
+
+**Note:** Use \`read_entity\` tool for full entity details.
 
 ## Confidence Level: ${confidence}
 
@@ -2605,15 +2664,21 @@ Provide at least 5 suggestions if possible, sorted by confidence.`;
                     };
                 }
 
-                // Get related entities for context
-                const relatedEntities: any[] = [];
+                // Get related entities for context (limit to prevent context explosion)
+                const MAX_RELATED = 10;
+                const relatedEntities: Array<{ type: string; id: string; summary: Record<string, unknown> }> = [];
                 for (const edge of bundle.refGraph.edges) {
+                    if (relatedEntities.length >= MAX_RELATED) break;
                     if (edge.fromId === entityId || edge.toId === entityId) {
                         const otherId = edge.fromId === entityId ? edge.toId : edge.fromId;
                         const otherType = edge.fromId === entityId ? edge.toEntityType : edge.fromEntityType;
                         const otherEntity = bundle.entities.get(otherType)?.get(otherId);
                         if (otherEntity) {
-                            relatedEntities.push({ type: otherType, id: otherId, data: otherEntity.data });
+                            relatedEntities.push({
+                                type: otherType,
+                                id: otherId,
+                                summary: summarizeEntity(otherEntity.data as Record<string, unknown>)
+                            });
                         }
                     }
                 }
@@ -2635,10 +2700,9 @@ ${JSON.stringify(entity.data, null, 2)}
 \`\`\`
 
 ## Related Context (${relatedEntities.length} entities)
-${relatedEntities.map(e => `### ${e.type}: ${e.id}
-\`\`\`json
-${JSON.stringify(e.data, null, 2)}
-\`\`\``).join("\n\n") || "No related entities"}
+${relatedEntities.map(e => `- **${e.type}:${e.id}** - "${e.summary.title || e.id}"${e.summary.state ? ` [${e.summary.state}]` : ""}`).join("\n") || "No related entities"}
+
+**Note:** Use \`read_entity\` tool for full details of related entities.
 
 ## Test Style: ${style}
 ${styleInstructions[style]}
@@ -2868,14 +2932,24 @@ Compare these bundles and provide:
 
                 const bundle = loaded.bundle;
 
-                // Get all tasks with their relations
-                const tasks = Array.from(bundle.entities.get("Task")?.values() || []).map(t => ({
-                    id: t.id,
-                    data: t.data,
-                    dependencies: [] as string[],
-                    relatedReqs: [] as string[],
-                    relatedFeatures: [] as string[]
-                }));
+                // Limits for roadmap prompt
+                const MAX_FEATURES = 20;
+                const MAX_REQUIREMENTS = 30;
+                const MAX_TASKS = 40;
+
+                // Get all tasks with their relations (limited)
+                const allTasks = Array.from(bundle.entities.get("Task")?.values() || []);
+                const tasks = allTasks.slice(0, MAX_TASKS).map(t => {
+                    const data = t.data as Record<string, unknown>;
+                    const summary = summarizeEntity(data);
+                    return {
+                        id: t.id,
+                        summary,
+                        dependencies: [] as string[],
+                        relatedReqs: [] as string[],
+                        relatedFeatures: [] as string[]
+                    };
+                });
 
                 // Build dependency info
                 for (const task of tasks) {
@@ -2888,11 +2962,17 @@ Compare these bundles and provide:
                     }
                 }
 
-                // Get features
-                const features = Array.from(bundle.entities.get("Feature")?.values() || []).map(f => f.data);
+                // Get features (summarized)
+                const allFeatures = Array.from(bundle.entities.get("Feature")?.values() || []);
+                const features = allFeatures.slice(0, MAX_FEATURES).map(f =>
+                    summarizeEntity(f.data as Record<string, unknown>)
+                );
 
-                // Get requirements
-                const requirements = Array.from(bundle.entities.get("Requirement")?.values() || []).map(r => r.data);
+                // Get requirements (summarized)
+                const allRequirements = Array.from(bundle.entities.get("Requirement")?.values() || []);
+                const requirements = allRequirements.slice(0, MAX_REQUIREMENTS).map(r =>
+                    summarizeEntity(r.data as Record<string, unknown>)
+                );
 
                 const formatInstructions = {
                     timeline: "Create a week-by-week timeline with specific dates/durations.",
@@ -2906,22 +2986,18 @@ Compare these bundles and provide:
 ## Scope: ${scope}
 ## Format: ${format}
 
-## Features (${features.length})
-\`\`\`json
-${JSON.stringify(features, null, 2)}
-\`\`\`
+## Features (${allFeatures.length} total${allFeatures.length > MAX_FEATURES ? `, showing ${MAX_FEATURES}` : ""})
+${features.map(f => `- **${f.id}** - "${f.title}"${f.state ? ` [${f.state}]` : ""}`).join("\n") || "No features"}
 
-## Requirements (${requirements.length})
-\`\`\`json
-${JSON.stringify(requirements, null, 2)}
-\`\`\`
+## Requirements (${allRequirements.length} total${allRequirements.length > MAX_REQUIREMENTS ? `, showing ${MAX_REQUIREMENTS}` : ""})
+${requirements.map(r => `- **${r.id}** - "${r.title}"${r.state ? ` [${r.state}]` : ""}${r.priority ? ` (${r.priority})` : ""}`).join("\n") || "No requirements"}
 
-## Tasks (${tasks.length})
-${tasks.map(t => `### ${t.id}
-${JSON.stringify(t.data, null, 2)}
-Dependencies: ${t.dependencies.join(", ") || "None"}
-Related Requirements: ${t.relatedReqs.join(", ") || "None"}
-Related Features: ${t.relatedFeatures.join(", ") || "None"}`).join("\n\n")}
+## Tasks (${allTasks.length} total${allTasks.length > MAX_TASKS ? `, showing ${MAX_TASKS}` : ""})
+${tasks.map(t => `- **${t.id}** - "${t.summary.title}"${t.summary.state ? ` [${t.summary.state}]` : ""}
+  - Dependencies: ${t.dependencies.join(", ") || "None"}
+  - Related Reqs: ${t.relatedReqs.join(", ") || "None"}`).join("\n")}
+
+**Note:** Use \`read_entity\` tool for full entity details.
 
 ## Roadmap Format
 ${formatInstructions[format]}

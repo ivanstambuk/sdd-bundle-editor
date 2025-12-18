@@ -202,15 +202,17 @@ export function requireEntity(
 
 /**
  * Create a consistent error response for resources.
- * Uses the same {ok:false, error:{...}} envelope as tools for harmonized handling.
+ * Uses the same {ok:false, resource, error:{...}} envelope as tools for harmonized handling.
  */
 export function resourceError(
+    resource: string,
     code: ErrorCode,
     message: string,
     details?: unknown
-): { ok: false; error: { code: ErrorCode; message: string; details?: unknown } } {
+): { ok: false; resource: string; error: { code: ErrorCode; message: string; details?: unknown } } {
     return {
         ok: false,
+        resource,
         error: { code, message, details },
     };
 }

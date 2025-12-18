@@ -147,7 +147,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
+                            text: JSON.stringify(resourceError("bundle-manifest", "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -180,7 +180,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
+                            text: JSON.stringify(resourceError("entity", "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -193,7 +193,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("NOT_FOUND", `Entity not found: ${entityType}/${entityId}`, { entityType, entityId })),
+                            text: JSON.stringify(resourceError("entity", "NOT_FOUND", `Entity not found: ${entityType}/${entityId}`, { entityType, entityId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -239,7 +239,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
+                            text: JSON.stringify(resourceError("schema", "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId })),
                             mimeType: "application/json",
                         }],
                     };
@@ -250,7 +250,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("NOT_FOUND", `No schema configured for type: ${entityType}`, { entityType })),
+                            text: JSON.stringify(resourceError("schema", "NOT_FOUND", `No schema configured for type: ${entityType}`, { entityType })),
                             mimeType: "application/json",
                         }],
                     };
@@ -270,7 +270,7 @@ export class SddMcpServer {
                     return {
                         contents: [{
                             uri: uri.href,
-                            text: JSON.stringify(resourceError("INTERNAL", `Failed to load schema: ${err}`)),
+                            text: JSON.stringify(resourceError("schema", "INTERNAL", `Failed to load schema: ${err}`)),
                             mimeType: "application/json",
                         }],
                     };

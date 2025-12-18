@@ -1,4 +1,4 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, deleteEntity, applyChange, compileDocumentSchemas, validateEntityWithSchemas } from "@sdd-bundle-editor/core-model";
 import { z } from "zod";
@@ -120,6 +120,161 @@ export class SddMcpServer {
                         mimeType: "text/markdown",
                     }],
                 };
+            }
+        );
+
+        // Resource Template: Bundle manifest
+        // URI: bundle://{bundleId}/manifest
+        this.server.resource(
+            "bundle-manifest",
+            new ResourceTemplate("bundle://{bundleId}/manifest", {
+                list: async () => {
+                    // List all available manifests
+                    return {
+                        resources: Array.from(this.bundles.keys()).map(bundleId => ({
+                            uri: `bundle://${bundleId}/manifest`,
+                            name: `${bundleId} manifest`,
+                            description: `Bundle manifest for ${bundleId}`,
+                        })),
+                    };
+                },
+            }),
+            async (uri, params) => {
+                const bundleId = params.bundleId as string;
+                const loaded = this.bundles.get(bundleId);
+
+                if (!loaded) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
+
+                return {
+                    contents: [{
+                        uri: uri.href,
+                        text: JSON.stringify(loaded.bundle.manifest, null, 2),
+                        mimeType: "application/json",
+                    }],
+                };
+            }
+        );
+
+        // Resource Template: Entity by type and ID
+        // URI: bundle://{bundleId}/entity/{type}/{id}
+        this.server.resource(
+            "entity",
+            new ResourceTemplate("bundle://{bundleId}/entity/{type}/{id}", {
+                list: undefined, // Too many entities to enumerate
+            }),
+            async (uri, params) => {
+                const bundleId = params.bundleId as string;
+                const entityType = params.type as string;
+                const entityId = params.id as string;
+
+                const loaded = this.bundles.get(bundleId);
+                if (!loaded) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
+
+                const entityMap = loaded.bundle.entities.get(entityType);
+                const entity = entityMap?.get(entityId);
+
+                if (!entity) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "NOT_FOUND", message: `Entity not found: ${entityType}/${entityId}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
+
+                return {
+                    contents: [{
+                        uri: uri.href,
+                        text: JSON.stringify(entity.data, null, 2),
+                        mimeType: "application/json",
+                    }],
+                };
+            }
+        );
+
+        // Resource Template: Schema by entity type
+        // URI: bundle://{bundleId}/schema/{type}
+        this.server.resource(
+            "schema",
+            new ResourceTemplate("bundle://{bundleId}/schema/{type}", {
+                list: async () => {
+                    // List all schemas across all bundles
+                    const schemas: { uri: string; name: string; description: string }[] = [];
+                    for (const [bundleId, loaded] of this.bundles) {
+                        const schemaMap = loaded.bundle.manifest.spec?.schemas?.documents || {};
+                        for (const entityType of Object.keys(schemaMap)) {
+                            schemas.push({
+                                uri: `bundle://${bundleId}/schema/${entityType}`,
+                                name: `${entityType} schema`,
+                                description: `JSON Schema for ${entityType} in ${bundleId}`,
+                            });
+                        }
+                    }
+                    return { resources: schemas };
+                },
+            }),
+            async (uri, params) => {
+                const bundleId = params.bundleId as string;
+                const entityType = params.type as string;
+
+                const loaded = this.bundles.get(bundleId);
+                if (!loaded) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "NOT_FOUND", message: `Bundle not found: ${bundleId}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
+
+                const schemaRelPath = loaded.bundle.manifest.spec?.schemas?.documents?.[entityType];
+                if (!schemaRelPath) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "NOT_FOUND", message: `No schema configured for type: ${entityType}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
+
+                try {
+                    const schemaPath = path.join(loaded.path, schemaRelPath);
+                    const schemaContent = await fs.readFile(schemaPath, 'utf8');
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: schemaContent,
+                            mimeType: "application/json",
+                        }],
+                    };
+                } catch (err) {
+                    return {
+                        contents: [{
+                            uri: uri.href,
+                            text: JSON.stringify({ error: "INTERNAL", message: `Failed to load schema: ${err}` }),
+                            mimeType: "application/json",
+                        }],
+                    };
+                }
             }
         );
     }
@@ -1665,13 +1820,18 @@ Scoring Guide:
                     // Sampling failed - return graceful error with instructions
                     const errorMessage = (samplingError as Error).message;
 
-                    // Check if it's a "not supported" type error
-                    if (errorMessage.includes("not supported") || errorMessage.includes("capability")) {
-                        return toolError(TOOL_NAME, "BAD_REQUEST",
+                    // Check if it's a capability/sampling not supported error
+                    // This covers: "createMessage not found", "sampling not supported", etc.
+                    if (errorMessage.includes("createMessage") ||
+                        errorMessage.includes("not supported") ||
+                        errorMessage.includes("capability") ||
+                        errorMessage.includes("sampling")) {
+                        return toolError(TOOL_NAME, "UNSUPPORTED_CAPABILITY",
                             "MCP sampling is not supported by this client. Critique requires the client to have sampling capability enabled.",
                             {
                                 bundleId: effectiveBundleId,
                                 hint: "Use Claude Desktop or another MCP client that supports sampling.",
+                                alternative: "Use the 'bundle-health' prompt instead: /mcp.sdd-bundle.bundle-health",
                             }
                         );
                     }
@@ -1679,7 +1839,7 @@ Scoring Guide:
                     // Check for VS Code model access not configured
                     // This happens when sampling is supported but no model has been authorized
                     if (errorMessage.includes("Endpoint not found") || errorMessage.includes("model auto")) {
-                        return toolError(TOOL_NAME, "BAD_REQUEST",
+                        return toolError(TOOL_NAME, "UNSUPPORTED_CAPABILITY",
                             "MCP sampling requires model access authorization. The server needs permission to use your language model.",
                             {
                                 bundleId: effectiveBundleId,

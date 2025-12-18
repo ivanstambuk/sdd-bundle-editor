@@ -5,12 +5,13 @@
 
 /** Standard error codes for MCP tool responses */
 export type ErrorCode =
-    | "BAD_REQUEST"       // Missing/invalid parameters
-    | "NOT_FOUND"         // Bundle/entity not found
-    | "VALIDATION_ERROR"  // Schema violations
-    | "REFERENCE_ERROR"   // Broken references
-    | "DELETE_BLOCKED"    // Cannot delete (has dependents)
-    | "INTERNAL";         // Unexpected errors
+    | "BAD_REQUEST"            // Missing/invalid parameters
+    | "NOT_FOUND"              // Bundle/entity not found
+    | "VALIDATION_ERROR"       // Schema violations
+    | "REFERENCE_ERROR"        // Broken references
+    | "DELETE_BLOCKED"         // Cannot delete (has dependents)
+    | "UNSUPPORTED_CAPABILITY" // Client doesn't support required capability (e.g., sampling)
+    | "INTERNAL";              // Unexpected errors
 
 /** Diagnostic item (warning or error that doesn't block success) */
 export interface Diagnostic {

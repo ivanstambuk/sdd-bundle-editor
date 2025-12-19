@@ -223,6 +223,37 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       );
     }
 
+    // Bullet list layout for compact string arrays (pros, cons, consequences, etc.)
+    // Renders as minimal list, using indicator as marker if defined, otherwise bullet
+    const isBulletList = layout === 'bulletList';
+    const bulletIndicator = schema?.items?.['x-sdd-indicator'] || null;
+    if (isBulletList && schema?.items?.type === 'string') {
+      return (
+        <div className="rjsf-bullet-list">
+          <ul className={`rjsf-bullet-items ${bulletIndicator ? 'has-indicator' : ''}`}>
+            {items.map((item: any, index: number) => (
+              <li key={item.key || index} className="rjsf-bullet-item">
+                {bulletIndicator && <span className="rjsf-bullet-marker">{bulletIndicator}</span>}
+                {item.children}
+              </li>
+            ))}
+          </ul>
+          {items.length === 0 && (
+            <span className="rjsf-bullet-empty">No items</span>
+          )}
+          {showAddButton && (
+            <button
+              type="button"
+              className="rjsf-array-add-btn rjsf-bullet-add"
+              onClick={onAddClick}
+            >
+              + Add
+            </button>
+          )}
+        </div>
+      );
+    }
+
     // Check if items contain complex objects (have nested properties)
     const hasComplexItems = schema?.items?.type === 'object' && schema?.items?.properties;
 
@@ -400,6 +431,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
         // x-sdd-displayHint: "multiline" renders as textarea
         const displayHint = ps?.['x-sdd-displayHint'];
+
+        // x-sdd-displayHint: "hidden" hides field entirely from UI
+        if (displayHint === 'hidden') {
+          if (ps?.type === 'array') {
+            targetUiSchema[propName] = { 'ui:field': 'hiddenField' };
+          } else {
+            targetUiSchema[propName] = { 'ui:widget': 'hidden' };
+          }
+          continue; // Skip other processing for hidden fields
+        }
+
         if (ps && ps.type === 'string' && displayHint === 'multiline') {
           targetUiSchema[propName] = { 'ui:widget': 'textarea' };
         }

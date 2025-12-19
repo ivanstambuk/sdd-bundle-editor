@@ -3542,6 +3542,104 @@ form input[type="checkbox"] {
   font-style: italic;
 }
 
+/* ========================================
+   Bullet List Layout (x-sdd-layout: "bulletList")
+   Compact display for string arrays - matches markdown style
+   ======================================== */
+.rjsf-bullet-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rjsf-bullet-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rjsf-bullet-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 1px 0;
+  line-height: 1.5;
+}
+
+/* Bullet marker - only show when no indicator is present */
+.rjsf-bullet-item::before {
+  content: '•';
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+  line-height: inherit;
+}
+
+/* Hide default bullet when indicator is present */
+.rjsf-bullet-items.has-indicator .rjsf-bullet-item::before {
+  display: none;
+}
+
+/* Schema-driven indicator marker (replaces bullet) */
+.rjsf-bullet-marker {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  line-height: inherit;
+}
+
+/* The inner content (RJSF renders input inside) */
+.rjsf-bullet-item .rjsf-array-item-content {
+  flex: 1;
+  margin: 0;
+}
+
+/* Style the input within bullet items - minimal, inline-feel */
+.rjsf-bullet-item .rjsf-array-item-content input {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  margin: -2px -4px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  width: calc(100% + 8px);
+  transition: all var(--transition-fast);
+  line-height: 1.5;
+}
+
+.rjsf-bullet-item .rjsf-array-item-content input:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+}
+
+.rjsf-bullet-item .rjsf-array-item-content input:focus {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Read-only mode - no hover effects */
+.rjsf-bullet-item .rjsf-array-item-content input:disabled {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-primary);
+  cursor: default;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.rjsf-bullet-empty {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.rjsf-bullet-add {
+  margin-top: var(--spacing-xs);
+}
+
 /* RJSF description field styles (schema-driven via x-sdd-descriptionHint) */
 .rjsf-description {
   grid-column: span 4;

@@ -84,6 +84,7 @@ This document defines all custom JSON Schema extension keywords (`x-sdd-*`) reco
 | `x-sdd-displayHint` | `"multiline"` | string | Render as textarea |
 | `x-sdd-displayHint` | `"markdown"` | string | Render with Markdown preview |
 | `x-sdd-displayHint` | `"chips"` | array | Render as inline tag chips |
+| `x-sdd-displayHint` | `"hidden"` | any | Hide field from UI (still in data model) |
 | `x-sdd-indicator` | any emoji/string | array items | Show indicator before each item |
 
 **Example - Multiline text:**
@@ -127,6 +128,16 @@ This document defines all custom JSON Schema extension keywords (`x-sdd-*`) reco
     "type": "string",
     "x-sdd-indicator": "❌"
   }
+}
+```
+
+**Example - Hidden field (programmatically managed):**
+```json
+"isChosen": {
+  "type": "boolean",
+  "default": false,
+  "description": "Whether this alternative was selected",
+  "x-sdd-displayHint": "hidden"
 }
 ```
 
@@ -236,6 +247,45 @@ For arrays where one item is "chosen" from multiple options (like ADR alternativ
 **Visual behavior:**
 - Chosen item: Green border, prominent badge, hidden redundant fields
 - Rejected items: Dimmed styling, "REJECTED" badge, shows rejection reason
+
+---
+
+### Bullet List Layout
+
+For string arrays that should render as compact bullet points (saving vertical space):
+
+| Keyword | Type | Description |
+|---------|------|-------------|
+| `x-sdd-layout` | `"bulletList"` | Enables compact bullet list rendering |
+| `x-sdd-indicator` | string (emoji) | Optional indicator shown in field label (not per-item) |
+
+**Example - Simple bullet list:**
+```json
+"assumptions": {
+  "type": "array",
+  "x-sdd-layout": "bulletList",
+  "items": { "type": "string" }
+}
+```
+
+**Example - With indicator in label:**
+```json
+"positiveConsequences": {
+  "type": "array",
+  "x-sdd-layout": "bulletList",
+  "items": {
+    "type": "string",
+    "x-sdd-indicator": "✅"
+  }
+}
+```
+
+**Visual behavior:**
+- Items render as compact bullet points (`•`)
+- If `x-sdd-indicator` is set, it appears in the field label (e.g., "✅ Positive Consequences")
+- Minimal vertical spacing between items
+- Each item is still independently editable
+- Significantly reduces vertical space compared to row-per-item layout
 
 ---
 

@@ -3382,6 +3382,43 @@ form input[type="checkbox"] {
   font-style: italic;
 }
 
+/* Schema description (rendered as markdown) */
+.schema-description {
+  grid-column: span 4;
+  background: var(--color-bg-tertiary);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.schema-description p {
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.schema-description p:last-child {
+  margin-bottom: 0;
+}
+
+.schema-description ul,
+.schema-description ol {
+  margin: var(--spacing-xs) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.schema-description li {
+  margin-bottom: 2px;
+}
+
+.schema-description code {
+  background: var(--color-bg-primary);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
 /* ========================================
    Code Block & YAML Viewer Styles
    ======================================== */

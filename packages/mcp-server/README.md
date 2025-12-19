@@ -38,7 +38,18 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 
 #### Response Envelope
 
-All tools return a standardized response envelope:
+All tools return a standardized response with both human-readable and machine-parsable formats:
+
+**MCP Response Structure:**
+```json
+{
+  "content": [{ "type": "text", "text": "{ ... JSON string ... }" }],
+  "structuredContent": { /* machine-parsable object */ },
+  "isError": false
+}
+```
+
+The `structuredContent` field contains the actual response object for reliable machine parsing:
 
 ```json
 {
@@ -66,6 +77,26 @@ For errors:
 ```
 
 **Error Codes:** `BAD_REQUEST`, `NOT_FOUND`, `VALIDATION_ERROR`, `REFERENCE_ERROR`, `DELETE_BLOCKED`, `INTERNAL`
+
+#### Tool Annotations
+
+All tools include MCP annotations that help AI agents understand their behavior and safety characteristics:
+
+| Annotation | Description |
+|------------|-------------|
+| `readOnlyHint` | Tool only reads data, no side effects |
+| `destructiveHint` | Tool may modify or delete data |
+| `idempotentHint` | Calling multiple times produces same result |
+| `openWorldHint` | Tool may interact with external systems |
+
+**Tool Categories:**
+
+| Category | Tools | Annotations |
+|----------|-------|-------------|
+| Read-only | `list_bundles`, `read_entity`, `read_entities`, `list_entities`, `list_entity_summaries`, `get_bundle_schema`, `get_entity_schema`, `get_bundle_snapshot`, `get_entity_relations`, `get_context`, `get_conformance_context`, `search_entities`, `validate_bundle` | `readOnlyHint: true`, `idempotentHint: true` |
+| Mutating | `apply_changes` | `destructiveHint: true`, `idempotentHint: false` |
+| External | `critique_bundle` | `openWorldHint: true` (invokes external LLM) |
+
 
 ### Prompts (Structured AI Workflows)
 | Prompt | Description |

@@ -1,6 +1,6 @@
 # Relationship Naming Audit Report
 
-> Generated: 2025-12-19
+> Generated: 2025-12-19 | Last Updated: 2025-12-19
 
 ## Summary
 
@@ -9,53 +9,33 @@
 | **Total relationships** | 72 |
 | **With displayName** | 72 ✅ |
 | **Missing displayName** | 0 |
-| **Bare target names (no verb)** | 3 |
+| **Bare target names (no verb)** | 0 ✅ (3 fixed) |
 
 ## Current State
 
-The schemas are in **good shape** - all 72 relationship fields already have `displayName` values. The UI was previously showing raw field names instead of these human-readable values. This has been fixed.
+All 72 relationship fields now follow the naming convention. The UI displays human-readable `displayName` values in the Relationships table.
 
-## Issues Found
+## Fixes Applied
 
-### ⚠️ Bare Target Names (No Verb)
+### ✅ Bare Target Names Fixed
 
-These 3 field names are just the target entity type, which doesn't convey the relationship's semantic meaning:
+These 3 field names were just the target entity type. They have been renamed to include a verb prefix:
 
-| From Entity | Field | To Entity | Current displayName | Recommendation |
-|-------------|-------|-----------|---------------------|----------------|
-| HealthCheckSpec | `protocolId` | Protocol | "Protocol" | Rename to `monitorsProtocolId`, displayName: "monitors" |
-| TelemetryContract | `scenarioId` | Scenario | "scenario" | Rename to `forScenarioId`, displayName: "for scenario" |
-| View | `viewpointId` | Viewpoint | "viewpoint" | Rename to `fromViewpointId`, displayName: "from viewpoint" |
+| From Entity | Old Field | New Field | displayName |
+|-------------|-----------|-----------|-------------|
+| HealthCheckSpec | `protocolId` | `exposedByProtocolId` | "exposed by" |
+| TelemetryContract | `scenarioId` | `forScenarioId` | "for scenario" |
+| View | `viewpointId` | `fromViewpointId` | "from viewpoint" |
 
-### Naming Pattern Inconsistency (Minor)
-
-Some fields include the target type while others don't. This is acceptable because `displayName` handles the UI, but for code consistency consider:
+### Naming Patterns (Reference)
 
 | Pattern | Examples | Verdict |
 |---------|----------|---------|
 | `verbTargetIds` | `governedByAdrIds`, `realizesFeatureIds` | ✅ Preferred for clarity in code |
 | `verbTarget` | `implementsRequirements`, `usesComponents` | ✅ Also acceptable |
 | `verb` only | `supersedes`, `dependsOn` | ✅ Good when target is obvious |
-| `targetId` only | `protocolId`, `scenarioId` | ⚠️ Avoid - lacks semantic meaning |
 
-## Recommendations
-
-### 1. Fix the 3 Bare Target Names (Low Priority)
-
-These are minor issues since `displayName` is already set. If you want perfect consistency:
-
-```yaml
-# HealthCheckSpec.schema.json
-# Before
-protocolId:
-  displayName: "Protocol"
-  
-# After - rename field and update displayName
-monitorsProtocolId:
-  displayName: "monitors"
-```
-
-### 2. UI Now Uses displayName ✅
+## Guidelines for New Relationships
 
 The `BundleOverview.tsx` Relationships table now shows:
 

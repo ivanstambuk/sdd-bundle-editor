@@ -1120,3 +1120,68 @@ The server uses:
 - `zod` for input validation
 - `js-yaml` for config file parsing
 
+---
+
+## MCP Client Feature Matrix
+
+This matrix shows which MCP capabilities are supported by popular clients. Use this when deciding which features to rely on for your integrations.
+
+### Core Features
+
+| Feature | Claude Desktop | VS Code + Copilot | Cursor | Zed | MCP Inspector |
+|---------|---------------|-------------------|--------|-----|---------------|
+| **Tools** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Resources** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Prompts** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Sampling** | ✅ | ✅* | ⚠️ Varies | ⚠️ Varies | ❌ |
+| **Completions** | ⚠️ Evolving | ⚠️ Evolving | ⚠️ Evolving | ⚠️ Evolving | ✅ |
+| **Tool Annotations** | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+*VS Code + Copilot requires model access configuration for sampling.
+
+### Protocol Versions
+
+| Client | MCP Spec Version | Notes |
+|--------|------------------|-------|
+| Claude Desktop | 2025-11-25 | Current spec version |
+| VS Code + Copilot | 2025-11-25 | Full MCP support |
+| Cursor | 2025-11-25 | Native MCP integration |
+| Zed | 2025-11-25 | Via Context Servers |
+| MCP Inspector | Latest | Official testing tool |
+
+### Feature Details
+
+#### Sampling (`createMessage`)
+Allows the MCP server to request the client to generate text using an LLM. Used by `critique_bundle` tool.
+
+| Client | Support | Configuration |
+|--------|---------|---------------|
+| Claude Desktop | ✅ Works out of the box | No setup needed |
+| VS Code + Copilot | ✅ Full support | Enable in `settings.json`: `"chat.mcp.modelAccess": "always"` |
+| MCP Inspector | ❌ Not available | Use `bundle-health` prompt as alternative |
+
+#### Completions (`completion/complete`)
+Provides autocomplete suggestions for prompt arguments and resource URI template variables.
+
+| Client | Support | Notes |
+|--------|---------|-------|
+| MCP Inspector | ✅ Full support | Best for testing |
+| All others | ⚠️ Evolving | Client adoption is still growing; most agents work with `list` responses instead |
+
+**Status**: The MCP completions spec is **finalized** (2025-11-25, Current). Safe to implement, but client support is still catching up.
+
+### Recommendations
+
+1. **For maximum compatibility**: Use tools and resources (universally supported)
+2. **For enhanced UX**: Implement completions (future-proof, works with Inspector)
+3. **For AI-assisted quality**: Use sampling with fallback (check capability first)
+
+```typescript
+// Pattern: Check sampling capability before using
+if (ctx.sampling) {
+  // Use sampling
+} else {
+  // Provide alternative (e.g., prompt-based analysis)
+}
+```
+

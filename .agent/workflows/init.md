@@ -51,7 +51,28 @@ If there's WIP from a previous session, note it and ask the user if they want to
 
 ---
 
-## 5. Confirm Sample Bundle Path
+## 5. Check Dependency Freshness
+
+```bash
+pnpm outdated 2>/dev/null || echo "Run 'pnpm install' first"
+```
+
+Review the output for outdated dependencies, especially:
+- **Critical**: `@modelcontextprotocol/sdk` (MCP SDK - may contain important fixes/features)
+- **Important**: `zod`, `ajv`, `react`, `typescript`
+- **Low priority**: Dev dependencies, testing tools
+
+If major/minor updates are available for critical packages, **suggest upgrading** with:
+```markdown
+⚠️ **Outdated Dependencies Detected:**
+- `@modelcontextprotocol/sdk`: X.X.X → Y.Y.Y (current → latest)
+
+Would you like me to upgrade these before we proceed?
+```
+
+---
+
+## 6. Confirm Sample Bundle Path
 
 ```bash
 echo "Sample bundle: ${SDD_SAMPLE_BUNDLE_PATH:-/home/ivan/dev/sdd-sample-bundle}"
@@ -62,7 +83,7 @@ Note the sample bundle location for E2E tests and CLI validation.
 
 ---
 
-## 6. Run Quick Test Baseline (Optional)
+## 7. Run Quick Test Baseline (Optional)
 
 ```bash
 pnpm test:smoke
@@ -72,13 +93,13 @@ Verify everything works before starting. Skip if you need to start immediately.
 
 ---
 
-## 7. Read MCP Documentation (If MCP Work Expected)
+## 8. Read MCP Documentation (If MCP Work Expected)
 
 If the task involves MCP server changes, read `packages/mcp-server/README.md` for tool documentation.
 
 ---
 
-## 8. Review Knowledge Items
+## 9. Review Knowledge Items
 
 Check the KI summaries provided at conversation start. Read relevant KI artifacts if they match the expected work area.
 
@@ -94,6 +115,7 @@ Provide a brief summary:
 - **AGENTS.md**: Read (X common pitfalls noted)
 - **Workflows**: [list available]
 - **Git status**: [clean / uncommitted changes]
+- **Dependencies**: [all up-to-date / X packages outdated]
 - **Sample bundle**: [path confirmed]
 - **Test baseline**: [passed / skipped]
 
@@ -101,3 +123,4 @@ Ready for your task!
 ```
 
 Then wait for the user's instructions.
+

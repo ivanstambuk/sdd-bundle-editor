@@ -11,9 +11,53 @@ Use this workflow when:
 
 ## Handover Process
 
-### Step 1: Generate Handover Summary
+### Step 1: Create Pending Task File
 
-Output this as a **single Markdown code block** in your chat message:
+If there is pending work, **create the file** `.agent/session/pending-task.md`:
+
+```markdown
+# Pending Task: [Task Title]
+
+**Created**: [YYYY-MM-DD]
+**Status**: [Ready to Start / In Progress / Blocked]
+**Priority**: [High / Medium / Low]
+
+---
+
+## Task Description
+
+[Clear description of what needs to be done]
+
+### Context
+
+[Background information the next agent needs to understand the task]
+
+### Where to Implement
+
+[List of files or areas to modify]
+
+### Definition of Done
+
+- [ ] [Criterion 1]
+- [ ] [Criterion 2]
+- [ ] [Tests pass]
+
+### Reference Documentation
+
+[Links or file paths to relevant docs]
+
+### Testing
+
+[Commands to run to verify the implementation]
+```
+
+The next agent will automatically find this when running `/init` (Step 10).
+
+---
+
+### Step 2: Output Chat Summary
+
+Also output a brief summary in chat for immediate reference:
 
 ```markdown
 # Session Handoff
@@ -35,13 +79,10 @@ Output this as a **single Markdown code block** in your chat message:
   - [E2E Tests]: `pnpm test:e2e` [Pass/Fail]
   - [Visuals]: Screenshots in `artifacts/` [Check/Skip]
 
-## 3. Current State & Pending Scope
-- **Active Task**: [What was in progress?]
-- **Pending / Next Up**:
-  - [Task 1]
-  - [Task 2]
-- **Known Issues**:
-  - [Issue Description]
+## 3. Pending Task
+**File created**: `.agent/session/pending-task.md`
+**Task**: [Brief description]
+**Next agent**: Run `/init` to pick up this task automatically.
 
 ## 4. Operational Notes (For Next Agent)
 - **Environment**: Node 18+, pnpm, Linux.
@@ -50,13 +91,11 @@ Output this as a **single Markdown code block** in your chat message:
   - [e.g. "Run pnpm build after TS changes"]
 - **Wasted Time / Lessons**:
   - [e.g. "Spent time debugging X, solution was Y"]
-
-## 5. Immediate Action Items
-1. [First thing to do in next session]
-2. [Second thing]
 ```
 
-### Step 2: Run Retrospective
+---
+
+### Step 3: Run Retrospective
 
 After the handover code block, run the `/retro` workflow to identify improvements:
 
@@ -71,7 +110,7 @@ After the handover code block, run the `/retro` workflow to identify improvement
 Would you like me to implement these now or save for next session?
 ```
 
-### Step 3: Cleanup Check
+### Step 4: Cleanup Check
 
 Before ending, verify:
 - [ ] `pnpm test` passes

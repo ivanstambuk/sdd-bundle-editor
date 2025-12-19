@@ -12,7 +12,9 @@ Prime the AI agent with project context at session start. This reduces context-f
 
 ## 1. Read Core Documentation
 
-Read `AGENTS.md` for operational guidelines, common pitfalls, and test commands.
+Read `AGENTS.md` for operational guidelines and quick reference.
+
+Then read `.agent/docs/pitfalls/common-pitfalls.md` for common mistakes to avoid.
 
 ---
 

@@ -189,108 +189,121 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Custom array field template - supports x-sdd-displayHint for different layouts
-  // NOTE: RJSF does NOT use ArrayFieldItemTemplate when ArrayFieldTemplate is provided.
-  // We must wrap items manually here. See: https://rjsf-team.github.io/react-jsonschema-form/
-  const CustomArrayFieldTemplate = (props: any) => {
-    const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
-    const showAddButton = canAdd && !readonly && !disabled;
-    const displayHint = schema?.['x-sdd-displayHint'];
+  // ========================================
+  // Array Layout Renderers
+  // Each layout is extracted for maintainability and testability
+  // ========================================
 
-    // Schema-driven indicator for array items (e.g., x-sdd-indicator: "✅" on items)
-    const indicator = schema?.items?.['x-sdd-indicator'] || null;
+  // Chips layout - inline tags for short string arrays (e.g., tags)
+  const renderChipsLayout = (formData: string[]) => (
+    <div className="rjsf-chips">
+      {formData.map((item: string, index: number) => (
+        <span key={index} className="rjsf-chip">
+          {item}
+        </span>
+      ))}
+      {formData.length === 0 && (
+        <span className="rjsf-chips-empty">No items</span>
+      )}
+    </div>
+  );
 
-    // Schema-driven alternatives layout (explicit opt-in, not pattern detection)
-    const layout = schema?.['x-sdd-layout'];
-    const isAlternativesLayout = layout === 'alternatives';
-    const choiceField = schema?.['x-sdd-choiceField'] || 'isChosen';
-    const chosenLabel = schema?.['x-sdd-chosenLabel'] || '✓ CHOSEN';
-    const rejectedLabel = schema?.['x-sdd-rejectedLabel'] || 'REJECTED';
+  // Bullet list layout - compact list for string arrays (e.g., pros, cons, consequences)
+  const renderBulletListLayout = (
+    items: any[],
+    indicator: string | null,
+    showAddButton: boolean,
+    onAddClick: () => void
+  ) => (
+    <div className="rjsf-bullet-list">
+      <ul className={`rjsf-bullet-items ${indicator ? 'has-indicator' : ''}`}>
+        {items.map((item: any, index: number) => (
+          <li key={item.key || index} className="rjsf-bullet-item">
+            {indicator && <span className="rjsf-bullet-marker">{indicator}</span>}
+            {item.children}
+          </li>
+        ))}
+      </ul>
+      {items.length === 0 && (
+        <span className="rjsf-bullet-empty">No items</span>
+      )}
+      {showAddButton && (
+        <button
+          type="button"
+          className="rjsf-array-add-btn rjsf-bullet-add"
+          onClick={onAddClick}
+        >
+          + Add
+        </button>
+      )}
+    </div>
+  );
 
-    // Chips layout for tags and short label arrays
-    if (displayHint === 'chips' && Array.isArray(formData)) {
-      return (
-        <div className="rjsf-chips">
-          {formData.map((item: string, index: number) => (
-            <span key={index} className="rjsf-chip">
-              {item}
-            </span>
-          ))}
-          {formData.length === 0 && (
-            <span className="rjsf-chips-empty">No items</span>
-          )}
-        </div>
-      );
-    }
-
-    // Bullet list layout for compact string arrays (pros, cons, consequences, etc.)
-    // Renders as minimal list, using indicator as marker if defined, otherwise bullet
-    const isBulletList = layout === 'bulletList';
-    const bulletIndicator = schema?.items?.['x-sdd-indicator'] || null;
-    if (isBulletList && schema?.items?.type === 'string') {
-      return (
-        <div className="rjsf-bullet-list">
-          <ul className={`rjsf-bullet-items ${bulletIndicator ? 'has-indicator' : ''}`}>
-            {items.map((item: any, index: number) => (
-              <li key={item.key || index} className="rjsf-bullet-item">
-                {bulletIndicator && <span className="rjsf-bullet-marker">{bulletIndicator}</span>}
-                {item.children}
-              </li>
-            ))}
-          </ul>
-          {items.length === 0 && (
-            <span className="rjsf-bullet-empty">No items</span>
-          )}
-          {showAddButton && (
-            <button
-              type="button"
-              className="rjsf-array-add-btn rjsf-bullet-add"
-              onClick={onAddClick}
-            >
-              + Add
-            </button>
-          )}
-        </div>
-      );
-    }
-
-    // Check if items contain complex objects (have nested properties)
-    const hasComplexItems = schema?.items?.type === 'object' && schema?.items?.properties;
-
-    // Determine item class based on type and state
-    const getItemClass = (itemData?: any) => {
-      if (isAlternativesLayout) {
+  // Alternatives layout - cards with chosen/rejected badges (e.g., ADR alternatives)
+  const renderAlternativesLayout = (
+    items: any[],
+    formData: any[],
+    choiceField: string,
+    chosenLabel: string,
+    rejectedLabel: string,
+    showAddButton: boolean,
+    onAddClick: () => void
+  ) => (
+    <div className="rjsf-array">
+      {items.map((item: any, index: number) => {
+        const itemData = Array.isArray(formData) ? formData[index] : undefined;
         const isChosen = itemData?.[choiceField] === true;
-        return isChosen
+        const itemClass = isChosen
           ? 'rjsf-array-item rjsf-alternative-item rjsf-alternative-chosen'
           : 'rjsf-array-item rjsf-alternative-item rjsf-alternative-rejected';
-      }
+
+        return (
+          <div key={item.key || index} className={itemClass}>
+            {isChosen && (
+              <div className="rjsf-alternative-badge rjsf-badge-chosen">{chosenLabel}</div>
+            )}
+            {!isChosen && (
+              <div className="rjsf-alternative-badge rjsf-badge-rejected">{rejectedLabel}</div>
+            )}
+            {item.children}
+          </div>
+        );
+      })}
+      {showAddButton && (
+        <button
+          type="button"
+          className="rjsf-array-add-btn"
+          onClick={onAddClick}
+        >
+          + Add Item
+        </button>
+      )}
+    </div>
+  );
+
+  // Default array layout - row per item, cards for complex objects
+  const renderDefaultArrayLayout = (
+    items: any[],
+    formData: any[],
+    hasComplexItems: boolean,
+    indicator: string | null,
+    showAddButton: boolean,
+    onAddClick: () => void
+  ) => {
+    const getItemClass = () => {
       if (hasComplexItems) return 'rjsf-array-item';
       if (indicator) return 'rjsf-array-simple-item rjsf-indicated-item';
       return 'rjsf-array-simple-item';
     };
 
-    // Default: full row per item, with card styling for complex objects
     return (
       <div className="rjsf-array">
-        {items.map((item: any, index: number) => {
-          const itemData = Array.isArray(formData) ? formData[index] : undefined;
-          const isChosen = isAlternativesLayout && itemData?.[choiceField] === true;
-
-          return (
-            <div key={item.key || index} className={getItemClass(itemData)}>
-              {/* Badge for alternatives layout */}
-              {isAlternativesLayout && isChosen && (
-                <div className="rjsf-alternative-badge rjsf-badge-chosen">{chosenLabel}</div>
-              )}
-              {isAlternativesLayout && !isChosen && (
-                <div className="rjsf-alternative-badge rjsf-badge-rejected">{rejectedLabel}</div>
-              )}
-              {indicator && <span className="rjsf-indicator">{indicator}</span>}
-              {item.children}
-            </div>
-          );
-        })}
+        {items.map((item: any, index: number) => (
+          <div key={item.key || index} className={getItemClass()}>
+            {indicator && <span className="rjsf-indicator">{indicator}</span>}
+            {item.children}
+          </div>
+        ))}
         {showAddButton && (
           <button
             type="button"
@@ -302,6 +315,42 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         )}
       </div>
     );
+  };
+
+  // ========================================
+  // Custom Array Field Template
+  // Dispatches to appropriate layout renderer based on schema hints
+  // ========================================
+  const CustomArrayFieldTemplate = (props: any) => {
+    const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
+    const showAddButton = canAdd && !readonly && !disabled;
+    const displayHint = schema?.['x-sdd-displayHint'];
+    const layout = schema?.['x-sdd-layout'];
+    const indicator = schema?.items?.['x-sdd-indicator'] || null;
+
+    // Chips layout for tags and short label arrays
+    if (displayHint === 'chips' && Array.isArray(formData)) {
+      return renderChipsLayout(formData);
+    }
+
+    // Bullet list layout for compact string arrays
+    if (layout === 'bulletList' && schema?.items?.type === 'string') {
+      return renderBulletListLayout(items, indicator, showAddButton, onAddClick);
+    }
+
+    // Alternatives layout for choice arrays (ADR alternatives)
+    if (layout === 'alternatives') {
+      const choiceField = schema?.['x-sdd-choiceField'] || 'isChosen';
+      const chosenLabel = schema?.['x-sdd-chosenLabel'] || '✓ CHOSEN';
+      const rejectedLabel = schema?.['x-sdd-rejectedLabel'] || 'REJECTED';
+      return renderAlternativesLayout(
+        items, formData, choiceField, chosenLabel, rejectedLabel, showAddButton, onAddClick
+      );
+    }
+
+    // Default layout
+    const hasComplexItems = schema?.items?.type === 'object' && schema?.items?.properties;
+    return renderDefaultArrayLayout(items, formData, hasComplexItems, indicator, showAddButton, onAddClick);
   };
 
   // Hidden widget for scalar fields - returns nothing

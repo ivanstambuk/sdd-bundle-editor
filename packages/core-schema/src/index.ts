@@ -29,9 +29,12 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
 
   // Allow SDD-specific extension keywords in strict mode (metadata only).
   // All keywords use the standardized x-sdd-* namespace.
+  // NOTE: Keep in sync with packages/ui-shell/src/components/EntityDetails.tsx validator keywords
   const passthroughKeywords = [
     'x-sdd-ui', 'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-    'x-sdd-widget', 'x-sdd-displayHint', 'x-sdd-enumDescriptions'
+    'x-sdd-widget', 'x-sdd-displayHint', 'x-sdd-enumDescriptions',
+    'x-sdd-layout', 'x-sdd-indicator', 'x-sdd-layoutGroup',
+    'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({

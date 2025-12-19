@@ -202,3 +202,25 @@
   ```
 - **Design process**: When adding new UI features, FIRST design the schema hint, THEN implement the reader
 
+### 19. Trying to use file editing tools on external bundles
+- **Symptom**: `view_file` or `replace_file_content` fails or is blocked on sample bundle files
+- **Root cause**: External bundles (e.g., `/home/ivan/dev/sdd-sample-bundle`) are OUTSIDE the IDE workspace - file editing tools only work within the workspace
+- **Fix**: Use CLI commands (`jq`, `python`, `cat`) to read/edit external bundle files:
+  ```bash
+  # Read schema
+  cat /home/ivan/dev/sdd-sample-bundle/schemas/ADR.schema.json
+  
+  # Edit schema with jq
+  jq '.properties.field["x-sdd-layout"] = "bulletList"' schema.json > tmp.json && mv tmp.json schema.json
+  
+  # Edit YAML entity with Python (yq may timeout due to snap issues)
+  python3 -c "
+  import yaml
+  with open('entity.yaml', 'r') as f: data = yaml.safe_load(f)
+  data['status'] = 'accepted'
+  with open('entity.yaml', 'w') as f: yaml.dump(data, f, allow_unicode=True, sort_keys=False)
+  "
+  ```
+- **Important**: This applies to ALL bundles the editor works with - bundles are external data, never part of the editor's source workspace
+- **Related**: See debug-recipes.md for jq and Python YAML patterns
+

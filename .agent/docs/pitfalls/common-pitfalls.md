@@ -91,3 +91,5 @@
       annotations: READ_ONLY_TOOL,
   }, callback);
   ```
+- **Note**: Raw JSON Schema objects (e.g., `{type: "object", additionalProperties: false}`) also don't work - the SDK's `normalizeObjectSchema()` doesn't recognize them.
+

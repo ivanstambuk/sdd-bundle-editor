@@ -51,3 +51,7 @@ The following major milestones have been completed:
 ### MCP Enhancements
 - [ ] Additional prompts for specialized workflows
 - [ ] Cross-bundle relationship analysis
+- [ ] Resource template completions (autocomplete for bundleId, entityType, id)
+- [ ] Prompt argument completions using `completable()` wrapper
+- [ ] Migrate to `registerResource()`/`registerPrompt()` when SDK fully deprecates old methods
+- [ ] Strict empty schema for no-arg tools (blocked: SDK doesn't support raw JSON Schema in inputSchema)

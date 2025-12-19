@@ -18,6 +18,9 @@ type EmptySchema = Record<string, never>;
 /**
  * Helper to register a read-only tool with standard annotations.
  * Use for tools that only read data: list_bundles, read_entity, search_entities, etc.
+ * 
+ * Note: For no-argument tools, pass {} as inputSchema. The MCP SDK's TypeScript
+ * types don't support z.object({}).strict() or raw JSON Schema objects.
  */
 export function registerReadOnlyTool<T extends ZodRawShape | EmptySchema>(
     server: McpServer,

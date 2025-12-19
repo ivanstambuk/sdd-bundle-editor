@@ -15,10 +15,36 @@ export class SddMcpServer {
 
     constructor(bundleConfigs: BundleConfig[]) {
         this.bundleConfigs = bundleConfigs;
-        this.server = new McpServer({
-            name: "sdd-bundle-editor",
-            version: "0.1.0",
-        });
+        this.server = new McpServer(
+            {
+                name: "sdd-bundle-editor",
+                version: "0.1.0",
+            },
+            {
+                instructions: `SDD Bundle Editor MCP Server - Specification bundle access for AI agents.
+
+IMPORTANT DEFAULTS:
+- apply_changes: dryRun=true by default (preview mode). Set dryRun=false to persist changes.
+- Multi-bundle mode: Most tools require bundleId. Call list_bundles first to discover available bundles.
+- validate: 'strict' by default for apply_changes. Schema validation rejects invalid entities.
+
+RECOMMENDED WORKFLOW:
+1. list_bundles → get available bundle IDs and entity types
+2. get_bundle_snapshot or list_entity_summaries → understand bundle structure
+3. read_entity / get_context → get detailed entity data with relationships
+4. apply_changes with dryRun=true → preview proposed changes
+5. apply_changes with dryRun=false → persist changes to disk
+
+TOOL OUTPUTS:
+All tools return a standardized envelope with:
+- structuredContent: Machine-parsable object { ok, tool, data, meta, diagnostics }
+- content[0].text: Human-readable JSON string
+- isError: true if operation failed
+
+For errors, structuredContent contains: { ok: false, error: { code, message, details } }
+Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_BLOCKED, INTERNAL`,
+            }
+        );
 
         this.setupResources();
         this.setupTools();
@@ -64,6 +90,10 @@ export class SddMcpServer {
         this.server.resource(
             "bundles",
             "bundle://list",
+            {
+                description: "List all loaded specification bundles with metadata, entity types, and counts",
+                mimeType: "application/json",
+            },
             async (uri) => {
                 const bundleList = Array.from(this.bundles.values()).map(b => ({
                     id: b.id,
@@ -88,6 +118,10 @@ export class SddMcpServer {
         this.server.resource(
             "domain-knowledge",
             "bundle://domain-knowledge",
+            {
+                description: "Aggregated domain knowledge documentation from all loaded bundles",
+                mimeType: "text/markdown",
+            },
             async (uri) => {
                 const domainDocs: { bundleId: string; content: string }[] = [];
                 for (const [id, loaded] of this.bundles) {
@@ -136,10 +170,15 @@ export class SddMcpServer {
                             uri: `bundle://${bundleId}/manifest`,
                             name: `${bundleId} manifest`,
                             description: `Bundle manifest for ${bundleId}`,
+                            mimeType: "application/json",
                         })),
                     };
                 },
             }),
+            {
+                description: "Bundle manifest containing metadata, entity type definitions, and bundle structure",
+                mimeType: "application/json",
+            },
             async (uri, params) => {
                 const bundleId = params.bundleId as string;
                 const loaded = this.bundles.get(bundleId);
@@ -171,6 +210,10 @@ export class SddMcpServer {
             new ResourceTemplate("bundle://{bundleId}/entity/{type}/{id}", {
                 list: undefined, // Too many entities to enumerate
             }),
+            {
+                description: "Read a specific entity by bundle ID, entity type, and entity ID",
+                mimeType: "application/json",
+            },
             async (uri, params) => {
                 const bundleId = params.bundleId as string;
                 const entityType = params.type as string;
@@ -217,7 +260,7 @@ export class SddMcpServer {
             new ResourceTemplate("bundle://{bundleId}/schema/{type}", {
                 list: async () => {
                     // List all schemas across all bundles
-                    const schemas: { uri: string; name: string; description: string }[] = [];
+                    const schemas: { uri: string; name: string; description: string; mimeType: string }[] = [];
                     for (const [bundleId, loaded] of this.bundles) {
                         const schemaMap = loaded.bundle.manifest.spec?.schemas?.documents || {};
                         for (const entityType of Object.keys(schemaMap)) {
@@ -225,12 +268,17 @@ export class SddMcpServer {
                                 uri: `bundle://${bundleId}/schema/${entityType}`,
                                 name: `${entityType} schema`,
                                 description: `JSON Schema for ${entityType} in ${bundleId}`,
+                                mimeType: "application/json",
                             });
                         }
                     }
                     return { resources: schemas };
                 },
             }),
+            {
+                description: "JSON Schema definition for a specific entity type in a bundle",
+                mimeType: "application/json",
+            },
             async (uri, params) => {
                 const bundleId = params.bundleId as string;
                 const entityType = params.type as string;

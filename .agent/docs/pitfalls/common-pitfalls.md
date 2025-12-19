@@ -96,3 +96,18 @@
   ```
 - **Note**: Raw JSON Schema objects (e.g., `{type: "object", additionalProperties: false}`) still don't work - the SDK only recognizes Zod schemas.
 
+---
+
+## Dependencies
+
+### 14. Upgrading @types/node to v25+ breaks build
+- **Symptom**: TypeScript error: "'ReactMarkdown' cannot be used as a JSX component"
+- **Root cause**: `@types/node` v25 has JSX type changes incompatible with `@types/react` v18
+- **Fix**: Upgrade React types first, then Node types:
+  ```bash
+  # Correct order:
+  pnpm add -wD @types/react@19 @types/react-dom@19  # First
+  pnpm add -wD @types/node@25                        # Then
+  ```
+- **Anti-pattern**: Using `pnpm update @types/node --latest` can corrupt lockfile with transitive dependencies. Use explicit version installs instead.
+

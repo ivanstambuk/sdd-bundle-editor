@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
-    "lint": "eslint \"src/**/*.{ts,tsx}\" || true",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },

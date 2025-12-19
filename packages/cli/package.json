@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "lint": "eslint \"src/**/*.{ts,tsx}\" || true"
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@sdd-bundle-editor/git-utils": "workspace:*",

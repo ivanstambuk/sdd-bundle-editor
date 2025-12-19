@@ -8,13 +8,12 @@ It is an MVP skeleton that already supports:
 - Linting with a small rule engine (regex / has-link / coverage).
 - Building an ID registry and reference graph across entities.
 - A CLI (`sdd-bundle`) with `validate`, `report-coverage`, and stubbed `generate`.
-- A Fastify-based backend exposing bundle and AI endpoints.
+- An MCP server for AI integration (Claude Desktop, GitHub Copilot).
 - A React-based UI shell with:
   - Entity navigator.
   - Schema-driven forms (RJSF) with custom widgets for `sdd-ref` fields.
   - Reference viewer (incoming / outgoing).
   - Diagnostics panel with grouping and filters.
-  - AI refinement stub panel with diff/apply controls.
 
 > For the full design, see `sdd-bundle-editor-spec.md`.
 
@@ -28,9 +27,9 @@ It is an MVP skeleton that already supports:
 - `packages/core-ai` – AI provider abstraction and stub `generate/refine/fix` flows.
 - `packages/git-utils` – shared Git helpers (repo detection, branch, clean working tree).
 - `packages/ui-shell` – React UI components and app shell (used by `apps/web`).
+- `packages/mcp-server` – MCP server for AI assistants and web UI.
 - `packages/cli` – `sdd-bundle` CLI wrapping the core model/lint (plus stub AI).
-- `apps/server` – Fastify HTTP API around the core (bundle, validation, AI routes).
-- `apps/web` – React SPA that talks to `apps/server`.
+- `apps/web` – React SPA that uses MCP server for all data operations.
 
 **Bundle Repositories** (external):
 - SDD bundles are now maintained in separate repositories to decouple content from the editor.
@@ -66,14 +65,11 @@ This runs `tsc` and `vitest` across all workspaces.
 ### Development modes
 
 ```bash
-# Standard development (legacy HTTP only)
+# Standard development (MCP server + web UI + ui-shell watch)
 SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev
 
-# With MCP server (for testing MCP mode)
-SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev:mcp
-
-# Minimal (no ui-shell watch)
-SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev:simple
+# MCP server only (no web UI)
+SDD_SAMPLE_BUNDLE_PATH=/path/to/bundle pnpm dev:mcp-only
 ```
 
 ### Testing
@@ -136,24 +132,6 @@ sdd-bundle validate --bundle-dir $SDD_SAMPLE_BUNDLE_PATH --output json
   - Uses bundle‑type `relations` + ref graph to report coverage metrics.
 - `sdd-bundle generate [...]`
   - Stubbed AI entrypoint using the no‑op provider (no writes yet).
-
----
-
-## Backend server
-
-Run the Fastify server:
-
-```bash
-pnpm --filter @sdd-bundle-editor/server build
-node apps/server/dist/index.js
-```
-
-Key endpoints (default base URL: `http://localhost:3000`):
-
-- `GET /health` – Health check for Playwright and monitoring
-- `GET /bundle` – Load bundle with entities, schemas, reference graph, diagnostics
-
-> **Read-Only**: The HTTP server is now read-only. All write operations are handled via MCP.
 
 ---
 
@@ -237,16 +215,16 @@ pnpm dev
 ```
 
 This starts **three concurrent processes**:
-- **[server]** (blue) – Backend API server (read-only)
+- **[mcp]** (magenta) – MCP server (port 3001)
 - **[web]** (green) – Webpack dev server for the UI
 - **[ui-shell]** (yellow) – TypeScript compiler in watch mode
 
 **Why watch mode by default?**
 The `packages/ui-shell` is consumed as a **compiled library**. When you edit React components, those changes must be compiled from `src/` to `dist/` before the browser can use them. Watch mode ensures this happens automatically.
 
-**Alternative (lighter weight, no auto-compile):**
+**Alternative (MCP server only):**
 ```bash
-pnpm dev:simple
+pnpm dev:mcp-only
 ```
 
 ### Read-Only UI
@@ -292,28 +270,18 @@ The project has transitioned to the **MCP-First Architecture**.
 **Architecture:**
 
 ```
-┌──────────┐     MCP Protocol      ┌────────────┐
-│  Web UI  │ ────────────────────▶ │ MCP Server │
-│ (React)  │ ◀──────────────────── │ (port 3001)│
-└──────────┘    HTTP POST + SSE    └────────────┘
-      │                                   │
-      │ (fallback if MCP fails)           │
-      ▼                                   ▼
-┌──────────┐                       ┌────────────┐
-│  Legacy  │                       │  Bundle    │
-│  Server  │                       │  Files     │
-│(port 3000)│                      └────────────┘
-└──────────┘
+┌──────────┐     MCP Protocol      ┌────────────┐     ┌────────────┐
+│  Web UI  │ ────────────────────▶ │ MCP Server │ ──▶ │  Bundle    │
+│ (React)  │ ◀──────────────────── │ (port 3001)│     │  Files     │
+└──────────┘    HTTP POST + SSE    └────────────┘     └────────────┘
 ```
 
-- UI loads data via MCP tools (`list_bundles`, `read_entity`, etc.)
-- Falls back to legacy HTTP server if MCP unavailable
-- Header shows `🔗 MCP` or `📡 HTTP` status
+- UI loads data via MCP tools (`list_bundles`, `get_bundle_snapshot`, etc.)
+- All bundle modifications done via `apply_changes` tool
 - Users manage Git commits externally
 
 **URL Parameters:**
 - `?mcpUrl=<url>` - Override MCP server URL
-- `?useMcp=false` - Force legacy HTTP mode
 
 Use `IMPLEMENTATION_TRACKER.md` to track and coordinate further work.
 

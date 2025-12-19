@@ -64,13 +64,11 @@ sdd-bundle-editor/
 │   ├── core-lint       # Lint rules, gate semantics, diagnostics
 │   ├── core-ai         # AI provider abstraction (no-op, http, cli)
 │   ├── ui-shell        # React components (EntityNavigator, EntityDetails, etc.)
+│   ├── mcp-server      # MCP server for AI assistants and web UI
 │   ├── cli             # Command-line interface (validate, report-coverage)
 │   └── git-utils       # Git operations (branch checks, clean working tree)
 ├── apps/
-│   ├── server          # Fastify HTTP API server
-│   └── web             # Webpack-bundled React app
-├── examples/
-│   └── basic-bundle/   # Sample bundle for testing
+│   └── web             # Webpack-bundled React app (uses MCP server)
 └── e2e/                # Playwright end-to-end tests
 ```
 
@@ -80,9 +78,9 @@ core-schema ─┐
              ├─> core-model ─┬─> core-lint
              │               ├─> core-ai
              │               ├─> cli
-             │               └─> server
+             │               └─> mcp-server
 ui-shell ────────────────────────> web
-git-utils ───────────────────────> server
+git-utils ───────────────────────> mcp-server
 ```
 
 ---
@@ -120,31 +118,24 @@ The server exposes `GET /health` specifically for Playwright's `webServer` confi
 
 ---
 
-## API Endpoints
+## API: MCP Server
 
-### HTTP Server (Read-Only)
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check for readiness detection |
-| `/bundle` | GET | Load bundle snapshot (manifest, entities, diagnostics, schemas, refGraph) |
-
-### MCP Server (Write Operations)
-
-All bundle modifications happen via MCP tools:
+All data operations (read and write) go through the MCP server:
 
 | Tool | Description |
 |------|-------------|
 | `list_bundles` | List all loaded bundles |
 | `read_entity` | Read entity by type and ID |
 | `list_entities` | List all entity IDs |
+| `get_bundle_snapshot` | Get complete bundle state in one call |
 | `search_entities` | Search across bundles |
 | `validate_bundle` | Validate and return diagnostics |
 | `get_context` | Get entity with related dependencies |
 | `get_conformance_context` | Get conformance rules and audit templates from a Profile |
 | `apply_changes` | Atomic batch create/update/delete |
 
-
+The MCP server runs on port 3001 in HTTP mode (for web UI) or via stdio (for AI assistants).
+---
 ---
 
 ## UI Layout
@@ -224,41 +215,23 @@ The editor follows an **MCP-first architecture** where the UI communicates direc
 ### Architecture Flow
 
 ```
-┌──────────┐     MCP Protocol      ┌────────────┐
-│  Web UI  │ ────────────────────▶ │ MCP Server │
-│ (React)  │ ◀──────────────────── │ (port 3001)│
-└──────────┘    HTTP POST + SSE    └────────────┘
-      │                                   │
-      │ (fallback if MCP fails)           │
-      ▼                                   ▼
-┌──────────┐                       ┌────────────┐
-│  Legacy  │                       │  Bundle    │
-│  Server  │                       │  Files     │
-│(port 3000)│                      └────────────┘
-└──────────┘
+┌──────────┐     MCP Protocol      ┌────────────┐     ┌────────────┐
+│  Web UI  │ ────────────────────▶ │ MCP Server │ ──▶ │  Bundle    │
+│ (React)  │ ◀──────────────────── │ (port 3001)│     │  Files     │
+└──────────┘    HTTP POST + SSE    └────────────┘     └────────────┘
 ```
 
 ### UI Data Flow
 
 1. **MCP Client** (`mcpClient.ts`) - Handles MCP session management and tool calls
 2. **MCP Bundle API** (`mcpBundleApi.ts`) - Translates UI operations to MCP tools:
-   - `load()` → `list_bundles` + `list_entities` + `read_entity`
+   - `load()` → `list_bundles` + `get_bundle_snapshot`
    - `validate()` → `validate_bundle`
-3. **useBundleState Hook** - Uses MCP API by default, falls back to legacy HTTP
-4. **Status Indicator** - Header shows `🔗 MCP` or `📡 HTTP` mode
+3. **useBundleState Hook** - Manages React state from MCP data
 
 ### URL Parameters
 
 | Parameter | Description |
 |-----------|-------------|
 | `?mcpUrl=<url>` | Override MCP server URL (default: `http://localhost:3001`) |
-| `?useMcp=false` | Force legacy HTTP mode |
 | `?bundleDir=<path>` | Bundle directory path |
-
-### Dual Server Mode
-
-For E2E tests and development, both servers run concurrently:
-- **MCP Server** (port 3001) - Primary data source via MCP protocol
-- **Legacy Server** (port 3000) - Fallback for compatibility
-
-This provides complete validation before writes while giving users full Git control.

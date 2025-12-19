@@ -384,12 +384,12 @@ The MCP Server provides bundle access to AI assistants:
 | `cli` | Command-line interface |
 | `git-utils` | Git operations |
 
-### Apps
+### Apps & Servers
 
-| App | Description |
-|-----|-------------|
-| `apps/server` | Fastify HTTP API |
-| `apps/web` | React SPA |
+| Package/App | Description |
+|-------------|-------------|
+| `packages/mcp-server` | MCP server for AI assistants and web UI |
+| `apps/web` | React SPA (uses MCP server for all data operations) |
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed implementation documentation.
 

@@ -16,9 +16,16 @@
 
 ## Testing
 
-### 3. Using `browser_subagent` tool
+### 3. Using `browser_subagent` tool in WSL
 - **Symptom**: `ECONNREFUSED 127.0.0.1:9222`
-- **Fix**: Use Playwright E2E tests instead (CDP not available)
+- **Root cause**: Chrome runs in Windows, not accessible from WSL's network namespace
+- **Fix for WSL**:
+  1. Start Chrome on Windows with remote debugging:
+     ```cmd
+     "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\temp\chrome-debug-profile"
+     ```
+  2. Keep Chrome window open while using browser_subagent
+- **Alternative**: Use Playwright E2E tests (`pnpm test:e2e`)
 
 ### 4. Hardcoding entity IDs in tests
 - **Symptom**: Tests break when sample bundle changes
@@ -34,19 +41,58 @@
 
 ---
 
+## UI / React JSON Schema Form (RJSF)
+
+### 7. Assuming ArrayFieldItemTemplate wraps items when ArrayFieldTemplate is provided
+- **Symptom**: Custom CSS class on ArrayFieldItemTemplate not appearing in DOM
+- **Root cause**: RJSF does NOT use ArrayFieldItemTemplate when you provide ArrayFieldTemplate
+- **Fix**: Wrap items manually in ArrayFieldTemplate:
+  ```tsx
+  const CustomArrayFieldTemplate = (props) => {
+    const { items, schema } = props;
+    const hasComplexItems = schema?.items?.type === 'object';
+    
+    return (
+      <div className="my-array">
+        {items.map((item, index) => (
+          <div key={item.key || index} className={hasComplexItems ? 'card-item' : 'simple-item'}>
+            {item.children}
+          </div>
+        ))}
+      </div>
+    );
+  };
+  ```
+
+### 8. Debugging CSS without checking DOM structure
+- **Symptom**: CSS styling not applied, wasting time adjusting CSS
+- **Root cause**: The expected class may not exist in the DOM at all
+- **Fix**: Always verify DOM structure first using browser JS:
+  ```javascript
+  // Check if class exists
+  document.querySelectorAll('.my-class').length
+  
+  // Find all RJSF-related classes
+  Array.from(document.querySelectorAll('*'))
+    .filter(el => Array.from(el.classList).some(cls => cls.includes('rjsf')))
+    .map(el => el.className)
+  ```
+
+---
+
 ## MCP Server
 
-### 7. MCP response envelope structure confusion
+### 9. MCP response envelope structure confusion
 - **Symptom**: `result.data.find is not a function` or similar errors
 - **Root cause**: MCP tools return `{ok, tool, data: {actual_payload}}`
 - **Fix**: Access `result.data.data.bundles`, not `result.data.bundles`
 
-### 8. Webpack proxy not forwarding MCP requests
+### 10. Webpack proxy not forwarding MCP requests
 - **Symptom**: MCP requests fail in browser but work via curl to 3001
 - **Root cause**: `getMcpServerUrl()` returns absolute URL instead of relative
 - **Fix**: Return empty string for browser context, use relative `/mcp` path
 
-### 9. MCP sampling without capability check
+### 11. MCP sampling without capability check
 - **Symptom**: Tool hangs indefinitely with thin HTTP clients
 - **Root cause**: `createMessage()` called without checking if client supports sampling
 - **Fix**: Check capabilities first:
@@ -57,17 +103,17 @@
   }
   ```
 
-### 10. Adding mimeType to MCP tool text content
+### 12. Adding mimeType to MCP tool text content
 - **Symptom**: TypeScript error: "mimeType does not exist in type"
 - **Root cause**: MCP SDK `TextContent` type only has `{type, text, annotations?}`
 - **Fix**: `mimeType` only works on resources and embedded resources, not tool text content
 
-### 11. Inconsistent resource error format
+### 13. Inconsistent resource error format
 - **Symptom**: Agents struggle to parse resource errors
 - **Root cause**: Resources using `{error, message}` instead of tool format
 - **Fix**: Use `{ok: false, error: {code, message, details}}` for all responses (use `resourceError()` helper)
 
-### 12. MCP SDK requires index signature on response types
+### 14. MCP SDK requires index signature on response types
 - **Symptom**: TypeScript error "Index signature for type 'string' is missing"
 - **Root cause**: MCP SDK expects `{[x: string]: unknown}` on tool return types for compatibility
 - **Fix**: Add `[x: string]: unknown;` to response interfaces:
@@ -80,7 +126,7 @@
   }
   ```
 
-### 13. Using `z.object({}).strict()` for empty schema in registerTool
+### 15. Using `z.object({}).strict()` for empty schema in registerTool
 - **Status**: ✅ Fixed in SDK v1.25.1
 - **Old symptom**: TypeScript error "not assignable to parameter of type 'ZodRawShapeCompat'"
 - **Old root cause**: SDK expected raw shape objects, not wrapped Zod objects
@@ -100,7 +146,7 @@
 
 ## Dependencies
 
-### 14. Upgrading @types/node to v25+ breaks build
+### 16. Upgrading @types/node to v25+ breaks build
 - **Symptom**: TypeScript error: "'ReactMarkdown' cannot be used as a JSX component"
 - **Root cause**: `@types/node` v25 has JSX type changes incompatible with `@types/react` v18
 - **Fix**: Upgrade React types first, then Node types:
@@ -115,7 +161,7 @@
 
 ## Bundle Type Definition
 
-### 15. New bundle type properties not appearing in UI
+### 17. New bundle type properties not appearing in UI
 - **Symptom**: Added new property to bundle-type.json (e.g., `color`), but property is undefined in UI
 - **Root cause**: The data flow is: `JSON file → core-model → MCP server → UI`. TypeScript types gate what properties flow through. If the property isn't in the type definition, it won't be passed.
 - **Fix**: When adding a new property to bundle type definition:

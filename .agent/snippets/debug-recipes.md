@@ -140,3 +140,50 @@ git diff --cached --stat
 # See uncommitted changes in specific file
 git diff AGENTS.md | head -50
 ```
+
+---
+
+## DOM Class Verification (Browser DevTools)
+
+**Problem**: CSS styling not applied - need to verify class exists in DOM before debugging CSS.
+
+```javascript
+// Check if a specific class exists and how many elements have it
+document.querySelectorAll('.rjsf-array-item').length
+
+// Get parent element's class for debugging CSS specificity
+document.querySelectorAll('.my-class')[0]?.parentElement?.className
+
+// Find all elements with classes containing a pattern (e.g., 'rjsf')
+Array.from(document.querySelectorAll('*'))
+  .filter(el => Array.from(el.classList).some(cls => cls.includes('rjsf')))
+  .map(el => ({ tag: el.tagName, class: el.className }))
+
+// Find element and get its computed CSS
+const el = document.querySelector('.rjsf-array-item');
+getComputedStyle(el).border  // Check what CSS is actually applied
+```
+
+---
+
+## WSL Browser Debugging Setup
+
+**Problem**: Browser subagent fails with `ECONNREFUSED 127.0.0.1:9222` in WSL.
+
+**Root cause**: Chrome runs on Windows, not accessible from WSL's network namespace.
+
+**Solution**: Start Chrome on Windows with remote debugging:
+
+```cmd
+REM Run in Windows CMD or PowerShell (not WSL)
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\temp\chrome-debug-profile"
+```
+
+Keep this Chrome window open while using browser_subagent.
+
+**Finding Chrome path from WSL**:
+```bash
+ls -la "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" 2>/dev/null && echo "Chrome found"
+ls -la "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" 2>/dev/null && echo "Edge found"
+```
+

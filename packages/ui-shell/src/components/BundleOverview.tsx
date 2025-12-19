@@ -161,7 +161,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                                                     {rel.toEntity}
                                                 </span>
                                             </td>
-                                            <td>{rel.cardinality || '—'}</td>
+                                            <td>{rel.multiplicity || '—'}</td>
                                         </tr>
                                     );
                                 })}

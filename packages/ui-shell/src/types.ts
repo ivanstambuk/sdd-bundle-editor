@@ -47,7 +47,7 @@ export interface UiRelationConfig {
   fromEntity: string;
   fromField: string;
   toEntity: string;
-  cardinality?: string;
+  multiplicity?: 'one' | 'many';
 }
 
 export interface UiBundleTypeDefinition {

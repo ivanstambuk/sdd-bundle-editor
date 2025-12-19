@@ -1,3 +1,18 @@
+// Import bundle type definition types from shared-types (SINGLE SOURCE OF TRUTH)
+import type {
+  BundleTypeEntityConfig,
+  BundleTypeRelationConfig,
+  BundleTypeDefinition,
+} from '@sdd-bundle-editor/shared-types';
+
+// Re-export with Ui prefix for backward compatibility
+export type UiEntityTypeConfig = BundleTypeEntityConfig;
+export type UiRelationConfig = BundleTypeRelationConfig;
+export type UiBundleTypeDefinition = BundleTypeDefinition;
+
+// Also re-export the original names for direct use
+export type { BundleTypeEntityConfig, BundleTypeRelationConfig, BundleTypeDefinition };
+
 export interface UiDiagnostic {
   severity: 'error' | 'warning';
   message: string;
@@ -31,32 +46,6 @@ export interface UiBundleManifest {
     version?: string;
     description?: string;
   };
-}
-
-export interface UiEntityTypeConfig {
-  entityType: string;
-  idField?: string;
-  schemaPath?: string;
-  directory?: string;
-  filePattern?: string;
-  role?: string;
-  /** Optional color for this entity type (CSS color value, e.g. '#bb9af7' or 'hsl(270, 60%, 70%)') */
-  color?: string;
-}
-
-export interface UiRelationConfig {
-  name: string;
-  fromEntity: string;
-  fromField: string;
-  toEntity: string;
-  multiplicity?: 'one' | 'many';
-}
-
-export interface UiBundleTypeDefinition {
-  bundleType?: string;
-  version?: string;
-  entities?: UiEntityTypeConfig[];
-  relations?: UiRelationConfig[];
 }
 
 export interface UiBundleSnapshot {

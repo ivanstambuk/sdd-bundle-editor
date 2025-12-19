@@ -5,6 +5,9 @@
  * This package has zero runtime dependencies.
  */
 
+// Bundle type definition types (SINGLE SOURCE OF TRUTH)
+export * from './bundle-types';
+
 // Type definitions (interfaces, type aliases)
 export * from './api/agent';
 

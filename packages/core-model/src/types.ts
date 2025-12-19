@@ -81,31 +81,15 @@ export interface Bundle {
   domainMarkdown?: string;
 }
 
-export interface BundleTypeEntityConfig {
-  entityType: EntityType;
-  idField: string;
-  schemaPath: string;
-  directory: string;
-  filePattern: string;
-  role?: string;
-  /** Optional color for this entity type (CSS color value, e.g. '#bb9af7') */
-  color?: string;
-}
+// Re-export bundle type definition types from shared-types (SINGLE SOURCE OF TRUTH)
+export {
+  BundleTypeEntityConfig,
+  BundleTypeRelationConfig,
+  BundleTypeDefinition,
+} from '@sdd-bundle-editor/shared-types';
 
-export interface BundleTypeRelationConfig {
-  name: string;
-  fromEntity: EntityType;
-  fromField: string;
-  toEntity: EntityType;
-  multiplicity: 'one' | 'many';
-}
-
-export interface BundleTypeDefinition {
-  bundleType: string;
-  version: string;
-  entities: BundleTypeEntityConfig[];
-  relations?: BundleTypeRelationConfig[];
-}
+// Import for local type annotations
+import type { BundleTypeDefinition } from '@sdd-bundle-editor/shared-types';
 
 // Re-export ProposedChange from shared-types for backward compatibility
 export { ProposedChange } from '@sdd-bundle-editor/shared-types';

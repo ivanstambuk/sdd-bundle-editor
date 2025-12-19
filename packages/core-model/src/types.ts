@@ -88,6 +88,8 @@ export interface BundleTypeEntityConfig {
   directory: string;
   filePattern: string;
   role?: string;
+  /** Optional color for this entity type (CSS color value, e.g. '#bb9af7') */
+  color?: string;
 }
 
 export interface BundleTypeRelationConfig {

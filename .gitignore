@@ -38,3 +38,6 @@ artifacts/**/*.png
 
 # PlantUML (download on setup)
 tools/plantuml/plantuml.jar
+
+# Local scripts (personal convenience, not pushed)
+scripts/local/

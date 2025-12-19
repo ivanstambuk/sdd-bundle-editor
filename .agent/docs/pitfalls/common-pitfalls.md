@@ -116,20 +116,21 @@
 ## Bundle Type Definition
 
 ### 15. New bundle type properties not appearing in UI
-- **Symptom**: Added new property to bundle-type.json (e.g., `color`), updated ui-shell types, but property is undefined in UI
-- **Root cause**: The data flow is: `JSON file → core-model → MCP server → UI`. The MCP server passes the `bundleTypeDefinition` object using TypeScript types from `core-model`, not raw JSON. If the property isn't in core-model's type, it won't be passed through.
+- **Symptom**: Added new property to bundle-type.json (e.g., `color`), but property is undefined in UI
+- **Root cause**: The data flow is: `JSON file → core-model → MCP server → UI`. TypeScript types gate what properties flow through. If the property isn't in the type definition, it won't be passed.
 - **Fix**: When adding a new property to bundle type definition:
-  1. **First**: Add to `packages/core-model/src/types.ts` (`BundleTypeEntityConfig` or `BundleTypeRelationConfig`)
-  2. **Then**: Add to `packages/ui-shell/src/types.ts` (`UiEntityTypeConfig` or `UiRelationConfig`)
-  3. **Then**: Add to the actual bundle JSON schema file
-  4. **Rebuild and restart MCP server** (the server loads bundle at startup)
+  1. **Update shared-types**: Add property to `packages/shared-types/src/bundle-types.ts` (the SINGLE SOURCE OF TRUTH)
+  2. **Rebuild**: Run `pnpm build` (shared-types → core-model → ui-shell)
+  3. **Restart MCP server**: The server loads bundle at startup
+  4. **Update bundle JSON**: Add property to actual `bundle-type.*.json` file
   ```typescript
-  // core-model/src/types.ts - THE SOURCE OF TRUTH
+  // packages/shared-types/src/bundle-types.ts - THE SINGLE SOURCE OF TRUTH
   export interface BundleTypeEntityConfig {
-    entityType: EntityType;
+    entityType: string;
     // ... existing fields ...
-    color?: string;  // Add here FIRST
+    color?: string;  // Add here - automatically available in core-model AND ui-shell
   }
   ```
-- **Related pitfall**: Also applies to relation properties (e.g., we had `cardinality` in ui-shell but schema used `multiplicity`)
+- **Note**: Both `core-model` and `ui-shell` import these types from `shared-types`, so you only need to update one place
+- **Related pitfall**: Property naming must match exactly (e.g., `multiplicity` not `cardinality`)
 

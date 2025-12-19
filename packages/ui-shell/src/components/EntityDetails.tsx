@@ -2,6 +2,8 @@ import { useState } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
@@ -16,7 +18,8 @@ const validator = customizeValidator({
     keywords: [
       'x-sdd-displayHint', 'x-sdd-enumDescriptions', 'x-sdd-displayName',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup'
+      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup',
+      'x-sdd-descriptionHint'  // Schema-level hint for description rendering
     ],
   },
 });
@@ -75,9 +78,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     [];
 
   const uiSchema: Record<string, unknown> = {
-    // Hide root-level title and description (already shown in entity header)
+    // Hide root-level title (already shown in entity header)
+    // Description is rendered via DescriptionFieldTemplate based on schema's x-sdd-descriptionHint
     'ui:title': ' ',  // Space to effectively hide (empty string doesn't work)
-    'ui:description': ' ',
   };
 
   // Convert camelCase/PascalCase to Title Case with proper word boundaries
@@ -317,6 +320,24 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     ArrayFieldTemplate: CustomArrayFieldTemplate,
     ObjectFieldTemplate: CustomObjectFieldTemplate,
     ArrayFieldItemTemplate: CustomArrayFieldItemTemplate,
+    // Schema-driven description rendering: reads x-sdd-descriptionHint from schema
+    DescriptionFieldTemplate: (props: any) => {
+      const { description, schema: formSchema } = props;
+      if (!description) return null;
+      // Read schema-level hint for description rendering
+      const descriptionHint = formSchema?.['x-sdd-descriptionHint'];
+      if (descriptionHint === 'markdown') {
+        return (
+          <div className="rjsf-description rjsf-description--markdown">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {description}
+            </ReactMarkdown>
+          </div>
+        );
+      }
+      // Default: plain text
+      return <p className="rjsf-description">{description}</p>;
+    },
   };
 
   if (schema && typeof schema.properties === 'object') {

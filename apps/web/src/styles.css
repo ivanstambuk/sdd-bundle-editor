@@ -3382,6 +3382,47 @@ form input[type="checkbox"] {
   font-style: italic;
 }
 
+/* RJSF description field styles (schema-driven via x-sdd-descriptionHint) */
+.rjsf-description {
+  grid-column: span 4;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* Markdown-rendered description (when x-sdd-descriptionHint: markdown) */
+.rjsf-description--markdown {
+  background: var(--color-bg-tertiary);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.rjsf-description--markdown p {
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.rjsf-description--markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.rjsf-description--markdown ul,
+.rjsf-description--markdown ol {
+  margin: var(--spacing-xs) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.rjsf-description--markdown li {
+  margin-bottom: 2px;
+}
+
+.rjsf-description--markdown code {
+  background: var(--color-bg-primary);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
 /* ========================================
    Code Block & YAML Viewer Styles
    ======================================== */

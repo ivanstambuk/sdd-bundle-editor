@@ -14,7 +14,7 @@
         "test:watch": "vitest"
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.0.1",
+        "@modelcontextprotocol/sdk": "^1.25.1",
         "@sdd-bundle-editor/core-model": "workspace:*",
         "content-type": "^1.0.5",
         "cors": "^2.8.5",

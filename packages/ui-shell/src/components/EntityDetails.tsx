@@ -2,8 +2,6 @@ import { useState } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
@@ -77,9 +75,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     [];
 
   const uiSchema: Record<string, unknown> = {
-    // Hide root-level title (already shown in entity header)
-    // Keep description - rendered as markdown via DescriptionFieldTemplate
+    // Hide root-level title and description (already shown in entity header)
     'ui:title': ' ',  // Space to effectively hide (empty string doesn't work)
+    'ui:description': ' ',
   };
 
   // Convert camelCase/PascalCase to Title Case with proper word boundaries
@@ -319,18 +317,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     ArrayFieldTemplate: CustomArrayFieldTemplate,
     ObjectFieldTemplate: CustomObjectFieldTemplate,
     ArrayFieldItemTemplate: CustomArrayFieldItemTemplate,
-    // Render schema description as markdown for proper line breaks
-    DescriptionFieldTemplate: (props: any) => {
-      const { description } = props;
-      if (!description) return null;
-      return (
-        <div className="schema-description">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {description}
-          </ReactMarkdown>
-        </div>
-      );
-    },
   };
 
   if (schema && typeof schema.properties === 'object') {

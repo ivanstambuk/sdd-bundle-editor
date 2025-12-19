@@ -18,8 +18,7 @@ const validator = customizeValidator({
     keywords: [
       'x-sdd-displayHint', 'x-sdd-enumDescriptions', 'x-sdd-displayName',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup',
-      'x-sdd-descriptionHint'  // Schema-level hint for description rendering
+      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup'
     ],
   },
 });
@@ -320,13 +319,13 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     ArrayFieldTemplate: CustomArrayFieldTemplate,
     ObjectFieldTemplate: CustomObjectFieldTemplate,
     ArrayFieldItemTemplate: CustomArrayFieldItemTemplate,
-    // Schema-driven description rendering: reads x-sdd-descriptionHint from schema
+    // Schema-driven description rendering: reads x-sdd-displayHint from schema root
     DescriptionFieldTemplate: (props: any) => {
       const { description, schema: formSchema } = props;
       if (!description) return null;
-      // Read schema-level hint for description rendering
-      const descriptionHint = formSchema?.['x-sdd-descriptionHint'];
-      if (descriptionHint === 'markdown') {
+      // Read schema-level hint for description rendering (uses same x-sdd-displayHint)
+      const displayHint = formSchema?.['x-sdd-displayHint'];
+      if (displayHint === 'markdown') {
         return (
           <div className="rjsf-description rjsf-description--markdown">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>

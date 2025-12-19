@@ -203,19 +203,25 @@ These standard JSON Schema properties also affect rendering:
 
 ---
 
-## Patterns Recognized by the Editor
+### Alternatives Layout
 
-### Alternatives Pattern
+For arrays where one item is "chosen" from multiple options (like ADR alternatives), use the alternatives layout:
 
-When an array contains objects with an `isChosen: boolean` field, the editor automatically:
-- Adds "✓ CHOSEN" / "REJECTED" badges
-- Highlights the chosen alternative with green border
-- Hides redundant fields based on selection state
+| Keyword | Type | Default | Description |
+|---------|------|---------|-------------|
+| `x-sdd-layout` | `"alternatives"` | - | Enables alternatives layout |
+| `x-sdd-choiceField` | `string` | `"isChosen"` | Field name that indicates the chosen item |
+| `x-sdd-chosenLabel` | `string` | `"✓ CHOSEN"` | Badge text for chosen item |
+| `x-sdd-rejectedLabel` | `string` | `"REJECTED"` | Badge text for rejected items |
 
 **Example:**
 ```json
 "alternativesConsidered": {
   "type": "array",
+  "x-sdd-layout": "alternatives",
+  "x-sdd-choiceField": "isChosen",
+  "x-sdd-chosenLabel": "✓ CHOSEN",
+  "x-sdd-rejectedLabel": "REJECTED",
   "items": {
     "type": "object",
     "properties": {
@@ -227,7 +233,9 @@ When an array contains objects with an `isChosen: boolean` field, the editor aut
 }
 ```
 
-> **Note:** This pattern is currently detected by schema structure, not explicitly declared. A future `x-sdd-layout: "alternatives"` option may be added for explicit control.
+**Visual behavior:**
+- Chosen item: Green border, prominent badge, hidden redundant fields
+- Rejected items: Dimmed styling, "REJECTED" badge, shows rejection reason
 
 ---
 

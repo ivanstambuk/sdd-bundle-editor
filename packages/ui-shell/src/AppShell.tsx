@@ -246,7 +246,14 @@ export function AppShell() {
           {viewMode === 'domain' && bundle?.domainMarkdown ? (
             <DomainKnowledgePanel content={bundle.domainMarkdown} />
           ) : viewMode === 'bundle' ? (
-            <BundleOverview bundle={bundle} />
+            <BundleOverview
+              bundle={bundle}
+              onSelectType={(entityType) => {
+                setSelectedEntityType(entityType);
+                selectEntity(null);
+                setViewMode('entityType');
+              }}
+            />
           ) : viewMode === 'entityType' && selectedEntityType ? (
             <EntityTypeDetails
               bundle={bundle}

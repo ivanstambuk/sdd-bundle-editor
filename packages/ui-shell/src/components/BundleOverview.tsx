@@ -5,6 +5,8 @@ import { EmptyState } from './EmptyState';
 
 interface BundleOverviewProps {
     bundle: UiBundleSnapshot | null;
+    /** Callback when an entity type is clicked (navigates to sidebar) */
+    onSelectType?: (entityType: string) => void;
 }
 
 type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
@@ -14,7 +16,7 @@ type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
  * Displayed when clicking on the bundle header in the navigator.
  * Uses a tabbed interface similar to EntityDetails for organized content.
  */
-export function BundleOverview({ bundle }: BundleOverviewProps) {
+export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     const [activeTab, setActiveTab] = useState<BundleTab>('details');
 
     if (!bundle) {
@@ -101,9 +103,15 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
                             return (
                                 <tr key={entityType}>
                                     <td>
-                                        <span className="entity-type-badge" data-type={entityType}>
+                                        <button
+                                            type="button"
+                                            className="entity-type-badge clickable"
+                                            data-type={entityType}
+                                            onClick={() => onSelectType?.(entityType)}
+                                            title={`View ${entityType} in sidebar`}
+                                        >
                                             {entityType}
-                                        </span>
+                                        </button>
                                     </td>
                                     <td>{count}</td>
                                     <td><code>{config?.directory || '—'}</code></td>

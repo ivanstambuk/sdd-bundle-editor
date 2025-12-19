@@ -189,6 +189,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
   // Custom array field template - supports x-sdd-displayHint for different layouts
+  // NOTE: RJSF does NOT use ArrayFieldItemTemplate when ArrayFieldTemplate is provided.
+  // We must wrap items manually here. See: https://rjsf-team.github.io/react-jsonschema-form/
   const CustomArrayFieldTemplate = (props: any) => {
     const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
     const showAddButton = canAdd && !readonly && !disabled;
@@ -251,15 +253,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Custom array field item template - removes "FieldName-N" labels
-  const CustomArrayFieldItemTemplate = (props: any) => {
-    const { children, index } = props;
-    return (
-      <div className="rjsf-array-item" data-testid={`array-item-${index}`}>
-        {children}
-      </div>
-    );
-  };
+
 
   // Custom checkbox widget - shows property name as label (not description)
   const CustomCheckboxWidget = (props: any) => {
@@ -325,7 +319,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     FieldTemplate: CustomFieldTemplate,
     ArrayFieldTemplate: CustomArrayFieldTemplate,
     ObjectFieldTemplate: CustomObjectFieldTemplate,
-    ArrayFieldItemTemplate: CustomArrayFieldItemTemplate,
     // Schema-driven description rendering: reads x-sdd-displayHint from schema root
     DescriptionFieldTemplate: (props: any) => {
       const { description, schema: formSchema } = props;

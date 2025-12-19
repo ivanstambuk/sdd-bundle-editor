@@ -12,8 +12,12 @@ import { MarkdownWidget } from './MarkdownWidget';
 // Without this, AJV strict mode throws "unknown keyword" errors
 const validator = customizeValidator({
   ajvOptionsOverrides: {
-    // Allow custom keywords used in SDD schemas for UI hints
-    keywords: ['displayHint', 'enumDescriptions', 'displayName'],
+    // Allow custom keywords used in SDD schemas for UI hints (x-sdd-* namespace)
+    keywords: [
+      'x-sdd-displayHint', 'x-sdd-enumDescriptions', 'x-sdd-displayName',
+      'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
+      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup'
+    ],
   },
 });
 
@@ -129,25 +133,32 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // Determine field size class based purely on schema properties
     // No field name hard-coding - editor is schema-driven
     const getFieldSizeClass = () => {
-      // Multiline fields always span full width
-      if (schema?.displayHint === 'multiline') return 'rjsf-field-full';
-      // Arrays and objects span full width
-      if (schema?.type === 'array' || schema?.type === 'object') return 'rjsf-field-full';
+      // Markdown/multiline fields always span full width
+      const displayHint = schema?.['x-sdd-displayHint'];
+      if (displayHint === 'multiline' || displayHint === 'markdown') return 'rjsf-field-full';
+      // Arrays (except chips) and objects span full width
+      if (schema?.type === 'object') return 'rjsf-field-full';
+      if (schema?.type === 'array' && displayHint !== 'chips') return 'rjsf-field-full';
+      // Chips layout is compact
+      if (displayHint === 'chips') return 'rjsf-field-medium';
       // Enums are compact (1 column)
       if (schema?.enum) return 'rjsf-field-small';
+      // Date fields are compact
+      if (schema?.format === 'date' || schema?.format === 'date-time') return 'rjsf-field-small';
       // Use maxLength to determine size:
       // - ≤30: small (1 col) - IDs, short codes
-      // - 31-50: medium (2 cols) - medium text
-      // - 51-100: large (3 cols) - titles, names
-      // - >100: full (4 cols) - descriptions
+      // - 31-80: medium (2 cols) - medium text, titles
+      // - 81-150: large (3 cols) - longer titles
+      // - >150: full (4 cols) - descriptions
       const maxLen = schema?.maxLength;
       if (maxLen !== undefined) {
         if (maxLen <= 30) return 'rjsf-field-small';
-        if (maxLen <= 50) return 'rjsf-field-medium';
-        if (maxLen <= 100) return 'rjsf-field-large';
+        if (maxLen <= 80) return 'rjsf-field-medium';
+        if (maxLen <= 150) return 'rjsf-field-large';
         return 'rjsf-field-full';
       }
-      // No maxLength specified - default to full width
+      // No maxLength specified - default to medium for strings, full for others
+      if (schema?.type === 'string') return 'rjsf-field-medium';
       return 'rjsf-field-full';
     };
 
@@ -175,11 +186,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Custom array field template - supports displayHint for different layouts
+  // Custom array field template - supports x-sdd-displayHint for different layouts
   const CustomArrayFieldTemplate = (props: any) => {
     const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
     const showAddButton = canAdd && !readonly && !disabled;
-    const displayHint = schema?.displayHint;
+    const displayHint = schema?.['x-sdd-displayHint'];
 
     // Chips layout for tags and short label arrays
     if (displayHint === 'chips' && Array.isArray(formData)) {
@@ -263,7 +274,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   // Custom select widget - shows tooltip with description for current value
   const CustomSelectWidget = (props: any) => {
     const { id, value, onChange, options, disabled, readonly, schema } = props;
-    const enumDescriptions = schema?.enumDescriptions as Record<string, string> | undefined;
+    const enumDescriptions = schema?.['x-sdd-enumDescriptions'] as Record<string, string> | undefined;
     const currentDescription = enumDescriptions?.[value];
 
     return (
@@ -324,17 +335,18 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         ps.items.format === 'sdd-ref'
       ) {
         uiSchema[propName] = { 'ui:field': 'hiddenField' };
-      } else if (ps && ps['ui:widget']) {
-        uiSchema[propName] = { 'ui:widget': ps['ui:widget'] };
+      } else if (ps && ps['x-sdd-widget']) {
+        uiSchema[propName] = { 'ui:widget': ps['x-sdd-widget'] };
       }
 
-      // displayHint: "multiline" renders as textarea
-      if (ps && ps.type === 'string' && ps.displayHint === 'multiline') {
+      // x-sdd-displayHint: "multiline" renders as textarea
+      const displayHint = ps?.['x-sdd-displayHint'];
+      if (ps && ps.type === 'string' && displayHint === 'multiline') {
         uiSchema[propName] = { 'ui:widget': 'textarea' };
       }
 
-      // displayHint: "markdown" renders with MarkdownWidget
-      if (ps && ps.type === 'string' && ps.displayHint === 'markdown') {
+      // x-sdd-displayHint: "markdown" renders with MarkdownWidget
+      if (ps && ps.type === 'string' && displayHint === 'markdown') {
         uiSchema[propName] = { 'ui:widget': 'MarkdownWidget' };
       }
     }

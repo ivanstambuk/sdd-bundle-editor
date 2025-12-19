@@ -1147,6 +1147,9 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-radius: var(--radius-sm);
+  /* Default color for unspecified entity types */
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
 }
 
 /* Clickable entity type badges (button variant) */

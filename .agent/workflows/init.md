@@ -105,6 +105,23 @@ Check the KI summaries provided at conversation start. Read relevant KI artifact
 
 ---
 
+## 10. Check for Pending Tasks from Previous Sessions
+
+```bash
+cat .agent/session/pending-task.md 2>/dev/null || echo "No pending task"
+```
+
+If a pending task file exists:
+1. Read the task description
+2. Ask the user if they want to continue this task
+3. If yes, use it as the starting point for this session
+4. After task completion, delete or archive the file:
+   ```bash
+   rm .agent/session/pending-task.md
+   ```
+
+---
+
 ## After Initialization
 
 Provide a brief summary:
@@ -118,6 +135,7 @@ Provide a brief summary:
 - **Dependencies**: [all up-to-date / X packages outdated]
 - **Sample bundle**: [path confirmed]
 - **Test baseline**: [passed / skipped]
+- **Pending task**: [none / task title from previous session]
 
 Ready for your task!
 ```

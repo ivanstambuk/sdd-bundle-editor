@@ -1064,15 +1064,54 @@ Add to `~/.config/claude/claude_desktop_config.json`:
 packages/mcp-server/
 ├── src/
 │   ├── index.ts          # Entry point, argument parsing
-│   ├── server.ts         # MCP server with multi-bundle support
+│   ├── server.ts         # MCP server (resources, delegating setup)
 │   ├── http-transport.ts # HTTP/SSE transport for web clients
-│   └── types.ts          # TypeScript types and Zod schemas
+│   ├── types.ts          # TypeScript types and Zod schemas
+│   ├── response-helpers.ts # Standardized response envelopes
+│   ├── tool-annotations.ts # MCP tool annotation constants
+│   │
+│   ├── tools/            # Modular tool implementations
+│   │   ├── index.ts      # Tool registration orchestrator
+│   │   ├── types.ts      # ToolContext interface
+│   │   ├── registry.ts   # Factory helpers (registerReadOnlyTool, etc.)
+│   │   ├── bundle-tools.ts    # list_bundles, get_bundle_schema, get_bundle_snapshot
+│   │   ├── entity-tools.ts    # read_entity, read_entities, list_entities, list_entity_summaries
+│   │   ├── schema-tools.ts    # get_entity_schema, get_entity_relations
+│   │   ├── context-tools.ts   # get_context, get_conformance_context
+│   │   ├── search-tools.ts    # search_entities
+│   │   ├── validation-tools.ts # validate_bundle
+│   │   ├── mutation-tools.ts  # apply_changes
+│   │   └── sampling-tools.ts  # critique_bundle
+│   │
+│   └── prompts/          # Modular prompt implementations
+│       ├── index.ts      # Prompt registration orchestrator
+│       ├── types.ts      # PromptContext interface
+│       ├── implementation.ts  # implement-requirement, create-roadmap
+│       ├── analysis.ts        # trace-dependency, coverage-analysis, suggest-relations
+│       ├── documentation.ts   # explain-entity, summarize-bundle, diff-bundles
+│       └── quality.ts         # audit-profile, bundle-health, generate-test-cases
+│
 ├── scripts/
 │   ├── verify-context.ts      # Test script for get_context
 │   └── verify-conformance.ts  # Test script for get_conformance_context
 ├── bundles.example.yaml       # Example config file
 └── dist/                      # Compiled output (after build)
 ```
+
+### Modular Design
+
+The server uses a modular architecture to keep code organized and maintainable:
+
+**Tools** are organized by category in the `tools/` directory:
+- Each file exports a `register*Tools(ctx: ToolContext)` function
+- Factory helpers ensure consistent annotation and error handling
+- The `tools/index.ts` orchestrates registration of all tool modules
+
+**Prompts** follow the same pattern in the `prompts/` directory:
+- Each file exports a `register*Prompts(ctx: PromptContext)` function
+- Common patterns for context gathering and response formatting
+
+### Dependencies
 
 The server uses:
 - `@modelcontextprotocol/sdk` for MCP protocol handling

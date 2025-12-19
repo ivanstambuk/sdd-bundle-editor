@@ -166,7 +166,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     };
 
     const formattedLabel = formatLabel(label || '');
-    const hasDescription = rawDescription && rawDescription.trim();
+    // Skip root-level description icon - entity type description is already in header/breadcrumb
+    const isRoot = id === 'root';
+    const hasDescription = !isRoot && rawDescription && rawDescription.trim();
     const sizeClass = getFieldSizeClass();
 
     return (

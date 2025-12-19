@@ -7,7 +7,7 @@ vi.mock('@rjsf/core', () => ({
   __esModule: true,
   default: (props: any) => (
     // simple stub so we do not depend on RJSF internals in tests
-    // eslint-disable-next-line react/jsx-props-no-spreading
+     
     <div data-testid="rjsf-form" data-schema-has-properties={props.schema && 'properties' in props.schema}>
       RJSF form
     </div>

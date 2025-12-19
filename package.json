@@ -24,6 +24,7 @@
     "kill:servers": "pkill -f 'mcp-server' 2>/dev/null; pkill -f webpack 2>/dev/null; echo 'Stale servers killed'"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
@@ -34,10 +35,12 @@
     "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "prettier": "^3.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.0.0",
+    "typescript-eslint": "^8.50.0",
     "vitest": "^2.0.0"
   },
   "packageManager": "pnpm@9.0.0"

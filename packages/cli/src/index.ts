@@ -43,7 +43,7 @@ async function runValidate(options: { bundleDir?: string; output?: string }): Pr
       source: d.source,
       code: d.code,
     }));
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(out, null, 2));
   } else {
     for (const d of diagnostics) {
@@ -52,7 +52,7 @@ async function runValidate(options: { bundleDir?: string; output?: string }): Pr
       if (d.entityType && d.entityId) locationParts.push(`${d.entityType}(${d.entityId})`);
       if (d.path) locationParts.push(d.path);
       const location = locationParts.length ? ` [${locationParts.join(' ')}]` : '';
-      // eslint-disable-next-line no-console
+       
       console.log(`${d.severity.toUpperCase()}: ${d.message}${location}`);
     }
   }
@@ -93,7 +93,7 @@ async function runReportCoverage(options: { bundleDir?: string; output?: string 
   }
 
   if (options.output === 'json') {
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify(coverageStats, null, 2));
   } else {
     for (const [key, stat] of Object.entries(coverageStats)) {
@@ -103,7 +103,7 @@ async function runReportCoverage(options: { bundleDir?: string; output?: string 
       };
       const pct =
         s.totalTargets > 0 ? Math.round((s.coveredTargets / s.totalTargets) * 100) : 0;
-      // eslint-disable-next-line no-console
+       
       console.log(
         `${key}: ${s.coveredTargets}/${s.totalTargets} targets covered (${pct}%)`,
       );
@@ -127,7 +127,7 @@ export async function main(argv: string[]): Promise<void> {
         const exitCode = await runValidate(opts);
         process.exitCode = exitCode;
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error((err as Error).message);
         process.exitCode = 1;
       }
@@ -143,7 +143,7 @@ export async function main(argv: string[]): Promise<void> {
         const exitCode = await runReportCoverage(opts);
         process.exitCode = exitCode;
       } catch (err) {
-        // eslint-disable-next-line no-console
+         
         console.error((err as Error).message);
         process.exitCode = 1;
       }
@@ -153,6 +153,6 @@ export async function main(argv: string[]): Promise<void> {
 }
 
 if (require.main === module) {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+   
   main(process.argv);
 }

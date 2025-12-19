@@ -384,11 +384,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           validator={validator}
           readonly={readOnly}
           disabled={readOnly}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+           
           onChange={() => { }}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+           
           onSubmit={() => { }}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+           
           onError={() => { }}
         >
           {/* Hide submit button in read-only mode */}

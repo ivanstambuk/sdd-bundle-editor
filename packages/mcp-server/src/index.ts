@@ -61,7 +61,7 @@ function parseArgs(): ParsedArgs {
     if (args.length > 0 && !args[0].startsWith("-")) {
         const usedIds = new Set<string>();
         const bundleConfigs = args.map((argPath, index) => {
-            let baseId = path.basename(argPath);
+            const baseId = path.basename(argPath);
             let id = baseId;
             let counter = 2;
             while (usedIds.has(id)) {

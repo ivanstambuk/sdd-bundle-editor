@@ -210,10 +210,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       );
     }
 
-    // Default: full row per item
+    // Check if items contain complex objects (have nested properties)
+    const hasComplexItems = schema?.items?.type === 'object' && schema?.items?.properties;
+
+    // Default: full row per item, with card styling for complex objects
     return (
       <div className="rjsf-array">
-        {items.map((item: any) => item.children)}
+        {items.map((item: any, index: number) => (
+          <div key={item.key || index} className={hasComplexItems ? 'rjsf-array-item' : 'rjsf-array-simple-item'}>
+            {item.children}
+          </div>
+        ))}
         {showAddButton && (
           <button
             type="button"
@@ -246,9 +253,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Custom array field item template - removes "FieldName-N" labels
   const CustomArrayFieldItemTemplate = (props: any) => {
-    const { children } = props;
+    const { children, index } = props;
     return (
-      <div className="rjsf-array-item">
+      <div className="rjsf-array-item" data-testid={`array-item-${index}`}>
         {children}
       </div>
     );

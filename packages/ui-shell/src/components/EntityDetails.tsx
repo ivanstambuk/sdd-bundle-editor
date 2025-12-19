@@ -339,37 +339,58 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     },
   };
 
-  if (schema && typeof schema.properties === 'object') {
-    const props = schema.properties as Record<string, any>;
-    for (const [propName, propSchema] of Object.entries(props)) {
-      const ps = propSchema as any;
-      // Hide single reference fields - they're shown in "Uses" section
-      if (ps && ps.type === 'string' && ps.format === 'sdd-ref') {
-        uiSchema[propName] = { 'ui:widget': 'hidden' };
-        // Hide array reference fields - they're shown in "Uses" section
-      } else if (
-        ps &&
-        ps.type === 'array' &&
-        ps.items &&
-        ps.items.type === 'string' &&
-        ps.items.format === 'sdd-ref'
-      ) {
-        uiSchema[propName] = { 'ui:field': 'hiddenField' };
-      } else if (ps && ps['x-sdd-widget']) {
-        uiSchema[propName] = { 'ui:widget': ps['x-sdd-widget'] };
-      }
+  // Recursively build uiSchema for nested properties
+  const buildUiSchema = (propSchema: any, targetUiSchema: Record<string, any>) => {
+    if (!propSchema || typeof propSchema !== 'object') return;
 
-      // x-sdd-displayHint: "multiline" renders as textarea
-      const displayHint = ps?.['x-sdd-displayHint'];
-      if (ps && ps.type === 'string' && displayHint === 'multiline') {
-        uiSchema[propName] = { 'ui:widget': 'textarea' };
-      }
+    // Handle object properties
+    if (propSchema.properties && typeof propSchema.properties === 'object') {
+      for (const [propName, ps] of Object.entries(propSchema.properties as Record<string, any>)) {
+        // Hide single reference fields - they're shown in "Uses" section
+        if (ps && ps.type === 'string' && ps.format === 'sdd-ref') {
+          targetUiSchema[propName] = { 'ui:widget': 'hidden' };
+        } else if (
+          ps &&
+          ps.type === 'array' &&
+          ps.items &&
+          ps.items.type === 'string' &&
+          ps.items.format === 'sdd-ref'
+        ) {
+          targetUiSchema[propName] = { 'ui:field': 'hiddenField' };
+        } else if (ps && ps['x-sdd-widget']) {
+          targetUiSchema[propName] = { 'ui:widget': ps['x-sdd-widget'] };
+        }
 
-      // x-sdd-displayHint: "markdown" renders with MarkdownWidget
-      if (ps && ps.type === 'string' && displayHint === 'markdown') {
-        uiSchema[propName] = { 'ui:widget': 'MarkdownWidget' };
+        // x-sdd-displayHint: "multiline" renders as textarea
+        const displayHint = ps?.['x-sdd-displayHint'];
+        if (ps && ps.type === 'string' && displayHint === 'multiline') {
+          targetUiSchema[propName] = { 'ui:widget': 'textarea' };
+        }
+
+        // x-sdd-displayHint: "markdown" renders with MarkdownWidget
+        if (ps && ps.type === 'string' && displayHint === 'markdown') {
+          targetUiSchema[propName] = { 'ui:widget': 'MarkdownWidget' };
+        }
+
+        // Recurse into nested objects
+        if (ps && ps.type === 'object' && ps.properties) {
+          targetUiSchema[propName] = targetUiSchema[propName] || {};
+          buildUiSchema(ps, targetUiSchema[propName]);
+        }
+
+        // Recurse into array items (object items)
+        if (ps && ps.type === 'array' && ps.items && ps.items.type === 'object' && ps.items.properties) {
+          targetUiSchema[propName] = targetUiSchema[propName] || {};
+          targetUiSchema[propName].items = targetUiSchema[propName].items || {};
+          buildUiSchema(ps.items, targetUiSchema[propName].items);
+        }
       }
     }
+  };
+
+  // Build uiSchema for all properties including nested ones
+  if (schema) {
+    buildUiSchema(schema, uiSchema);
   }
 
   const handleReferenceClick = (entityType: string, entityId: string) => {

@@ -111,3 +111,25 @@
   ```
 - **Anti-pattern**: Using `pnpm update @types/node --latest` can corrupt lockfile with transitive dependencies. Use explicit version installs instead.
 
+---
+
+## Bundle Type Definition
+
+### 15. New bundle type properties not appearing in UI
+- **Symptom**: Added new property to bundle-type.json (e.g., `color`), updated ui-shell types, but property is undefined in UI
+- **Root cause**: The data flow is: `JSON file → core-model → MCP server → UI`. The MCP server passes the `bundleTypeDefinition` object using TypeScript types from `core-model`, not raw JSON. If the property isn't in core-model's type, it won't be passed through.
+- **Fix**: When adding a new property to bundle type definition:
+  1. **First**: Add to `packages/core-model/src/types.ts` (`BundleTypeEntityConfig` or `BundleTypeRelationConfig`)
+  2. **Then**: Add to `packages/ui-shell/src/types.ts` (`UiEntityTypeConfig` or `UiRelationConfig`)
+  3. **Then**: Add to the actual bundle JSON schema file
+  4. **Rebuild and restart MCP server** (the server loads bundle at startup)
+  ```typescript
+  // core-model/src/types.ts - THE SOURCE OF TRUTH
+  export interface BundleTypeEntityConfig {
+    entityType: EntityType;
+    // ... existing fields ...
+    color?: string;  // Add here FIRST
+  }
+  ```
+- **Related pitfall**: Also applies to relation properties (e.g., we had `cardinality` in ui-shell but schema used `multiplicity`)
+

@@ -809,6 +809,31 @@ The project provides several test scripts for different scenarios:
     - Root cause: Resources using `{error, message}` instead of tool format
     - Fix: Use `{ok: false, error: {code, message, details}}` for all responses (use `resourceError()` helper)
 
+12. **MCP SDK requires index signature on response types**
+    - Symptom: TypeScript error "Index signature for type 'string' is missing"
+    - Root cause: MCP SDK expects `{[x: string]: unknown}` on tool return types for compatibility
+    - Fix: Add `[x: string]: unknown;` to response interfaces:
+     ```typescript
+     export interface ToolResponse {
+         content: Array<{ type: "text"; text: string }>;
+         structuredContent: Record<string, unknown>;
+         isError?: boolean;
+         [x: string]: unknown;  // MCP SDK compatibility
+     }
+     ```
+
+13. **Using `z.object({}).strict()` for empty schema in registerTool**
+    - Symptom: TypeScript error "not assignable to parameter of type 'ZodRawShapeCompat'"
+    - Root cause: SDK expects raw shape objects (plain objects with Zod types), not wrapped Zod objects
+    - Fix: Use `{}` as empty schema:
+     ```typescript
+     this.server.registerTool("my_tool", {
+         description: "...",
+         inputSchema: {},  // NOT z.object({}).strict()
+         annotations: READ_ONLY_TOOL,
+     }, callback);
+     ```
+
 ---
 
 ### Proactive Retrospective (Delivery Improvements)

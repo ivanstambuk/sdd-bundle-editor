@@ -10,6 +10,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "concurrently -n mcp,web,ui-shell -c magenta,green,yellow \"pnpm --filter @sdd-bundle-editor/mcp-server start:http\" \"pnpm --filter @sdd-bundle-editor/web dev\" \"pnpm --filter @sdd-bundle-editor/ui-shell watch\"",
+    "dev:mcp-only": "pnpm --filter @sdd-bundle-editor/mcp-server start:http",
     "test": "pnpm -r --parallel test",
     "test:watch": "pnpm -r --parallel run test:watch",
     "test:coverage": "vitest run --coverage",

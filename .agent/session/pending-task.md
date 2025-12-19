@@ -94,11 +94,11 @@ npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /home
 
 ### Definition of Done
 
-- [ ] Server declares `completions` capability
-- [ ] Resource templates provide completions for bundleId, type, id
-- [ ] Prompts provide completions for their arguments
+- [x] Server declares `completions` capability (automatic via SDK when complete callbacks registered)
+- [x] Resource templates provide completions for bundleId, type, id
+- [x] Prompts provide completions for their arguments
 - [ ] Tested with MCP Inspector
-- [ ] All existing tests still pass
+- [x] All existing tests still pass
 
 ### Reference Documentation
 

@@ -28,9 +28,14 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
   });
 
   // Allow SDD-specific and RJSF UI extension keywords in strict mode (metadata only).
+  // Includes both legacy (x-refTargets) and new standardized (x-sdd-refTargets) naming.
   const passthroughKeywords = [
-    'x-refTargets', 'x-idTemplate', 'x-entityType', 'x-idScope', 'x-sdd-ui',
-    'ui:widget', 'displayName', 'displayHint', 'enumDescriptions'
+    // Legacy naming (for backward compatibility)
+    'x-refTargets', 'x-idTemplate', 'x-entityType', 'x-idScope',
+    'ui:widget', 'displayName', 'displayHint', 'enumDescriptions',
+    // Standardized x-sdd-* namespace
+    'x-sdd-ui', 'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
+    'x-sdd-widget', 'x-sdd-displayName', 'x-sdd-displayHint'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({

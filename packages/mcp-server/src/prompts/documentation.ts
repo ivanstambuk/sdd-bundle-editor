@@ -9,6 +9,7 @@
 
 import { z } from "zod";
 import { PromptContext } from "./types.js";
+import { completableBundleId, completableEntityType, completableEntityId, completableRequiredBundleId } from "./completion-helpers.js";
 
 /**
  * Register documentation-focused prompts.
@@ -22,9 +23,9 @@ export function registerDocumentationPrompts(ctx: PromptContext): void {
         {
             description: "Explain any entity in plain language for a specific audience. Use when user asks 'what is FEAT-XXX?', 'explain this to my manager', 'help me understand this component', or 'what does this requirement mean?'. Adapts language for developers, stakeholders, or new team members.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().describe("Entity type (e.g., Requirement, Component, Feature)"),
-                entityId: z.string().describe("Entity ID"),
+                bundleId: completableBundleId(ctx),
+                entityType: completableEntityType(ctx),
+                entityId: completableEntityId(ctx),
                 audience: z.enum(["developer", "stakeholder", "new-team-member"]).default("developer").describe("Target audience"),
             },
         },
@@ -137,7 +138,7 @@ Include:
         {
             description: "Generate a summary of the entire bundle. Use when user asks 'what is this project about?', 'give me an overview', 'executive summary', or 'onboard me to this spec'. Generates comprehensive summaries tailored for executives, developers, or new team members.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                bundleId: completableBundleId(ctx),
                 format: z.enum(["executive", "technical", "onboarding"]).default("executive").describe("Summary format"),
             },
         },
@@ -228,8 +229,8 @@ Include:
         {
             description: "Compare two bundles and show differences. Use when user asks 'what changed between versions?', 'compare these specs', 'diff v1 vs v2', or 'migration analysis'. Requires two bundles loaded. Shows added, removed, and modified entities.",
             argsSchema: {
-                bundleA: z.string().describe("First bundle ID"),
-                bundleB: z.string().describe("Second bundle ID"),
+                bundleA: completableRequiredBundleId(ctx, "First bundle ID"),
+                bundleB: completableRequiredBundleId(ctx, "Second bundle ID"),
                 focus: z.enum(["all", "requirements", "structure"]).default("all").describe("Diff focus"),
             },
         },

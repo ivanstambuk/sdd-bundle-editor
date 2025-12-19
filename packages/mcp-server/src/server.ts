@@ -174,6 +174,9 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
                         })),
                     };
                 },
+                complete: {
+                    bundleId: () => Array.from(this.bundles.keys()),
+                },
             }),
             {
                 description: "Bundle manifest containing metadata, entity type definitions, and bundle structure",
@@ -209,6 +212,23 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
             "entity",
             new ResourceTemplate("bundle://{bundleId}/entity/{type}/{id}", {
                 list: undefined, // Too many entities to enumerate
+                complete: {
+                    bundleId: () => Array.from(this.bundles.keys()),
+                    type: (_value: string, context?: { arguments?: Record<string, string> }) => {
+                        const bundleId = context?.arguments?.bundleId;
+                        if (!bundleId) return [];
+                        const loaded = this.bundles.get(bundleId);
+                        return loaded ? Array.from(loaded.bundle.entities.keys()) : [];
+                    },
+                    id: (_value: string, context?: { arguments?: Record<string, string> }) => {
+                        const bundleId = context?.arguments?.bundleId;
+                        const entityType = context?.arguments?.type;
+                        if (!bundleId || !entityType) return [];
+                        const loaded = this.bundles.get(bundleId);
+                        const entityMap = loaded?.bundle.entities.get(entityType);
+                        return entityMap ? Array.from(entityMap.keys()) : [];
+                    },
+                },
             }),
             {
                 description: "Read a specific entity by bundle ID, entity type, and entity ID",
@@ -273,6 +293,17 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
                         }
                     }
                     return { resources: schemas };
+                },
+                complete: {
+                    bundleId: () => Array.from(this.bundles.keys()),
+                    type: (_value: string, context?: { arguments?: Record<string, string> }) => {
+                        const bundleId = context?.arguments?.bundleId;
+                        if (!bundleId) return [];
+                        const loaded = this.bundles.get(bundleId);
+                        if (!loaded) return [];
+                        const schemaMap = loaded.bundle.manifest.spec?.schemas?.documents || {};
+                        return Object.keys(schemaMap);
+                    },
                 },
             }),
             {

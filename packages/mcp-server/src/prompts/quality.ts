@@ -10,6 +10,7 @@
 import { z } from "zod";
 import { PromptContext } from "./types.js";
 import { summarizeEntity, formatEntitiesForPrompt } from "../entity-utils.js";
+import { completableBundleId, completableEntityId, completableProfileId } from "./completion-helpers.js";
 
 /**
  * Register quality-focused prompts.
@@ -23,8 +24,8 @@ export function registerQualityPrompts(ctx: PromptContext): void {
         {
             description: "Run a conformance audit against a profile's rules. Use when user asks 'are we compliant with X?', 'audit against security baseline', 'check conformance', or 'what rules are we missing?'. Returns detailed pass/fail analysis with remediation recommendations.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                profileId: z.string().describe("Profile ID to audit against"),
+                bundleId: completableBundleId(ctx),
+                profileId: completableProfileId(ctx),
                 scope: z.enum(["full", "requirements-only", "quick"]).default("full").describe("Audit scope"),
             },
         },
@@ -139,7 +140,7 @@ Structure your response as:
         {
             description: "Analyze bundle health and generate a comprehensive report. Use when user asks 'how healthy is my spec?', 'are there any issues?', 'bundle status', or 'quality check'. Returns analysis of broken references, schema errors, coverage gaps, and recommendations.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                bundleId: completableBundleId(ctx),
             },
         },
         async ({ bundleId }) => {
@@ -249,9 +250,9 @@ Be specific about what needs to be done to resolve each issue.`;
         {
             description: "Generate test cases for a requirement or feature. Use when user asks 'write tests for REQ-XXX', 'what should I test?', 'BDD scenarios for this feature', or 'test coverage for this'. Generates comprehensive test cases in BDD, traditional, or checklist format.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                bundleId: completableBundleId(ctx),
                 entityType: z.enum(["Requirement", "Feature"]).describe("Entity type to generate tests for"),
-                entityId: z.string().describe("Entity ID"),
+                entityId: completableEntityId(ctx),
                 style: z.enum(["bdd", "traditional", "checklist"]).default("bdd").describe("Test case style"),
             },
         },

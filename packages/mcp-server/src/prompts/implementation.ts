@@ -9,6 +9,7 @@
 import { z } from "zod";
 import { PromptContext } from "./types.js";
 import { summarizeEntity, formatEntitiesForPrompt } from "../entity-utils.js";
+import { completableBundleId, completableRequirementId } from "./completion-helpers.js";
 
 /**
  * Register implementation-focused prompts.
@@ -22,8 +23,8 @@ export function registerImplementationPrompts(ctx: PromptContext): void {
         {
             description: "Generate a detailed implementation plan for a requirement. Use when user asks 'how do I implement REQ-XXX?', 'help me build this requirement', or 'what tasks are needed for this requirement?'. Gathers related features, components, existing tasks, and domain knowledge to create actionable steps with estimates.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                requirementId: z.string().describe("The requirement ID to implement"),
+                bundleId: completableBundleId(ctx),
+                requirementId: completableRequirementId(ctx),
                 depth: z.enum(["overview", "detailed", "with-code"]).default("detailed").describe("Level of detail"),
             },
         },
@@ -136,7 +137,7 @@ Include:
         {
             description: "Generate an implementation roadmap from specifications. Use when user asks 'create a project plan', 'what's the roadmap?', 'how do I implement all this?', or 'phased implementation plan'. Creates timeline, phases, or milestone-based roadmaps with dependencies.",
             argsSchema: {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                bundleId: completableBundleId(ctx),
                 scope: z.string().default("all").describe("Scope: 'all', 'feature:FEAT-001', or 'tag:security'"),
                 format: z.enum(["timeline", "phases", "milestones"]).default("phases").describe("Roadmap format"),
             },

@@ -15,6 +15,37 @@ The server supports loading **multiple bundles simultaneously**, allowing you to
 - **`bundles`** - List all loaded bundles with metadata
 - **`domain-knowledge`** - Aggregated domain knowledge from all bundles
 
+### Resource Templates (with Completions)
+- **`bundle://{bundleId}/manifest`** - Bundle manifest for a specific bundle
+- **`bundle://{bundleId}/entity/{type}/{id}`** - Individual entity by type and ID
+- **`bundle://{bundleId}/schema/{type}`** - JSON schema for an entity type
+
+### Completions Support
+
+The server provides **autocompletion suggestions** through the MCP `completion/complete` capability:
+
+**Resource Template Variables:**
+| Variable | Completions |
+|----------|-------------|
+| `bundleId` | All loaded bundle IDs |
+| `type` | Entity types in the bundle |
+| `id` | Entity IDs of the given type |
+
+**Prompt Arguments:**
+| Argument | Completions |
+|----------|-------------|
+| `bundleId` | All loaded bundle IDs |
+| `entityType` | Entity types in the bundle |
+| `entityId` | Entity IDs matching the selected type |
+| `requirementId` | Requirement entity IDs |
+| `profileId` | Profile entity IDs |
+
+To use completions in MCP clients:
+- **MCP Inspector**: Type in argument fields to see suggestions
+- **Claude Desktop**: Tab-completion in prompt arguments
+- **VS Code Copilot**: Autocomplete in MCP prompt panels
+
+
 ### Tools
 
 | Tool | Description |

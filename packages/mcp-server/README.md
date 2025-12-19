@@ -775,35 +775,88 @@ When multiple bundles are loaded, most tools require a `bundleId` parameter:
 
 ## Testing with MCP Inspector
 
-```bash
-# Single bundle
-npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /path/to/bundle
+The MCP Inspector is an interactive debugging tool for MCP servers. It lets you explore resources, call tools, run prompts, and test completions.
 
-# Multiple bundles
+### Quick Start
+
+```bash
+# Build the server first
+pnpm --filter @sdd-bundle-editor/mcp-server build
+
+# Launch inspector with your bundle
+npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /home/ivan/dev/sdd-sample-bundle
+```
+
+This opens a browser at `http://localhost:6274`.
+
+### Connection Setup
+
+When the inspector opens:
+
+1. Set **Transport Type**: `STDIO` (NOT "Streamable HTTP")
+2. Click **Connect**
+
+> **Important:** The inspector runs our server as a subprocess using stdio. Don't use "Streamable HTTP" unless you're running the HTTP server separately.
+
+### Exploring Features
+
+**Resources Tab:**
+- Click `bundles` to see all loaded bundles
+- Click `domain-knowledge` to see aggregated domain docs
+- Use template URIs like `bundle://sdd-sample-bundle/entity/Requirement/REQ-001`
+
+**Tools Tab:**
+- `list_bundles` - See what's loaded
+- `read_entity` - Fetch a specific entity
+- `search_entities` - Search across all bundles
+- `validate_bundle` - Check for errors
+
+**Prompts Tab:**
+- `implement-requirement` - Get an implementation plan
+- `explain-entity` - Understand any entity
+- `trace-dependency` - Analyze entity dependencies
+
+### Testing Completions
+
+The server provides autocompletion for resource templates and prompt arguments.
+
+**To test prompt completions:**
+
+1. Go to the **Prompts** tab
+2. Select a prompt (e.g., `trace-dependency`)
+3. Start typing in argument fields:
+   - `bundleId`: Should suggest loaded bundle IDs (e.g., `sdd-sample-bundle`)
+   - `entityType`: Should suggest entity types (`Requirement`, `Feature`, `Task`, etc.)
+   - `entityId`: Should suggest actual entity IDs from your bundle
+
+**To test resource template completions:**
+
+1. Go to the **Resources** tab
+2. Find a resource template (e.g., `bundle://{bundleId}/entity/{type}/{id}`)
+3. Click to expand the template
+4. Type in the variable fields to see suggestions
+
+### Multiple Bundle Mode
+
+```bash
+# Multiple paths
 npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js /bundle1 /bundle2
 
 # Config file
 npx @modelcontextprotocol/inspector node packages/mcp-server/dist/index.js --config bundles.yaml
 ```
 
-### Using the Inspector
+### Troubleshooting
 
-1. **Resources Tab**: 
-   - Click `bundles` to see all loaded bundles
-   - Click `domain-knowledge` to see aggregated domain docs
-
-2. **Tools Tab**:
-   - `list_bundles` - See what's loaded
-   - `search_entities` - Search across all bundles
-   - Other tools - Specify `bundleId` when in multi-bundle mode
-
-3. **Prompts Tab**:
-   - `implement-requirement` - Get an implementation plan
-   - `explain-entity` - Understand any entity
-   - `audit-profile` - Run conformance checks
-   - `trace-dependency` - Analyze entity dependencies
+| Issue | Solution |
+|-------|----------|
+| "Connection Error" | Change Transport Type to `STDIO`, not "Streamable HTTP" |
+| "Bundle not found" | Check the bundle path is valid and contains `sdd-bundle.yaml` |
+| Server crashes on start | Run `pnpm build` first to ensure dist/ is up to date |
+| No completions appearing | Verify the bundle loaded successfully in the console output |
 
 ---
+
 
 ## Using Prompts
 

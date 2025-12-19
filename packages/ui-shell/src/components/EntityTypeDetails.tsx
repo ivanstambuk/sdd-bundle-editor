@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { UiBundleSnapshot } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 
@@ -54,6 +56,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     const schemaId = (schema.$id as string) || 'Unknown';
     const title = (schema.title as string) || displayName;
     const description = (schema.description as string) || 'No description available.';
+    const displayHint = schema['x-sdd-displayHint'] as string | undefined;
     const required = (schema.required as string[]) || [];
     const properties = (schema.properties as Record<string, any>) || {};
 
@@ -84,9 +87,17 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                         <span className="schema-info-label">ID:</span>
                         <code className="schema-info-value">{schemaId}</code>
                     </div>
-                    <div className="schema-info-row">
+                    <div className="schema-info-row schema-info-row--description">
                         <span className="schema-info-label">Description:</span>
-                        <span className="schema-info-value">{description}</span>
+                        {displayHint === 'markdown' ? (
+                            <div className="schema-info-value rjsf-description--markdown">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {description}
+                                </ReactMarkdown>
+                            </div>
+                        ) : (
+                            <span className="schema-info-value">{description}</span>
+                        )}
                     </div>
                 </div>
             </section>

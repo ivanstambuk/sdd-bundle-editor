@@ -92,6 +92,7 @@ See `.agent/workflows/` for detailed instructions.
 
 | File | Purpose |
 |------|---------|
+| `.agent/session/pending-task.md` | Handover task for next session (delete when complete!) |
 | `PENDING_IMPROVEMENTS.md` | Current session's task list |
 | `IMPLEMENTATION_TRACKER.md` | Long-term backlog and roadmap |
 | `.gemini/task.md` | Agent's internal task tracking |
@@ -101,6 +102,7 @@ See `.agent/workflows/` for detailed instructions.
 1. Update `PENDING_IMPROVEMENTS.md` with completed/remaining items
 2. Commit all working changes
 3. Clean up any temp files or artifacts
+4. **Delete `.agent/session/pending-task.md` if the task was completed**
 
 ---
 

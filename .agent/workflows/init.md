@@ -115,10 +115,13 @@ If a pending task file exists:
 1. Read the task description
 2. Ask the user if they want to continue this task
 3. If yes, use it as the starting point for this session
-4. After task completion, delete or archive the file:
-   ```bash
-   rm .agent/session/pending-task.md
-   ```
+
+**IMPORTANT:** When a pending task is completed during this session, **immediately delete the file**:
+```bash
+rm .agent/session/pending-task.md && git add .agent/session/pending-task.md && git commit -m "chore: remove completed pending-task.md"
+```
+
+Do NOT leave completed pending-task.md files around. The file should only exist while work is incomplete.
 
 ---
 

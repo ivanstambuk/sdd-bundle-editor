@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@sdd-bundle-editor/git-utils": "workspace:*",
-    "@sdd-bundle-editor/core-ai": "workspace:*",
     "@sdd-bundle-editor/core-model": "workspace:*",
     "commander": "^12.0.0"
   }

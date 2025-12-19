@@ -31,7 +31,7 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
   // All keywords use the standardized x-sdd-* namespace.
   const passthroughKeywords = [
     'x-sdd-ui', 'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-    'x-sdd-widget', 'x-sdd-displayName', 'x-sdd-displayHint', 'x-sdd-enumDescriptions'
+    'x-sdd-widget', 'x-sdd-displayHint', 'x-sdd-enumDescriptions'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({

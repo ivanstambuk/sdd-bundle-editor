@@ -16,7 +16,7 @@ const validator = customizeValidator({
   ajvOptionsOverrides: {
     // Allow custom keywords used in SDD schemas for UI hints (x-sdd-* namespace)
     keywords: [
-      'x-sdd-displayHint', 'x-sdd-enumDescriptions', 'x-sdd-displayName',
+      'x-sdd-displayHint', 'x-sdd-enumDescriptions',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
       'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup'
     ],

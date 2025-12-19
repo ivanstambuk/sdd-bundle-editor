@@ -5,7 +5,8 @@
 
 /**
  * Get the display name for a field from its schema definition.
- * Falls back to converting camelCase to Title Case if no displayName is set.
+ * Uses standard JSON Schema 'title' property.
+ * Falls back to converting camelCase to Title Case if no title is set.
  * 
  * @param schemas - Record of entity type to JSON schema
  * @param entityType - The entity type containing the field
@@ -21,8 +22,9 @@ export function getFieldDisplayName(
     if (schema && typeof schema.properties === 'object') {
         const props = schema.properties as Record<string, unknown>;
         const propSchema = props[fieldName] as Record<string, unknown> | undefined;
-        if (propSchema && typeof propSchema.displayName === 'string') {
-            return propSchema.displayName;
+        // Use standard JSON Schema 'title' for human-readable field name
+        if (propSchema && typeof propSchema.title === 'string') {
+            return propSchema.title;
         }
     }
     // Fallback: convert camelCase to Title Case

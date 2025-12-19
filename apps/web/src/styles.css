@@ -3914,7 +3914,8 @@ form input[type="checkbox"] {
   padding: var(--spacing-sm);
 }
 
-/* Bundle empty state */
+/* Generic Empty State (reusable component) */
+.empty-state,
 .bundle-empty-state {
   display: flex;
   flex-direction: column;
@@ -3926,16 +3927,25 @@ form input[type="checkbox"] {
   text-align: center;
 }
 
+.empty-state-icon,
 .bundle-empty-icon {
   font-size: 2rem;
   margin-bottom: var(--spacing-sm);
   opacity: 0.5;
 }
 
+.empty-state-message,
 .bundle-empty-state p {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   margin: 0;
+}
+
+.empty-state-hint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-xs);
+  opacity: 0.8;
 }
 
 

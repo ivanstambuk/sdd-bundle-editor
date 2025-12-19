@@ -27,6 +27,28 @@ test.describe('Basic bundle UI flow', () => {
     await expect(page.getByTestId('entity-item-Task-TASK-impl-auth')).toBeVisible();
   });
 
+  test('auto-selects bundle on initial load with tabbed overview', async ({ page }) => {
+    await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
+
+    // Bundle should be auto-selected - check for bundle tabs instead of "No entity selected"
+    await expect(page.getByTestId('bundle-tabs')).toBeVisible();
+
+    // Verify all 4 tabs are present
+    await expect(page.getByTestId('bundle-tab-details')).toBeVisible();
+    await expect(page.getByTestId('bundle-tab-entity-types')).toBeVisible();
+    await expect(page.getByTestId('bundle-tab-relationships')).toBeVisible();
+    await expect(page.getByTestId('bundle-tab-raw-schema')).toBeVisible();
+
+    // Details tab should be active by default
+    await expect(page.getByTestId('bundle-tab-details')).toHaveClass(/active/);
+
+    // Should NOT show "No entity selected" placeholder
+    await expect(page.getByText('No entity selected.')).not.toBeVisible();
+
+    // Check bundle info is displayed
+    await expect(page.locator('.bundle-info')).toBeVisible();
+  });
+
   test('selects an entity and shows schema-driven details with references', async ({ page }) => {
     await page.goto(`/?bundleDir=${encodeURIComponent(bundleDir)}`);
 

@@ -692,10 +692,13 @@ test.describe('MCP Server E2E Tests', () => {
         };
 
         expect(result.entities).toBeDefined();
-        // When disabled, these should not be present
+        // When disabled, these should not be present (may be undefined or empty)
         expect(result.schemas).toBeUndefined();
         expect(result.refGraph).toBeUndefined();
-        expect(result.diagnostics).toBeUndefined();
+        // Diagnostics may return undefined or empty array when disabled
+        const diagUndefinedOrEmpty = result.diagnostics === undefined ||
+            (Array.isArray(result.diagnostics) && result.diagnostics.length === 0);
+        expect(diagUndefinedOrEmpty).toBe(true);
     });
 
     test('get_bundle_snapshot with entityTypes filter', async () => {

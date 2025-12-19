@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { UiBundleSnapshot } from '../types';
+import { TabBar, type Tab } from './TabBar';
+import { EmptyState } from './EmptyState';
 
 interface BundleOverviewProps {
     bundle: UiBundleSnapshot | null;
@@ -18,10 +20,10 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
     if (!bundle) {
         return (
             <div className="bundle-overview">
-                <div className="entity-placeholder">
-                    <div className="entity-placeholder-icon">📦</div>
-                    <div>No bundle loaded.</div>
-                </div>
+                <EmptyState
+                    icon="📦"
+                    message="No bundle loaded."
+                />
             </div>
         );
     }
@@ -34,6 +36,14 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
     // Get entity type configs from bundle definition
     const entityConfigs = bundleDef?.entities || [];
     const relations = bundleDef?.relations || [];
+
+    // Define tabs with badges
+    const tabs: Tab[] = useMemo(() => [
+        { id: 'details', label: '📋 Details', testId: 'details' },
+        { id: 'entityTypes', label: '🏷️ Entity Types', badge: entityTypes.length, testId: 'entity-types' },
+        { id: 'relationships', label: '🔗 Relationships', badge: relations.length > 0 ? relations.length : undefined, testId: 'relationships' },
+        { id: 'rawSchema', label: '📄 Raw Schema', testId: 'raw-schema' },
+    ], [entityTypes.length, relations.length]);
 
     // Render the Details tab content
     const renderDetailsTab = () => (
@@ -147,10 +157,10 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
                     </p>
                 </>
             ) : (
-                <div className="bundle-empty-state">
-                    <span className="bundle-empty-icon">🔗</span>
-                    <p>No relationships defined in this bundle.</p>
-                </div>
+                <EmptyState
+                    icon="🔗"
+                    message="No relationships defined in this bundle."
+                />
             )}
         </div>
     );
@@ -161,10 +171,10 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
             {bundleDef ? (
                 <pre className="code-block">{JSON.stringify(bundleDef, null, 2)}</pre>
             ) : (
-                <div className="bundle-empty-state">
-                    <span className="bundle-empty-icon">📄</span>
-                    <p>No bundle type definition available.</p>
-                </div>
+                <EmptyState
+                    icon="📄"
+                    message="No bundle type definition available."
+                />
             )}
         </div>
     );
@@ -178,43 +188,13 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
                 <span className="bundle-type-badge">{manifest?.metadata?.bundleType || 'sdd'}</span>
             </div>
 
-            {/* Tab bar */}
-            <div className="entity-tabs" data-testid="bundle-tabs">
-                <button
-                    type="button"
-                    className={`entity-tab ${activeTab === 'details' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('details')}
-                    data-testid="bundle-tab-details"
-                >
-                    📋 Details
-                </button>
-                <button
-                    type="button"
-                    className={`entity-tab ${activeTab === 'entityTypes' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('entityTypes')}
-                    data-testid="bundle-tab-entity-types"
-                >
-                    🏷️ Entity Types
-                    <span className="tab-badge">{entityTypes.length}</span>
-                </button>
-                <button
-                    type="button"
-                    className={`entity-tab ${activeTab === 'relationships' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('relationships')}
-                    data-testid="bundle-tab-relationships"
-                >
-                    🔗 Relationships
-                    {relations.length > 0 && <span className="tab-badge">{relations.length}</span>}
-                </button>
-                <button
-                    type="button"
-                    className={`entity-tab ${activeTab === 'rawSchema' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('rawSchema')}
-                    data-testid="bundle-tab-raw-schema"
-                >
-                    📄 Raw Schema
-                </button>
-            </div>
+            {/* Tab bar - using reusable TabBar component */}
+            <TabBar
+                tabs={tabs}
+                activeTab={activeTab}
+                onSelect={(id) => setActiveTab(id as BundleTab)}
+                testIdPrefix="bundle"
+            />
 
             {/* Tab content */}
             <div className="bundle-details-body">
@@ -226,3 +206,4 @@ export function BundleOverview({ bundle }: BundleOverviewProps) {
         </div>
     );
 }
+

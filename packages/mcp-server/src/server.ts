@@ -4,6 +4,7 @@ import { loadBundleWithSchemaValidation, Bundle, saveEntity, createEntity, delet
 import { z } from "zod";
 import { BundleConfig, LoadedBundle } from "./types.js";
 import { toolSuccess, toolError, resourceError, type Diagnostic as ResponseDiagnostic } from "./response-helpers.js";
+import { READ_ONLY_TOOL, MUTATING_TOOL, EXTERNAL_SAMPLING_TOOL } from "./tool-annotations.js";
 import { setupAllPrompts } from "./prompts/index.js";
 import * as path from "path";
 import * as fs from "fs/promises";
@@ -281,11 +282,14 @@ export class SddMcpServer {
     }
 
     private setupTools() {
-        // Tool: list_bundles
-        this.server.tool(
+        // Tool: list_bundles - uses registerTool() for annotations support
+        this.server.registerTool(
             "list_bundles",
-            "List all loaded specification bundles. Use this first to discover what bundles are available, their IDs, entity types, and metadata. Returns bundle IDs needed for other tool calls in multi-bundle mode.",
-            {},
+            {
+                description: "List all loaded specification bundles. Use this first to discover what bundles are available, their IDs, entity types, and metadata. Returns bundle IDs needed for other tool calls in multi-bundle mode.",
+                inputSchema: {},  // No-args tool
+                annotations: READ_ONLY_TOOL,
+            },
             async () => {
                 const TOOL_NAME = "list_bundles";
                 const bundleList = Array.from(this.bundles.values()).map(b => ({
@@ -308,11 +312,14 @@ export class SddMcpServer {
         );
 
         // Tool: get_bundle_schema
-        this.server.tool(
+        this.server.registerTool(
             "get_bundle_schema",
-            "Get the bundle type definition (metaschema) for a bundle. Returns entity type configurations, relationships between entities, and bundle metadata. Use to understand how entities relate to each other.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                description: "Get the bundle type definition (metaschema) for a bundle. Returns entity type configurations, relationships between entities, and bundle metadata. Use to understand how entities relate to each other.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId }) => {
                 const TOOL_NAME = "get_bundle_schema";
@@ -343,12 +350,15 @@ export class SddMcpServer {
         );
 
         // Tool: get_entity_schema
-        this.server.tool(
+        this.server.registerTool(
             "get_entity_schema",
-            "Get the JSON schema for a specific entity type. Use for form rendering or understanding entity structure. Returns the complete JSON schema including properties, required fields, and custom extensions like x-sdd-ui.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+                description: "Get the JSON schema for a specific entity type. Use for form rendering or understanding entity structure. Returns the complete JSON schema including properties, required fields, and custom extensions like x-sdd-ui.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType }) => {
                 const TOOL_NAME = "get_entity_schema";
@@ -386,17 +396,20 @@ export class SddMcpServer {
         );
 
         // Tool: get_bundle_snapshot
-        this.server.tool(
+        this.server.registerTool(
             "get_bundle_snapshot",
-            "Get a complete bundle snapshot with all entities, schemas, refGraph, and diagnostics in a single call. Optimized for UI initial load - much more efficient than multiple calls. Use entityTypes to filter, includeEntityData to control payload size, and maxEntities to prevent truncation.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityTypes: z.array(z.string()).optional().describe("Filter to specific entity types (e.g., ['Requirement', 'Task']). Returns all types if not specified."),
-                includeEntityData: z.enum(["full", "summary", "ids"]).default("full").describe("Entity data detail: full (all fields), summary (id, title, state), ids (just IDs)"),
-                includeSchemas: z.boolean().default(true).describe("Include JSON schemas for each entity type"),
-                includeRefGraph: z.boolean().default(true).describe("Include reference graph edges"),
-                includeDiagnostics: z.boolean().default(true).describe("Include validation diagnostics"),
-                maxEntities: z.number().max(10000).default(5000).describe("Maximum entities to return before truncation (default: 5000, max: 10000)"),
+                description: "Get a complete bundle snapshot with all entities, schemas, refGraph, and diagnostics in a single call. Optimized for UI initial load - much more efficient than multiple calls. Use entityTypes to filter, includeEntityData to control payload size, and maxEntities to prevent truncation.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityTypes: z.array(z.string()).optional().describe("Filter to specific entity types (e.g., ['Requirement', 'Task']). Returns all types if not specified."),
+                    includeEntityData: z.enum(["full", "summary", "ids"]).default("full").describe("Entity data detail: full (all fields), summary (id, title, state), ids (just IDs)"),
+                    includeSchemas: z.boolean().default(true).describe("Include JSON schemas for each entity type"),
+                    includeRefGraph: z.boolean().default(true).describe("Include reference graph edges"),
+                    includeDiagnostics: z.boolean().default(true).describe("Include validation diagnostics"),
+                    maxEntities: z.number().max(10000).default(5000).describe("Maximum entities to return before truncation (default: 5000, max: 10000)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityTypes, includeEntityData, includeSchemas, includeRefGraph, includeDiagnostics, maxEntities }) => {
                 const TOOL_NAME = "get_bundle_snapshot";
@@ -516,13 +529,16 @@ export class SddMcpServer {
         );
 
         // Tool: read_entity
-        this.server.tool(
+        this.server.registerTool(
             "read_entity",
-            "Read the complete data for a specific entity. Use when you need full details about a Requirement, Task, Feature, Component, Profile, Threat, or any other entity type. Returns all fields including title, description, state, priority, and relationships.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
-                id: z.string().describe("Entity ID"),
+                description: "Read the complete data for a specific entity. Use when you need full details about a Requirement, Task, Feature, Component, Profile, Threat, or any other entity type. Returns all fields including title, description, state, priority, and relationships.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+                    id: z.string().describe("Entity ID"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, id }) => {
                 const TOOL_NAME = "read_entity";
@@ -557,14 +573,17 @@ export class SddMcpServer {
         );
 
         // Tool: read_entities (bulk read)
-        this.server.tool(
+        this.server.registerTool(
             "read_entities",
-            "Read multiple entities in a single call. Use when you need 2-50 entities and already know their IDs. Much more efficient than calling read_entity multiple times.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
-                ids: z.array(z.string()).max(50).describe("Entity IDs to fetch (max 50)"),
-                fields: z.array(z.string()).optional().describe("Specific fields to return (optional, returns all if not specified)"),
+                description: "Read multiple entities in a single call. Use when you need 2-50 entities and already know their IDs. Much more efficient than calling read_entity multiple times.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
+                    ids: z.array(z.string()).max(50).describe("Entity IDs to fetch (max 50)"),
+                    fields: z.array(z.string()).optional().describe("Specific fields to return (optional, returns all if not specified)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, ids, fields }) => {
                 const TOOL_NAME = "read_entities";
@@ -622,14 +641,17 @@ export class SddMcpServer {
         );
 
         // Tool: list_entities
-        this.server.tool(
+        this.server.registerTool(
             "list_entities",
-            "List all entity IDs in a bundle with optional pagination. Use to discover available entity IDs, see what entity types exist, or get an overview of bundle contents. Without entityType filter, shows all available types. With filter, shows all IDs of that type.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to list from all bundles)"),
-                entityType: z.string().optional().describe("Filter by entity type"),
-                limit: z.number().max(500).default(100).describe("Maximum number of IDs to return (default: 100, max: 500)"),
-                offset: z.number().default(0).describe("Starting offset for pagination"),
+                description: "List all entity IDs in a bundle with optional pagination. Use to discover available entity IDs, see what entity types exist, or get an overview of bundle contents. Without entityType filter, shows all available types. With filter, shows all IDs of that type.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to list from all bundles)"),
+                    entityType: z.string().optional().describe("Filter by entity type"),
+                    limit: z.number().max(500).default(100).describe("Maximum number of IDs to return (default: 100, max: 500)"),
+                    offset: z.number().default(0).describe("Starting offset for pagination"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, limit, offset }) => {
                 const TOOL_NAME = "list_entities";
@@ -689,15 +711,18 @@ export class SddMcpServer {
         );
 
         // Tool: list_entity_summaries
-        this.server.tool(
+        this.server.registerTool(
             "list_entity_summaries",
-            "List entities with summary fields (id, title, state, tags). Better than list_entities when you need to select relevant items without loading full entity data. Supports pagination.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().optional().describe("Filter by entity type"),
-                include: z.array(z.string()).default(["id", "title"]).describe("Fields to include in summaries"),
-                limit: z.number().default(50).describe("Max results (default 50, max 200)"),
-                offset: z.number().default(0).describe("Pagination offset"),
+                description: "List entities with summary fields (id, title, state, tags). Better than list_entities when you need to select relevant items without loading full entity data. Supports pagination.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().optional().describe("Filter by entity type"),
+                    include: z.array(z.string()).default(["id", "title"]).describe("Fields to include in summaries"),
+                    limit: z.number().default(50).describe("Max results (default 50, max 200)"),
+                    offset: z.number().default(0).describe("Pagination offset"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, include, limit, offset }) => {
                 const TOOL_NAME = "list_entity_summaries";
@@ -762,13 +787,16 @@ export class SddMcpServer {
         );
 
         // Tool: get_entity_relations
-        this.server.tool(
+        this.server.registerTool(
             "get_entity_relations",
-            "Get the relationships defined for an entity type. Use to understand how entities connect to each other. Returns relation definitions from the bundle-type specification.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().optional().describe("Filter by entity type (optional, shows all relations if not specified)"),
-                direction: z.enum(["outgoing", "incoming", "both"]).default("both").describe("Filter by direction: outgoing (this type references other), incoming (other types reference this), both (all)"),
+                description: "Get the relationships defined for an entity type. Use to understand how entities connect to each other. Returns relation definitions from the bundle-type specification.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().optional().describe("Filter by entity type (optional, shows all relations if not specified)"),
+                    direction: z.enum(["outgoing", "incoming", "both"]).default("both").describe("Filter by direction: outgoing (this type references other), incoming (other types reference this), both (all)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, direction }) => {
                 const TOOL_NAME = "get_entity_relations";
@@ -831,17 +859,20 @@ export class SddMcpServer {
         );
 
         // Tool: get_context
-        this.server.tool(
+        this.server.registerTool(
             "get_context",
-            "Get an entity with related dependencies. Supports sizing controls to prevent truncation. Use when you need to understand how an entity connects to others.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                entityType: z.string().describe("Entity type"),
-                id: z.string().describe("Entity ID"),
-                depth: z.number().max(3).default(1).describe("Depth of traversal (default: 1, max: 3)"),
-                maxRelated: z.number().max(100).default(20).describe("Max related entities to return (default: 20, max: 100)"),
-                includeRelated: z.enum(["full", "summary", "ids"]).default("full").describe("Detail level for related entities: full (all fields), summary (id, title, state), ids (just IDs)"),
-                fields: z.array(z.string()).optional().describe("Specific fields to return for target entity"),
+                description: "Get an entity with related dependencies. Supports sizing controls to prevent truncation. Use when you need to understand how an entity connects to others.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    entityType: z.string().describe("Entity type"),
+                    id: z.string().describe("Entity ID"),
+                    depth: z.number().max(3).default(1).describe("Depth of traversal (default: 1, max: 3)"),
+                    maxRelated: z.number().max(100).default(20).describe("Max related entities to return (default: 20, max: 100)"),
+                    includeRelated: z.enum(["full", "summary", "ids"]).default("full").describe("Detail level for related entities: full (all fields), summary (id, title, state), ids (just IDs)"),
+                    fields: z.array(z.string()).optional().describe("Specific fields to return for target entity"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, entityType, id, depth, maxRelated, includeRelated, fields }) => {
                 const TOOL_NAME = "get_context";
@@ -958,12 +989,15 @@ export class SddMcpServer {
         );
 
         // Tool: get_conformance_context
-        this.server.tool(
+        this.server.registerTool(
             "get_conformance_context",
-            "Get conformance rules and audit templates from a Profile. Use for compliance checking, understanding what rules apply, or preparing for audits. Without profileId, lists all available profiles. With profileId, returns detailed rules, linked requirements, and audit templates.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                profileId: z.string().optional().describe("Profile ID (optional, lists all profiles if not specified)"),
+                description: "Get conformance rules and audit templates from a Profile. Use for compliance checking, understanding what rules apply, or preparing for audits. Without profileId, lists all available profiles. With profileId, returns detailed rules, linked requirements, and audit templates.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    profileId: z.string().optional().describe("Profile ID (optional, lists all profiles if not specified)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId, profileId }) => {
                 const TOOL_NAME = "get_conformance_context";
@@ -1048,24 +1082,34 @@ export class SddMcpServer {
         );
 
         // Tool: search_entities
-        this.server.tool(
+        this.server.registerTool(
             "search_entities",
-            "Search for entities across all bundles by keyword with pagination. Use when user asks about something by name, topic, or keyword rather than exact ID. Searches entity IDs, titles, statements, and descriptions. Returns matching entities with their bundle and type.",
             {
-                query: z.string().describe("Search query (searches in entity IDs and titles)"),
-                entityType: z.string().optional().describe("Filter by entity type"),
-                bundleId: z.string().optional().describe("Filter by bundle ID"),
-                limit: z.number().max(100).default(50).describe("Maximum number of results to return (default: 50, max: 100)"),
-                offset: z.number().default(0).describe("Starting offset for pagination"),
+                description: "Search for entities across all bundles by keyword with pagination. Use when user asks about something by name, topic, or keyword rather than exact ID. Searches entity IDs, titles, statements, and descriptions. Returns matching entities with their bundle and type.",
+                inputSchema: {
+                    query: z.string().describe("Search query (searches in entity IDs and titles)"),
+                    entityType: z.string().optional().describe("Filter by entity type"),
+                    bundleId: z.string().optional().describe("Filter by bundle ID"),
+                    limit: z.number().max(100).default(50).describe("Maximum number of results to return (default: 50, max: 100)"),
+                    offset: z.number().default(0).describe("Starting offset for pagination"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ query, entityType, bundleId, limit, offset }) => {
                 const TOOL_NAME = "search_entities";
+
+                // Fix: Return NOT_FOUND if bundleId is provided but doesn't exist
+                if (bundleId && !this.bundles.has(bundleId)) {
+                    return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId, availableBundles: this.getBundleIds() });
+                }
+
                 const results: Array<{
                     bundleId: string;
                     entityType: string;
                     id: string;
                     title?: string;
                     match: string;
+                    matchPriority: number;  // For deterministic sorting
                 }> = [];
 
                 const queryLower = query.toLowerCase();
@@ -1088,27 +1132,43 @@ export class SddMcpServer {
                             const descMatch = data.description?.toLowerCase().includes(queryLower);
 
                             if (idMatch || titleMatch || statementMatch || descMatch) {
+                                // Assign priority: id match (1) > title (2) > statement (3) > description (4)
+                                const matchPriority = idMatch ? 1 : titleMatch ? 2 : statementMatch ? 3 : 4;
                                 results.push({
                                     bundleId: loaded.id,
                                     entityType: eType,
                                     id: eId,
                                     title: data.title || data.statement,
                                     match: idMatch ? "id" : titleMatch ? "title" : statementMatch ? "statement" : "description",
+                                    matchPriority,
                                 });
                             }
                         }
                     }
                 }
 
+                // Fix: Sort results deterministically before pagination (by match priority, then bundleId, then entityType, then id)
+                results.sort((a, b) => {
+                    if (a.matchPriority !== b.matchPriority) return a.matchPriority - b.matchPriority;
+                    if (a.bundleId !== b.bundleId) return a.bundleId.localeCompare(b.bundleId);
+                    if (a.entityType !== b.entityType) return a.entityType.localeCompare(b.entityType);
+                    return a.id.localeCompare(b.id);
+                });
+
                 // Apply pagination
                 const total = results.length;
-                const paginatedResults = results.slice(offset, offset + limit);
+                // Remove internal matchPriority from output
+                const paginatedResults = results.slice(offset, offset + limit).map(({ matchPriority, ...rest }) => rest);
                 const hasMore = offset + limit < total;
+
+                // Fix: Include bundleId in envelope if filtering by single bundle
+                const effectiveBundleId = bundleId || (bundlesToSearch.length === 1 ? bundlesToSearch[0].id : undefined);
 
                 return toolSuccess(TOOL_NAME, {
                     query,
                     results: paginatedResults,
                 }, {
+                    bundleId: effectiveBundleId,  // Fix: Include bundleId when single-bundle scoped
                     meta: {
                         total,
                         limit,
@@ -1122,11 +1182,14 @@ export class SddMcpServer {
         );
 
         // Tool: validate_bundle
-        this.server.tool(
+        this.server.registerTool(
             "validate_bundle",
-            "Validate a bundle and return all diagnostics. Use when user asks 'are there any issues?', 'validate my spec', 'check for errors', or 'find broken references'. Returns errors and warnings including broken references, schema violations, and lint rule failures.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to validate all bundles)"),
+                description: "Validate a bundle and return all diagnostics. Use when user asks 'are there any issues?', 'validate my spec', 'check for errors', or 'find broken references'. Returns errors and warnings including broken references, schema violations, and lint rule failures.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode, or 'all' to validate all bundles)"),
+                },
+                annotations: READ_ONLY_TOOL,
             },
             async ({ bundleId }) => {
                 const TOOL_NAME = "validate_bundle";
@@ -1197,23 +1260,26 @@ export class SddMcpServer {
         );
 
         // Tool: apply_changes - Atomic batch changes with validate-before-write
-        this.server.tool(
+        this.server.registerTool(
             "apply_changes",
-            "Apply multiple changes to a bundle atomically. Supports create, update, and delete operations. All changes are validated against schemas and reference integrity before writing. dryRun defaults to true for safety - set to false to actually write changes. Returns detailed diagnostics on failure with changeIndex indicating which change caused each error.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                changes: z.array(z.object({
-                    operation: z.enum(["create", "update", "delete"]).describe("Type of operation"),
-                    entityType: z.string().describe("Entity type (e.g., 'Requirement', 'Task', 'Feature')"),
-                    entityId: z.string().describe("Entity ID"),
-                    fieldPath: z.string().optional().describe("For updates: dot-notation path to field (e.g., 'description', 'priority'). Field MUST exist in schema."),
-                    value: z.any().optional().describe("For updates: new value for the field. For creates: ignored if 'data' is provided"),
-                    data: z.any().optional().describe("For creates: complete entity data object"),
-                })).describe("Array of changes to apply atomically"),
-                dryRun: z.boolean().default(true).describe("If true (default), validate and return preview without writing files. Set to false to actually write."),
-                validate: z.enum(["strict", "warn", "none"]).optional().describe("Schema validation: strict (default for writes), warn (default for dryRun), none"),
-                referencePolicy: z.enum(["strict", "warn", "none"]).optional().describe("Reference integrity: strict (default for writes), warn (default for dryRun), none"),
-                deleteMode: z.enum(["restrict", "orphan"]).default("restrict").describe("Delete behavior: restrict (fail if referenced), orphan (allow dangling refs)"),
+                description: "Apply multiple changes to a bundle atomically. Supports create, update, and delete operations. All changes are validated against schemas and reference integrity before writing. dryRun defaults to true for safety - set to false to actually write changes. Returns detailed diagnostics on failure with changeIndex indicating which change caused each error.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    changes: z.array(z.object({
+                        operation: z.enum(["create", "update", "delete"]).describe("Type of operation"),
+                        entityType: z.string().describe("Entity type (e.g., 'Requirement', 'Task', 'Feature')"),
+                        entityId: z.string().describe("Entity ID"),
+                        fieldPath: z.string().optional().describe("For updates: dot-notation path to field (e.g., 'description', 'priority'). Field MUST exist in schema."),
+                        value: z.any().optional().describe("For updates: new value for the field. For creates: ignored if 'data' is provided"),
+                        data: z.any().optional().describe("For creates: complete entity data object"),
+                    })).describe("Array of changes to apply atomically"),
+                    dryRun: z.boolean().default(true).describe("If true (default), validate and return preview without writing files. Set to false to actually write."),
+                    validate: z.enum(["strict", "warn", "none"]).optional().describe("Schema validation: strict (default for writes), warn (default for dryRun), none"),
+                    referencePolicy: z.enum(["strict", "warn", "none"]).optional().describe("Reference integrity: strict (default for writes), warn (default for dryRun), none"),
+                    deleteMode: z.enum(["restrict", "orphan"]).default("restrict").describe("Delete behavior: restrict (fail if referenced), orphan (allow dangling refs)"),
+                },
+                annotations: MUTATING_TOOL,
             },
             async ({ bundleId, changes, dryRun, validate: validateParam, referencePolicy: refPolicyParam, deleteMode }) => {
                 const TOOL_NAME = "apply_changes";
@@ -1661,12 +1727,15 @@ export class SddMcpServer {
         );
 
         // Tool: critique_bundle - LLM-based quality critique via MCP sampling
-        this.server.tool(
+        this.server.registerTool(
             "critique_bundle",
-            "Trigger an LLM-based quality critique of the bundle for AI consumability and completeness. Uses MCP sampling to request the client's LLM to evaluate the spec. Returns scored findings. Requires client to support MCP sampling capability.",
             {
-                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-                threshold: z.number().min(1).max(10).default(5).describe("Minimum score (1-10) to include in findings. Higher = stricter."),
+                description: "Trigger an LLM-based quality critique of the bundle for AI consumability and completeness. Uses MCP sampling to request the client's LLM to evaluate the spec. Returns scored findings. Requires client to support MCP sampling capability.",
+                inputSchema: {
+                    bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                    threshold: z.number().min(1).max(10).default(5).describe("Minimum score (1-10) to include in findings. Higher = stricter."),
+                },
+                annotations: EXTERNAL_SAMPLING_TOOL,
             },
             async ({ bundleId, threshold }) => {
                 const TOOL_NAME = "critique_bundle";

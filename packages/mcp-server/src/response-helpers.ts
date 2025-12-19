@@ -45,7 +45,25 @@ export interface ErrorResponse {
 }
 
 /**
+ * MCP tool response with structuredContent for reliable machine parsing.
+ * 
+ * - `content[].text`: Human-readable JSON for debugging
+ * - `structuredContent`: Machine-parsable object for agents
+ * 
+ * Index signature required for MCP SDK compatibility.
+ */
+export interface ToolResponse {
+    content: Array<{ type: "text"; text: string }>;
+    structuredContent: Record<string, unknown>;
+    isError?: boolean;
+    [x: string]: unknown;  // MCP SDK compatibility
+}
+
+/**
  * Create a success response for a tool.
+ * 
+ * Returns both human-readable text (for debugging) and structuredContent
+ * (for reliable machine parsing by agents).
  */
 export function toolSuccess(
     tool: string,
@@ -55,7 +73,7 @@ export function toolSuccess(
         meta?: Record<string, unknown>;
         diagnostics?: Diagnostic[];
     }
-): { content: Array<{ type: "text"; text: string }>; isError?: boolean } {
+): ToolResponse {
     // Build response object with uniform envelope
     // Always include meta and diagnostics for agent consumability
     const response: Record<string, unknown> = {
@@ -76,23 +94,40 @@ export function toolSuccess(
     response.diagnostics = options?.diagnostics ?? [];
 
     return {
+        // Human-readable JSON for debugging
         content: [{
             type: "text",
             text: JSON.stringify(response, null, 2),
         }],
+        // Machine-parsable object for agents - same structure as text
+        structuredContent: response,
     };
+}
+
+/**
+ * Error response type with structuredContent.
+ * Index signature required for MCP SDK compatibility.
+ */
+export interface ToolErrorResponse {
+    content: Array<{ type: "text"; text: string }>;
+    structuredContent: Record<string, unknown>;
+    isError: true;
+    [x: string]: unknown;  // MCP SDK compatibility
 }
 
 /**
  * Create an error response for a tool.
  * Always sets isError: true at MCP level.
+ * 
+ * Returns both human-readable text (for debugging) and structuredContent
+ * (for reliable machine parsing by agents).
  */
 export function toolError(
     tool: string,
     code: ErrorCode,
     message: string,
     details?: unknown
-): { content: Array<{ type: "text"; text: string }>; isError: true } {
+): ToolErrorResponse {
     const response: ErrorResponse = {
         ok: false,
         tool,
@@ -104,10 +139,13 @@ export function toolError(
     };
 
     return {
+        // Human-readable JSON for debugging
         content: [{
             type: "text",
             text: JSON.stringify(response, null, 2),
         }],
+        // Machine-parsable object for agents - same structure as text
+        structuredContent: response as unknown as Record<string, unknown>,
         isError: true,
     };
 }

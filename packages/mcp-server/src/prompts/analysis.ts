@@ -18,14 +18,16 @@ export function registerAnalysisPrompts(ctx: PromptContext): void {
     const { server, getBundle, getBundleIds } = ctx;
 
     // Prompt: trace-dependency
-    server.prompt(
+    server.registerPrompt(
         "trace-dependency",
-        "Trace all dependencies for any entity. Use when user asks 'what depends on this?', 'what will be affected if I change X?', 'show me the dependency chain', or 'impact analysis for this task'. Returns visual dependency tree with impact assessment.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            entityType: z.string().describe("Entity type"),
-            entityId: z.string().describe("Entity ID to trace"),
-            direction: z.enum(["upstream", "downstream", "both"]).default("both").describe("Trace direction"),
+            description: "Trace all dependencies for any entity. Use when user asks 'what depends on this?', 'what will be affected if I change X?', 'show me the dependency chain', or 'impact analysis for this task'. Returns visual dependency tree with impact assessment.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().describe("Entity type"),
+                entityId: z.string().describe("Entity ID to trace"),
+                direction: z.enum(["upstream", "downstream", "both"]).default("both").describe("Trace direction"),
+            },
         },
         async ({ bundleId, entityType, entityId, direction }) => {
             const loaded = getBundle(bundleId);
@@ -169,13 +171,15 @@ Analyze this dependency trace and provide:
     );
 
     // Prompt: coverage-analysis
-    server.prompt(
+    server.registerPrompt(
         "coverage-analysis",
-        "Analyze specification coverage and find gaps. Use when user asks 'what requirements lack tests?', 'where are the gaps?', 'coverage report', or 'what's missing?'. Returns detailed coverage metrics with prioritized recommendations.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            focus: z.enum(["requirements", "features", "threats", "all"]).default("all").describe("Coverage focus area"),
-            threshold: z.number().default(80).describe("Minimum coverage percentage to flag"),
+            description: "Analyze specification coverage and find gaps. Use when user asks 'what requirements lack tests?', 'where are the gaps?', 'coverage report', or 'what's missing?'. Returns detailed coverage metrics with prioritized recommendations.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                focus: z.enum(["requirements", "features", "threats", "all"]).default("all").describe("Coverage focus area"),
+                threshold: z.number().default(80).describe("Minimum coverage percentage to flag"),
+            },
         },
         async ({ bundleId, focus, threshold }) => {
             const loaded = getBundle(bundleId);
@@ -277,13 +281,15 @@ Provide:
     );
 
     // Prompt: suggest-relations
-    server.prompt(
+    server.registerPrompt(
         "suggest-relations",
-        "Suggest missing relationships between entities. Use when user asks 'what am I missing?', 'suggest connections', 'find related entities', or 'improve my spec'. Analyzes entity content to find likely relationships that should be added.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            entityType: z.string().optional().describe("Focus on specific entity type"),
-            confidence: z.enum(["high", "medium", "all"]).default("high").describe("Minimum confidence for suggestions"),
+            description: "Suggest missing relationships between entities. Use when user asks 'what am I missing?', 'suggest connections', 'find related entities', or 'improve my spec'. Analyzes entity content to find likely relationships that should be added.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().optional().describe("Focus on specific entity type"),
+                confidence: z.enum(["high", "medium", "all"]).default("high").describe("Minimum confidence for suggestions"),
+            },
         },
         async ({ bundleId, entityType, confidence }) => {
             const loaded = getBundle(bundleId);

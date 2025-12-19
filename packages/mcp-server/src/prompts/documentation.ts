@@ -17,14 +17,16 @@ export function registerDocumentationPrompts(ctx: PromptContext): void {
     const { server, getBundle, getBundleIds, bundles } = ctx;
 
     // Prompt: explain-entity
-    server.prompt(
+    server.registerPrompt(
         "explain-entity",
-        "Explain any entity in plain language for a specific audience. Use when user asks 'what is FEAT-XXX?', 'explain this to my manager', 'help me understand this component', or 'what does this requirement mean?'. Adapts language for developers, stakeholders, or new team members.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            entityType: z.string().describe("Entity type (e.g., Requirement, Component, Feature)"),
-            entityId: z.string().describe("Entity ID"),
-            audience: z.enum(["developer", "stakeholder", "new-team-member"]).default("developer").describe("Target audience"),
+            description: "Explain any entity in plain language for a specific audience. Use when user asks 'what is FEAT-XXX?', 'explain this to my manager', 'help me understand this component', or 'what does this requirement mean?'. Adapts language for developers, stakeholders, or new team members.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                entityType: z.string().describe("Entity type (e.g., Requirement, Component, Feature)"),
+                entityId: z.string().describe("Entity ID"),
+                audience: z.enum(["developer", "stakeholder", "new-team-member"]).default("developer").describe("Target audience"),
+            },
         },
         async ({ bundleId, entityType, entityId, audience }) => {
             const loaded = getBundle(bundleId);
@@ -130,12 +132,14 @@ Include:
     );
 
     // Prompt: summarize-bundle
-    server.prompt(
+    server.registerPrompt(
         "summarize-bundle",
-        "Generate a summary of the entire bundle. Use when user asks 'what is this project about?', 'give me an overview', 'executive summary', or 'onboard me to this spec'. Generates comprehensive summaries tailored for executives, developers, or new team members.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            format: z.enum(["executive", "technical", "onboarding"]).default("executive").describe("Summary format"),
+            description: "Generate a summary of the entire bundle. Use when user asks 'what is this project about?', 'give me an overview', 'executive summary', or 'onboard me to this spec'. Generates comprehensive summaries tailored for executives, developers, or new team members.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                format: z.enum(["executive", "technical", "onboarding"]).default("executive").describe("Summary format"),
+            },
         },
         async ({ bundleId, format }) => {
             const loaded = getBundle(bundleId);
@@ -219,13 +223,15 @@ Include:
     );
 
     // Prompt: diff-bundles
-    server.prompt(
+    server.registerPrompt(
         "diff-bundles",
-        "Compare two bundles and show differences. Use when user asks 'what changed between versions?', 'compare these specs', 'diff v1 vs v2', or 'migration analysis'. Requires two bundles loaded. Shows added, removed, and modified entities.",
         {
-            bundleA: z.string().describe("First bundle ID"),
-            bundleB: z.string().describe("Second bundle ID"),
-            focus: z.enum(["all", "requirements", "structure"]).default("all").describe("Diff focus"),
+            description: "Compare two bundles and show differences. Use when user asks 'what changed between versions?', 'compare these specs', 'diff v1 vs v2', or 'migration analysis'. Requires two bundles loaded. Shows added, removed, and modified entities.",
+            argsSchema: {
+                bundleA: z.string().describe("First bundle ID"),
+                bundleB: z.string().describe("Second bundle ID"),
+                focus: z.enum(["all", "requirements", "structure"]).default("all").describe("Diff focus"),
+            },
         },
         async ({ bundleA, bundleB, focus }) => {
             const loadedA = bundles.get(bundleA);

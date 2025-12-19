@@ -17,13 +17,15 @@ export function registerImplementationPrompts(ctx: PromptContext): void {
     const { server, getBundle, getBundleIds } = ctx;
 
     // Prompt: implement-requirement
-    server.prompt(
+    server.registerPrompt(
         "implement-requirement",
-        "Generate a detailed implementation plan for a requirement. Use when user asks 'how do I implement REQ-XXX?', 'help me build this requirement', or 'what tasks are needed for this requirement?'. Gathers related features, components, existing tasks, and domain knowledge to create actionable steps with estimates.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            requirementId: z.string().describe("The requirement ID to implement"),
-            depth: z.enum(["overview", "detailed", "with-code"]).default("detailed").describe("Level of detail"),
+            description: "Generate a detailed implementation plan for a requirement. Use when user asks 'how do I implement REQ-XXX?', 'help me build this requirement', or 'what tasks are needed for this requirement?'. Gathers related features, components, existing tasks, and domain knowledge to create actionable steps with estimates.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                requirementId: z.string().describe("The requirement ID to implement"),
+                depth: z.enum(["overview", "detailed", "with-code"]).default("detailed").describe("Level of detail"),
+            },
         },
         async ({ bundleId, requirementId, depth }) => {
             const loaded = getBundle(bundleId);
@@ -129,13 +131,15 @@ Include:
     );
 
     // Prompt: create-roadmap
-    server.prompt(
+    server.registerPrompt(
         "create-roadmap",
-        "Generate an implementation roadmap from specifications. Use when user asks 'create a project plan', 'what's the roadmap?', 'how do I implement all this?', or 'phased implementation plan'. Creates timeline, phases, or milestone-based roadmaps with dependencies.",
         {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            scope: z.string().default("all").describe("Scope: 'all', 'feature:FEAT-001', or 'tag:security'"),
-            format: z.enum(["timeline", "phases", "milestones"]).default("phases").describe("Roadmap format"),
+            description: "Generate an implementation roadmap from specifications. Use when user asks 'create a project plan', 'what's the roadmap?', 'how do I implement all this?', or 'phased implementation plan'. Creates timeline, phases, or milestone-based roadmaps with dependencies.",
+            argsSchema: {
+                bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+                scope: z.string().default("all").describe("Scope: 'all', 'feature:FEAT-001', or 'tag:security'"),
+                format: z.enum(["timeline", "phases", "milestones"]).default("phases").describe("Roadmap format"),
+            },
         },
         async ({ bundleId, scope, format }) => {
             const loaded = getBundle(bundleId);

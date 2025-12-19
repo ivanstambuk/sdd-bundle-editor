@@ -53,5 +53,5 @@ The following major milestones have been completed:
 - [ ] Cross-bundle relationship analysis
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
-- [ ] Migrate `server.resource()` and `server.prompt()` to `registerResource()` and `registerPrompt()`
+
 

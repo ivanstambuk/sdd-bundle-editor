@@ -87,7 +87,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
 
     private setupResources() {
         // List all bundles resource
-        this.server.resource(
+        this.server.registerResource(
             "bundles",
             "bundle://list",
             {
@@ -115,7 +115,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
         );
 
         // Domain knowledge resource (aggregated from all bundles)
-        this.server.resource(
+        this.server.registerResource(
             "domain-knowledge",
             "bundle://domain-knowledge",
             {
@@ -160,7 +160,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
 
         // Resource Template: Bundle manifest
         // URI: bundle://{bundleId}/manifest
-        this.server.resource(
+        this.server.registerResource(
             "bundle-manifest",
             new ResourceTemplate("bundle://{bundleId}/manifest", {
                 list: async () => {
@@ -205,7 +205,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
 
         // Resource Template: Entity by type and ID
         // URI: bundle://{bundleId}/entity/{type}/{id}
-        this.server.resource(
+        this.server.registerResource(
             "entity",
             new ResourceTemplate("bundle://{bundleId}/entity/{type}/{id}", {
                 list: undefined, // Too many entities to enumerate
@@ -255,7 +255,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
 
         // Resource Template: Schema by entity type
         // URI: bundle://{bundleId}/schema/{type}
-        this.server.resource(
+        this.server.registerResource(
             "schema",
             new ResourceTemplate("bundle://{bundleId}/schema/{type}", {
                 list: async () => {

@@ -3885,6 +3885,60 @@ form input[type="checkbox"] {
   font-style: italic;
 }
 
+/* Tab badge inside entity tabs */
+.entity-tab .tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-left: var(--spacing-xs);
+}
+
+.entity-tab.active .tab-badge {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+/* Bundle tab content area */
+.bundle-tab-content {
+  padding: var(--spacing-md) 0;
+}
+
+.bundle-details-body {
+  padding: var(--spacing-sm);
+}
+
+/* Bundle empty state */
+.bundle-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.bundle-empty-icon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.5;
+}
+
+.bundle-empty-state p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+
 /* ========================================
    Markdown Widget
    ======================================== */

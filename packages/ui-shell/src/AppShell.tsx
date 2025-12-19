@@ -71,6 +71,15 @@ export function AppShell() {
   // Output log
   const outputLog = useOutputLog();
 
+  // Auto-select bundle view on initial load (so users don't see "No entity selected")
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
+  useEffect(() => {
+    if (bundle && !hasAutoSelected && !selectedEntity) {
+      setViewMode('bundle');
+      setHasAutoSelected(true);
+    }
+  }, [bundle, hasAutoSelected, selectedEntity]);
+
   // Log bundle events
   useEffect(() => {
     if (bundle) {

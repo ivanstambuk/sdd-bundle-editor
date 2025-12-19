@@ -16,11 +16,33 @@ type ZodRawShape = Record<string, z.ZodTypeAny>;
 type EmptySchema = Record<string, never>;
 
 /**
+ * Strict empty schema for no-argument tools.
+ * Using z.object({}).strict() rejects unknown properties, preventing silent
+ * failures when LLMs pass typo'd arguments like "bundleID" instead of "bundleId".
+ */
+const STRICT_EMPTY_SCHEMA = z.object({}).strict();
+
+/**
+ * Helper to register a read-only tool with NO arguments using strict schema.
+ * This rejects unknown properties to prevent silent failures from LLM typos.
+ * Use for zero-argument tools like list_bundles.
+ */
+export function registerReadOnlyToolNoArgs(
+    server: McpServer,
+    name: string,
+    description: string,
+    handler: () => Promise<unknown>
+): void {
+    server.registerTool(name, {
+        description,
+        inputSchema: STRICT_EMPTY_SCHEMA,
+        annotations: READ_ONLY_TOOL,
+    }, handler as any);
+}
+
+/**
  * Helper to register a read-only tool with standard annotations.
  * Use for tools that only read data: list_bundles, read_entity, search_entities, etc.
- * 
- * Note: For no-argument tools, pass {} as inputSchema. The MCP SDK's TypeScript
- * types don't support z.object({}).strict() or raw JSON Schema objects.
  */
 export function registerReadOnlyTool<T extends ZodRawShape | EmptySchema>(
     server: McpServer,

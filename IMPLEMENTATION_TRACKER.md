@@ -53,5 +53,5 @@ The following major milestones have been completed:
 - [ ] Cross-bundle relationship analysis
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
-- [ ] Migrate to `registerResource()`/`registerPrompt()` when SDK fully deprecates old methods
-- [ ] Strict empty schema for no-arg tools (blocked: SDK doesn't support raw JSON Schema in inputSchema)
+- [ ] Migrate `server.resource()` and `server.prompt()` to `registerResource()` and `registerPrompt()`
+

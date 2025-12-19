@@ -11,7 +11,7 @@ import { z } from "zod";
 import * as path from "path";
 import * as fs from "fs/promises";
 import { ToolContext } from "./types.js";
-import { registerReadOnlyTool } from "./registry.js";
+import { registerReadOnlyTool, registerReadOnlyToolNoArgs } from "./registry.js";
 import { toolSuccess, toolError } from "../response-helpers.js";
 
 /**
@@ -20,12 +20,11 @@ import { toolSuccess, toolError } from "../response-helpers.js";
 export function registerBundleTools(ctx: ToolContext): void {
     const { server, bundles, getBundle, getBundleIds, isSingleBundleMode } = ctx;
 
-    // Tool: list_bundles
-    registerReadOnlyTool(
+    // Tool: list_bundles (no arguments, uses strict schema to reject unknown args)
+    registerReadOnlyToolNoArgs(
         server,
         "list_bundles",
         "List all loaded specification bundles. Use this first to discover what bundles are available, their IDs, entity types, and metadata. Returns bundle IDs needed for other tool calls in multi-bundle mode.",
-        {},
         async () => {
             const TOOL_NAME = "list_bundles";
             const bundleList = Array.from(bundles.values()).map(b => ({

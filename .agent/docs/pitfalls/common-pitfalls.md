@@ -81,15 +81,18 @@
   ```
 
 ### 13. Using `z.object({}).strict()` for empty schema in registerTool
-- **Symptom**: TypeScript error "not assignable to parameter of type 'ZodRawShapeCompat'"
-- **Root cause**: SDK expects raw shape objects (plain objects with Zod types), not wrapped Zod objects
-- **Fix**: Use `{}` as empty schema:
+- **Status**: ✅ Fixed in SDK v1.25.1
+- **Old symptom**: TypeScript error "not assignable to parameter of type 'ZodRawShapeCompat'"
+- **Old root cause**: SDK expected raw shape objects, not wrapped Zod objects
+- **Current behavior**: SDK v1.25.1+ properly supports `z.object({}).strict()`:
   ```typescript
-  this.server.registerTool("my_tool", {
+  const STRICT_EMPTY_SCHEMA = z.object({}).strict();
+  
+  server.registerTool("my_tool", {
       description: "...",
-      inputSchema: {},  // NOT z.object({}).strict()
+      inputSchema: STRICT_EMPTY_SCHEMA,  // Now works!
       annotations: READ_ONLY_TOOL,
   }, callback);
   ```
-- **Note**: Raw JSON Schema objects (e.g., `{type: "object", additionalProperties: false}`) also don't work - the SDK's `normalizeObjectSchema()` doesn't recognize them.
+- **Note**: Raw JSON Schema objects (e.g., `{type: "object", additionalProperties: false}`) still don't work - the SDK only recognizes Zod schemas.
 

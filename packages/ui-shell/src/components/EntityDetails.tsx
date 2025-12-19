@@ -4,6 +4,7 @@ import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
+import { getFieldDisplayName } from '../utils/schemaUtils';
 import { MarkdownWidget } from './MarkdownWidget';
 
 // Create a custom validator that allows our schema extension keywords
@@ -54,18 +55,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     return getEntityDisplayName(s) ?? entityType;
   };
 
-  // Helper to get display name for a reference field from the source entity's schema
-  const getFieldDisplayName = (entityType: string, fieldName: string): string => {
-    const s = bundle.schemas?.[entityType] as Record<string, unknown> | undefined;
-    if (s && typeof s.properties === 'object') {
-      const props = s.properties as Record<string, unknown>;
-      const propSchema = props[fieldName] as Record<string, unknown> | undefined;
-      if (propSchema && typeof propSchema.displayName === 'string') {
-        return propSchema.displayName;
-      }
-    }
-    // Fallback: convert camelCase to Title Case
-    return fieldName.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).trim();
+  // Helper wrapper for shared getFieldDisplayName utility
+  const getFieldDisplay = (entityType: string, fieldName: string): string => {
+    return getFieldDisplayName(bundle.schemas, entityType, fieldName);
   };
 
   const outgoing =
@@ -384,11 +376,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           validator={validator}
           readonly={readOnly}
           disabled={readOnly}
-           
+
           onChange={() => { }}
-           
+
           onSubmit={() => { }}
-           
+
           onError={() => { }}
         >
           {/* Hide submit button in read-only mode */}
@@ -432,7 +424,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                   {getDisplayName(edge.toEntityType)}
                 </span>
                 <span className="graph-node-id">{edge.toId}</span>
-                <span className="graph-field">({getFieldDisplayName(edge.fromEntityType, edge.fromField)})</span>
+                <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
               </button>
             ))}
           </div>
@@ -457,7 +449,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                   {getDisplayName(edge.fromEntityType)}
                 </span>
                 <span className="graph-node-id">{edge.fromId}</span>
-                <span className="graph-field">({getFieldDisplayName(edge.fromEntityType, edge.fromField)})</span>
+                <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
               </button>
             ))}
           </div>

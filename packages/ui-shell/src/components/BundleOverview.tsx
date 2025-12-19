@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { UiBundleSnapshot } from '../types';
 import { TabBar, type Tab } from './TabBar';
 import { EmptyState } from './EmptyState';
+import { getFieldDisplayName } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
     bundle: UiBundleSnapshot | null;
@@ -135,28 +136,35 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                             <thead>
                                 <tr>
                                     <th>From Entity</th>
-                                    <th>Field</th>
+                                    <th>Relationship</th>
                                     <th>To Entity</th>
                                     <th>Cardinality</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {relations.map((rel, idx) => (
-                                    <tr key={idx}>
-                                        <td>
-                                            <span className="entity-type-badge" data-type={rel.fromEntity}>
-                                                {rel.fromEntity}
-                                            </span>
-                                        </td>
-                                        <td><code>{rel.fromField}</code></td>
-                                        <td>
-                                            <span className="entity-type-badge" data-type={rel.toEntity}>
-                                                {rel.toEntity}
-                                            </span>
-                                        </td>
-                                        <td>{rel.cardinality || '—'}</td>
-                                    </tr>
-                                ))}
+                                {relations.map((rel, idx) => {
+                                    const displayName = getFieldDisplayName(
+                                        bundle.schemas,
+                                        rel.fromEntity,
+                                        rel.fromField
+                                    );
+                                    return (
+                                        <tr key={idx}>
+                                            <td>
+                                                <span className="entity-type-badge" data-type={rel.fromEntity}>
+                                                    {rel.fromEntity}
+                                                </span>
+                                            </td>
+                                            <td title={`Field: ${rel.fromField}`}>{displayName}</td>
+                                            <td>
+                                                <span className="entity-type-badge" data-type={rel.toEntity}>
+                                                    {rel.toEntity}
+                                                </span>
+                                            </td>
+                                            <td>{rel.cardinality || '—'}</td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

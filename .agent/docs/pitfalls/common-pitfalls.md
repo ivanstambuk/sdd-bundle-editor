@@ -180,3 +180,25 @@
 - **Note**: Both `core-model` and `ui-shell` import these types from `shared-types`, so you only need to update one place
 - **Related pitfall**: Property naming must match exactly (e.g., `multiplicity` not `cardinality`)
 
+### 18. Hardcoding UI behavior based on field names
+- **Symptom**: UI logic checks for specific field names (e.g., `if (fieldName === 'pros')`) or CSS selectors target field names (`[for*="reasonRejected"]`)
+- **Root cause**: Violates "Editor is Dumb, AI is Smart" principle - the editor should be schema-driven, not aware of specific domain concepts
+- **Anti-pattern**:
+  ```tsx
+  // BAD: Hardcoded field name detection
+  const isProsField = fieldId.endsWith('_pros');
+  const indicator = isProsField ? '✅' : '❌';
+  ```
+- **Fix**: Define behavior in schema using `x-sdd-*` extension properties:
+  ```json
+  // GOOD: Schema-driven
+  "pros": {
+    "items": { "x-sdd-indicator": "✅" }
+  }
+  ```
+  Then read from schema:
+  ```tsx
+  const indicator = schema?.items?.['x-sdd-indicator'] || null;
+  ```
+- **Design process**: When adding new UI features, FIRST design the schema hint, THEN implement the reader
+

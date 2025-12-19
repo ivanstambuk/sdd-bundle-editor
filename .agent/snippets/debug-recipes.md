@@ -187,3 +187,43 @@ ls -la "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" 2>/dev/null &
 ls -la "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" 2>/dev/null && echo "Edge found"
 ```
 
+---
+
+## JSON Schema Manipulation with jq
+
+**Problem**: Need to modify schemas outside workspace (e.g., sample bundle) or do complex JSON edits.
+
+### Add property to nested schema path
+
+```bash
+# Add x-sdd-indicator to array items
+jq '.properties.pros.items += {"x-sdd-indicator": "✅"}' schema.json > tmp.json && mv tmp.json schema.json
+
+# Add to deeply nested path (alternatives pattern)
+jq '.properties.alternativesConsidered.items.properties.pros.items += {"x-sdd-indicator": "✅"} | 
+    .properties.alternativesConsidered.items.properties.cons.items += {"x-sdd-indicator": "❌"}' \
+    schema.json > tmp.json && mv tmp.json schema.json
+```
+
+### Add maxLength to a field
+
+```bash
+jq '.properties.id += {"maxLength": 60}' schema.json > tmp.json && mv tmp.json schema.json
+```
+
+### View specific schema path
+
+```bash
+# View just the alternativesConsidered schema
+jq '.properties.alternativesConsidered' schema.json
+
+# View with compact output
+jq -c '.properties.id' schema.json
+```
+
+### Validate JSON syntax
+
+```bash
+jq empty schema.json && echo "Valid JSON" || echo "Invalid JSON"
+```
+

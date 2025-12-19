@@ -3346,6 +3346,77 @@ form input[type="checkbox"] {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* ========================================
+   Alternatives Pattern (isChosen field)
+   ======================================== */
+
+/* Base alternative item */
+.rjsf-alternative-item {
+  position: relative;
+}
+
+/* Badge positioning */
+.rjsf-alternative-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rjsf-badge-chosen {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.rjsf-badge-rejected {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+/* Chosen alternative - green accent */
+.rjsf-alternative-chosen {
+  border-color: var(--color-success);
+  border-width: 2px;
+  background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-success-bg));
+}
+
+.rjsf-alternative-chosen:hover {
+  border-color: var(--color-success);
+}
+
+/* Hide isChosen checkbox in chosen items (redundant with badge) */
+.rjsf-alternative-chosen .rjsf-checkbox-field {
+  display: none;
+}
+
+/* Hide reasonRejected field in chosen items (not applicable) */
+.rjsf-alternative-chosen .rjsf-field:has(label:is([for*="reasonRejected"], [for*="reason_rejected"])) {
+  display: none;
+}
+
+/* Rejected alternative - dimmed styling */
+.rjsf-alternative-rejected {
+  opacity: 0.85;
+  border-color: var(--color-border);
+}
+
+.rjsf-alternative-rejected:hover {
+  opacity: 1;
+  border-color: var(--color-text-muted);
+}
+
+/* Hide isChosen checkbox in rejected items (redundant with badge) */
+.rjsf-alternative-rejected .rjsf-checkbox-field {
+  display: none;
+}
+
 /* Style the nested object within array items as a grid */
 .rjsf-array-item>.rjsf-object {
   display: grid;
@@ -3386,6 +3457,38 @@ form input[type="checkbox"] {
   border: 1px solid var(--color-border);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
+}
+
+/* Simple array items (string arrays like pros/cons) */
+.rjsf-array-simple-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.rjsf-array-simple-item .rjsf-array-item-content {
+  flex: 1;
+  min-width: 0;
+  /* Allow flex item to shrink below content size */
+}
+
+.rjsf-array-simple-item .rjsf-array-item-content input {
+  width: 100%;
+}
+
+/* Visual indicator for pros/cons */
+.rjsf-indicator {
+  flex-shrink: 0;
+  font-size: var(--font-size-md);
+  width: 24px;
+  text-align: center;
+}
+
+/* Array items with schema-driven indicators */
+.rjsf-indicated-item {
+  padding: var(--spacing-xs) 0;
+  margin-bottom: var(--spacing-xs);
 }
 
 .rjsf-array-add-btn {

@@ -18,7 +18,7 @@ const validator = customizeValidator({
     keywords: [
       'x-sdd-displayHint', 'x-sdd-enumDescriptions',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup'
+      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-indicator'
     ],
   },
 });
@@ -196,6 +196,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const showAddButton = canAdd && !readonly && !disabled;
     const displayHint = schema?.['x-sdd-displayHint'];
 
+    // Schema-driven indicator for array items (e.g., x-sdd-indicator: "✅" on items)
+    const indicator = schema?.items?.['x-sdd-indicator'] || null;
+
     // Chips layout for tags and short label arrays
     if (displayHint === 'chips' && Array.isArray(formData)) {
       return (
@@ -215,14 +218,43 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // Check if items contain complex objects (have nested properties)
     const hasComplexItems = schema?.items?.type === 'object' && schema?.items?.properties;
 
+    // Detect alternatives pattern: objects with isChosen boolean field
+    const isAlternativesPattern = hasComplexItems && schema?.items?.properties?.isChosen?.type === 'boolean';
+
+    // Determine item class based on type and state
+    const getItemClass = (itemData?: any) => {
+      if (isAlternativesPattern) {
+        const isChosen = itemData?.isChosen === true;
+        return isChosen
+          ? 'rjsf-array-item rjsf-alternative-item rjsf-alternative-chosen'
+          : 'rjsf-array-item rjsf-alternative-item rjsf-alternative-rejected';
+      }
+      if (hasComplexItems) return 'rjsf-array-item';
+      if (indicator) return 'rjsf-array-simple-item rjsf-indicated-item';
+      return 'rjsf-array-simple-item';
+    };
+
     // Default: full row per item, with card styling for complex objects
     return (
       <div className="rjsf-array">
-        {items.map((item: any, index: number) => (
-          <div key={item.key || index} className={hasComplexItems ? 'rjsf-array-item' : 'rjsf-array-simple-item'}>
-            {item.children}
-          </div>
-        ))}
+        {items.map((item: any, index: number) => {
+          const itemData = Array.isArray(formData) ? formData[index] : undefined;
+          const isChosen = isAlternativesPattern && itemData?.isChosen === true;
+
+          return (
+            <div key={item.key || index} className={getItemClass(itemData)}>
+              {/* Badge for chosen alternative */}
+              {isAlternativesPattern && isChosen && (
+                <div className="rjsf-alternative-badge rjsf-badge-chosen">✓ CHOSEN</div>
+              )}
+              {isAlternativesPattern && !isChosen && (
+                <div className="rjsf-alternative-badge rjsf-badge-rejected">REJECTED</div>
+              )}
+              {indicator && <span className="rjsf-indicator">{indicator}</span>}
+              {item.children}
+            </div>
+          );
+        })}
         {showAddButton && (
           <button
             type="button"

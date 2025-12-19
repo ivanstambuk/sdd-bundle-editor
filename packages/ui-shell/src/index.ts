@@ -2,6 +2,7 @@ export { AppShell } from './AppShell';
 export { EntityNavigator } from './components/EntityNavigator';
 export { EntityDetails } from './components/EntityDetails';
 export { EntityTypeDetails } from './components/EntityTypeDetails';
+export { EntityTypeBadge, getEntityTypeStyles } from './components/EntityTypeBadge';
 export { BundleOverview } from './components/BundleOverview';
 export { DiagnosticsPanel } from './components/DiagnosticsPanel';
 export { Breadcrumb } from './components/Breadcrumb';

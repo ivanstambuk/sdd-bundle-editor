@@ -40,6 +40,8 @@ export interface UiEntityTypeConfig {
   directory?: string;
   filePattern?: string;
   role?: string;
+  /** Optional color for this entity type (CSS color value, e.g. '#bb9af7' or 'hsl(270, 60%, 70%)') */
+  color?: string;
 }
 
 export interface UiRelationConfig {

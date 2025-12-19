@@ -266,6 +266,7 @@ export function AppShell() {
               readOnly={true}
               onNavigate={handleNavigate}
               diagnostics={currentEntityDiagnostics}
+              entityConfigs={bundle?.bundleTypeDefinition?.entities}
             />
           )}
         </div>

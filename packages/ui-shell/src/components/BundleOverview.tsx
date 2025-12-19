@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { UiBundleSnapshot } from '../types';
 import { TabBar, type Tab } from './TabBar';
 import { EmptyState } from './EmptyState';
+import { EntityTypeBadge } from './EntityTypeBadge';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
@@ -104,15 +105,13 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                             return (
                                 <tr key={entityType}>
                                     <td>
-                                        <button
-                                            type="button"
-                                            className="entity-type-badge clickable"
-                                            data-type={entityType}
+                                        <EntityTypeBadge
+                                            entityType={entityType}
+                                            entityConfigs={entityConfigs}
+                                            clickable
                                             onClick={() => onSelectType?.(entityType)}
                                             title={`View ${entityType} in sidebar`}
-                                        >
-                                            {entityType}
-                                        </button>
+                                        />
                                     </td>
                                     <td>{count}</td>
                                     <td><code>{config?.directory || '—'}</code></td>
@@ -151,15 +150,17 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                                     return (
                                         <tr key={idx}>
                                             <td>
-                                                <span className="entity-type-badge" data-type={rel.fromEntity}>
-                                                    {rel.fromEntity}
-                                                </span>
+                                                <EntityTypeBadge
+                                                    entityType={rel.fromEntity}
+                                                    entityConfigs={entityConfigs}
+                                                />
                                             </td>
                                             <td title={`Field: ${rel.fromField}`}>{displayName}</td>
                                             <td>
-                                                <span className="entity-type-badge" data-type={rel.toEntity}>
-                                                    {rel.toEntity}
-                                                </span>
+                                                <EntityTypeBadge
+                                                    entityType={rel.toEntity}
+                                                    entityConfigs={entityConfigs}
+                                                />
                                             </td>
                                             <td>{rel.multiplicity || '—'}</td>
                                         </tr>

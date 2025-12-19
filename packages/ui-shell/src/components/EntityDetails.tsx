@@ -2,9 +2,10 @@ import { useState } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
-import type { UiBundleSnapshot, UiEntity, UiDiagnostic } from '../types';
+import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
+import { EntityTypeBadge } from './EntityTypeBadge';
 import { MarkdownWidget } from './MarkdownWidget';
 
 // Create a custom validator that allows our schema extension keywords
@@ -22,11 +23,13 @@ interface EntityDetailsProps {
   readOnly?: boolean;
   onNavigate?: (entityType: string, entityId: string) => void;
   diagnostics?: UiDiagnostic[];
+  /** Entity type configurations for schema-driven colors */
+  entityConfigs?: UiEntityTypeConfig[];
 }
 
 type EntityTab = 'details' | 'graph' | 'yaml';
 
-export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [] }: EntityDetailsProps) {
+export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [], entityConfigs }: EntityDetailsProps) {
   // Active tab state
   const [activeTab, setActiveTab] = useState<EntityTab>('details');
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
@@ -400,9 +403,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     <div className="dependency-graph">
       {/* Current entity as root */}
       <div className="graph-node graph-root">
-        <span className="entity-type-badge" data-type={entity.entityType}>
-          {getDisplayName(entity.entityType)}
-        </span>
+        <EntityTypeBadge
+          entityType={entity.entityType}
+          entityConfigs={entityConfigs}
+        />
         <span className="graph-node-id">{entity.id}</span>
       </div>
 
@@ -420,9 +424,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                 onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
                 data-testid={`graph-uses-${edge.toId}`}
               >
-                <span className="entity-type-badge" data-type={edge.toEntityType}>
-                  {getDisplayName(edge.toEntityType)}
-                </span>
+                <EntityTypeBadge
+                  entityType={edge.toEntityType}
+                  entityConfigs={entityConfigs}
+                />
                 <span className="graph-node-id">{edge.toId}</span>
                 <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
               </button>
@@ -445,9 +450,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                 onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
                 data-testid={`graph-usedby-${edge.fromId}`}
               >
-                <span className="entity-type-badge" data-type={edge.fromEntityType}>
-                  {getDisplayName(edge.fromEntityType)}
-                </span>
+                <EntityTypeBadge
+                  entityType={edge.fromEntityType}
+                  entityConfigs={entityConfigs}
+                />
                 <span className="graph-node-id">{edge.fromId}</span>
                 <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
               </button>
@@ -483,9 +489,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     <div className="entity-details">
       <div className="entity-details-header">
         <div className="entity-header-left">
-          <span className="entity-type-badge" data-type={entity.entityType}>
-            {getDisplayName(entity.entityType)}
-          </span>
+          <EntityTypeBadge
+            entityType={entity.entityType}
+            entityConfigs={entityConfigs}
+          />
           <span className="entity-id">{entity.id}</span>
         </div>
         <div className="entity-header-actions">

@@ -1170,35 +1170,10 @@ button.entity-type-badge.clickable:active {
   transform: translateY(0);
 }
 
-.entity-type-badge[data-type="Feature"] {
-  background: rgba(139, 92, 246, 0.2);
-  color: var(--color-feature);
-}
-
-.entity-type-badge[data-type="Requirement"] {
-  background: rgba(6, 182, 212, 0.2);
-  color: var(--color-requirement);
-}
-
-.entity-type-badge[data-type="Task"] {
-  background: rgba(249, 115, 22, 0.2);
-  color: var(--color-task);
-}
-
-.entity-type-badge[data-type="ADR"] {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--color-adr);
-}
-
-.entity-type-badge[data-type="Profile"] {
-  background: rgba(236, 72, 153, 0.2);
-  color: var(--color-profile);
-}
-
-.entity-type-badge[data-type="Fixture"] {
-  background: rgba(245, 158, 11, 0.2);
-  color: var(--color-fixture);
-}
+/* Entity type colors are now schema-driven via inline styles.
+ * The EntityTypeBadge component reads colors from bundleTypeDefinition.
+ * To add/change colors, update bundle-type.sdd-core.json.
+ */
 
 .entity-id {
   font-size: var(--font-size-xl);

@@ -1,0 +1,93 @@
+# Common Pitfalls
+
+> Avoid these mistakes to save time!
+
+## Build & TypeScript
+
+### 1. Forgetting to rebuild after TypeScript changes
+- **Symptom**: Code changes don't take effect
+- **Fix**: Run `pnpm build` or specific package build
+
+### 2. Missing `--passWithNoTests` in packages without tests
+- **Symptom**: `pnpm test` fails with "No test files found"
+- **Fix**: Already fixed in all package.json files
+
+---
+
+## Testing
+
+### 3. Using `browser_subagent` tool
+- **Symptom**: `ECONNREFUSED 127.0.0.1:9222`
+- **Fix**: Use Playwright E2E tests instead (CDP not available)
+
+### 4. Hardcoding entity IDs in tests
+- **Symptom**: Tests break when sample bundle changes
+- **Fix**: Use `TEST_ENTITIES` constants or `getFirstEntityId()` helper
+
+### 5. Running `vitest` without `run` flag
+- **Symptom**: Tests hang waiting for input
+- **Fix**: All package.json scripts now use `vitest run`
+
+### 6. Editing sample bundle directly
+- **Symptom**: Tests pollute the external bundle
+- **Fix**: Use `createTempBundle()` for write operations
+
+---
+
+## MCP Server
+
+### 7. MCP response envelope structure confusion
+- **Symptom**: `result.data.find is not a function` or similar errors
+- **Root cause**: MCP tools return `{ok, tool, data: {actual_payload}}`
+- **Fix**: Access `result.data.data.bundles`, not `result.data.bundles`
+
+### 8. Webpack proxy not forwarding MCP requests
+- **Symptom**: MCP requests fail in browser but work via curl to 3001
+- **Root cause**: `getMcpServerUrl()` returns absolute URL instead of relative
+- **Fix**: Return empty string for browser context, use relative `/mcp` path
+
+### 9. MCP sampling without capability check
+- **Symptom**: Tool hangs indefinitely with thin HTTP clients
+- **Root cause**: `createMessage()` called without checking if client supports sampling
+- **Fix**: Check capabilities first:
+  ```typescript
+  const caps = this.server.server.getClientCapabilities();
+  if (!caps?.sampling) {
+      return toolError(TOOL_NAME, "UNSUPPORTED_CAPABILITY", "...");
+  }
+  ```
+
+### 10. Adding mimeType to MCP tool text content
+- **Symptom**: TypeScript error: "mimeType does not exist in type"
+- **Root cause**: MCP SDK `TextContent` type only has `{type, text, annotations?}`
+- **Fix**: `mimeType` only works on resources and embedded resources, not tool text content
+
+### 11. Inconsistent resource error format
+- **Symptom**: Agents struggle to parse resource errors
+- **Root cause**: Resources using `{error, message}` instead of tool format
+- **Fix**: Use `{ok: false, error: {code, message, details}}` for all responses (use `resourceError()` helper)
+
+### 12. MCP SDK requires index signature on response types
+- **Symptom**: TypeScript error "Index signature for type 'string' is missing"
+- **Root cause**: MCP SDK expects `{[x: string]: unknown}` on tool return types for compatibility
+- **Fix**: Add `[x: string]: unknown;` to response interfaces:
+  ```typescript
+  export interface ToolResponse {
+      content: Array<{ type: "text"; text: string }>;
+      structuredContent: Record<string, unknown>;
+      isError?: boolean;
+      [x: string]: unknown;  // MCP SDK compatibility
+  }
+  ```
+
+### 13. Using `z.object({}).strict()` for empty schema in registerTool
+- **Symptom**: TypeScript error "not assignable to parameter of type 'ZodRawShapeCompat'"
+- **Root cause**: SDK expects raw shape objects (plain objects with Zod types), not wrapped Zod objects
+- **Fix**: Use `{}` as empty schema:
+  ```typescript
+  this.server.registerTool("my_tool", {
+      description: "...",
+      inputSchema: {},  // NOT z.object({}).strict()
+      annotations: READ_ONLY_TOOL,
+  }, callback);
+  ```

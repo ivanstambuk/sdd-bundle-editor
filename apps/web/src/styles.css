@@ -3191,7 +3191,8 @@ form.rjsf {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 2px;
+  /* Tight coupling between label and value */
 }
 
 /* ========================================
@@ -3220,15 +3221,17 @@ form.rjsf {
 
 /* Value Styles - controlled by x-sdd-valueStyle */
 
-/* Plain (default): transparent background, no border */
+/* Plain (default): transparent background, no border, minimal padding */
 .rjsf-value--plain input[type="text"][readonly],
 .rjsf-value--plain input[type="number"][readonly] {
   background: transparent;
   border: none;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
+  /* Remove all padding for tight label-value coupling */
   color: var(--color-text-primary);
   font-weight: 500;
+  height: auto;
+  min-height: unset;
 }
 
 /* Boxed: with background and border (traditional input look) */

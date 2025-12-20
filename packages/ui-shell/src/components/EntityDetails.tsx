@@ -879,38 +879,59 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <span className="entity-id">{entity.id}</span>
         </div>
 
-        {/* Header metadata - fields with x-sdd-displayLocation: "header" */}
-        {headerMetadataFields.length > 0 && (
+        {/* Header status badges - enums with x-sdd-enumStyles go next to entity type */}
+        {headerMetadataFields.filter(f => f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
+          <div className="entity-header-badges">
+            {headerMetadataFields
+              .filter(f => f.fieldSchema?.['x-sdd-enumStyles'])
+              .map((field) => {
+                const enumStyles = field.fieldSchema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
+                const styleConfig = enumStyles?.[field.value];
+                const colorClass = styleConfig?.color ? `rjsf-enum-badge--${styleConfig.color}` : 'rjsf-enum-badge--neutral';
+
+                return (
+                  <span key={field.fieldName} className={`rjsf-enum-badge ${colorClass}`}>
+                    {field.value || '—'}
+                  </span>
+                );
+              })}
+          </div>
+        )}
+
+        {/* Header metadata - dates and text fields on the right */}
+        {headerMetadataFields.filter(f => !f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
           <div className="entity-header-metadata">
-            {headerMetadataFields.map((field, idx) => {
-              // Format date values nicely
-              let displayValue = field.value;
-              if (field.fieldSchema?.format === 'date' && displayValue) {
-                try {
-                  const date = new Date(displayValue);
-                  displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                } catch { /* keep original */ }
-              } else if (field.fieldSchema?.format === 'date-time' && displayValue) {
-                try {
-                  const date = new Date(displayValue);
-                  displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                } catch { /* keep original */ }
-              }
+            {headerMetadataFields
+              .filter(f => !f.fieldSchema?.['x-sdd-enumStyles'])
+              .map((field, idx, arr) => {
+                // Format date values nicely
+                let displayValue = field.value;
+                if (field.fieldSchema?.format === 'date' && displayValue) {
+                  try {
+                    const date = new Date(displayValue);
+                    displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  } catch { /* keep original */ }
+                } else if (field.fieldSchema?.format === 'date-time' && displayValue) {
+                  try {
+                    const date = new Date(displayValue);
+                    displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  } catch { /* keep original */ }
+                }
 
-              // For Actor refs, just show the ID cleanly
-              if (field.fieldSchema?.format === 'sdd-ref' && displayValue) {
-                // Strip common prefixes for cleaner display
-                displayValue = displayValue.replace(/^ACT-/, '').replace(/-/g, ' ');
-              }
+                // For Actor refs, just show the ID cleanly
+                if (field.fieldSchema?.format === 'sdd-ref' && displayValue) {
+                  // Strip common prefixes for cleaner display
+                  displayValue = displayValue.replace(/^ACT-/, '').replace(/-/g, ' ');
+                }
 
-              return (
-                <span key={field.fieldName} className="header-metadata-item">
-                  <span className="header-metadata-label">{field.label}:</span>
-                  <span className="header-metadata-value">{displayValue || '—'}</span>
-                  {idx < headerMetadataFields.length - 1 && <span className="header-metadata-sep">·</span>}
-                </span>
-              );
-            })}
+                return (
+                  <span key={field.fieldName} className="header-metadata-item">
+                    <span className="header-metadata-label">{field.label}:</span>
+                    <span className="header-metadata-value">{displayValue || '—'}</span>
+                    {idx < arr.length - 1 && <span className="header-metadata-sep">·</span>}
+                  </span>
+                );
+              })}
           </div>
         )}
 

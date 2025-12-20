@@ -1138,12 +1138,24 @@ body {
   gap: var(--spacing-md);
 }
 
-/* Header metadata - system fields shown in header (createdDate, modifiedDate, etc.) */
-.entity-header-metadata {
-  flex: 1;
+/* Header status badges - Status/Confidence enums shown next to entity type */
+.entity-header-badges {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.entity-header-badges .rjsf-enum-badge {
+  /* Slightly smaller in header context */
+  padding: 4px 10px;
+  font-size: var(--font-size-xs);
+}
+
+/* Header metadata - dates and text fields shown on the right */
+.entity-header-metadata {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);

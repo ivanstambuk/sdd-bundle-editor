@@ -129,19 +129,32 @@ For each friction point, propose a solution with impact assessment:
 **Why save**: [Took multiple attempts / Used repeatedly / Non-obvious]
 ```
 
-## Step 2.7: Anti-Patterns Identified
+## Step 2.7: Fixable Issues (NOT Pitfalls!)
 
-Document things that DON'T work, to prevent future agents from trying them:
+**CRITICAL**: For each issue identified, ask: **"Can I fix this now?"**
+
+- If **YES** → Add to Quick Wins as a code/config fix
+- If **NO** (external dependency, requires major refactor) → Document as pitfall
+
+**NEVER document a pitfall for something you CAN fix.** Examples:
+
+| Issue | Can Fix? | Action |
+|-------|----------|--------|
+| Schema and bundle-type.json out of sync | YES | Fix the code to use single source of truth |
+| dev.sh doesn't clean up ports | YES | Add port cleanup to dev.sh |
+| External API has wrong response format | NO | Document as pitfall (we don't control it) |
+| Need to run `pnpm build` before test | YES | Add pre-build step to test script |
+
+**Pitfalls are a LAST RESORT** for things truly outside your control.
 
 ```markdown
-## Anti-Patterns (Don't Do This)
+## Anti-Patterns (Only if Unfixable)
 
-| Don't Do This | Because | Do This Instead |
-|---------------|---------|-----------------|
-| Hardcode `REQ-002` in tests | May not exist in bundle | Use `TEST_ENTITIES.REQUIREMENT` |
-| Expect `diagnostics: undefined` | Envelope uses empty array | Check for `[]` or missing field |
-| Run `pnpm test` without checking mode | May hang in watch mode | Use `pnpm test` (now fixed to run mode) |
+| Don't Do This | Because | Can We Fix It? | Fix or Pitfall |
+|---------------|---------|----------------|----------------|
+| [Bad pattern] | [Reason] | YES/NO | [If YES: "Fix: ..." / If NO: "Pitfall: ..."] |
 ```
+
 
 ## Step 3: Quick Wins Summary
 

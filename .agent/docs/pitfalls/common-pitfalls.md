@@ -273,3 +273,19 @@ See `/ui-validation` workflow for detailed process.
   # Option 3: Build all packages
   pnpm build
   ```
+
+### 24. Calling browser_subagent before verifying server is running
+- **Symptom**: Browser subagent times out, shows "connection timeout", opens about:blank, wastes time retrying
+- **Root cause**: The browser subagent has no context about whether the dev server is running. It cannot effectively debug connection issues.
+- **Fix**: Always verify server health BEFORE calling browser_subagent:
+  ```bash
+  # Quick health check (run in main session, not subagent)
+  curl -s --max-time 5 http://localhost:5173/ > /dev/null && echo "✓ Ready" || echo "✗ Not ready"
+  ```
+- **If not ready**: Start/restart server and wait for it:
+  ```bash
+  ./scripts/local/restart-dev.sh
+  # Poll until ready
+  for i in {1..30}; do curl -s --max-time 2 http://localhost:5173/ > /dev/null && break; sleep 1; done
+  ```
+- **Key insight**: The main session can run shell commands to check server status. The browser subagent cannot. Do the check in the main session before delegating to subagent.

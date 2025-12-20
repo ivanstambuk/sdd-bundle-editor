@@ -13,6 +13,30 @@ description: Validate UI changes using browser agent before and after modificati
 
 ## Standard Process
 
+### 0. Pre-flight: Verify Server Is Running
+**IMPORTANT**: Always verify the dev server is healthy BEFORE calling browser_subagent.
+The subagent cannot debug connection issues effectively.
+
+```bash
+# Check if server responds (timeout after 5 seconds)
+curl -s --max-time 5 http://localhost:5173/ > /dev/null && echo "✓ Server ready" || echo "✗ Server not responding"
+```
+
+If server is not ready:
+```bash
+# Start/restart the dev server
+./scripts/local/restart-dev.sh
+
+# Wait for server to be ready (poll health endpoint)
+for i in {1..30}; do
+  curl -s --max-time 2 http://localhost:5173/ > /dev/null && break
+  echo "Waiting for server... ($i/30)"
+  sleep 1
+done
+```
+
+Only proceed to browser_subagent after server responds.
+
 ### 1. Before Making Changes
 Use browser agent to capture the **current state**:
 ```

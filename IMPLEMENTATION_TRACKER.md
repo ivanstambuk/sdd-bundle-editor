@@ -75,3 +75,102 @@ The following major milestones have been completed:
   - Validate at bundle load time
   - Warn in MCP diagnostics or bundle validation
   - See "No Redundant Forward Links" rule in schema-authoring-guide.md
+
+### Entity Relationship Graph Visualization
+- [ ] Interactive graph view for entity types and relationships
+  - **Tab**: New "🗺️ Relationship Map" tab in BundleOverview
+  - **Library**: React Flow + dagre layout (recommended)
+  - **Nodes**: Entity types with colors from bundle-type config
+  - **Edges**: Relationships with labels (field name + cardinality)
+  - **Clustering**: Group nodes by category (already implemented in bundle-type.json)
+  - **Interactions**:
+    - Click node → navigate to entity type in sidebar
+    - Click edge → show relationship details tooltip
+    - Pan/zoom with minimap
+    - Optional: drag nodes to customize layout
+  - **Effort**: ~3 days for production-ready feature
+
+<details>
+<summary>Reference PlantUML Diagram (click to expand)</summary>
+
+```plantuml
+@startuml
+' SDD Core (v1.0.0) — relationship graph layout reference
+
+skinparam backgroundColor #FFFFFF
+skinparam dpi 100
+skinparam shadowing false
+skinparam linetype ortho
+skinparam ranksep 50
+skinparam nodesep 20
+
+hide members
+hide methods
+hide attributes
+hide circle
+
+package "Delivery & Scope" as P_Delivery {
+  class Feature   #bb9af7
+  class Requirement #7dcfff
+  class Task      #ff9e64
+  class Scenario  #7aa2f7
+  class Fixture   #e0af68
+  class Profile   #f7768e
+  class Actor     #ff7c6a
+}
+
+package "System & Interfaces" as P_System {
+  class Component #73daca
+  class Protocol
+  class DataSchema
+  class Viewpoint
+  class View
+}
+
+package "Governance & Guidance" as P_Govern {
+  class ADR #9ece6a
+  class Decision
+  class Principle
+  class Policy
+  class Constraint
+}
+
+package "Risk, Threats, Questions" as P_Risk {
+  class Risk
+  class Threat
+  class OpenQuestion
+}
+
+package "Observability & Ops" as P_Obs {
+  class TelemetrySchema
+  class TelemetryContract
+  class ErrorCode
+  class HealthCheckSpec
+}
+
+' Layout hints
+P_Delivery -[hidden]-> P_System
+P_System   -[hidden]-> P_Govern
+P_Govern   -[hidden]-> P_Risk
+P_Risk     -[hidden]-> P_Obs
+
+' Key relationships (subset for visual clarity)
+Requirement --> Feature : realizesFeatureIds [*]
+Task --> Requirement : fulfillsRequirementIds [*]
+Task --> Feature : belongsToFeatureIds [*]
+Feature --> ADR : governedByAdrIds [*]
+Component --> Feature : implementsFeatureIds [*]
+Component --> Protocol : providesProtocolIds [*]
+Scenario --> Feature : coversFeatures [*]
+Actor --> Scenario : participatesInScenarioIds [*]
+
+legend right
+[1] = single reference (string)
+[*] = list of references (array)
+endlegend
+
+@enduml
+```
+
+</details>
+

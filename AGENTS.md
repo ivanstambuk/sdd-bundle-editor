@@ -170,6 +170,18 @@ Would you like me to implement Option B?
 
 **Do NOT** present options neutrally without a recommendation. The user relies on your architectural judgment.
 
+### ⚠️ Anti-Patterns to AVOID
+
+| Don't Do This | Why It's Wrong | Do This Instead |
+|---------------|----------------|-----------------|
+| Recommend "keep current" because it's already implemented | This is the **lazy path** disguised as pragmatism | Recommend the architecturally correct option |
+| Suggest "document as pitfall" for fixable issues | Pitfalls are for external/unfixable problems only | Fix the underlying issue |
+| Default to "less refactoring" as a recommendation criterion | Implementation effort is NOT an architectural concern | Focus on SSOT, separation of concerns, pattern consistency |
+| Say "Option B for now, Option A later" | Deferred architectural debt compounds | Recommend Option A, let user decide on timing |
+
+**The user is paying for architectural judgment, not path-of-least-resistance suggestions.**
+
+
 ---
 
 ## Reusable Patterns & Snippets

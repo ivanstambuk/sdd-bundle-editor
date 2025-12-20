@@ -34,13 +34,17 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
     'x-sdd-ui', 'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
     'x-sdd-widget', 'x-sdd-displayHint', 'x-sdd-enumDescriptions',
     'x-sdd-layout', 'x-sdd-indicator', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups',
-    'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel'
+    'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
+    // Visual hierarchy keywords
+    'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
+    'x-sdd-enumStyles'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({
       keyword,
       // These keywords are metadata; they do not affect validation.
-      schemaType: ['string', 'array', 'object'],
+      // Allow all primitive types plus arrays and objects for maximum flexibility
+      schemaType: ['string', 'number', 'boolean', 'array', 'object'],
       errors: false,
     });
   }

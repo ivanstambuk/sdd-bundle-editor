@@ -19,7 +19,10 @@ const validator = customizeValidator({
       'x-sdd-displayHint', 'x-sdd-enumDescriptions',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
       'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
-      'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel'
+      'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
+      // Visual hierarchy keywords
+      'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
+      'x-sdd-enumStyles'
     ],
   },
 });
@@ -84,16 +87,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   }
 
   // Create a filtered schema for a specific layout group
+  // Sorts fields by x-sdd-order (fields without order come last)
   const createFilteredSchema = (groupKey: string): Record<string, unknown> | null => {
     if (!schema || !schema.properties) return null;
 
     const props = schema.properties as Record<string, any>;
-    const filteredProps: Record<string, any> = {};
+    const filteredEntries: [string, any][] = [];
     const filteredRequired: string[] = [];
 
     for (const [fieldName, fieldSchema] of Object.entries(props)) {
       if (fieldToGroup[fieldName] === groupKey) {
-        filteredProps[fieldName] = fieldSchema;
+        filteredEntries.push([fieldName, fieldSchema]);
         // Check if field is in required list
         if (Array.isArray(schema.required) && schema.required.includes(fieldName)) {
           filteredRequired.push(fieldName);
@@ -101,11 +105,24 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       }
     }
 
-    if (Object.keys(filteredProps).length === 0) return null;
+    if (filteredEntries.length === 0) return null;
+
+    // Sort by x-sdd-order (default to Infinity for fields without order)
+    filteredEntries.sort((a, b) => {
+      const orderA = a[1]?.['x-sdd-order'] ?? Infinity;
+      const orderB = b[1]?.['x-sdd-order'] ?? Infinity;
+      return orderA - orderB;
+    });
+
+    // Rebuild properties object in sorted order
+    const sortedProps: Record<string, any> = {};
+    for (const [name, fieldSchema] of filteredEntries) {
+      sortedProps[name] = fieldSchema;
+    }
 
     return {
       ...schema,
-      properties: filteredProps,
+      properties: sortedProps,
       required: filteredRequired,
     };
   };
@@ -222,19 +239,43 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const hasDescription = !isRoot && rawDescription && rawDescription.trim();
     const sizeClass = getFieldSizeClass();
 
+    // Visual hierarchy: read prominence from schema
+    const prominence = schema?.['x-sdd-prominence'] as string | undefined;
+    const prominenceLabel = schema?.['x-sdd-prominenceLabel'] as string | undefined;
+    const prominenceIcon = schema?.['x-sdd-prominenceIcon'] as string | undefined;
+    const prominenceClass = prominence ? `rjsf-field--${prominence}` : '';
+
+    // Hero and primary prominence get special headers
+    const showProminenceHeader = (prominence === 'hero' || prominence === 'primary') && prominenceLabel;
+
     return (
-      <div className={`rjsf-field ${sizeClass}`}>
-        <div className="rjsf-field-label">
-          <label htmlFor={id}>
-            {formattedLabel}
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          {hasDescription && (
-            <span className="field-help-icon" title={rawDescription}>
-              ⓘ
-            </span>
-          )}
-        </div>
+      <div
+        className={`rjsf-field ${sizeClass} ${prominenceClass}`}
+        data-prominence={prominence || 'secondary'}
+      >
+        {/* Prominence header for hero/primary fields */}
+        {showProminenceHeader && (
+          <div className="rjsf-prominence-header">
+            {prominenceIcon && <span className="rjsf-prominence-icon">{prominenceIcon}</span>}
+            <span className="rjsf-prominence-title">{prominenceLabel}</span>
+          </div>
+        )}
+
+        {/* Normal field label (skip for hero/primary with prominence header to avoid duplication) */}
+        {!showProminenceHeader && (
+          <div className="rjsf-field-label">
+            <label htmlFor={id}>
+              {formattedLabel}
+              {required && <span className="required-asterisk">*</span>}
+            </label>
+            {hasDescription && (
+              <span className="field-help-icon" title={rawDescription}>
+                ⓘ
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="rjsf-field-content">
           {children}
         </div>

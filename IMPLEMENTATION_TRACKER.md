@@ -64,4 +64,14 @@ The following major milestones have been completed:
 - [ ] Create `formatDateForDisplay()` utility
   - Date formatting is currently inline in header rendering
   - Reusable across UI components
+- [ ] Extract `SyntaxHighlighter` component
+  - Prism.js highlighting duplicated in 3 components (EntityDetails, EntityTypeDetails, BundleOverview)
+  - Single component: `<SyntaxHighlighter language="yaml|json" content={content} />`
+  - Centralizes Prism config, language imports, memoization
 
+### Schema Validation
+- [ ] Redundant bidirectional link detection
+  - Rule: If A→B exists, B→A is redundant
+  - Validate at bundle load time
+  - Warn in MCP diagnostics or bundle validation
+  - See "No Redundant Forward Links" rule in schema-authoring-guide.md

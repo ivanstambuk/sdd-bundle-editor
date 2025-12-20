@@ -4820,6 +4820,7 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
   font-weight: 600;
 }
+
 /* ========================================
    PlantUML Diagram Rendering
    ======================================== */
@@ -4906,7 +4907,8 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
   display: flex;
   align-items: center;
-  min-height: 36px; /* Match input field height */
+  min-height: 36px;
+  /* Match input field height */
 }
 
 .date-widget--empty {
@@ -4915,11 +4917,6 @@ form input[type="checkbox"] {
 
 .date-widget--readonly {
   font-weight: 400;
-  padding: var(--spacing-sm);
-  background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  width: 100%;
 }
 
 .date-widget--editable {

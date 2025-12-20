@@ -78,34 +78,49 @@
     .map(el => el.className)
   ```
 
-### 25. RJSF renders formData fields even when not in schema properties
+### 25. RJSF renders fields not in filtered schema properties
 - **Symptom**: Fields appear in form even though they're excluded from the filtered schema (e.g., header-only fields showing in all tabs)
-- **Root cause**: RJSF v5 renders fields from `formData` regardless of whether they're in `schema.properties`. The `additionalProperties: false` controls validation, not rendering.
-- **Fix**: Filter `formData` to only include fields defined in the schema:
-  ```tsx
-  const filterFormDataToSchema = (
-    data: Record<string, any>,
-    schemaToMatch: Record<string, unknown> | null | undefined
-  ): Record<string, any> => {
-    if (!data || !schemaToMatch || !schemaToMatch.properties) return data;
-    const schemaProps = schemaToMatch.properties as Record<string, any>;
-    const filtered: Record<string, any> = {};
-    for (const key of Object.keys(schemaProps)) {
-      if (key in data) {
-        filtered[key] = data[key];
-      }
+- **Root causes** (TWO issues):
+  1. RJSF v5 renders `formData` fields regardless of schema - filter formData too
+  2. JSON Schema `if/then/else` blocks define additional properties that RJSF merges into the form
+
+#### Part 1: Filter formData to match schema
+```tsx
+const filterFormDataToSchema = (
+  data: Record<string, any>,
+  schemaToMatch: Record<string, unknown> | null | undefined
+): Record<string, any> => {
+  if (!data || !schemaToMatch || !schemaToMatch.properties) return data;
+  const schemaProps = schemaToMatch.properties as Record<string, any>;
+  const filtered: Record<string, any> = {};
+  for (const key of Object.keys(schemaProps)) {
+    if (key in data) {
+      filtered[key] = data[key];
     }
-    return filtered;
-  };
-  
-  // Use filtered data
-  <Form
-    schema={filteredSchema}
-    formData={filterFormDataToSchema(entity.data, filteredSchema)}
-    ...
-  />
-  ```
-- **Note**: Already implemented in EntityDetails.tsx for both layout-grouped and non-grouped forms
+  }
+  return filtered;
+};
+```
+
+#### Part 2: Strip conditional schema keywords
+**Critical**: The spread operator `{...schema, properties: filtered}` copies `if/then/else` blocks. RJSF evaluates these and merges their properties back in!
+
+```tsx
+// WRONG - copies conditional blocks that bypass filtering
+return { ...schema, properties: filteredProps };
+
+// CORRECT - strip conditional keywords first
+const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema as any;
+return { ...schemaBase, properties: filteredProps };
+```
+
+#### Debugging tip
+Check if schema uses conditionals before debugging RJSF issues:
+```bash
+cat schema.json | jq '{hasThen: (.then != null), thenProps: (.then.properties // {} | keys)}'
+```
+
+- **Note**: Both fixes implemented in EntityDetails.tsx for layout-grouped and non-grouped forms
 
 ---
 

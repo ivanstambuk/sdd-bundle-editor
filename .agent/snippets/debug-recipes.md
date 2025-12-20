@@ -358,3 +358,65 @@ cat schemas/ADR.schema.json | jq '[.properties | to_entries[] |
 # Deep-dive into one field's schema
 cat schemas/ADR.schema.json | jq '.properties.confidence'
 ```
+
+---
+
+## Schema Conditional Keyword Audit
+
+**Problem**: JSON Schema `if/then/else` blocks can define additional properties that RJSF merges into the form, bypassing property filtering. This caused the "confidence field duplication" bug.
+
+### Check if schema uses conditional keywords
+
+```bash
+# Quick check - does this schema have conditionals?
+cat schemas/ADR.schema.json | jq '{
+  hasIf: (.if != null),
+  hasThen: (.then != null),
+  hasElse: (.else != null),
+  hasAllOf: (.allOf != null),
+  hasAnyOf: (.anyOf != null),
+  hasOneOf: (.oneOf != null)
+}'
+```
+
+### View properties defined in conditional blocks
+
+```bash
+# See what fields are in then/else blocks (may bypass UI filtering!)
+cat schemas/ADR.schema.json | jq '{
+  thenProperties: (.then.properties // {} | keys),
+  elseProperties: (.else.properties // {} | keys),
+  thenRequired: (.then.required // []),
+  elseRequired: (.else.required // [])
+}'
+```
+
+### Full conditional audit
+
+```bash
+# Comprehensive audit - fields in conditionals vs main properties
+cat schemas/ADR.schema.json | jq '{
+  mainProperties: (.properties | keys),
+  conditionalProperties: (
+    ((.then.properties // {}) | keys) +
+    ((.else.properties // {}) | keys) +
+    ((.allOf // []) | map(.properties // {} | keys) | flatten) +
+    ((.anyOf // []) | map(.properties // {} | keys) | flatten) +
+    ((.oneOf // []) | map(.properties // {} | keys) | flatten)
+  ) | unique,
+  overlap: (
+    (.properties | keys) as $main |
+    (
+      ((.then.properties // {}) | keys) +
+      ((.else.properties // {}) | keys)
+    ) | map(select(. as $k | $main | index($k)))
+  )
+}'
+```
+
+**Why this matters**: When filtering schemas for layout groups or header fields, RJSF evaluates `if/then/else` and merges properties from matching conditional blocks. Fields defined in `then.properties` will appear in the form even if excluded from the main `properties` filter.
+
+**Solution in code**: Strip conditional keywords when building filtered schemas:
+```typescript
+const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema;
+```

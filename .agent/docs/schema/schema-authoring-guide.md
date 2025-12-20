@@ -535,6 +535,41 @@ Move system metadata fields to the entity header bar instead of the main form.
 - Actor refs cleaned (ACT- prefix removed)
 - Fields are excluded from main form
 
+### ⚠️ Conditional Schema Warning (if/then/else)
+
+If you use JSON Schema `if/then/else` to conditionally require fields, be aware:
+
+1. **Fields in `then.properties` bypass UI property filtering** - RJSF evaluates conditionals and merges matching properties
+2. **The UI strips conditional keywords** when filtering schemas for layout groups or header fields (see EntityDetails.tsx)
+3. **Ensure `x-sdd-displayLocation` is consistent** - if a field appears in both `properties` and `then.properties`, both definitions should have the same `x-sdd-*` hints
+
+**Example - Field in both places:**
+```json
+{
+  "properties": {
+    "confidence": {
+      "type": "string",
+      "x-sdd-displayLocation": "header"  // ← Mark as header-only
+    }
+  },
+  "if": { "properties": { "status": { "enum": ["accepted"] } } },
+  "then": {
+    "properties": {
+      "confidence": {
+        "type": "string",
+        "x-sdd-displayLocation": "header"  // ← ALSO mark here!
+      }
+    },
+    "required": ["confidence"]
+  }
+}
+```
+
+**Debugging tip**: Check for conditional blocks:
+```bash
+cat schema.json | jq '{hasThen: (.then != null), thenProps: (.then.properties // {} | keys)}'
+```
+
 ---
 
 ## Complete Example

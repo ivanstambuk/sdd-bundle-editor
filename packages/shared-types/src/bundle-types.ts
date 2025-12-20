@@ -14,6 +14,23 @@
  */
 
 /**
+ * Configuration for an entity category.
+ * Categories group related entity types for UI organization and graph visualization.
+ */
+export interface BundleTypeCategoryConfig {
+    /** Unique identifier for the category (e.g., "architecture", "governance") */
+    name: string;
+    /** Human-readable display name (e.g., "Architecture & Design") */
+    displayName: string;
+    /** Optional emoji or icon for the category */
+    icon?: string;
+    /** Optional color for visual grouping in graphs (CSS color, e.g. '#bb9af780') */
+    color?: string;
+    /** Display order (lower = first); undefined sorts last */
+    order?: number;
+}
+
+/**
  * Configuration for an entity type within a bundle type definition.
  * Defines where entities of this type are stored and how they're identified.
  */
@@ -32,6 +49,8 @@ export interface BundleTypeEntityConfig {
     role?: string;
     /** Optional color for UI display (CSS color value, e.g. '#bb9af7') */
     color?: string;
+    /** Category this entity type belongs to (references category.name) */
+    category?: string;
 }
 
 /**
@@ -60,6 +79,8 @@ export interface BundleTypeDefinition {
     bundleType: string;
     /** Version of the bundle type definition */
     version: string;
+    /** Category definitions for grouping entity types */
+    categories?: BundleTypeCategoryConfig[];
     /** Entity type configurations */
     entities: BundleTypeEntityConfig[];
     /** Relationship definitions (optional) */

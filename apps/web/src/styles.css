@@ -1148,6 +1148,71 @@ body {
 }
 
 /* ========================================
+   Entity Categories
+   ======================================== */
+.entity-category {
+  margin-bottom: var(--spacing-xs);
+}
+
+.entity-category-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-bg-tertiary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  user-select: none;
+}
+
+.entity-category-header:hover {
+  background: var(--color-bg-hover);
+}
+
+.entity-category-chevron {
+  width: 14px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.entity-category-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.entity-category-name {
+  flex: 1;
+}
+
+.entity-category-count {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.entity-category-content {
+  padding-left: var(--spacing-md);
+  margin-top: 2px;
+}
+
+/* Increase indentation for entity items inside categories */
+.entity-category .entity-btn {
+  padding-left: calc(32px + var(--spacing-md));
+}
+
+/* ========================================
    Entity Details Panel
    ======================================== */
 .entity-details {

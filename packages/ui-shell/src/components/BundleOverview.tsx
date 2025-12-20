@@ -127,10 +127,21 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
+    // Sort relationships by fromEntity (alphabetically), then by toEntity
+    const sortedRelations = useMemo(() => {
+        return [...relations].sort((a, b) => {
+            // Primary sort: fromEntity (A→Z)
+            const fromCompare = a.fromEntity.localeCompare(b.fromEntity);
+            if (fromCompare !== 0) return fromCompare;
+            // Secondary sort: toEntity (A→Z)
+            return a.toEntity.localeCompare(b.toEntity);
+        });
+    }, [relations]);
+
     // Render the Relationships tab content
     const renderRelationshipsTab = () => (
         <div className="bundle-tab-content">
-            {relations.length > 0 ? (
+            {sortedRelations.length > 0 ? (
                 <>
                     <div className="bundle-relations">
                         <table className="properties-table">
@@ -143,7 +154,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {relations.map((rel, idx) => {
+                                {sortedRelations.map((rel, idx) => {
                                     const displayName = getFieldDisplayName(
                                         bundle.schemas,
                                         rel.fromEntity,

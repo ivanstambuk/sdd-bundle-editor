@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-json';
 import type { UiBundleSnapshot } from '../types';
 import { TabBar, type Tab } from './TabBar';
 import { EmptyState } from './EmptyState';
@@ -182,11 +184,25 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
-    // Render the Raw Schema tab content
+    // Render the Raw Schema tab content with syntax highlighting
+    const schemaJson = useMemo(() => {
+        return bundleDef ? JSON.stringify(bundleDef, null, 2) : '';
+    }, [bundleDef]);
+
+    const highlightedSchema = useMemo(() => {
+        if (!schemaJson) return '';
+        return Prism.highlight(schemaJson, Prism.languages['json'], 'json');
+    }, [schemaJson]);
+
     const renderRawSchemaTab = () => (
         <div className="bundle-tab-content">
             {bundleDef ? (
-                <pre className="code-block">{JSON.stringify(bundleDef, null, 2)}</pre>
+                <pre className="code-block json-block">
+                    <code
+                        className="language-json"
+                        dangerouslySetInnerHTML={{ __html: highlightedSchema }}
+                    />
+                </pre>
             ) : (
                 <EmptyState
                     icon="📄"

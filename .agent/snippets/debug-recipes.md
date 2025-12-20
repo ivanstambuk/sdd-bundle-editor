@@ -458,3 +458,42 @@ function computeHash(content: string): string {
 
 **Why save**: Non-obvious async pattern with Web Crypto API, useful for content-addressable caching.
 
+---
+
+## Bundle Validation After Programmatic Modifications
+
+**Problem**: After modifying sample bundle files via shell scripts or Python, validation errors may go unnoticed until the UI is loaded.
+
+**ALWAYS run validation after programmatic bundle changes:**
+
+```bash
+# Quick validation via MCP server (requires dev server running)
+curl -s http://localhost:3001/mcp -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"validate_bundle","arguments":{"bundlePath":"/home/ivan/dev/sdd-sample-bundle"}}}' | jq '.result.content[0].text' | head -50
+
+# Alternative: Start dev server and check UI diagnostics panel
+./scripts/local/dev.sh
+# Then open http://localhost:5173 and check for red error badges
+```
+
+**Common validation errors after bulk edits:**
+
+| Error | Root Cause | Fix |
+|-------|-----------|-----|
+| `must match format "date"` | Schema expects `date` but data has `date-time` | Update schema to `format: "date-time"` or fix data |
+| `Broken reference` | Added field references entity ID that doesn't exist | Create the missing entity or fix the reference |
+| `is required` | Added field to `required` array but data lacks it | Add field to data files or remove from required |
+
+**Preventive pattern**: Before committing programmatic changes:
+```bash
+# 1. Run your modification script
+python3 update_entities.py
+
+# 2. Validate immediately
+curl -s http://localhost:3001/mcp -X POST ... | jq '.result'
+
+# 3. Only commit if validation passes
+git add -A && git commit -m "fix: ..."
+```
+

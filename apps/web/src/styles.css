@@ -3180,7 +3180,7 @@ form.rjsf {
 
 /* Hero prominence - THE key answer/decision (most important) */
 .rjsf-field--hero {
-  background: linear-gradient(135deg, var(--color-bg-secondary), rgba(16, 185, 129, 0.08));
+  background: linear-gradient(135deg, var(--color-bg-secondary), rgba(16, 185, 129, 0.15));
   border: 2px solid var(--color-success);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
@@ -3202,12 +3202,25 @@ form.rjsf {
   color: var(--color-success);
 }
 
+/* Remove nested borders inside hero sections for cleaner look */
+.rjsf-field--hero .rjsf-field-content input,
+.rjsf-field--hero .rjsf-field-content textarea,
+.rjsf-field--hero .rjsf-field-content select {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.rjsf-field--hero .rjsf-field-content textarea {
+  min-height: auto;
+}
+
 /* Primary prominence - important emphasized field */
 .rjsf-field--primary {
   border-left: 4px solid var(--color-accent);
   padding-left: var(--spacing-md);
   margin: var(--spacing-sm) 0;
-  background: rgba(99, 102, 241, 0.03);
+  background: rgba(99, 102, 241, 0.05);
 }
 
 .rjsf-field--primary .rjsf-prominence-header {
@@ -3222,6 +3235,19 @@ form.rjsf {
 .rjsf-field--primary .rjsf-prominence-icon {
   color: var(--color-accent);
   font-size: var(--font-size-base);
+}
+
+/* Remove nested borders inside primary sections for cleaner look */
+.rjsf-field--primary .rjsf-field-content input,
+.rjsf-field--primary .rjsf-field-content textarea,
+.rjsf-field--primary .rjsf-field-content select {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.rjsf-field--primary .rjsf-field-content textarea {
+  min-height: auto;
 }
 
 /* Secondary prominence - default/normal (no special styling needed) */

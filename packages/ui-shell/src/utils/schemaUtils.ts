@@ -103,18 +103,35 @@ export function extractRelationsFromSchemas(
             const propSchema = propSchemaObj as Record<string, unknown>;
             if (!propSchema) continue;
 
-            // Check for x-sdd-refTargets (array of target entity types)
-            const refTargets = propSchema['x-sdd-refTargets'] as string[] | undefined;
+            // Check for x-sdd-refTargets at property level (for single refs)
+            let refTargets = propSchema['x-sdd-refTargets'] as string[] | undefined;
+            let isMany = false;
+
+            // Also check inside items for array fields (common pattern)
+            if ((!refTargets || refTargets.length === 0) && propSchema.items) {
+                const items = propSchema.items as Record<string, unknown>;
+                if (items && items['x-sdd-refTargets']) {
+                    refTargets = items['x-sdd-refTargets'] as string[];
+                    isMany = true; // Array of refs
+                }
+            }
+
+            // Also check if it's an array type with direct refTargets
+            if (propSchema.type === 'array' && refTargets && refTargets.length > 0) {
+                isMany = true;
+            }
+
             if (!refTargets || !Array.isArray(refTargets) || refTargets.length === 0) continue;
 
-            // Determine if it's a many relationship (array type or items with refTargets)
-            const isMany = propSchema.type === 'array' ||
-                Boolean(propSchema.items && typeof propSchema.items === 'object');
-
-            // Get display name from title or derive from field name
-            const displayName = typeof propSchema.title === 'string'
-                ? propSchema.title
-                : camelCaseToTitleCase(fieldName);
+            // Get display name from title (check both property and items level)
+            let displayName: string;
+            if (typeof propSchema.title === 'string') {
+                displayName = propSchema.title;
+            } else if (propSchema.items && typeof (propSchema.items as Record<string, unknown>).title === 'string') {
+                displayName = (propSchema.items as Record<string, unknown>).title as string;
+            } else {
+                displayName = camelCaseToTitleCase(fieldName);
+            }
 
             // Create a relation for each target entity type
             for (const toEntity of refTargets) {
@@ -131,3 +148,4 @@ export function extractRelationsFromSchemas(
 
     return relations;
 }
+

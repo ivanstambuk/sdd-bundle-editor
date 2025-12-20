@@ -54,10 +54,13 @@ For each friction point, propose a solution with impact assessment:
 
 ## Step 2.5: Architectural & Code Improvements
 
+**⚠️ ARCHITECTURAL-FIRST PRINCIPLE**: When proposing improvements, always recommend the architecturally correct solution, NOT the laziest one. Do NOT recommend "keep current" just because it's less work. See AGENTS.md for full guidelines.
+
 **IMPORTANT**: Beyond process fixes, identify **code and architecture improvements** that would make future development easier. These should be:
 - **Generic** (not task-specific)
 - **Reusable** (benefits multiple future features)
 - **Foundational** (improves reasoning about the code)
+
 
 ```markdown
 ## Architectural Improvements

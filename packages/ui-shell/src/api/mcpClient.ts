@@ -339,3 +339,43 @@ export function getMcpServerUrl(): string {
     return 'http://localhost:3001';
 }
 
+// ============================================
+// Simple Tool Call Helper
+// ============================================
+
+/** Shared MCP client instance for simple tool calls */
+let sharedClient: McpClient | null = null;
+
+/**
+ * Simple helper to call an MCP tool.
+ * 
+ * Manages a shared client instance and unwraps the response envelope.
+ * For more control, use McpClient directly.
+ * 
+ * @example
+ * const result = await callMcpTool<{ svg: string }>('render_plantuml', { code: '...' });
+ */
+export async function callMcpTool<T = unknown>(
+    tool: string,
+    args: Record<string, unknown> = {}
+): Promise<T> {
+    if (!sharedClient) {
+        sharedClient = createMcpClient();
+    }
+
+    const result = await sharedClient.callTool<McpEnvelope<T>>(tool, args);
+
+    if (result.isError) {
+        throw new Error(`MCP tool ${tool} failed`);
+    }
+
+    // Handle envelope structure: { ok, tool, data: T }
+    const envelope = result.data;
+    if (envelope && typeof envelope === 'object' && 'data' in envelope) {
+        return envelope.data as T;
+    }
+
+    // If not wrapped in envelope, return as-is
+    return result.data as T;
+}
+

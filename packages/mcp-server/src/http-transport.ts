@@ -6,6 +6,7 @@
  */
 import express, { Request, Response, NextFunction } from "express";
 import { randomUUID } from "node:crypto";
+import { spawn } from "node:child_process";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -75,6 +76,111 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
             createdAt: session.createdAt.toISOString(),
         }));
         res.json({ sessions: sessionList });
+    });
+
+    // ============================================
+    // PlantUML Rendering API (for web UI only)
+    // AI clients can use local plantuml CLI directly
+    // ============================================
+
+    // Simple in-memory cache for rendered diagrams
+    const diagramCache = new Map<string, string>();
+    const MAX_CACHE_SIZE = 100;
+
+    /**
+     * Normalize PlantUML code by ensuring it has @startuml/@enduml tags
+     */
+    function normalizePlantUml(code: string): string {
+        const trimmed = code.trim();
+        if (!trimmed.startsWith('@startuml')) {
+            return `@startuml\n${trimmed}\n@enduml`;
+        }
+        return trimmed;
+    }
+
+    /**
+     * Render PlantUML to SVG using the CLI
+     */
+    async function renderPlantUmlToSvg(code: string): Promise<string> {
+        const normalizedCode = normalizePlantUml(code);
+
+        // Check cache first
+        const cached = diagramCache.get(normalizedCode);
+        if (cached) {
+            return cached;
+        }
+
+        return new Promise((resolve, reject) => {
+            const proc = spawn('plantuml', ['-tsvg', '-pipe'], {
+                stdio: ['pipe', 'pipe', 'pipe'],
+            });
+
+            let stdout = '';
+            let stderr = '';
+
+            proc.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
+
+            proc.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
+
+            proc.on('error', (err) => {
+                reject(new Error(`Failed to spawn plantuml: ${err.message}. Is plantuml installed?`));
+            });
+
+            proc.on('close', (exitCode) => {
+                if (exitCode !== 0) {
+                    reject(new Error(`PlantUML failed (exit ${exitCode}): ${stderr}`));
+                    return;
+                }
+
+                // Extract just the SVG content (remove XML declaration)
+                let svg = stdout;
+                const svgStart = svg.indexOf('<svg');
+                if (svgStart > 0) {
+                    svg = svg.substring(svgStart);
+                }
+
+                // Cache the result (with size limit)
+                diagramCache.set(normalizedCode, svg);
+                if (diagramCache.size > MAX_CACHE_SIZE) {
+                    const firstKey = diagramCache.keys().next().value;
+                    if (firstKey) diagramCache.delete(firstKey);
+                }
+
+                resolve(svg);
+            });
+
+            // Send the PlantUML code to stdin
+            proc.stdin.write(normalizedCode);
+            proc.stdin.end();
+        });
+    }
+
+    /**
+     * POST /api/plantuml - Render PlantUML to SVG
+     * 
+     * Request body: { code: string }
+     * Response: { svg: string } or { error: string }
+     */
+    app.post("/api/plantuml", async (req: Request, res: Response) => {
+        const { code } = req.body as { code?: string };
+
+        if (!code || typeof code !== 'string' || !code.trim()) {
+            res.status(400).json({ error: 'PlantUML code is required' });
+            return;
+        }
+
+        try {
+            const svg = await renderPlantUmlToSvg(code);
+            res.json({ svg });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            console.error('[PlantUML] Render error:', message);
+            res.status(500).json({ error: message });
+        }
     });
 
     /**

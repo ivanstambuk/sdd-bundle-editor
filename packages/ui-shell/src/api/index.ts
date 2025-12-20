@@ -10,7 +10,7 @@
 export { fetchJson, fetchWithRetry } from './fetchUtils';
 
 // MCP-based API (primary)
-export { McpClient, createMcpClient, getMcpServerUrl } from './mcpClient';
+export { McpClient, createMcpClient, getMcpServerUrl, callMcpTool } from './mcpClient';
 export type { McpBundle, McpEntity, McpSearchResult, McpValidationResult } from './mcpClient';
 export { McpBundleApi, getMcpBundleApi, mcpBundleApi, type BundleResponse, type ValidateResponse } from './mcpBundleApi';
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { PlantUmlDiagram } from './PlantUmlDiagram';
 
 interface MarkdownWidgetProps {
     id: string;
@@ -9,6 +10,52 @@ interface MarkdownWidgetProps {
     disabled?: boolean;
     readonly?: boolean;
     placeholder?: string;
+}
+
+/**
+ * Custom code block renderer that handles PlantUML diagrams.
+ * Other code blocks are rendered normally with syntax highlighting.
+ */
+function CodeBlock({ node, className, children, ...props }: any) {
+    // Extract language from className (e.g., "language-plantuml")
+    const match = /language-(\w+)/.exec(className || '');
+    const language = match ? match[1] : '';
+
+    // Render PlantUML diagrams inline
+    if (language === 'plantuml' || language === 'puml') {
+        const code = String(children).replace(/\n$/, '');
+        return <PlantUmlDiagram code={code} />;
+    }
+
+    // Default code block rendering
+    return (
+        <code className={className} {...props}>
+            {children}
+        </code>
+    );
+}
+
+/**
+ * Custom pre block renderer that handles PlantUML and Mermaid diagrams.
+ */
+function PreBlock({ children, ...props }: any) {
+    // Check if this is a PlantUML code block
+    const childArray = React.Children.toArray(children);
+    const childElement = childArray[0];
+
+    // Type guard: check if it's a valid React element with props
+    if (React.isValidElement(childElement)) {
+        const childProps = childElement.props as Record<string, unknown>;
+        const className = typeof childProps.className === 'string' ? childProps.className : '';
+        const match = /language-(plantuml|puml)/.exec(className);
+        if (match) {
+            // Don't wrap PlantUML in <pre>, the CodeBlock handles it
+            return <>{children}</>;
+        }
+    }
+
+    // Default pre block
+    return <pre {...props}>{children}</pre>;
 }
 
 /**
@@ -24,6 +71,13 @@ interface MarkdownWidgetProps {
  * - Strikethrough (~~text~~)
  * - Task lists (- [ ] item)
  * - Autolinks
+ * 
+ * Also supports PlantUML diagrams in fenced code blocks:
+ * ```plantuml
+ * @startuml
+ * Alice -> Bob: Hello
+ * @enduml
+ * ```
  */
 export function MarkdownWidget(props: MarkdownWidgetProps) {
     const { id, value, onChange, disabled, readonly, placeholder } = props;
@@ -31,6 +85,12 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
 
     const textValue = value ?? '';
     const isReadOnly = disabled || readonly;
+
+    // Custom components for ReactMarkdown
+    const components = {
+        code: CodeBlock,
+        pre: PreBlock,
+    };
 
     // In read-only mode, just render the markdown
     if (isReadOnly) {
@@ -44,7 +104,9 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
 
         return (
             <div className="markdown-widget markdown-readonly">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{textValue}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+                    {textValue}
+                </ReactMarkdown>
             </div>
         );
     }
@@ -72,7 +134,9 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
             {showPreview ? (
                 <div className="markdown-preview">
                     {textValue.trim() ? (
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{textValue}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+                            {textValue}
+                        </ReactMarkdown>
                     ) : (
                         <em className="text-muted">Nothing to preview</em>
                     )}

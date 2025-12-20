@@ -142,3 +142,92 @@ const relationGroups = Object.entries(incomingByRelation).sort((a, b) =>
 - Semantically groups related items
 - Removes redundant "(relationship name)" suffix per item
 - Same relation name across entity types grouped together
+
+---
+
+## React Flow: EdgeLabelRenderer (HTML Labels Above Edges)
+
+When edge labels are crossed by connection lines, use `EdgeLabelRenderer` to render labels as HTML divs above the SVG layer.
+
+**Problem:** React Flow's default SVG labels render in the same group as edge paths, allowing lines to cross over labels depending on layout position.
+
+**Solution:** Create a custom edge component using `EdgeLabelRenderer`:
+
+```tsx
+import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath, type EdgeProps } from 'reactflow';
+
+export interface LabeledEdgeData {
+    label: string;
+    offset?: number;  // For parallel edges
+}
+
+export function LabeledEdge({
+    id, sourceX, sourceY, targetX, targetY,
+    sourcePosition, targetPosition, style, markerEnd, data,
+}: EdgeProps<LabeledEdgeData>) {
+    // getSmoothStepPath returns [path, labelX, labelY]
+    const [edgePath, labelX, labelY] = getSmoothStepPath({
+        sourceX, sourceY, sourcePosition,
+        targetX, targetY, targetPosition,
+        offset: data?.offset,
+        borderRadius: 8,
+    });
+
+    return (
+        <>
+            <BaseEdge id={id} path={edgePath} style={style} markerEnd={markerEnd} />
+            {data?.label && (
+                <EdgeLabelRenderer>
+                    <div style={{
+                        position: 'absolute',
+                        transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+                        pointerEvents: 'none',
+                        fontSize: 11,
+                        fontWeight: 500,
+                        color: 'var(--color-text-secondary)',
+                        backgroundColor: 'var(--color-surface-secondary)',
+                        padding: '4px 6px',
+                        borderRadius: 4,
+                        whiteSpace: 'nowrap',
+                    }}>
+                        {data.label}
+                    </div>
+                </EdgeLabelRenderer>
+            )}
+        </>
+    );
+}
+```
+
+**Usage in ReactFlow:**
+```tsx
+// Define edge types (must be memoized!)
+const edgeTypes: EdgeTypes = useMemo(
+    () => ({ labeled: LabeledEdge }),
+    []
+);
+
+// Use in edges array
+const edges: Edge<LabeledEdgeData>[] = [{
+    id: 'edge-1',
+    source: 'nodeA',
+    target: 'nodeB',
+    type: 'labeled',
+    data: { label: 'connected to [*]', offset: 30 },
+    style: { stroke: 'var(--color-border)', strokeWidth: 1.5 },
+}];
+
+// Pass edgeTypes to ReactFlow
+<ReactFlow
+    edgeTypes={edgeTypes}
+    defaultEdgeOptions={{ type: 'labeled' }}
+    // ...
+/>
+```
+
+**Key Points:**
+- `EdgeLabelRenderer` is a React portal rendering HTML outside SVG
+- Label coordinates (`labelX`, `labelY`) come from path utility functions
+- `transform: translate(-50%, -50%)` centers the label on the coordinates
+- `offset` param curves parallel edges to avoid overlap
+- Edge types must be memoized outside render to prevent recreation

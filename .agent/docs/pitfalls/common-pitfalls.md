@@ -78,6 +78,35 @@
     .map(el => el.className)
   ```
 
+### 25. RJSF renders formData fields even when not in schema properties
+- **Symptom**: Fields appear in form even though they're excluded from the filtered schema (e.g., header-only fields showing in all tabs)
+- **Root cause**: RJSF v5 renders fields from `formData` regardless of whether they're in `schema.properties`. The `additionalProperties: false` controls validation, not rendering.
+- **Fix**: Filter `formData` to only include fields defined in the schema:
+  ```tsx
+  const filterFormDataToSchema = (
+    data: Record<string, any>,
+    schemaToMatch: Record<string, unknown> | null | undefined
+  ): Record<string, any> => {
+    if (!data || !schemaToMatch || !schemaToMatch.properties) return data;
+    const schemaProps = schemaToMatch.properties as Record<string, any>;
+    const filtered: Record<string, any> = {};
+    for (const key of Object.keys(schemaProps)) {
+      if (key in data) {
+        filtered[key] = data[key];
+      }
+    }
+    return filtered;
+  };
+  
+  // Use filtered data
+  <Form
+    schema={filteredSchema}
+    formData={filterFormDataToSchema(entity.data, filteredSchema)}
+    ...
+  />
+  ```
+- **Note**: Already implemented in EntityDetails.tsx for both layout-grouped and non-grouped forms
+
 ---
 
 ## MCP Server

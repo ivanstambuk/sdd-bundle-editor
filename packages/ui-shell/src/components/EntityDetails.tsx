@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
@@ -9,6 +9,7 @@ import 'prismjs/components/prism-yaml';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
+import { exportEntityToMarkdown, downloadMarkdown } from '../utils/exportMarkdown';
 import { EntityTypeBadge } from './EntityTypeBadge';
 import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
@@ -982,6 +983,18 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         )}
 
         <div className="entity-header-actions">
+          <button
+            type="button"
+            className="export-button"
+            onClick={() => {
+              const result = exportEntityToMarkdown(entity, bundle, { includeDependencies: true });
+              const filename = `${entity.id}.md`;
+              downloadMarkdown(result.markdown, filename);
+            }}
+            title="Export to Markdown (includes dependencies)"
+          >
+            📄 Export
+          </button>
           {hasDiagnostics && (
             <span className="diagnostics-badge" title={`${errorCount} errors, ${warningCount} warnings`}>
               {errorCount > 0 && <span className="error-count">⛔ {errorCount}</span>}

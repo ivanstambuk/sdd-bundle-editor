@@ -13,6 +13,7 @@
  * - validation-tools.ts: validate_bundle
  * - mutation-tools.ts: apply_changes
  * - sampling-tools.ts: critique_bundle
+ * - export-tools.ts: export_entity_markdown
  */
 
 import { ToolContext } from "./types.js";
@@ -24,6 +25,7 @@ import { registerSearchTools } from "./search-tools.js";
 import { registerValidationTools } from "./validation-tools.js";
 import { registerMutationTools } from "./mutation-tools.js";
 import { registerSamplingTools } from "./sampling-tools.js";
+import { registerExportTools } from "./export-tools.js";
 
 // Re-export types for convenience
 export type { ToolContext, ToolRegistrar } from "./types.js";
@@ -60,4 +62,7 @@ export function setupAllTools(ctx: ToolContext): void {
 
     // Sampling-based tools (critique_bundle)
     registerSamplingTools(ctx);
+
+    // Export tools (export_entity_markdown)
+    registerExportTools(ctx);
 }

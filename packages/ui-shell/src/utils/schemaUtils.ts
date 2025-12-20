@@ -32,17 +32,30 @@ export function getFieldDisplayName(
 }
 
 /**
- * Converts a camelCase string to Title Case with spaces.
+ * Converts a camelCase field name to a human-readable display name.
  * Examples:
- *   - "governedByAdrIds" -> "Governed By Adr Ids"
+ *   - "governedByAdrIds" -> "Governed By ADR"
+ *   - "realizesFeatureIds" -> "Realizes Feature"
  *   - "supersedes" -> "Supersedes"
+ *   - "scopeComponentIds" -> "Scope Component"
  * 
  * @param str - camelCase string
- * @returns Title Case string with spaces
+ * @returns Human-readable display name
  */
 export function camelCaseToTitleCase(str: string): string {
     return str
+        // Remove trailing 'Ids' or 'Id' (common in reference fields)
+        .replace(/Ids?$/, '')
+        // Insert space before uppercase letters
         .replace(/([A-Z])/g, ' $1')
+        // Capitalize first letter
         .replace(/^./, s => s.toUpperCase())
-        .trim();
+        // Clean up multiple spaces and trim
+        .replace(/\s+/g, ' ')
+        .trim()
+        // Fix common abbreviations (ADR, API, etc.)
+        .replace(/\bAdr\b/g, 'ADR')
+        .replace(/\bApi\b/g, 'API')
+        .replace(/\bId\b/g, 'ID')
+        .replace(/\bUrl\b/g, 'URL');
 }

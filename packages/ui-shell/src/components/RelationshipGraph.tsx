@@ -138,12 +138,24 @@ function transformToFlowElements(
         };
     });
 
+    // Track edge count between node pairs to offset overlapping edges
+    const edgePairCount: Record<string, number> = {};
+
     // Create edges for each relationship
     const edges: Edge[] = relations.map((rel, index) => {
         // Format label: display name with cardinality indicator
         const displayName = getFieldDisplayName(schemas, rel.fromEntity, rel.fromField);
         const cardinalitySymbol = rel.multiplicity === 'many' ? ' [*]' : '';
         const label = displayName + cardinalitySymbol;
+
+        // Track how many edges exist between this pair (for offset calculation)
+        const pairKey = `${rel.fromEntity}-${rel.toEntity}`;
+        const reversePairKey = `${rel.toEntity}-${rel.fromEntity}`;
+        const existingCount = (edgePairCount[pairKey] || 0) + (edgePairCount[reversePairKey] || 0);
+        edgePairCount[pairKey] = (edgePairCount[pairKey] || 0) + 1;
+
+        // Offset label position for overlapping edges
+        const labelOffset = existingCount * 0.15; // 15% offset per duplicate edge
 
         return {
             id: `edge-${index}`,
@@ -161,6 +173,12 @@ function transformToFlowElements(
             },
             labelBgPadding: [6, 4] as [number, number],
             labelBgBorderRadius: 4,
+            // Offset label position along the edge (0 = middle, 0.3 = toward source, 0.7 = toward target)
+            labelShowBg: true,
+            ...(existingCount > 0 && {
+                pathOptions: { offset: existingCount * 30 },
+                labelBgPadding: [6, 4] as [number, number],
+            }),
             style: {
                 stroke: 'var(--color-border, #414868)',
                 strokeWidth: 1.5,
@@ -172,6 +190,8 @@ function transformToFlowElements(
                 height: 20,
             },
             animated: false,
+            // Use different edge types for parallel edges
+            type: existingCount > 0 ? 'smoothstep' : 'smoothstep',
         };
     });
 

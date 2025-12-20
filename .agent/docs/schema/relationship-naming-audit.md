@@ -7,13 +7,13 @@
 | Metric | Count |
 |--------|-------|
 | **Total relationships** | 72 |
-| **With displayName** | 72 ✅ |
-| **Missing displayName** | 0 |
+| **With title** | 72 ✅ |
+| **Missing title** | 0 |
 | **Bare target names (no verb)** | 0 ✅ (3 fixed) |
 
 ## Current State
 
-All 72 relationship fields now follow the naming convention. The UI displays human-readable `displayName` values in the Relationships table.
+All 72 relationship fields now follow the naming convention. The UI displays human-readable `title` values (JSON Schema standard) in the Relationships table and graph.
 
 ## Fixes Applied
 
@@ -21,7 +21,7 @@ All 72 relationship fields now follow the naming convention. The UI displays hum
 
 These 3 field names were just the target entity type. They have been renamed to include a verb prefix:
 
-| From Entity | Old Field | New Field | displayName |
+| From Entity | Old Field | New Field | title |
 |-------------|-----------|-----------|-------------|
 | HealthCheckSpec | `protocolId` | `exposedByProtocolId` | "exposed by" |
 | TelemetryContract | `scenarioId` | `forScenarioId` | "for scenario" |
@@ -57,9 +57,9 @@ When adding new relationship fields, follow this pattern:
     "items": {
       "type": "string",
       "format": "sdd-ref",
-      "x-refTargets": ["Feature"]
+      "x-sdd-refTargets": ["Feature"]
     },
-    "displayName": "implements",
+    "title": "implements",
     "description": "Features this component implements"
   }
 }
@@ -67,12 +67,12 @@ When adding new relationship fields, follow this pattern:
 
 **Rules:**
 1. Field name: `verb` + `TargetType` + `Id` or `Ids`
-2. `displayName`: verb only (target shown in UI column)
+2. `title`: verb only, lowercase (target entity shown in UI column)
 3. `description`: full sentence for tooltips
 
 ## Well-Named Relationships (69 of 72)
 
-| From Entity | Field | displayName | To Entity |
+| From Entity | Field | title | To Entity |
 |-------------|-------|-------------|-----------|
 | ADR | `supersedes` | "supersedes" | ADR |
 | Actor | `ownsRequirements` | "owns" | Requirement |

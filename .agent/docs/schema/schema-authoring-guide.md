@@ -75,6 +75,54 @@ This document defines all custom JSON Schema extension keywords (`x-sdd-*`) reco
 }
 ```
 
+### ⚠️ Relationship Direction Rule: No Redundant Forward Links
+
+**Fundamental Principle:**
+If entity A has a backward link to entity B, entity B should NOT have a forward link back to A.
+
+**Why?**
+- Prevents data duplication and sync drift
+- The dependency graph derives forward relationships automatically
+- Single source of truth for each relationship
+
+**Example - Decision → ADR Relationship:**
+```
+Decision.originatingAdrIds → ADR   ✅ BACKWARD LINK (only this one needed)
+ADR.formalDecisionIds → Decision   ❌ REDUNDANT FORWARD LINK (don't add)
+```
+
+**Correct Pattern:**
+```json
+// Decision.schema.json
+"originatingAdrIds": {
+  "type": "array",
+  "items": {
+    "type": "string",
+    "format": "sdd-ref",
+    "x-sdd-refTargets": ["ADR"]
+  },
+  "title": "originates from",
+  "description": "ADR(s) that led to this decision"
+}
+```
+
+**Anti-pattern (DO NOT DO):**
+```json
+// ADR.schema.json - DON'T ADD THIS!
+"formalDecisionIds": {
+  "x-sdd-refTargets": ["Decision"]
+  // ❌ Redundant - Decision already links back
+}
+```
+
+**How to View Forward Links:**
+- Use the **Dependency Graph** tab on any entity
+- The graph shows both incoming and outgoing references
+- No need to duplicate relationships in both directions
+
+**Validation (Future):**
+Schema validators should detect and warn about redundant bidirectional links between entity types.
+
 ---
 
 ### Display Hints

@@ -70,7 +70,7 @@ export function AppShell() {
 
   // Bottom panel state (controlled mode for auto-open on errors)
   const [bottomPanelTab, setBottomPanelTab] = useState('diagnostics');
-  const [bottomPanelCollapsed, setBottomPanelCollapsed] = useState(false);
+  const [bottomPanelCollapsed, setBottomPanelCollapsed] = useState(true); // Start collapsed, auto-opens on errors
 
   // Output log
   const outputLog = useOutputLog();

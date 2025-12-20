@@ -224,3 +224,20 @@
 - **Important**: This applies to ALL bundles the editor works with - bundles are external data, never part of the editor's source workspace
 - **Related**: See debug-recipes.md for jq and Python YAML patterns
 
+
+## Pitfall 21: Not Validating UI Changes with Browser Agent
+
+**Symptom**: CSS or component changes that look correct in code but have visual issues (misalignment, wrong colors, broken layouts).
+
+**Root Cause**: Relying only on code review without visual verification.
+
+**Solution**: **ALWAYS** use browser agent to validate UI changes:
+
+1. **Before**: Take screenshot of current state
+2. **Make changes**: Edit CSS/components/schema
+3. **After**: Take screenshot and verify fix visually
+4. **Compare**: Ensure no regressions
+
+See `/ui-validation` workflow for detailed process.
+
+**Key insight**: The browser agent is superior to Playwright screenshots for this use case because it provides interactive validation and can navigate to specific components dynamically.

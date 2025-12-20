@@ -1302,6 +1302,31 @@ button.entity-type-badge.clickable:active {
   cursor: not-allowed;
 }
 
+/* Read-only mode: plain text styling for short string inputs
+   Removes box background to reduce visual noise when just viewing data */
+.rjsf input[type="text"][readonly],
+.rjsf input[type="number"][readonly] {
+  background: transparent;
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 1;
+  cursor: default;
+}
+
+/* Keep box styling for textareas (multiline content needs boundaries) */
+.rjsf textarea[readonly] {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  opacity: 1;
+  cursor: default;
+}
+
+/* Keep box styling for selects in readonly (shows dropdown was disabled) */
+.rjsf select:disabled {
+  background: var(--color-bg-tertiary);
+}
+
 .rjsf fieldset {
   border: none;
   padding: 0;

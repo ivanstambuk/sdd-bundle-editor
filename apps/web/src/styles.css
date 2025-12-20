@@ -94,6 +94,22 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
+
+  /* Syntax highlighting colors for dark mode (Dracula-inspired) */
+  --syntax-key: #8be9fd;
+  /* cyan - property names, keys */
+  --syntax-string: #f1fa8c;
+  /* yellow - string values */
+  --syntax-number: #bd93f9;
+  /* purple - numbers */
+  --syntax-boolean: #ff79c6;
+  /* pink - booleans, null, keywords */
+  --syntax-comment: #6272a4;
+  /* muted gray - comments */
+  --syntax-punctuation: #6272a4;
+  /* muted gray - punctuation */
+  --syntax-green: #50fa7b;
+  /* green - anchors, aliases */
 }
 
 /* ========================================
@@ -158,6 +174,22 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.12);
+
+  /* Syntax highlighting colors for light mode (readable on light backgrounds) */
+  --syntax-key: #0969da;
+  /* blue - property names, keys */
+  --syntax-string: #0a3069;
+  /* dark blue - string values */
+  --syntax-number: #8250df;
+  /* purple - numbers */
+  --syntax-boolean: #cf222e;
+  /* red - booleans, null, keywords */
+  --syntax-comment: #6e7781;
+  /* gray - comments */
+  --syntax-punctuation: #57606a;
+  /* dark gray - punctuation */
+  --syntax-green: #116329;
+  /* green - anchors, aliases */
 }
 
 /* ========================================
@@ -4004,7 +4036,7 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
 }
 
-/* Prism.js syntax highlighting for YAML (dark theme) */
+/* Prism.js syntax highlighting for YAML (theme-aware) */
 .yaml-block code {
   color: var(--color-text-primary);
   font-family: var(--font-mono);
@@ -4015,54 +4047,46 @@ form input[type="checkbox"] {
 /* Keys */
 .yaml-block .token.key,
 .yaml-block .token.atrule {
-  color: #8be9fd;
-  /* cyan */
+  color: var(--syntax-key);
 }
 
 /* Values - strings */
 .yaml-block .token.string {
-  color: #f1fa8c;
-  /* yellow */
+  color: var(--syntax-string);
 }
 
 /* Values - numbers, booleans */
 .yaml-block .token.number,
 .yaml-block .token.boolean {
-  color: #bd93f9;
-  /* purple */
+  color: var(--syntax-number);
 }
 
 /* Punctuation (colons, dashes) */
 .yaml-block .token.punctuation {
-  color: #6272a4;
-  /* muted gray */
+  color: var(--syntax-punctuation);
 }
 
 /* Comments */
 .yaml-block .token.comment {
-  color: #6272a4;
-  /* muted gray */
+  color: var(--syntax-comment);
   font-style: italic;
 }
 
 /* Null values */
 .yaml-block .token.null,
 .yaml-block .token.keyword {
-  color: #ff79c6;
-  /* pink */
+  color: var(--syntax-boolean);
 }
 
 /* Anchors and aliases */
 .yaml-block .token.anchor,
 .yaml-block .token.alias {
-  color: #50fa7b;
-  /* green */
+  color: var(--syntax-green);
 }
 
 /* Important (!) */
 .yaml-block .token.important {
-  color: #ff5555;
-  /* red */
+  color: var(--color-error);
 }
 
 .yaml-actions,
@@ -4208,7 +4232,7 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
 }
 
-/* Prism.js syntax highlighting for JSON (dark theme) */
+/* Prism.js syntax highlighting for JSON (theme-aware) */
 .json-block code {
   color: var(--color-text-primary);
   font-family: var(--font-mono);
@@ -4218,34 +4242,29 @@ form input[type="checkbox"] {
 
 /* Property names (keys) */
 .json-block .token.property {
-  color: #8be9fd;
-  /* cyan */
+  color: var(--syntax-key);
 }
 
 /* String values */
 .json-block .token.string {
-  color: #f1fa8c;
-  /* yellow */
+  color: var(--syntax-string);
 }
 
 /* Numbers */
 .json-block .token.number {
-  color: #bd93f9;
-  /* purple */
+  color: var(--syntax-number);
 }
 
 /* Booleans and null */
 .json-block .token.boolean,
 .json-block .token.null {
-  color: #ff79c6;
-  /* pink */
+  color: var(--syntax-boolean);
 }
 
 /* Punctuation (braces, brackets, colons, commas) */
 .json-block .token.punctuation,
 .json-block .token.operator {
-  color: #6272a4;
-  /* muted gray */
+  color: var(--syntax-punctuation);
 }
 
 /* ========================================

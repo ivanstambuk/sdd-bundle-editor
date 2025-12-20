@@ -854,8 +854,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
 
     // Render Map View (React Flow graph)
+    // Key forces remount when entity changes - React Flow's internal hooks
+    // only initialize from props on mount, so we need to reset on entity change
     const renderMapView = () => (
       <EntityDependencyGraph
+        key={`${entity.entityType}:${entity.id}`}
         entityType={entity.entityType}
         entityId={entity.id}
         outgoing={outgoing}

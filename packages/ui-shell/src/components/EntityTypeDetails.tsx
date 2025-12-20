@@ -205,7 +205,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                     onClick={() => setActiveTab('json')}
                     data-testid="tab-json"
                 >
-                    📄 Raw JSON
+                    📄 Raw Schema
                 </button>
             </div>
 

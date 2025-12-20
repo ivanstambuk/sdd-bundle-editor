@@ -54,4 +54,14 @@ The following major milestones have been completed:
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
 
+### UI Refactoring
+- [ ] Extract `ProminenceHeader` component from CustomFieldTemplate
+  - CustomFieldTemplate is ~100 lines and growing
+  - Separate component for hero/primary/secondary headers
+- [ ] Extract `EntityHeaderBadges` and `EntityHeaderMetadata` components
+  - Currently inline in EntityDetails return
+  - Would improve testability and separation
+- [ ] Create `formatDateForDisplay()` utility
+  - Date formatting is currently inline in header rendering
+  - Reusable across UI components
 

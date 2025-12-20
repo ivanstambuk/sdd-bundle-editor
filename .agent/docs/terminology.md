@@ -76,7 +76,7 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 
 - **Narrative Fields Pattern**
   - A UI pattern for entities that tell a story (ADRs, design docs).
-  - Uses prominence headers to create flow: Problem (❓) → Context (📘) → Decision (✅).
+  - Uses prominence headers to create flow: Problem (❓) → Context (🧭) → Decision (✅).
   - See: `.agent/docs/ui/layout-guidelines.md`.
 
 ### Header Metadata

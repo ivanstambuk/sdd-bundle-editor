@@ -83,9 +83,19 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
     // AI clients can use local plantuml CLI directly
     // ============================================
 
-    // Simple in-memory cache for rendered diagrams
+    // Hash-based in-memory cache for rendered diagrams
+    // Key is SHA-256 hash of (code + theme), value is SVG
     const diagramCache = new Map<string, string>();
     const MAX_CACHE_SIZE = 100;
+
+    /**
+     * Compute SHA-256 hash of PlantUML code + theme for cache key and ETag
+     */
+    function computeDiagramHash(code: string, theme?: 'light' | 'dark'): string {
+        const crypto = require('node:crypto');
+        const content = `${theme || 'default'}:${code.trim()}`;
+        return crypto.createHash('sha256').update(content).digest('hex').slice(0, 16);
+    }
 
     /**
      * Normalize PlantUML code by ensuring it has @startuml/@enduml tags
@@ -154,16 +164,18 @@ skinparam actor {
 
     /**
      * Render PlantUML to SVG using the CLI
+     * Returns both the SVG and the hash (for ETag)
      */
-    async function renderPlantUmlToSvg(code: string, theme?: 'light' | 'dark'): Promise<string> {
-        const normalizedCode = normalizePlantUml(code, theme);
+    async function renderPlantUmlToSvg(code: string, theme?: 'light' | 'dark'): Promise<{ svg: string; hash: string }> {
+        const hash = computeDiagramHash(code, theme);
 
-        // Check cache first (include theme in cache key)
-        const cacheKey = `${theme || 'default'}:${normalizedCode}`;
-        const cached = diagramCache.get(cacheKey);
+        // Check cache first using hash key
+        const cached = diagramCache.get(hash);
         if (cached) {
-            return cached;
+            return { svg: cached, hash };
         }
+
+        const normalizedCode = normalizePlantUml(code, theme);
 
         return new Promise((resolve, reject) => {
             const proc = spawn('plantuml', ['-tsvg', '-pipe'], {
@@ -198,14 +210,14 @@ skinparam actor {
                     svg = svg.substring(svgStart);
                 }
 
-                // Cache the result (with size limit)
-                diagramCache.set(cacheKey, svg);
+                // Cache the result using hash key (with size limit)
+                diagramCache.set(hash, svg);
                 if (diagramCache.size > MAX_CACHE_SIZE) {
                     const firstKey = diagramCache.keys().next().value;
                     if (firstKey) diagramCache.delete(firstKey);
                 }
 
-                resolve(svg);
+                resolve({ svg, hash });
             });
 
             // Send the PlantUML code to stdin
@@ -218,7 +230,11 @@ skinparam actor {
      * POST /api/plantuml - Render PlantUML to SVG
      * 
      * Request body: { code: string, theme?: 'light' | 'dark' }
-     * Response: { svg: string } or { error: string }
+     * Response: { svg: string, hash: string } or { error: string }
+     * 
+     * The hash can be used with GET /api/plantuml/:hash for cached requests.
+     * POST responses are not cached by browsers, but we return the hash
+     * so clients can switch to GET for subsequent requests.
      */
     app.post("/api/plantuml", async (req: Request, res: Response) => {
         const { code, theme } = req.body as { code?: string; theme?: 'light' | 'dark' };
@@ -229,8 +245,80 @@ skinparam actor {
         }
 
         try {
-            const svg = await renderPlantUmlToSvg(code, theme);
-            res.json({ svg });
+            const { svg, hash } = await renderPlantUmlToSvg(code, theme);
+
+            // Set ETag header (helps if client decides to use conditional requests)
+            res.set('ETag', `"${hash}"`);
+
+            res.json({ svg, hash });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            console.error('[PlantUML] Render error:', message);
+            res.status(500).json({ error: message });
+        }
+    });
+
+    /**
+     * GET /api/plantuml/:hash - Get cached PlantUML SVG by hash
+     * 
+     * This endpoint supports HTTP caching:
+     * - ETag: The hash serves as the entity tag
+     * - Cache-Control: immutable, since same hash = same content
+     * - If-None-Match: Returns 304 if client has cached version
+     * 
+     * Query params:
+     * - code: The PlantUML source (required if not in server cache)
+     * - theme: 'light' or 'dark' (optional)
+     * 
+     * Flow:
+     * 1. Client computes hash client-side and requests GET /api/plantuml/:hash
+     * 2. Browser checks its cache first (same URL = cache hit)
+     * 3. If not in browser cache, server checks its cache by hash
+     * 4. If not in server cache, renders using code from query param
+     */
+    app.get("/api/plantuml/:hash", async (req: Request, res: Response) => {
+        const { hash } = req.params;
+        const { code, theme } = req.query as { code?: string; theme?: 'light' | 'dark' };
+
+        // Check If-None-Match header for conditional requests
+        const ifNoneMatch = req.headers['if-none-match'];
+        if (ifNoneMatch === `"${hash}"` || ifNoneMatch === hash) {
+            res.status(304).end();
+            return;
+        }
+
+        // Check server cache first
+        const cached = diagramCache.get(hash);
+        if (cached) {
+            res
+                .set('Content-Type', 'image/svg+xml')
+                .set('ETag', `"${hash}"`)
+                .set('Cache-Control', 'public, max-age=31536000, immutable')
+                .send(cached);
+            return;
+        }
+
+        // Not in cache - need code to render
+        if (!code || typeof code !== 'string' || !code.trim()) {
+            res.status(400).json({ error: 'PlantUML code required for uncached diagram' });
+            return;
+        }
+
+        // Verify hash matches the code
+        const computedHash = computeDiagramHash(code, theme);
+        if (computedHash !== hash) {
+            res.status(400).json({ error: 'Hash mismatch - code does not match hash' });
+            return;
+        }
+
+        try {
+            const { svg } = await renderPlantUmlToSvg(code, theme);
+
+            res
+                .set('Content-Type', 'image/svg+xml')
+                .set('ETag', `"${hash}"`)
+                .set('Cache-Control', 'public, max-age=31536000, immutable')
+                .send(svg);
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             console.error('[PlantUML] Render error:', message);

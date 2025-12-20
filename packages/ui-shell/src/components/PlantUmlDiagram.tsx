@@ -78,30 +78,64 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
     useEffect(() => {
         let cancelled = false;
 
+        /**
+         * Compute SHA-256 hash of code + theme for cache key
+         * Uses Web Crypto API (available in all modern browsers)
+         */
+        async function computeHash(code: string, theme: 'dark' | 'light'): Promise<string> {
+            const content = `${theme}:${code.trim()}`;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(content);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex.slice(0, 16); // Match server's truncation
+        }
+
         async function render() {
             setLoading(true);
             setError(null);
 
             try {
-                const response = await fetch('/api/plantuml', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code, theme }),
+                // Compute hash client-side for cacheable GET request
+                const hash = await computeHash(code, theme);
+
+                // Use GET endpoint with hash in URL - browser can cache this!
+                // Include code as query param for first-time renders
+                const params = new URLSearchParams({
+                    code: code,
+                    theme: theme,
+                });
+
+                const response = await fetch(`/api/plantuml/${hash}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'image/svg+xml' },
                 });
 
                 if (cancelled) return;
 
-                const data = await response.json();
+                if (response.status === 304) {
+                    // Not modified - should not happen with browser cache, but handle it
+                    return;
+                }
 
                 if (!response.ok) {
-                    setError(data.error || `HTTP ${response.status}`);
+                    // Error response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType?.includes('application/json')) {
+                        const data = await response.json();
+                        setError(data.error || `HTTP ${response.status}`);
+                    } else {
+                        setError(`HTTP ${response.status}`);
+                    }
                     setSvg(null);
-                } else if (data.svg) {
-                    setSvg(data.svg);
-                    setError(null);
-                } else {
-                    setError('No SVG returned from server');
+                    return;
                 }
+
+                // Success - response is SVG
+                const svgContent = await response.text();
+                setSvg(svgContent);
+                setError(null);
             } catch (err) {
                 if (cancelled) return;
                 setError(err instanceof Error ? err.message : 'Failed to render diagram');

@@ -54,16 +54,6 @@ The following major milestones have been completed:
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
 
-### Schema Filtering & Display Logic
-- [x] ~~Extract schema filtering to shared utility~~ – Done in `utils/schemaFiltering.ts`
-  - `filterSchemaForLayoutGroup()`, `filterSchemaWithoutHeaderFields()`, `getHeaderFieldNames()`
-  - `getFieldToGroupMap()`, `sortFieldsByOrder()`, `stripConditionalKeywords()`, `filterFormDataToSchema()`
-  - EntityDetails.tsx now uses these utilities (~85 lines removed)
-
-- [x] ~~Add unit tests for schema filtering logic~~ – Done (23 tests)
-  - Location: `packages/ui-shell/src/utils/__tests__/schemaFiltering.test.ts`
-  - Covers all edge cases including null/undefined inputs, field ordering, header exclusion
-
 ### Entity Relationship Graph Visualization
 - [ ] Interactive graph view for entity types and relationships
   - **Tab**: New "🗺️ Relationship Map" tab in BundleOverview

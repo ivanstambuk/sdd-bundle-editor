@@ -9,6 +9,7 @@ import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 import { EntityTypeBadge } from './EntityTypeBadge';
 import { MarkdownWidget } from './MarkdownWidget';
+import { DateWidget } from './DateWidget';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -579,6 +580,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     CheckboxWidget: CustomCheckboxWidget,
     SelectWidget: CustomSelectWidget,
     MarkdownWidget: MarkdownWidget,
+    DateWidget: DateWidget,
   };
 
   const fields: Record<string, any> = {
@@ -651,6 +653,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         // x-sdd-displayHint: "markdown" renders with MarkdownWidget
         if (ps && ps.type === 'string' && displayHint === 'markdown') {
           targetUiSchema[propName] = { 'ui:widget': 'MarkdownWidget' };
+        }
+
+        // Date fields use custom DateWidget for better empty state handling
+        if (ps && ps.type === 'string' && (ps.format === 'date' || ps.format === 'date-time')) {
+          targetUiSchema[propName] = { 'ui:widget': 'DateWidget' };
         }
 
         // Recurse into nested objects

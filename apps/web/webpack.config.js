@@ -42,8 +42,8 @@ module.exports = {
     port: 5173,
     proxy: [
       {
-        // MCP server (MCP-first architecture)
-        context: ['/mcp'],
+        // MCP server and API endpoints
+        context: ['/mcp', '/api'],
         target: 'http://localhost:3001',
         changeOrigin: true,
       },

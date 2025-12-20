@@ -54,18 +54,6 @@ The following major milestones have been completed:
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
 
-### PlantUML Caching Tests
-- [ ] Add HTTP caching integration tests for `/api/plantuml/:hash`
-  - **Location**: `packages/mcp-server/src/plantuml-cache.test.ts`
-  - **Test cases**:
-    - Returns `Cache-Control: public, max-age=31536000, immutable`
-    - Returns correct ETag matching content hash
-    - Returns `304 Not Modified` when `If-None-Match` matches hash
-    - Returns `400` for hash mismatch (code doesn't match hash)
-    - Returns SVG with `Content-Type: image/svg+xml`
-  - **Effort**: 30 min
-  - **Impact**: Verify caching behavior, prevent regressions
-
 ### Entity Relationship Graph Visualization
 - [ ] Interactive graph view for entity types and relationships
   - **Tab**: New "🗺️ Relationship Map" tab in BundleOverview

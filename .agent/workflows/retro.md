@@ -160,39 +160,54 @@ Create a table sorted by effort/impact ratio (include both process AND architect
 
 ## Step 4: Propose Changes
 
+**CRITICAL RULES:**
+1. **Offer ALL identified items** - Every item from Quick Wins table MUST appear in proposed actions
+2. **Primary option is "implement ALL now"** - User wants to fix everything by default
+3. **NO BACKLOG OPTION** - Never offer to add items to IMPLEMENTATION_TRACKER. Either implement now or skip.
+4. **When user says "do all" → IMPLEMENT, don't add tasks**
+
 Ask the user which improvements to implement:
 
 ```markdown
 ## Proposed Actions
 
-I've identified [N] improvements ([X] process, [Y] architectural, [Z] snippets). Ranked by impact:
+I've identified [N] improvements. Here's everything:
 
-### Process Fixes (Quick Wins)
-1. **[Most impactful]** - [One-line description]
-2. **[Second most]** - [One-line description]
+### All Items (implement now)
+1. **[Item 1]** - [One-line description] (~X min)
+2. **[Item 2]** - [One-line description] (~X min)
+3. **[Item 3]** - [One-line description] (~X min)
+...
 
-### Architectural Improvements (Invest for Future)
-1. **[Most valuable]** - [One-line description]
-2. **[Second most]** - [One-line description]
+**Total estimated time**: ~X minutes
 
-### Snippets to Save
-1. **[Pattern name]** → `.agent/snippets/[file].md`
-
-Would you like me to implement:
-- [ ] All process fixes now
-- [ ] Process + snippets
-- [ ] Specific items (list numbers)
-- [ ] Add architectural items to IMPLEMENTATION_TRACKER.md
+Would you like me to:
+- [ ] **Implement ALL now** (recommended)
+- [ ] Skip all
+- [ ] Specific items only: [list numbers]
 ```
 
-## Step 5: Document for Future
+**IMPORTANT**: 
+- Do NOT offer "add to IMPLEMENTATION_TRACKER" as an option
+- Do NOT offer partial categories (e.g., "process only", "snippets only")
+- The ONLY options are: implement all, skip all, or specific item numbers
+- If user says "do all" or similar → implement the actual code/tests/docs NOW
 
-If approved, update relevant documentation:
-- `AGENTS.md` - Add to Common Pitfalls if it's a recurring issue
-- `.agent/workflows/` - Create new workflow if it's a repeatable process
-- `.agent/snippets/` - Add code patterns (test-patterns.md, response-patterns.md, debug-recipes.md)
-- `IMPLEMENTATION_TRACKER.md` - Add architectural improvements as tasks
-- `packages/*/README.md` - Document new patterns or abstractions
+## Step 5: Implement Everything
+
+When implementing, actually write the code/tests/docs. Do NOT just add tasks to a tracker.
+
+Examples of what "implement now" means:
+- **Test task** → Write the actual test file with test cases
+- **Snippet task** → Add the snippet to debug-recipes.md
+- **Doc task** → Write the documentation content
+- **Refactor task** → Do the refactoring
+
+Update relevant files:
+- `.agent/snippets/` - Add code patterns
+- `AGENTS.md` - Add pitfalls if recurring
+- `.agent/workflows/` - Add workflows if repeatable
+- `packages/*/README.md` - Document patterns
 
 ---
 

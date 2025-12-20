@@ -376,6 +376,47 @@ Control the visual weight of fields to guide users to the most important informa
 
 ---
 
+### Typography Control
+
+Fine-tune the visual presentation of field labels and values for optimal hierarchy.
+
+| Keyword | Type | Values | Description |
+|---------|------|--------|-------------|
+| `x-sdd-labelStyle` | string | `muted`, `prominent` | Label typography style |
+| `x-sdd-valueStyle` | string | `plain`, `boxed` | Value container style |
+
+**Label styles:**
+- **muted** (default): Small, gray, uppercase - de-emphasized category headers
+- **prominent**: Normal size, primary color, bold - for labels that need emphasis
+
+**Value styles:**
+- **plain** (default): No background/border, plain text - cleaner look for viewing
+- **boxed**: With background and border - traditional input appearance
+
+**Example - Muted label with plain value (default):**
+```json
+"title": {
+  "type": "string",
+  "x-sdd-labelStyle": "muted",
+  "x-sdd-valueStyle": "plain"
+}
+```
+
+**Example - Prominent label with boxed value:**
+```json
+"importantField": {
+  "type": "string",
+  "x-sdd-labelStyle": "prominent",
+  "x-sdd-valueStyle": "boxed"
+}
+```
+
+**Visual behavior:**
+- Muted labels create clear typographic hierarchy where values are the focus
+- Boxed values provide traditional form input appearance when needed
+
+---
+
 ### Enum Styles (Colored Badges)
 
 Display enum values as colored badges instead of plain dropdowns.

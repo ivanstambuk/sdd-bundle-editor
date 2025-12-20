@@ -278,13 +278,23 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const prominenceIcon = schema?.['x-sdd-prominenceIcon'] as string | undefined;
     const prominenceClass = prominence ? `rjsf-field--${prominence}` : '';
 
+    // Typography control: label and value styling from schema
+    // x-sdd-labelStyle: "muted" (default) | "prominent"
+    // x-sdd-valueStyle: "plain" (default) | "boxed"
+    const labelStyle = schema?.['x-sdd-labelStyle'] as string | undefined || 'muted';
+    const valueStyle = schema?.['x-sdd-valueStyle'] as string | undefined || 'plain';
+    const labelStyleClass = `rjsf-label--${labelStyle}`;
+    const valueStyleClass = `rjsf-value--${valueStyle}`;
+
     // Hero, primary, and secondary with label get special headers
     const showProminenceHeader = (prominence === 'hero' || prominence === 'primary' || prominence === 'secondary') && prominenceLabel;
 
     return (
       <div
-        className={`rjsf-field ${sizeClass} ${prominenceClass}`}
+        className={`rjsf-field ${sizeClass} ${prominenceClass} ${valueStyleClass}`}
         data-prominence={prominence || 'secondary'}
+        data-label-style={labelStyle}
+        data-value-style={valueStyle}
       >
         {/* Prominence header for hero/primary fields */}
         {showProminenceHeader && (
@@ -301,7 +311,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
         {/* Normal field label (skip for hero/primary with prominence header to avoid duplication) */}
         {!showProminenceHeader && (
-          <div className="rjsf-field-label">
+          <div className={`rjsf-field-label ${labelStyleClass}`}>
             <label htmlFor={id}>
               {formattedLabel}
               {required && <span className="required-asterisk">*</span>}

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-json';
 import type { UiBundleSnapshot } from '../types';
@@ -22,6 +22,7 @@ type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
  */
 export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     const [activeTab, setActiveTab] = useState<BundleTab>('details');
+    const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
     if (!bundle) {
         return (
@@ -205,15 +206,39 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         return Prism.highlight(schemaJson, Prism.languages['json'], 'json');
     }, [schemaJson]);
 
+    const handleCopySchema = useCallback(async () => {
+        if (!schemaJson) return;
+        try {
+            await navigator.clipboard.writeText(schemaJson);
+            setCopyFeedback('Copied!');
+            setTimeout(() => setCopyFeedback(null), 2000);
+        } catch {
+            setCopyFeedback('Failed to copy');
+            setTimeout(() => setCopyFeedback(null), 2000);
+        }
+    }, [schemaJson]);
+
     const renderRawSchemaTab = () => (
         <div className="bundle-tab-content">
             {bundleDef ? (
-                <pre className="code-block json-block">
-                    <code
-                        className="language-json"
-                        dangerouslySetInnerHTML={{ __html: highlightedSchema }}
-                    />
-                </pre>
+                <div className="yaml-viewer">
+                    <div className="yaml-actions">
+                        <button
+                            type="button"
+                            className="copy-button"
+                            onClick={handleCopySchema}
+                            data-testid="copy-schema-button"
+                        >
+                            {copyFeedback || '📋 Copy to Clipboard'}
+                        </button>
+                    </div>
+                    <pre className="code-block json-block">
+                        <code
+                            className="language-json"
+                            dangerouslySetInnerHTML={{ __html: highlightedSchema }}
+                        />
+                    </pre>
+                </div>
             ) : (
                 <EmptyState
                     icon="📄"

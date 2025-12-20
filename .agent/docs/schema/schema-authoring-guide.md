@@ -286,6 +286,165 @@ For string arrays that should render as compact bullet points (saving vertical s
 - Minimal vertical spacing between items
 - Each item is still independently editable
 - Significantly reduces vertical space compared to row-per-item layout
+---
+
+### Layout Groups (Sub-tabs)
+
+For complex entities with many fields, use layout groups to organize fields into sub-tabs within the Details tab. This reduces visual clutter and improves navigation.
+
+| Keyword | Type | Applies To | Description |
+|---------|------|------------|-------------|
+| `x-sdd-layoutGroups` | object | schema root | Defines available sub-tabs |
+| `x-sdd-layoutGroup` | string | property | Assigns field to a layout group |
+
+**Example - Schema root:**
+```json
+{
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "alternatives": { "title": "Alternatives", "order": 2 },
+    "consequences": { "title": "Consequences", "order": 3 },
+    "meta": { "title": "Meta", "order": 4 }
+  }
+}
+```
+
+**Example - Assign field to group:**
+```json
+"status": {
+  "type": "string",
+  "x-sdd-layoutGroup": "overview"
+},
+"alternativesConsidered": {
+  "type": "array",
+  "x-sdd-layoutGroup": "alternatives"
+}
+```
+
+**UI Guideline**: Use sub-tabs when an entity type has **8+ fields** or when fields naturally group into distinct categories. See [UI Layout Guidelines](#) for detailed recommendations.
+
+---
+
+### Visual Hierarchy (Prominence)
+
+Control the visual weight of fields to guide users to the most important information first.
+
+| Keyword | Type | Values | Description |
+|---------|------|--------|-------------|
+| `x-sdd-order` | number | any | Display order (smaller = first) |
+| `x-sdd-prominence` | string | `hero`, `primary`, `secondary`, `tertiary` | Visual weight level |
+| `x-sdd-prominenceLabel` | string | any | Section title for hero/primary fields |
+| `x-sdd-prominenceIcon` | string | emoji/char | Icon displayed with prominence label |
+
+**Prominence levels:**
+- **hero**: The key answer/decision (green card, largest)
+- **primary**: Important emphasisized field (accent border)
+- **secondary**: Default (no special styling)
+- **tertiary**: Metadata, supporting info (smaller, muted)
+
+**Example - Hero field (the answer):**
+```json
+"decision": {
+  "type": "string",
+  "x-sdd-prominence": "hero",
+  "x-sdd-prominenceLabel": "The Decision",
+  "x-sdd-prominenceIcon": "✓",
+  "x-sdd-order": 50
+}
+```
+
+**Example - Primary field (the question):**
+```json
+"problem": {
+  "type": "string",
+  "x-sdd-prominence": "primary",
+  "x-sdd-prominenceLabel": "The Problem",
+  "x-sdd-prominenceIcon": "?",
+  "x-sdd-order": 30
+}
+```
+
+**Example - Tertiary field (metadata):**
+```json
+"decidedDate": {
+  "type": "string",
+  "format": "date",
+  "x-sdd-prominence": "tertiary",
+  "x-sdd-order": 25
+}
+```
+
+---
+
+### Enum Styles (Colored Badges)
+
+Display enum values as colored badges instead of plain dropdowns.
+
+| Keyword | Type | Description |
+|---------|------|-------------|
+| `x-sdd-enumStyles` | object | Maps enum values to style configuration |
+
+**Available colors:** `success` (green), `warning` (amber), `error` (red), `info` (blue), `neutral` (gray)
+
+**Example:**
+```json
+"status": {
+  "type": "string",
+  "enum": ["draft", "proposed", "accepted", "deprecated", "superseded"],
+  "x-sdd-enumStyles": {
+    "draft": { "color": "neutral" },
+    "proposed": { "color": "info" },
+    "accepted": { "color": "success" },
+    "deprecated": { "color": "warning" },
+    "superseded": { "color": "error" }
+  }
+}
+```
+
+**Visual behavior:**
+- In read-only mode, enum values render as colored badges (e.g., green "ACCEPTED")
+- In edit mode, shows standard dropdown
+
+---
+
+### Display Location (Header Metadata)
+
+Move system metadata fields to the entity header bar instead of the main form.
+
+| Keyword | Type | Values | Description |
+|---------|------|--------|-------------|
+| `x-sdd-displayLocation` | string | `header` | Display in entity header |
+
+**Use for:**
+- `createdDate` - When entity was created
+- `lastModifiedDate` - When entity was last changed
+- `lastModifiedBy` - Actor who last edited
+
+**Example:**
+```json
+"createdDate": {
+  "type": "string",
+  "format": "date",
+  "x-sdd-displayLocation": "header"
+},
+"lastModifiedDate": {
+  "type": "string",
+  "format": "date",
+  "x-sdd-displayLocation": "header"
+},
+"lastModifiedBy": {
+  "type": "string",
+  "format": "sdd-ref",
+  "x-sdd-refTargets": ["Actor"],
+  "x-sdd-displayLocation": "header"
+}
+```
+
+**Visual behavior:**
+- Fields appear in entity header bar (top right, muted styling)
+- Dates formatted as "Oct 15, 2024"
+- Actor refs cleaned (ACT- prefix removed)
+- Fields are excluded from main form
 
 ---
 

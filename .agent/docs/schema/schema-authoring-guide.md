@@ -75,53 +75,138 @@ This document defines all custom JSON Schema extension keywords (`x-sdd-*`) reco
 }
 ```
 
-### ⚠️ Relationship Direction Rule: No Redundant Forward Links
+### ⚠️ Relationship Direction Convention
 
-**Fundamental Principle:**
-If entity A has a backward link to entity B, entity B should NOT have a forward link back to A.
+This section defines the canonical rules for which entity should hold reference fields in a relationship.
+
+#### Rule 1: Target-Holds-Reference (Passive Voice)
+
+**Principle**: The entity being **constrained, governed, or implemented** holds the reference to its **constraints, governors, or specifiers**.
 
 **Why?**
-- Prevents data duplication and sync drift
-- The dependency graph derives forward relationships automatically
-- Single source of truth for each relationship
+- **Predictable traversal**: To find everything needed to implement Feature X, look at Feature X's outgoing references
+- **Implementation context**: An agent implementing an entity only needs to traverse outgoing edges
+- **Passive voice naming**: Relationships read as "{Source} is {verb} by {Target}" (e.g., "Feature is governed by ADR")
 
-**Example - Decision → ADR Relationship:**
+**Mental Model**:
 ```
-Decision.originatingAdrIds → ADR   ✅ BACKWARD LINK (only this one needed)
-ADR.formalDecisionIds → Decision   ❌ REDUNDANT FORWARD LINK (don't add)
+┌─────────────────┐     ┌─────────────────┐
+│  GOVERNORS      │     │  IMPLEMENTABLE  │
+│  (upstream)     │◄────│  (downstream)   │
+│                 │     │                 │
+│ • ADR           │     │ • Feature       │
+│ • Requirement   │     │ • Component     │
+│ • Constraint    │     │ • Protocol      │
+│ • Decision      │     │ • Scenario      │
+│ • Policy        │     │                 │
+│ • Principle     │     │                 │
+└─────────────────┘     └─────────────────┘
+                              │
+                              │ holds references TO governors
+                              ▼
+              Feature.governedByAdrIds: [ADR-001]
+              Feature.realizedByRequirementIds: [REQ-001]
+              Feature.constrainedByConstraintIds: [CON-001]
 ```
+
+**Field Naming Convention**:
+| Pattern | Example | Read As |
+|---------|---------|---------|
+| `{verb}By{Target}Ids` | `governedByAdrIds` | "governed by ADR" |
+| `{verb}By{Target}Id` | `ownedByActorId` | "owned by Actor" |
+| `constrainedBy{Target}Ids` | `constrainedByConstraintIds` | "constrained by Constraint" |
 
 **Correct Pattern:**
 ```json
-// Decision.schema.json
-"originatingAdrIds": {
+// Feature.schema.json - Feature holds reference to its governors
+"governedByAdrIds": {
   "type": "array",
   "items": {
     "type": "string",
     "format": "sdd-ref",
     "x-sdd-refTargets": ["ADR"]
   },
-  "title": "originates from",
-  "description": "ADR(s) that led to this decision"
+  "title": "governed by"
+},
+"realizedByRequirementIds": {
+  "type": "array",
+  "items": {
+    "type": "string",
+    "format": "sdd-ref",
+    "x-sdd-refTargets": ["Requirement"]
+  },
+  "title": "realizes"  // Note: display title can still use active voice for readability
 }
 ```
 
 **Anti-pattern (DO NOT DO):**
 ```json
-// ADR.schema.json - DON'T ADD THIS!
-"formalDecisionIds": {
-  "x-sdd-refTargets": ["Decision"]
-  // ❌ Redundant - Decision already links back
+// ADR.schema.json - Don't have governor point to governed
+"governsFeatureIds": {
+  "x-sdd-refTargets": ["Feature"]
+  // ❌ WRONG - ADR shouldn't point to Features it governs
+  // ✓ Feature should point to ADRs that govern it
 }
 ```
 
-**How to View Forward Links:**
-- Use the **Dependency Graph** tab on any entity
+#### Rule 2: No Redundant Bidirectional Links
+
+If entity A has a reference to entity B, entity B should NOT have a redundant reference back to A.
+
+**Why?**
+- Prevents data duplication and sync drift
+- The dependency graph derives reverse relationships automatically
+- Single source of truth for each relationship
+
+**Example:**
+```
+Feature.governedByAdrIds → ADR   ✅ (Feature points to its governor)
+ADR.governsFeatureIds → Feature  ❌ REDUNDANT (don't add this)
+```
+
+**How to View Reverse Links:**
+- Use the **Dependencies** tab on any entity
 - The graph shows both incoming and outgoing references
 - No need to duplicate relationships in both directions
 
-**Validation (Future):**
-Schema validators should detect and warn about redundant bidirectional links between entity types.
+#### Entity Type Classification
+
+| Type | Classification | Should Point To |
+|------|----------------|-----------------|
+| **ADR** | Governor | Nothing (gets pointed to) |
+| **Requirement** | Governor | Parent requirements, ADRs that govern it, Actors that own it |
+| **Constraint** | Governor | Policies it derives from |
+| **Decision** | Governor | ADRs it originates from |
+| **Policy** | Governor | Nothing (top-level) |
+| **Principle** | Governor | Nothing (top-level) |
+| **Feature** | Implementable | ADRs, Requirements, Constraints, Decisions that govern it |
+| **Component** | Implementable | Requirements it implements, Features it implements, Threats that affect it |
+| **Protocol** | Implementable | ADRs, Components that provide/consume it, Features it supports |
+| **Scenario** | Implementable | Requirements it covers, Components/Protocols it uses |
+| **Task** | Operational | Requirements it fulfills, Features it belongs to |
+| **Profile** | Configuration | Features it requires/optionally uses |
+
+#### Implementation Context Use Case
+
+When an AI agent needs to implement Feature X:
+
+```typescript
+// With Target-Holds-Reference convention, this is simple:
+const feature = await readEntity("Feature", "auth-login");
+const context = {
+  requirements: await readEntities("Requirement", feature.data.realizedByRequirementIds),
+  adrs: await readEntities("ADR", feature.data.governedByAdrIds),
+  constraints: await readEntities("Constraint", feature.data.constrainedByConstraintIds),
+  decisions: await readEntities("Decision", feature.data.affectedByDecisionIds),
+};
+// All context retrieved via OUTGOING edges from the target entity
+```
+
+Without this convention, the agent would need to:
+1. Scan ALL ADRs to find ones that govern this Feature
+2. Scan ALL Constraints to find ones that constrain this Feature
+3. Scan ALL Decisions to find ones that affect this Feature
+4. ...inefficient and error-prone
 
 ---
 

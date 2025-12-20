@@ -42,8 +42,9 @@ export function EntityNavigator({
     const entityConfigs = bundle.bundleTypeDefinition.entities ?? [];
     const existingEntityTypes = Object.keys(bundle.entities);
 
-    // Build category -> entityTypes map
-    const categoryMap = new Map<string, string[]>();
+    // Build category -> entityTypes map with order info
+    // Map category -> array of {entityType, order}
+    const categoryMap = new Map<string, Array<{ entityType: string; order: number }>>();
     const categorized = new Set<string>();
 
     for (const config of entityConfigs) {
@@ -51,19 +52,30 @@ export function EntityNavigator({
         if (!categoryMap.has(config.category)) {
           categoryMap.set(config.category, []);
         }
-        categoryMap.get(config.category)!.push(config.entityType);
+        categoryMap.get(config.category)!.push({
+          entityType: config.entityType,
+          order: config.order ?? 999
+        });
         categorized.add(config.entityType);
       }
     }
 
-    // Build ordered category groups
+    // Build ordered category groups, sorting entity types within each category
     const groups: CategoryGroup[] = categories
       .filter(cat => categoryMap.has(cat.name))
       .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
-      .map(cat => ({
-        category: cat,
-        entityTypes: categoryMap.get(cat.name) ?? []
-      }));
+      .map(cat => {
+        const entityTypesWithOrder = categoryMap.get(cat.name) ?? [];
+        // Sort by order, then alphabetically by entityType as tiebreaker
+        entityTypesWithOrder.sort((a, b) => {
+          if (a.order !== b.order) return a.order - b.order;
+          return a.entityType.localeCompare(b.entityType);
+        });
+        return {
+          category: cat,
+          entityTypes: entityTypesWithOrder.map(e => e.entityType)
+        };
+      });
 
     // Find uncategorized entity types
     const uncategorized = existingEntityTypes.filter(et => !categorized.has(et));

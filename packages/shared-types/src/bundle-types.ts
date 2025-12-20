@@ -51,6 +51,8 @@ export interface BundleTypeEntityConfig {
     color?: string;
     /** Category this entity type belongs to (references category.name) */
     category?: string;
+    /** Display order within category (lower = first); undefined sorts last */
+    order?: number;
 }
 
 /**

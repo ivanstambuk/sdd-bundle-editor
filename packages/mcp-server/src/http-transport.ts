@@ -89,23 +89,42 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
 
     /**
      * Normalize PlantUML code by ensuring it has @startuml/@enduml tags
+     * and injecting theme directives based on the requested theme.
      */
-    function normalizePlantUml(code: string): string {
+    function normalizePlantUml(code: string, theme?: 'light' | 'dark'): string {
         const trimmed = code.trim();
-        if (!trimmed.startsWith('@startuml')) {
-            return `@startuml\n${trimmed}\n@enduml`;
+
+        // Build theme directives
+        let themeDirectives = '';
+        if (theme === 'dark') {
+            // Use cyborg theme for dark mode with transparent background
+            themeDirectives = '!theme cyborg\nskinparam backgroundColor transparent\n';
+        } else if (theme === 'light') {
+            // Light theme just needs transparent background to blend
+            themeDirectives = 'skinparam backgroundColor transparent\n';
         }
+
+        if (!trimmed.startsWith('@startuml')) {
+            return `@startuml\n${themeDirectives}${trimmed}\n@enduml`;
+        }
+
+        // If already has @startuml, inject theme after it
+        if (themeDirectives) {
+            return trimmed.replace('@startuml', `@startuml\n${themeDirectives}`);
+        }
+
         return trimmed;
     }
 
     /**
      * Render PlantUML to SVG using the CLI
      */
-    async function renderPlantUmlToSvg(code: string): Promise<string> {
-        const normalizedCode = normalizePlantUml(code);
+    async function renderPlantUmlToSvg(code: string, theme?: 'light' | 'dark'): Promise<string> {
+        const normalizedCode = normalizePlantUml(code, theme);
 
-        // Check cache first
-        const cached = diagramCache.get(normalizedCode);
+        // Check cache first (include theme in cache key)
+        const cacheKey = `${theme || 'default'}:${normalizedCode}`;
+        const cached = diagramCache.get(cacheKey);
         if (cached) {
             return cached;
         }
@@ -144,7 +163,7 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
                 }
 
                 // Cache the result (with size limit)
-                diagramCache.set(normalizedCode, svg);
+                diagramCache.set(cacheKey, svg);
                 if (diagramCache.size > MAX_CACHE_SIZE) {
                     const firstKey = diagramCache.keys().next().value;
                     if (firstKey) diagramCache.delete(firstKey);
@@ -162,11 +181,11 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
     /**
      * POST /api/plantuml - Render PlantUML to SVG
      * 
-     * Request body: { code: string }
+     * Request body: { code: string, theme?: 'light' | 'dark' }
      * Response: { svg: string } or { error: string }
      */
     app.post("/api/plantuml", async (req: Request, res: Response) => {
-        const { code } = req.body as { code?: string };
+        const { code, theme } = req.body as { code?: string; theme?: 'light' | 'dark' };
 
         if (!code || typeof code !== 'string' || !code.trim()) {
             res.status(400).json({ error: 'PlantUML code is required' });
@@ -174,7 +193,7 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
         }
 
         try {
-            const svg = await renderPlantUmlToSvg(code);
+            const svg = await renderPlantUmlToSvg(code, theme);
             res.json({ svg });
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);

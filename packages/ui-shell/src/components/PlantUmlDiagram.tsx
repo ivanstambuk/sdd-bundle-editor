@@ -8,9 +8,40 @@ interface PlantUmlDiagramProps {
 }
 
 /**
+ * Detect the current UI theme (dark or light)
+ * Checks data-theme attribute on html/body, then falls back to prefers-color-scheme
+ */
+function detectTheme(): 'dark' | 'light' {
+    // Check for data-theme attribute on html or body
+    const htmlTheme = document.documentElement.getAttribute('data-theme');
+    const bodyTheme = document.body.getAttribute('data-theme');
+
+    if (htmlTheme === 'dark' || bodyTheme === 'dark') {
+        return 'dark';
+    }
+    if (htmlTheme === 'light' || bodyTheme === 'light') {
+        return 'light';
+    }
+
+    // Check for dark class on html/body
+    if (document.documentElement.classList.contains('dark') ||
+        document.body.classList.contains('dark')) {
+        return 'dark';
+    }
+
+    // Fall back to system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    }
+
+    return 'light';
+}
+
+/**
  * PlantUmlDiagram - Renders a PlantUML diagram inline.
  * 
  * Uses the server-side /api/plantuml endpoint to generate SVG from PlantUML source.
+ * Automatically detects dark/light theme and requests appropriate styling.
  * This is for the web UI only - AI clients can use local plantuml CLI.
  * 
  * @example
@@ -22,6 +53,27 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
     const [svg, setSvg] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [theme, setTheme] = useState<'dark' | 'light'>(detectTheme);
+
+    // Listen for theme changes
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = () => setTheme(detectTheme());
+
+        mediaQuery.addEventListener('change', handleChange);
+
+        // Also watch for data-theme attribute changes
+        const observer = new MutationObserver(handleChange);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme', 'class']
+        });
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
+            observer.disconnect();
+        };
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -34,7 +86,7 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
                 const response = await fetch('/api/plantuml', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code }),
+                    body: JSON.stringify({ code, theme }),
                 });
 
                 if (cancelled) return;
@@ -66,7 +118,7 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
         return () => {
             cancelled = true;
         };
-    }, [code]);
+    }, [code, theme]);
 
     if (loading) {
         return (

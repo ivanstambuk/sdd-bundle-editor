@@ -55,19 +55,12 @@ The following major milestones have been completed:
 - [ ] Prompt argument completions using `completable()` wrapper
 
 ### UI Refactoring
-- [ ] Extract `ProminenceHeader` component from CustomFieldTemplate
-  - CustomFieldTemplate is ~100 lines and growing
-  - Separate component for hero/primary/secondary headers
-- [ ] Extract `EntityHeaderBadges` and `EntityHeaderMetadata` components
-  - Currently inline in EntityDetails return
-  - Would improve testability and separation
-- [ ] Create `formatDateForDisplay()` utility
-  - Date formatting is currently inline in header rendering
-  - Reusable across UI components
-- [ ] Extract `SyntaxHighlighter` component
-  - Prism.js highlighting duplicated in 3 components (EntityDetails, EntityTypeDetails, BundleOverview)
-  - Single component: `<SyntaxHighlighter language="yaml|json" content={content} />`
-  - Centralizes Prism config, language imports, memoization
+- [x] ~~Create `formatDateForDisplay()` utility~~ – Done as `formatDate()` in `utils/formatters.ts`
+- [x] ~~Extract `EntityHeaderMetadata` component~~ – Done as `HeaderMetadata` component
+- [x] ~~Extract `ProminenceHeader` component~~ – Done in `components/ProminenceHeader.tsx`
+- [x] ~~Extract `EntityHeaderBadges` component~~ – Done in `components/EntityHeaderBadges.tsx`
+- [x] ~~Extract `SyntaxHighlighter` component~~ – Done in `components/SyntaxHighlighter.tsx`
+  - Used in EntityDetails, EntityTypeDetails, BundleOverview
 
 ### Schema Validation
 - [ ] Redundant bidirectional link detection

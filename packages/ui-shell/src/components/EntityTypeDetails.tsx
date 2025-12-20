@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-json';
 import type { UiBundleSnapshot } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import { HeaderMetadata } from './HeaderMetadata';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
 
 interface EntityTypeDetailsProps {
     bundle: UiBundleSnapshot | null;
@@ -193,11 +192,8 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
         );
     };
 
-    // Render the Raw JSON tab content with syntax highlighting
+    // Memoize JSON content for copy and display
     const jsonContent = useMemo(() => JSON.stringify(schema, null, 2), [schema]);
-    const highlightedJson = useMemo(() => {
-        return Prism.highlight(jsonContent, Prism.languages['json'], 'json');
-    }, [jsonContent]);
 
     const renderJsonTab = () => (
         <div className="json-viewer">
@@ -211,12 +207,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                     {copyFeedback || '📋 Copy to Clipboard'}
                 </button>
             </div>
-            <pre className="code-block json-block">
-                <code
-                    className="language-json"
-                    dangerouslySetInnerHTML={{ __html: highlightedJson }}
-                />
-            </pre>
+            <SyntaxHighlighter language="json" content={jsonContent} />
         </div>
     );
 

@@ -1,11 +1,10 @@
 import { useState, useMemo, useCallback } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-json';
 import type { UiBundleSnapshot } from '../types';
 import { TabBar, type Tab } from './TabBar';
 import { EmptyState } from './EmptyState';
 import { EntityTypeBadge } from './EntityTypeBadge';
 import { HeaderMetadata } from './HeaderMetadata';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
@@ -197,15 +196,10 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
-    // Render the Raw Schema tab content with syntax highlighting
+    // Memoize schema JSON for copy and display
     const schemaJson = useMemo(() => {
         return bundleDef ? JSON.stringify(bundleDef, null, 2) : '';
     }, [bundleDef]);
-
-    const highlightedSchema = useMemo(() => {
-        if (!schemaJson) return '';
-        return Prism.highlight(schemaJson, Prism.languages['json'], 'json');
-    }, [schemaJson]);
 
     const handleCopySchema = useCallback(async () => {
         if (!schemaJson) return;
@@ -233,12 +227,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                             {copyFeedback || '📋 Copy to Clipboard'}
                         </button>
                     </div>
-                    <pre className="code-block json-block">
-                        <code
-                            className="language-json"
-                            dangerouslySetInnerHTML={{ __html: highlightedSchema }}
-                        />
-                    </pre>
+                    <SyntaxHighlighter language="json" content={schemaJson} />
                 </div>
             ) : (
                 <EmptyState

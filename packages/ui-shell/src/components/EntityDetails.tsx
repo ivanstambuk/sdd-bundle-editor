@@ -4,13 +4,14 @@ import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-yaml';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 import { exportEntityToMarkdown, downloadMarkdown } from '../utils/exportMarkdown';
 import { EntityTypeBadge } from './EntityTypeBadge';
+import { EntityHeaderBadges } from './EntityHeaderBadges';
+import { ProminenceHeader } from './ProminenceHeader';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
 
@@ -354,15 +355,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       >
         {/* Prominence header for hero/primary fields */}
         {showProminenceHeader && (
-          <div className="rjsf-prominence-header">
-            {prominenceIcon && <span className="rjsf-prominence-icon">{prominenceIcon}</span>}
-            <span className="rjsf-prominence-title">{prominenceLabel}</span>
-            {hasDescription && (
-              <span className="field-help-icon" title={rawDescription}>
-                ⓘ
-              </span>
-            )}
-          </div>
+          <ProminenceHeader
+            icon={prominenceIcon}
+            title={prominenceLabel}
+            description={hasDescription ? rawDescription : undefined}
+          />
         )}
 
         {/* Normal field label (skip for hero/primary with prominence header to avoid duplication) */}
@@ -941,10 +938,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
   // Render the Raw YAML tab content with syntax highlighting
-  const highlightedYaml = useMemo(() => {
-    return Prism.highlight(yamlContent, Prism.languages['yaml'], 'yaml');
-  }, [yamlContent]);
-
   const renderYamlTab = () => (
     <div className="yaml-viewer">
       <div className="yaml-actions">
@@ -957,12 +950,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           {copyFeedback || '📋 Copy to Clipboard'}
         </button>
       </div>
-      <pre className="code-block yaml-block">
-        <code
-          className="language-yaml"
-          dangerouslySetInnerHTML={{ __html: highlightedYaml }}
-        />
-      </pre>
+      <SyntaxHighlighter language="yaml" content={yamlContent} />
     </div>
   );
 
@@ -978,23 +966,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         </div>
 
         {/* Header status badges - enums with x-sdd-enumStyles go next to entity type */}
-        {headerMetadataFields.filter(f => f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
-          <div className="entity-header-badges">
-            {headerMetadataFields
-              .filter(f => f.fieldSchema?.['x-sdd-enumStyles'])
-              .map((field) => {
-                const enumStyles = field.fieldSchema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
-                const styleConfig = enumStyles?.[field.value];
-                const colorClass = styleConfig?.color ? `rjsf-enum-badge--${styleConfig.color}` : 'rjsf-enum-badge--neutral';
-
-                return (
-                  <span key={field.fieldName} className={`rjsf-enum-badge ${colorClass}`}>
-                    {field.value || '—'}
-                  </span>
-                );
-              })}
-          </div>
-        )}
+        <EntityHeaderBadges fields={headerMetadataFields} />
 
         {/* Header metadata - dates and text fields on the right */}
         {headerMetadataFields.filter(f => !f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (

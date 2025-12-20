@@ -75,84 +75,154 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     };
 
     // Render the Details tab content
-    const renderDetailsTab = () => (
-        <>
-            {/* Schema overview */}
-            <section className="schema-section">
-                <h3>Schema Overview</h3>
-                <div className="schema-info">
-                    <div className="schema-info-row">
-                        <span className="schema-info-label">Name:</span>
-                        <span className="schema-info-value">{title}</span>
-                    </div>
-                    <div className="schema-info-row">
-                        <span className="schema-info-label">ID:</span>
-                        <code className="schema-info-value">{schemaId}</code>
-                    </div>
-                    <div className="schema-info-row schema-info-row--description">
-                        <span className="schema-info-label">Description:</span>
-                        {displayHint === 'markdown' ? (
+    const renderDetailsTab = () => {
+        // Extract schema metadata
+        const meta = schema['x-sdd-meta'] as {
+            createdDate?: string;
+            lastModifiedDate?: string;
+            lastModifiedBy?: string;
+            references?: Array<{ label: string; url: string; type?: string }>;
+            tags?: string[];
+        } | undefined;
+
+        const formatDate = (isoDate: string | undefined) => {
+            if (!isoDate) return '—';
+            try {
+                return new Date(isoDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                });
+            } catch {
+                return isoDate;
+            }
+        };
+
+        return (
+            <>
+                {/* Schema overview */}
+                <section className="schema-section">
+                    <h3>Schema Overview</h3>
+                    <div className="schema-info">
+                        <div className="schema-info-row">
+                            <span className="schema-info-label">Name:</span>
+                            <span className="schema-info-value">{title}</span>
+                        </div>
+                        <div className="schema-info-row">
+                            <span className="schema-info-label">ID:</span>
+                            <code className="schema-info-value">{schemaId}</code>
+                        </div>
+                        <div className="schema-info-row schema-info-row--description">
+                            <span className="schema-info-label">Description:</span>
                             <div className="schema-info-value rjsf-description--markdown">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {description}
                                 </ReactMarkdown>
                             </div>
-                        ) : (
-                            <span className="schema-info-value">{description}</span>
-                        )}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Properties table */}
-            <section className="schema-section">
-                <h3>Properties ({Object.keys(properties).length})</h3>
-                <div className="schema-properties">
-                    <table className="properties-table">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Type</th>
-                                <th>Required</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.entries(properties).map(([propName, propSchema]) => {
-                                const ps = propSchema as any;
-                                const type = ps.type || 'any';
-                                const isRequired = required.includes(propName);
-                                const desc = ps.description || '—';
-                                const format = ps.format ? ` (${ps.format})` : '';
-                                const enumValues = ps.enum ? `: ${ps.enum.join(' | ')}` : '';
+                {/* Schema Metadata */}
+                {meta && (
+                    <section className="schema-section">
+                        <h3>Schema Metadata</h3>
+                        <div className="schema-info">
+                            <div className="schema-info-row">
+                                <span className="schema-info-label">Created:</span>
+                                <span className="schema-info-value">{formatDate(meta.createdDate)}</span>
+                            </div>
+                            <div className="schema-info-row">
+                                <span className="schema-info-label">Last Modified:</span>
+                                <span className="schema-info-value">{formatDate(meta.lastModifiedDate)}</span>
+                            </div>
+                            <div className="schema-info-row">
+                                <span className="schema-info-label">Modified By:</span>
+                                <span className="schema-info-value">{meta.lastModifiedBy || '—'}</span>
+                            </div>
+                            {meta.tags && meta.tags.length > 0 && (
+                                <div className="schema-info-row">
+                                    <span className="schema-info-label">Tags:</span>
+                                    <span className="schema-info-value schema-tags">
+                                        {meta.tags.map(tag => (
+                                            <span key={tag} className="schema-tag">{tag}</span>
+                                        ))}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
 
-                                return (
-                                    <tr key={propName}>
-                                        <td>
-                                            <code className="property-name">{propName}</code>
-                                        </td>
-                                        <td>
-                                            <span className="property-type">
-                                                {type}{format}{enumValues}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {isRequired ? (
-                                                <span className="required-badge">required</span>
-                                            ) : (
-                                                <span className="optional-badge">optional</span>
-                                            )}
-                                        </td>
-                                        <td className="property-desc">{desc}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </>
-    );
+                {/* External References (optional, schema-driven) */}
+                {meta?.references && meta.references.length > 0 && (
+                    <section className="schema-section">
+                        <h3>External References</h3>
+                        <ul className="schema-references">
+                            {meta.references.map((ref, idx) => (
+                                <li key={idx} className="schema-reference">
+                                    <a href={ref.url} target="_blank" rel="noopener noreferrer">
+                                        {ref.label}
+                                    </a>
+                                    {ref.type && (
+                                        <span className="reference-type">{ref.type}</span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )}
+
+                {/* Properties table */}
+                <section className="schema-section">
+                    <h3>Properties ({Object.keys(properties).length})</h3>
+                    <div className="schema-properties">
+                        <table className="properties-table">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.entries(properties).map(([propName, propSchema]) => {
+                                    const ps = propSchema as any;
+                                    const type = ps.type || 'any';
+                                    const isRequired = required.includes(propName);
+                                    const desc = ps.description || '—';
+                                    const format = ps.format ? ` (${ps.format})` : '';
+                                    const enumValues = ps.enum ? `: ${ps.enum.join(' | ')}` : '';
+
+                                    return (
+                                        <tr key={propName}>
+                                            <td>
+                                                <code className="property-name">{propName}</code>
+                                            </td>
+                                            <td>
+                                                <span className="property-type">
+                                                    {type}{format}{enumValues}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {isRequired ? (
+                                                    <span className="required-badge">required</span>
+                                                ) : (
+                                                    <span className="optional-badge">optional</span>
+                                                )}
+                                            </td>
+                                            <td className="property-desc">{desc}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </>
+        );
+    };
 
     // Render the Raw JSON tab content with syntax highlighting
     const jsonContent = useMemo(() => JSON.stringify(schema, null, 2), [schema]);
@@ -216,3 +286,4 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
         </div>
     );
 }
+

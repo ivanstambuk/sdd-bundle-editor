@@ -8,6 +8,9 @@
 // Bundle type definition types (SINGLE SOURCE OF TRUTH)
 export * from './bundle-types';
 
+// Schema metadata types (for x-sdd-meta extension)
+export * from './schema-meta';
+
 // Type definitions (interfaces, type aliases)
 export * from './api/agent';
 

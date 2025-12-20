@@ -25,7 +25,9 @@ const validator = customizeValidator({
       'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
       // Visual hierarchy keywords
       'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
-      'x-sdd-enumStyles', 'x-sdd-displayLocation'
+      'x-sdd-enumStyles', 'x-sdd-displayLocation',
+      // Schema metadata keyword
+      'x-sdd-meta'
     ],
   },
 });

@@ -241,15 +241,18 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                     <span className="entity-type-count">{entityCount} entities</span>
                 </div>
                 {meta && (
-                    <div className="entity-header-meta">
-                        <span className="entity-meta-item">
-                            <span className="entity-meta-label">Created Date:</span> {formatDate(meta.createdDate)}
+                    <div className="entity-header-metadata">
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Created Date:</span>
+                            <span className="header-metadata-value">{formatDate(meta.createdDate)}</span>
                         </span>
-                        <span className="entity-meta-item">
-                            <span className="entity-meta-label">Last Modified Date:</span> {formatDate(meta.lastModifiedDate)}
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Last Modified Date:</span>
+                            <span className="header-metadata-value">{formatDate(meta.lastModifiedDate)}</span>
                         </span>
-                        <span className="entity-meta-item">
-                            <span className="entity-meta-label">Modified By:</span> {meta.lastModifiedBy || '—'}
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Modified By:</span>
+                            <span className="header-metadata-value">{meta.lastModifiedBy || '—'}</span>
                         </span>
                     </div>
                 )}

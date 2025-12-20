@@ -62,6 +62,28 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     const required = (schema.required as string[]) || [];
     const properties = (schema.properties as Record<string, any>) || {};
 
+    // Extract schema metadata for header display
+    const meta = schema['x-sdd-meta'] as {
+        createdDate?: string;
+        lastModifiedDate?: string;
+        lastModifiedBy?: string;
+        references?: Array<{ label: string; url: string; type?: string }>;
+        tags?: string[];
+    } | undefined;
+
+    const formatDate = (isoDate: string | undefined) => {
+        if (!isoDate) return '—';
+        try {
+            return new Date(isoDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            });
+        } catch {
+            return isoDate;
+        }
+    };
+
     const handleCopyJson = async () => {
         try {
             const jsonContent = JSON.stringify(schema, null, 2);
@@ -76,28 +98,6 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
     // Render the Details tab content
     const renderDetailsTab = () => {
-        // Extract schema metadata
-        const meta = schema['x-sdd-meta'] as {
-            createdDate?: string;
-            lastModifiedDate?: string;
-            lastModifiedBy?: string;
-            references?: Array<{ label: string; url: string; type?: string }>;
-            tags?: string[];
-        } | undefined;
-
-        const formatDate = (isoDate: string | undefined) => {
-            if (!isoDate) return '—';
-            try {
-                return new Date(isoDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                });
-            } catch {
-                return isoDate;
-            }
-        };
-
         return (
             <>
                 {/* Schema overview */}
@@ -123,33 +123,14 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                     </div>
                 </section>
 
-                {/* Schema Metadata */}
-                {meta && (
+                {/* Tags (optional, schema-driven) */}
+                {meta?.tags && meta.tags.length > 0 && (
                     <section className="schema-section">
-                        <h3>Schema Metadata</h3>
-                        <div className="schema-info">
-                            <div className="schema-info-row">
-                                <span className="schema-info-label">Created:</span>
-                                <span className="schema-info-value">{formatDate(meta.createdDate)}</span>
-                            </div>
-                            <div className="schema-info-row">
-                                <span className="schema-info-label">Last Modified:</span>
-                                <span className="schema-info-value">{formatDate(meta.lastModifiedDate)}</span>
-                            </div>
-                            <div className="schema-info-row">
-                                <span className="schema-info-label">Modified By:</span>
-                                <span className="schema-info-value">{meta.lastModifiedBy || '—'}</span>
-                            </div>
-                            {meta.tags && meta.tags.length > 0 && (
-                                <div className="schema-info-row">
-                                    <span className="schema-info-label">Tags:</span>
-                                    <span className="schema-info-value schema-tags">
-                                        {meta.tags.map(tag => (
-                                            <span key={tag} className="schema-tag">{tag}</span>
-                                        ))}
-                                    </span>
-                                </div>
-                            )}
+                        <h3>Tags</h3>
+                        <div className="schema-tags">
+                            {meta.tags.map(tag => (
+                                <span key={tag} className="schema-tag">{tag}</span>
+                            ))}
                         </div>
                     </section>
                 )}
@@ -254,9 +235,24 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     return (
         <div className="entity-type-details">
             <div className="entity-type-header">
-                {icon && <span className="entity-type-icon">{icon}</span>}
-                <h2>{displayNamePlural}</h2>
-                <span className="entity-type-count">{entityCount} entities</span>
+                <div className="entity-type-header-left">
+                    {icon && <span className="entity-type-icon">{icon}</span>}
+                    <h2>{displayNamePlural}</h2>
+                    <span className="entity-type-count">{entityCount} entities</span>
+                </div>
+                {meta && (
+                    <div className="entity-header-meta">
+                        <span className="entity-meta-item">
+                            <span className="entity-meta-label">Created Date:</span> {formatDate(meta.createdDate)}
+                        </span>
+                        <span className="entity-meta-item">
+                            <span className="entity-meta-label">Last Modified Date:</span> {formatDate(meta.lastModifiedDate)}
+                        </span>
+                        <span className="entity-meta-item">
+                            <span className="entity-meta-label">Modified By:</span> {meta.lastModifiedBy || '—'}
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Tab bar */}

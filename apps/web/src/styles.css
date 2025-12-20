@@ -4396,10 +4396,17 @@ form input[type="checkbox"] {
 .entity-type-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
   border-bottom: 1px solid var(--color-border);
+}
+
+.entity-type-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .entity-type-header h2 {
@@ -4414,13 +4421,32 @@ form input[type="checkbox"] {
 }
 
 .entity-type-count {
-  margin-left: auto;
   padding: var(--spacing-xs) var(--spacing-sm);
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
+
+/* Schema header metadata - dates/author shown inline on right */
+.entity-header-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.entity-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.entity-meta-label {
+  opacity: 0.7;
+}
+
 
 .entity-type-body {
   display: flex;

@@ -8,6 +8,13 @@ import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } fro
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 import { exportEntityToMarkdown, downloadMarkdown } from '../utils/exportMarkdown';
+import {
+  getHeaderFieldNames,
+  getFieldToGroupMap,
+  filterSchemaForLayoutGroup,
+  filterSchemaWithoutHeaderFields,
+  filterFormDataToSchema,
+} from '../utils/schemaFiltering';
 import { EntityTypeBadge } from './EntityTypeBadge';
 import { EntityHeaderBadges } from './EntityHeaderBadges';
 import { ProminenceHeader } from './ProminenceHeader';
@@ -81,37 +88,27 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       .sort((a, b) => a.order - b.order)
     : [];
 
-  // Build a map of which fields belong to which group
-  const fieldToGroup: Record<string, string> = {};
-  if (hasLayoutGroups && schema?.properties) {
-    const props = schema.properties as Record<string, any>;
-    for (const [fieldName, fieldSchema] of Object.entries(props)) {
-      const group = fieldSchema?.['x-sdd-layoutGroup'];
-      if (group) {
-        fieldToGroup[fieldName] = group;
-      }
-    }
-  }
+  // Use utility functions for schema filtering (extracted to utils/schemaFiltering.ts)
+  const fieldToGroup = useMemo(() => getFieldToGroupMap(schema as any), [schema]);
+  const headerFieldNames = useMemo(() => getHeaderFieldNames(schema as any), [schema]);
 
-  // Extract header metadata fields (x-sdd-displayLocation: "header")
-  // These fields are displayed in the entity header, not in the main form
+  // Extract header metadata fields for display in entity header
   interface HeaderMetadataField {
     fieldName: string;
     label: string;
     value: any;
     fieldSchema: any;
   }
-  const headerMetadataFields: HeaderMetadataField[] = [];
-  const headerFieldNames = new Set<string>();
+  const headerMetadataFields: HeaderMetadataField[] = useMemo(() => {
+    if (!schema?.properties) return [];
 
-  if (schema?.properties) {
     const props = schema.properties as Record<string, any>;
     const data = entity.data as Record<string, any>;
+    const fields: HeaderMetadataField[] = [];
 
     for (const [fieldName, fieldSchema] of Object.entries(props)) {
       if (fieldSchema?.['x-sdd-displayLocation'] === 'header') {
-        headerFieldNames.add(fieldName);
-        headerMetadataFields.push({
+        fields.push({
           fieldName,
           label: fieldSchema.title || fieldName.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase()).trim(),
           value: data?.[fieldName],
@@ -119,102 +116,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         });
       }
     }
-  }
+    return fields;
+  }, [schema, entity.data]);
 
-  // Create a filtered schema for a specific layout group
-  // Sorts fields by x-sdd-order (fields without order come last)
-  // Excludes header metadata fields
-  const createFilteredSchema = (groupKey: string): Record<string, unknown> | null => {
-    if (!schema || !schema.properties) return null;
+  // Wrapper for filterSchemaForLayoutGroup that uses component's memoized values
+  const createFilteredSchema = useCallback((groupKey: string) => {
+    return filterSchemaForLayoutGroup(schema as any, groupKey, fieldToGroup, headerFieldNames);
+  }, [schema, fieldToGroup, headerFieldNames]);
 
-    const props = schema.properties as Record<string, any>;
-    const filteredEntries: [string, any][] = [];
-    const filteredRequired: string[] = [];
-
-    for (const [fieldName, fieldSchema] of Object.entries(props)) {
-      // Skip header metadata fields
-      if (headerFieldNames.has(fieldName)) continue;
-
-      if (fieldToGroup[fieldName] === groupKey) {
-        filteredEntries.push([fieldName, fieldSchema]);
-        // Check if field is in required list
-        if (Array.isArray(schema.required) && schema.required.includes(fieldName)) {
-          filteredRequired.push(fieldName);
-        }
-      }
-    }
-
-    if (filteredEntries.length === 0) return null;
-
-    // Sort by x-sdd-order (default to Infinity for fields without order)
-    filteredEntries.sort((a, b) => {
-      const orderA = a[1]?.['x-sdd-order'] ?? Infinity;
-      const orderB = b[1]?.['x-sdd-order'] ?? Infinity;
-      return orderA - orderB;
-    });
-
-    // Rebuild properties object in sorted order
-    const sortedProps: Record<string, any> = {};
-    for (const [name, fieldSchema] of filteredEntries) {
-      sortedProps[name] = fieldSchema;
-    }
-
-    // Strip conditional schema keywords that could reintroduce filtered fields
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema as any;
-
-    return {
-      ...schemaBase,
-      properties: sortedProps,
-      required: filteredRequired,
-      additionalProperties: false,
-    };
-  };
-
-  // Filter formData to only include fields that exist in the schema properties
-  // This prevents RJSF from rendering fields not in schema (header-only fields, etc.)
-  const filterFormDataToSchema = (
-    data: Record<string, any>,
-    schemaToMatch: Record<string, unknown> | null | undefined
-  ): Record<string, any> => {
-    if (!data || !schemaToMatch || !schemaToMatch.properties) return data;
-    const schemaProps = schemaToMatch.properties as Record<string, any>;
-    const filtered: Record<string, any> = {};
-    for (const key of Object.keys(schemaProps)) {
-      if (key in data) {
-        filtered[key] = data[key];
-      }
-    }
-    return filtered;
-  };
-
-  // Create schema with header fields filtered out (for non-grouped forms)
+  // Schema with header fields filtered out (for non-grouped forms)
   const schemaWithoutHeaderFields = useMemo(() => {
-    if (!schema || !schema.properties || headerFieldNames.size === 0) return schema;
-
-    const props = schema.properties as Record<string, any>;
-    const filteredProps: Record<string, any> = {};
-    const filteredRequired: string[] = [];
-
-    for (const [fieldName, fieldSchema] of Object.entries(props)) {
-      // Skip header metadata fields
-      if (headerFieldNames.has(fieldName)) continue;
-      filteredProps[fieldName] = fieldSchema;
-      if (Array.isArray(schema.required) && schema.required.includes(fieldName)) {
-        filteredRequired.push(fieldName);
-      }
-    }
-
-    // Strip conditional schema keywords that could reintroduce filtered fields
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema as any;
-
-    return {
-      ...schemaBase,
-      properties: filteredProps,
-      required: filteredRequired,
-      additionalProperties: false,
-    };
+    return filterSchemaWithoutHeaderFields(schema as any, headerFieldNames);
   }, [schema, headerFieldNames]);
 
   // Helper to get display name from any entity type's schema

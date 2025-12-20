@@ -54,32 +54,15 @@ The following major milestones have been completed:
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
 
-### Schema Validation
-- [x] ~~Redundant bidirectional link detection~~ – Done in `core-lint` package
-  - Rule type: `redundant-bidirectional-link` 
-  - Detects when A→B and B→A both exist in refGraph
-  - Configurable via lint config with warning severity
-
 ### Schema Filtering & Display Logic
-- [ ] Extract schema filtering to shared utility
-  - **Current**: `createFilteredSchema` and `schemaWithoutHeaderFields` inline in EntityDetails.tsx
-  - **Target**: `packages/ui-shell/src/utils/schemaFiltering.ts`
-  - **Functions**:
-    - `filterSchemaForLayoutGroup(schema, groupKey, headerFieldNames)` - returns filtered schema for a layout group
-    - `filterSchemaWithoutHeaderFields(schema, headerFieldNames)` - removes header-only fields from schema
-    - `getHeaderFieldNames(schema)` - extracts field names where `x-sdd-displayLocation === 'header'`
-  - **Benefit**: Testable in isolation, reusable in other components
+- [x] ~~Extract schema filtering to shared utility~~ – Done in `utils/schemaFiltering.ts`
+  - `filterSchemaForLayoutGroup()`, `filterSchemaWithoutHeaderFields()`, `getHeaderFieldNames()`
+  - `getFieldToGroupMap()`, `sortFieldsByOrder()`, `stripConditionalKeywords()`, `filterFormDataToSchema()`
+  - EntityDetails.tsx now uses these utilities (~85 lines removed)
 
-- [ ] Add unit tests for schema filtering logic
-  - **Location**: `packages/ui-shell/src/utils/__tests__/schemaFiltering.test.ts`
-  - **Test cases**:
-    - Header fields are never included in filtered schemas
-    - Fields without layout group don't appear in any group
-    - Fields with layout group only appear in their assigned group
-    - `additionalProperties: false` is always set in output
-    - Order is preserved by `x-sdd-order`
-  - **Effort**: 30 min
-  - **Impact**: Prevents regressions in schema-driven UI filtering
+- [x] ~~Add unit tests for schema filtering logic~~ – Done (23 tests)
+  - Location: `packages/ui-shell/src/utils/__tests__/schemaFiltering.test.ts`
+  - Covers all edge cases including null/undefined inputs, field ordering, header exclusion
 
 ### Entity Relationship Graph Visualization
 - [ ] Interactive graph view for entity types and relationships

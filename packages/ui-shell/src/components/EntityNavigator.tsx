@@ -71,12 +71,23 @@ export function EntityNavigator({
     return { categoryGroups: groups, uncategorizedTypes: uncategorized };
   }, [bundle?.bundleTypeDefinition, bundle?.entities]);
 
-  // Initialize all groups as collapsed when bundle first loads
+  // Initialize all categories and entity groups as collapsed when bundle first loads
   useEffect(() => {
-    if (bundle && collapsedGroups.size === 0) {
-      setCollapsedGroups(new Set(Object.keys(bundle.entities)));
+    if (bundle) {
+      // Collapse all entity type groups
+      if (collapsedGroups.size === 0) {
+        setCollapsedGroups(new Set(Object.keys(bundle.entities)));
+      }
+      // Collapse all categories by default
+      if (collapsedCategories.size === 0 && categoryGroups.length > 0) {
+        const allCategoryNames = categoryGroups.map(cg => cg.category.name);
+        if (uncategorizedTypes.length > 0) {
+          allCategoryNames.push('__uncategorized');
+        }
+        setCollapsedCategories(new Set(allCategoryNames));
+      }
     }
-  }, [bundle]);
+  }, [bundle, categoryGroups, uncategorizedTypes]);
 
   // Build metadata lookup from schemas - uses plural for headers
   const getMetadata = useMemo(() => {

@@ -178,6 +178,70 @@ Use `x-sdd-enumStyles` for status fields that benefit from color coding:
 
 ---
 
+## Typographic Hierarchy
+
+Use typography to create clear visual hierarchy between labels and values.
+
+### Default Styling (Schema-Driven)
+
+| Element | Default Style | Controlled By |
+|---------|---------------|---------------|
+| **Labels** | Small (11px), muted gray, UPPERCASE | `x-sdd-labelStyle: "muted"` |
+| **Values** | Normal size, primary color, medium weight | `x-sdd-valueStyle: "plain"` |
+
+This creates a pattern where:
+- Labels serve as de-emphasized category headers
+- Values are the primary focus when viewing
+
+### Style Options
+
+**Label Styles** (`x-sdd-labelStyle`):
+| Value | Appearance | Use Case |
+|-------|------------|----------|
+| `muted` | Small, gray, uppercase | Default for most fields |
+| `prominent` | Normal size, bold, primary color | When label needs emphasis |
+
+**Value Styles** (`x-sdd-valueStyle`):
+| Value | Appearance | Use Case |
+|-------|------------|----------|
+| `plain` | No background/border | Clean viewing experience |
+| `boxed` | Background + border | Traditional input look, edit mode |
+
+### When to Override
+
+- **Prominent labels**: For section headers within complex nested objects
+- **Boxed values**: When you want traditional form appearance in read-only mode
+
+---
+
+## Field Treatment by Type
+
+Different field types warrant different visual treatment in read-only mode:
+
+| Field Type | Treatment | Rationale |
+|------------|-----------|-----------|
+| **Short strings** (title, name) | Plain text | Reduces visual noise |
+| **Numbers** | Plain text | Clear, uncluttered |
+| **Dates** | Plain text | Em-dash for empty, formatted for values |
+| **Enums** (status, confidence) | Colored badges | Semantic meaning at a glance |
+| **Markdown/multiline** | Boxed container | Content boundaries, scroll area |
+| **Nested objects** | Card with border | Visual grouping |
+| **Arrays** | Varies by layout | chips/bullets/cards |
+
+### Design Rationale
+
+**Plain text for metadata:**
+- Reduces visual clutter when viewing
+- Creates clear "content vs. container" distinction
+- Follows modern design trends (Linear, Notion, Vercel)
+
+**Boxes for rich content:**
+- Markdown can contain headers, lists, code blocks
+- Scrollable containers need defined boundaries
+- Complex nested structures benefit from visual grouping
+
+---
+
 ## Anti-patterns
 
 ### ❌ Too Many Sub-tabs

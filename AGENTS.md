@@ -116,6 +116,26 @@ See `.agent/workflows/` for detailed instructions.
 3. **CSS-first for UI**: Add CSS classes before JSX, use design system variables
 4. **Commit incrementally**: Don't accumulate large changesets
 5. **Test before commit**: Run `pnpm test` (and `pnpm test:e2e` for UI changes)
+6. **Generate visual mockups for UI proposals**: When proposing UI changes with multiple options, proactively generate image mockups using the image generation tool (Gemini 3 Pro) to show each option visually before implementation. This enables informed decision-making.
+
+---
+
+## UI Change Proposal Workflow
+
+When proposing any UI change with multiple viable approaches:
+
+1. **Generate visual mockups** for each option using image generation
+2. **Label clearly** (Option 1, Option 2, etc.) with brief descriptions
+3. **Show in chat** so user can compare visually
+4. **Wait for user decision** before implementing
+5. **After implementation**, use browser_subagent with before/after screenshots to validate
+
+**Applies to:**
+- Layout changes (horizontal vs vertical, grid vs list)
+- Typography choices (font sizes, weights, colors)
+- Color schemes and theming
+- Component styling variations
+- Field treatment options (plain vs boxed, badges vs text)
 
 ---
 

@@ -420,3 +420,41 @@ cat schemas/ADR.schema.json | jq '{
 ```typescript
 const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema;
 ```
+
+---
+
+## Browser SHA-256 Hash (Web Crypto API)
+
+**Problem**: Need content-addressable caching in the browser (e.g., PlantUML diagrams).
+
+**Use case**: Generate hash for cache key/ETag matching server-side computation.
+
+```typescript
+/**
+ * Compute SHA-256 hash of content for cache key
+ * Uses Web Crypto API (available in all modern browsers)
+ */
+async function computeHash(content: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(content);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex.slice(0, 16); // Truncate to 16 chars to match server
+}
+
+// Usage example (PlantUML caching):
+const hash = await computeHash(`${theme}:${code.trim()}`);
+const response = await fetch(`/api/plantuml/${hash}?code=${encodeURIComponent(code)}&theme=${theme}`);
+```
+
+**Server-side equivalent (Node.js)**:
+```typescript
+const crypto = require('node:crypto');
+function computeHash(content: string): string {
+    return crypto.createHash('sha256').update(content).digest('hex').slice(0, 16);
+}
+```
+
+**Why save**: Non-obvious async pattern with Web Crypto API, useful for content-addressable caching.
+

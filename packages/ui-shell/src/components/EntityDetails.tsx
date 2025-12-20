@@ -158,8 +158,12 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       sortedProps[name] = fieldSchema;
     }
 
+    // Strip conditional schema keywords that could reintroduce filtered fields
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema as any;
+
     return {
-      ...schema,
+      ...schemaBase,
       properties: sortedProps,
       required: filteredRequired,
       additionalProperties: false,
@@ -200,8 +204,12 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       }
     }
 
+    // Strip conditional schema keywords that could reintroduce filtered fields
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { if: _if, then: _then, else: _else, allOf, anyOf, oneOf, ...schemaBase } = schema as any;
+
     return {
-      ...schema,
+      ...schemaBase,
       properties: filteredProps,
       required: filteredRequired,
       additionalProperties: false,

@@ -248,13 +248,47 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
+    // Extract bundle type metadata
+    const bundleMeta = bundleDef?.['x-sdd-meta'];
+
+    const formatDate = (isoDate: string | undefined) => {
+        if (!isoDate) return '—';
+        try {
+            return new Date(isoDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            });
+        } catch {
+            return isoDate;
+        }
+    };
+
     return (
         <div className="bundle-overview">
             {/* Bundle header */}
             <div className="bundle-overview-header">
-                <span className="bundle-icon">📦</span>
-                <h2>{manifest?.metadata?.name || 'Bundle'}</h2>
-                <span className="bundle-type-badge">{manifest?.metadata?.bundleType || 'sdd'}</span>
+                <div className="bundle-overview-header-left">
+                    <span className="bundle-icon">📦</span>
+                    <h2>{manifest?.metadata?.name || 'Bundle'}</h2>
+                    <span className="bundle-type-badge">{manifest?.metadata?.bundleType || 'sdd'}</span>
+                </div>
+                {bundleMeta && (
+                    <div className="entity-header-metadata">
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Created Date:</span>
+                            <span className="header-metadata-value">{formatDate(bundleMeta.createdDate)}</span>
+                        </span>
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Last Modified Date:</span>
+                            <span className="header-metadata-value">{formatDate(bundleMeta.lastModifiedDate)}</span>
+                        </span>
+                        <span className="header-metadata-item">
+                            <span className="header-metadata-label">Modified By:</span>
+                            <span className="header-metadata-value">{bundleMeta.lastModifiedBy || '—'}</span>
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Tab bar - using reusable TabBar component */}

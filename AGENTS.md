@@ -139,6 +139,39 @@ When proposing any UI change with multiple viable approaches:
 
 ---
 
+## Architectural-First Option Presentation
+
+When presenting multiple implementation options to the user, **always apply architectural-first reasoning**:
+
+1. **Analyze each option** against key architectural concerns:
+   - **SSOT (Single Source of Truth)**: Which option maintains clearer data ownership?
+   - **Separation of Concerns**: Which keeps responsibilities properly divided?
+   - **Pattern Consistency**: Which follows established patterns in the codebase?
+   - **Propagation/Reuse**: Which option benefits from existing infrastructure?
+
+2. **Present a comparison table** showing how options fare on each concern
+
+3. **Make a clear recommendation** for which option is architecturally better, with justification
+
+4. **Then ask for user input**, but lead with the better choice
+
+**Example format:**
+```
+| Concern               | Option A | Option B |
+|-----------------------|----------|----------|
+| Pattern Consistency   | ⚠️       | ✅       |
+| SSOT                  | ⚠️       | ✅       |
+| Separation of Concerns| ❌       | ✅       |
+
+**Recommendation**: Option B is architecturally better because...
+
+Would you like me to implement Option B?
+```
+
+**Do NOT** present options neutrally without a recommendation. The user relies on your architectural judgment.
+
+---
+
 ## Reusable Patterns & Snippets
 
 Reusable code patterns are stored in `.agent/snippets/`:

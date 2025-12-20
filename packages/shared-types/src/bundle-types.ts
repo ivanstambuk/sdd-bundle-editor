@@ -79,6 +79,18 @@ export interface BundleTypeDefinition {
     bundleType: string;
     /** Version of the bundle type definition */
     version: string;
+    /** 
+     * Bundle type metadata - when this bundle type was created/modified.
+     * Uses the same SchemaMeta type as entity schemas.
+     */
+    'x-sdd-meta'?: {
+        createdDate?: string;
+        lastModifiedDate?: string;
+        lastModifiedBy?: string;
+        version?: string;
+        references?: Array<{ label: string; url: string; type?: string }>;
+        tags?: string[];
+    };
     /** Category definitions for grouping entity types */
     categories?: BundleTypeCategoryConfig[];
     /** Entity type configurations */

@@ -166,6 +166,23 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     };
   };
 
+  // Filter formData to only include fields that exist in the schema properties
+  // This prevents RJSF from rendering fields not in schema (header-only fields, etc.)
+  const filterFormDataToSchema = (
+    data: Record<string, any>,
+    schemaToMatch: Record<string, unknown> | null | undefined
+  ): Record<string, any> => {
+    if (!data || !schemaToMatch || !schemaToMatch.properties) return data;
+    const schemaProps = schemaToMatch.properties as Record<string, any>;
+    const filtered: Record<string, any> = {};
+    for (const key of Object.keys(schemaProps)) {
+      if (key in data) {
+        filtered[key] = data[key];
+      }
+    }
+    return filtered;
+  };
+
   // Create schema with header fields filtered out (for non-grouped forms)
   const schemaWithoutHeaderFields = useMemo(() => {
     if (!schema || !schema.properties || headerFieldNames.size === 0) return schema;
@@ -755,7 +772,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             <AnyForm
               className="rjsf"
               schema={schemaWithoutHeaderFields as any}
-              formData={entity.data}
+              formData={filterFormDataToSchema(entity.data as Record<string, any>, schemaWithoutHeaderFields)}
               uiSchema={uiSchema}
               widgets={widgets}
               fields={fields}
@@ -805,7 +822,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             <AnyForm
               className="rjsf"
               schema={currentSubTabSchema as any}
-              formData={entity.data}
+              formData={filterFormDataToSchema(entity.data as Record<string, any>, currentSubTabSchema)}
               uiSchema={uiSchema}
               widgets={widgets}
               fields={fields}

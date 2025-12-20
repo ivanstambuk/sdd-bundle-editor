@@ -5245,10 +5245,6 @@ form input[type="checkbox"] {
 .date-widget {
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
-  display: flex;
-  align-items: center;
-  min-height: 36px;
-  /* Match input field height */
 }
 
 .date-widget--empty {
@@ -5257,6 +5253,7 @@ form input[type="checkbox"] {
 
 .date-widget--readonly {
   font-weight: 400;
+  /* Inline display - no extra vertical spacing */
 }
 
 .date-widget--editable {

@@ -72,3 +72,19 @@ Use descriptive names: `{component}_{action}_{state}`
 - `date_widget_validation`
 - `markdown_field_before_fix`
 - `entity_header_alignment_after`
+
+## UI Design Proposals
+
+**When proposing UI changes with multiple options:**
+
+1. **Generate visual mockups** using image generation (Gemini 3 Pro) for each option
+2. **Show all options in chat** with clear labels (Option 1, Option 2, etc.)
+3. **Wait for user decision** before implementing
+4. This applies to:
+   - Layout changes (horizontal vs vertical, grid vs list)
+   - Color schemes
+   - Typography choices
+   - Component styling variations
+   - Any visual design decision with multiple viable approaches
+
+This enables informed decision-making based on actual visual representation rather than text descriptions.

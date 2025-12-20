@@ -1303,7 +1303,8 @@ button.entity-type-badge.clickable:active {
 }
 
 /* Read-only mode: plain text styling for short string inputs
-   Removes box background to reduce visual noise when just viewing data */
+   Removes box background to reduce visual noise when just viewing data
+   Values use primary color and medium weight for clear hierarchy against muted labels */
 .rjsf input[type="text"][readonly],
 .rjsf input[type="number"][readonly] {
   background: transparent;
@@ -1312,6 +1313,8 @@ button.entity-type-badge.clickable:active {
   padding-right: 0;
   opacity: 1;
   cursor: default;
+  color: var(--color-text-primary);
+  font-weight: 500;
 }
 
 /* Keep box styling for textareas (multiline content needs boundaries) */
@@ -3191,10 +3194,14 @@ form.rjsf {
   margin-bottom: var(--spacing-xs);
 }
 
+/* Typographic hierarchy: labels are de-emphasized, values are primary
+   Labels: smaller, muted, uppercase for clear visual hierarchy */
 .rjsf-field-label label {
-  font-size: var(--font-size-sm);
+  font-size: 11px;
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .required-asterisk {

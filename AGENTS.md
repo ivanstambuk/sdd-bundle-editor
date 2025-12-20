@@ -110,7 +110,7 @@ See `.agent/workflows/` for detailed instructions.
 ## Critical Rules
 
 1. **Build after TypeScript changes**: Run `pnpm build` after modifying any `packages/*` source
-2. **Never use `browser_subagent`**: Use Playwright E2E tests instead
+2. **Use browser_subagent for UI validation**: For visual changes, use `browser_subagent` to verify the UI looks correct before committing. Take screenshots and validate layout/styling.
 3. **CSS-first for UI**: Add CSS classes before JSX, use design system variables
 4. **Commit incrementally**: Don't accumulate large changesets
 5. **Test before commit**: Run `pnpm test` (and `pnpm test:e2e` for UI changes)

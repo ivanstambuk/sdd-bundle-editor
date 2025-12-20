@@ -4904,6 +4904,9 @@ form input[type="checkbox"] {
 .date-widget {
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  min-height: 36px; /* Match input field height */
 }
 
 .date-widget--empty {
@@ -4912,6 +4915,11 @@ form input[type="checkbox"] {
 
 .date-widget--readonly {
   font-weight: 400;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  width: 100%;
 }
 
 .date-widget--editable {
@@ -4922,6 +4930,7 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
   font-size: var(--font-size-sm);
   font-family: inherit;
+  width: 100%;
 }
 
 .date-widget--editable:focus {

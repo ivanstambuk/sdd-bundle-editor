@@ -165,6 +165,30 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     };
   };
 
+  // Create schema with header fields filtered out (for non-grouped forms)
+  const schemaWithoutHeaderFields = useMemo(() => {
+    if (!schema || !schema.properties || headerFieldNames.size === 0) return schema;
+
+    const props = schema.properties as Record<string, any>;
+    const filteredProps: Record<string, any> = {};
+    const filteredRequired: string[] = [];
+
+    for (const [fieldName, fieldSchema] of Object.entries(props)) {
+      // Skip header metadata fields
+      if (headerFieldNames.has(fieldName)) continue;
+      filteredProps[fieldName] = fieldSchema;
+      if (Array.isArray(schema.required) && schema.required.includes(fieldName)) {
+        filteredRequired.push(fieldName);
+      }
+    }
+
+    return {
+      ...schema,
+      properties: filteredProps,
+      required: filteredRequired,
+    };
+  }, [schema, headerFieldNames]);
+
   // Helper to get display name from any entity type's schema
   const getDisplayName = (entityType: string): string => {
     const s = bundle.schemas?.[entityType];
@@ -725,10 +749,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     if (!hasLayoutGroups || subTabs.length === 0) {
       return (
         <>
-          {schema ? (
+          {schemaWithoutHeaderFields ? (
             <AnyForm
               className="rjsf"
-              schema={schema as any}
+              schema={schemaWithoutHeaderFields as any}
               formData={entity.data}
               uiSchema={uiSchema}
               widgets={widgets}

@@ -22,7 +22,7 @@ const validator = customizeValidator({
       'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
       // Visual hierarchy keywords
       'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
-      'x-sdd-enumStyles'
+      'x-sdd-enumStyles', 'x-sdd-displayLocation'
     ],
   },
 });
@@ -86,8 +86,37 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     }
   }
 
+  // Extract header metadata fields (x-sdd-displayLocation: "header")
+  // These fields are displayed in the entity header, not in the main form
+  interface HeaderMetadataField {
+    fieldName: string;
+    label: string;
+    value: any;
+    fieldSchema: any;
+  }
+  const headerMetadataFields: HeaderMetadataField[] = [];
+  const headerFieldNames = new Set<string>();
+
+  if (schema?.properties) {
+    const props = schema.properties as Record<string, any>;
+    const data = entity.data as Record<string, any>;
+
+    for (const [fieldName, fieldSchema] of Object.entries(props)) {
+      if (fieldSchema?.['x-sdd-displayLocation'] === 'header') {
+        headerFieldNames.add(fieldName);
+        headerMetadataFields.push({
+          fieldName,
+          label: fieldSchema.title || fieldName.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase()).trim(),
+          value: data?.[fieldName],
+          fieldSchema,
+        });
+      }
+    }
+  }
+
   // Create a filtered schema for a specific layout group
   // Sorts fields by x-sdd-order (fields without order come last)
+  // Excludes header metadata fields
   const createFilteredSchema = (groupKey: string): Record<string, unknown> | null => {
     if (!schema || !schema.properties) return null;
 
@@ -96,6 +125,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const filteredRequired: string[] = [];
 
     for (const [fieldName, fieldSchema] of Object.entries(props)) {
+      // Skip header metadata fields
+      if (headerFieldNames.has(fieldName)) continue;
+
       if (fieldToGroup[fieldName] === groupKey) {
         filteredEntries.push([fieldName, fieldSchema]);
         // Check if field is in required list
@@ -846,6 +878,42 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           />
           <span className="entity-id">{entity.id}</span>
         </div>
+
+        {/* Header metadata - fields with x-sdd-displayLocation: "header" */}
+        {headerMetadataFields.length > 0 && (
+          <div className="entity-header-metadata">
+            {headerMetadataFields.map((field, idx) => {
+              // Format date values nicely
+              let displayValue = field.value;
+              if (field.fieldSchema?.format === 'date' && displayValue) {
+                try {
+                  const date = new Date(displayValue);
+                  displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                } catch { /* keep original */ }
+              } else if (field.fieldSchema?.format === 'date-time' && displayValue) {
+                try {
+                  const date = new Date(displayValue);
+                  displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                } catch { /* keep original */ }
+              }
+
+              // For Actor refs, just show the ID cleanly
+              if (field.fieldSchema?.format === 'sdd-ref' && displayValue) {
+                // Strip common prefixes for cleaner display
+                displayValue = displayValue.replace(/^ACT-/, '').replace(/-/g, ' ');
+              }
+
+              return (
+                <span key={field.fieldName} className="header-metadata-item">
+                  <span className="header-metadata-label">{field.label}:</span>
+                  <span className="header-metadata-value">{displayValue || '—'}</span>
+                  {idx < headerMetadataFields.length - 1 && <span className="header-metadata-sep">·</span>}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
         <div className="entity-header-actions">
           {hasDiagnostics && (
             <span className="diagnostics-badge" title={`${errorCount} errors, ${warningCount} warnings`}>

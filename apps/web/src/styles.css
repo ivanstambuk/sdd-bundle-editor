@@ -1138,6 +1138,39 @@ body {
   gap: var(--spacing-md);
 }
 
+/* Header metadata - system fields shown in header (createdDate, modifiedDate, etc.) */
+.entity-header-metadata {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-right: var(--spacing-md);
+}
+
+.header-metadata-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-metadata-label {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.header-metadata-value {
+  color: var(--color-text-secondary);
+}
+
+.header-metadata-sep {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  margin: 0 var(--spacing-xs);
+}
+
 .entity-type-badge {
   display: inline-flex;
   align-items: center;

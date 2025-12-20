@@ -37,7 +37,7 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
     'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
     // Visual hierarchy keywords
     'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
-    'x-sdd-enumStyles'
+    'x-sdd-enumStyles', 'x-sdd-displayLocation'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({

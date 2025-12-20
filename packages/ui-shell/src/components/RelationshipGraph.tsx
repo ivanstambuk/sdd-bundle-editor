@@ -17,6 +17,7 @@ import ReactFlow, {
     useEdgesState,
     MarkerType,
     NodeMouseHandler,
+    type EdgeTypes,
 } from 'reactflow';
 import dagre from 'dagre';
 import 'reactflow/dist/style.css';
@@ -26,6 +27,7 @@ import type {
     BundleTypeCategoryConfig,
 } from '@sdd-bundle-editor/shared-types';
 import { extractRelationsFromSchemas, type SchemaRelation } from '../utils/schemaUtils';
+import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
 
 interface RelationshipGraphProps {
     /** Entity type configurations */
@@ -143,7 +145,8 @@ function transformToFlowElements(
     const edgePairCount: Record<string, number> = {};
 
     // Create edges for each relationship (derived from schema)
-    const edges: Edge[] = relations.map((rel, index) => {
+    // Uses custom 'labeled' edge type that renders labels as HTML above the SVG path
+    const edges: Edge<LabeledEdgeData>[] = relations.map((rel, index) => {
         // Format label: display name with cardinality indicator
         const cardinalitySymbol = rel.isMany ? ' [*]' : '';
         const label = rel.displayName + cardinalitySymbol;
@@ -154,31 +157,19 @@ function transformToFlowElements(
         const existingCount = (edgePairCount[pairKey] || 0) + (edgePairCount[reversePairKey] || 0);
         edgePairCount[pairKey] = (edgePairCount[pairKey] || 0) + 1;
 
-        // Offset label position for overlapping edges
-        const labelOffset = existingCount * 0.15; // 15% offset per duplicate edge
+        // Calculate path offset for parallel edges (curves the line to avoid overlap)
+        const pathOffset = existingCount > 0 ? existingCount * 30 : undefined;
 
         return {
             id: `edge-${index}`,
             source: rel.fromEntity,
             target: rel.toEntity,
-            label,
-            labelStyle: {
-                fontSize: 11,
-                fontWeight: 500,
-                fill: 'var(--color-text-secondary, #9aa5ce)',
+            // Use custom 'labeled' edge type - label is passed via data, not as direct prop
+            type: 'labeled',
+            data: {
+                label,
+                offset: pathOffset,
             },
-            labelBgStyle: {
-                fill: 'var(--color-surface-secondary, #24283b)',
-                fillOpacity: 1,
-            },
-            labelBgPadding: [6, 4] as [number, number],
-            labelBgBorderRadius: 4,
-            // Offset label position along the edge (0 = middle, 0.3 = toward source, 0.7 = toward target)
-            labelShowBg: true,
-            ...(existingCount > 0 && {
-                pathOptions: { offset: existingCount * 30 },
-                labelBgPadding: [6, 4] as [number, number],
-            }),
             style: {
                 stroke: 'var(--color-border, #414868)',
                 strokeWidth: 1.5,
@@ -190,8 +181,6 @@ function transformToFlowElements(
                 height: 20,
             },
             animated: false,
-            // Use different edge types for parallel edges
-            type: existingCount > 0 ? 'smoothstep' : 'smoothstep',
         };
     });
 
@@ -219,6 +208,12 @@ export function RelationshipGraph({
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+    // Define custom edge types - must be memoized to prevent re-renders
+    const edgeTypes: EdgeTypes = useMemo(
+        () => ({ labeled: LabeledEdge }),
+        []
+    );
 
 
     // Handle node click -> navigate to entity type
@@ -255,8 +250,9 @@ export function RelationshipGraph({
                 }}
                 minZoom={0.2}
                 maxZoom={2}
+                edgeTypes={edgeTypes}
                 defaultEdgeOptions={{
-                    type: 'smoothstep',
+                    type: 'labeled',
                 }}
                 proOptions={{ hideAttribution: true }}
             >

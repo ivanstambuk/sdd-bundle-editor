@@ -32,6 +32,7 @@ import type {
     BundleTypeCategoryConfig,
 } from '@sdd-bundle-editor/shared-types';
 import { extractRelationsFromSchemas, type SchemaRelation } from '../utils/schemaUtils';
+import { getEntityColor } from '../utils/entityColors';
 import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
 import { GraphFilterDropdown } from './GraphFilterDropdown';
 
@@ -47,25 +48,6 @@ interface RelationshipGraphProps {
 }
 
 
-// Default colors for entity types without explicit colors
-const DEFAULT_COLORS = [
-    '#bb9af7', // purple
-    '#7dcfff', // cyan
-    '#ff9e64', // orange
-    '#7aa2f7', // blue
-    '#9ece6a', // green
-    '#e0af68', // yellow
-    '#f7768e', // pink
-    '#73daca', // teal
-];
-
-// Get a consistent color for an entity type
-function getEntityColor(entityType: string, config?: BundleTypeEntityConfig, index = 0): string {
-    if (config?.color) return config.color;
-    // Use hash-based color assignment for consistency
-    const hash = entityType.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return DEFAULT_COLORS[(hash + index) % DEFAULT_COLORS.length];
-}
 
 // Create dagre graph and apply layout
 function getLayoutedElements(

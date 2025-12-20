@@ -22,6 +22,7 @@ import dagre from 'dagre';
 import 'reactflow/dist/style.css';
 
 import type { BundleTypeEntityConfig } from '@sdd-bundle-editor/shared-types';
+import { getEntityColorFromConfigs } from '../utils/entityColors';
 import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
 
 /** Edge representing a reference from one entity to another */
@@ -50,26 +51,6 @@ interface EntityDependencyGraphProps {
     getFieldDisplay: (entityType: string, fieldName: string) => string;
 }
 
-// Default colors for entity types without explicit colors
-const DEFAULT_COLORS = [
-    '#bb9af7', // purple
-    '#7dcfff', // cyan
-    '#ff9e64', // orange
-    '#7aa2f7', // blue
-    '#9ece6a', // green
-    '#e0af68', // yellow
-    '#f7768e', // pink
-    '#73daca', // teal
-];
-
-// Get a consistent color for an entity type
-function getEntityColor(entityType: string, entityConfigs: BundleTypeEntityConfig[]): string {
-    const config = entityConfigs.find(c => c.entityType === entityType);
-    if (config?.color) return config.color;
-    // Use hash-based color assignment for consistency
-    const hash = entityType.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return DEFAULT_COLORS[hash % DEFAULT_COLORS.length];
-}
 
 // Apply dagre layout to position nodes
 function getLayoutedElements(
@@ -135,7 +116,7 @@ export function EntityDependencyGraph({
 
         // Add center node (current entity)
         const centerNodeId = makeNodeId(entityType, entityId);
-        const centerColor = getEntityColor(entityType, entityConfigs);
+        const centerColor = getEntityColorFromConfigs(entityType, entityConfigs);
 
         nodes.push({
             id: centerNodeId,
@@ -167,7 +148,7 @@ export function EntityDependencyGraph({
             const nodeId = makeNodeId(edge.toEntityType, edge.toId);
 
             if (!addedNodes.has(nodeId)) {
-                const color = getEntityColor(edge.toEntityType, entityConfigs);
+                const color = getEntityColorFromConfigs(edge.toEntityType, entityConfigs);
                 nodes.push({
                     id: nodeId,
                     type: 'default',
@@ -219,7 +200,7 @@ export function EntityDependencyGraph({
             const nodeId = makeNodeId(edge.fromEntityType, edge.fromId);
 
             if (!addedNodes.has(nodeId)) {
-                const color = getEntityColor(edge.fromEntityType, entityConfigs);
+                const color = getEntityColorFromConfigs(edge.fromEntityType, entityConfigs);
                 nodes.push({
                     id: nodeId,
                     type: 'default',

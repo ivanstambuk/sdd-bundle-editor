@@ -16,6 +16,7 @@
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.25.1",
         "@sdd-bundle-editor/core-model": "workspace:*",
+        "chokidar": "^5.0.0",
         "content-type": "^1.0.5",
         "cors": "^2.8.5",
         "express": "^5.2.1",

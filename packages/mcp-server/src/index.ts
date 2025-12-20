@@ -2,6 +2,7 @@
 import { SddMcpServer } from "./server.js";
 import { BundlesConfigFileSchema, BundleConfig } from "./types.js";
 import { createMcpHttpServer } from "./http-transport.js";
+import { BundleWatcher } from "./bundle-watcher.js";
 import path from "path";
 import fs from "fs";
 import yaml from "js-yaml";
@@ -168,10 +169,31 @@ async function main() {
         const primaryServer = new SddMcpServer(bundleConfigs);
         await primaryServer.loadBundles();
 
+        // Create bundle watcher for automatic reload
+        const bundleWatcher = new BundleWatcher(500); // 500ms debounce
+
+        // Watch all configured bundles
+        for (const config of bundleConfigs) {
+            bundleWatcher.watchBundle(config.id, config.path);
+        }
+
+        // Handle bundle reload events
+        bundleWatcher.on('reload', async (event) => {
+            console.error(`[Main] Bundle ${event.bundleId} changed, reloading...`);
+            try {
+                // Reload the bundle in the primary server
+                await primaryServer.loadBundles();
+                console.error(`[Main] Bundle ${event.bundleId} reloaded successfully`);
+            } catch (err) {
+                console.error(`[Main] Failed to reload bundle ${event.bundleId}:`, err);
+            }
+        });
+
         // Create HTTP server with a factory that creates NEW SddMcpServer instances per session
         // Each session needs its own McpServer instance to avoid state conflicts
         const httpServer = createMcpHttpServer({
             port: httpPort,
+            bundleEventEmitter: bundleWatcher, // Pass watcher for SSE events
             getServer: () => {
                 // Create a new SddMcpServer for each HTTP session
                 // Important: We share the loaded bundles to avoid re-loading from disk
@@ -186,12 +208,20 @@ async function main() {
         });
 
         await httpServer.start();
+
+        // Graceful shutdown
+        process.on('SIGINT', async () => {
+            console.error('[Main] Shutting down...');
+            await bundleWatcher.close();
+            process.exit(0);
+        });
     } else {
         // Stdio Transport Mode (default)
         const server = new SddMcpServer(bundleConfigs);
         await server.start();
     }
 }
+
 
 main().catch((err) => {
     console.error("Fatal error:", err);

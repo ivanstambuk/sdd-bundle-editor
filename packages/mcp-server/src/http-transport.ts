@@ -11,6 +11,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import cors from "cors";
+import { EventEmitter } from "events";
 
 export interface HttpTransportOptions {
     port: number;
@@ -22,6 +23,8 @@ export interface HttpTransportOptions {
     allowedOrigins?: string[];
     /** Factory function to create a new MCP server instance for each session */
     getServer: () => McpServer;
+    /** Event emitter for bundle reload events (optional) */
+    bundleEventEmitter?: EventEmitter;
 }
 
 interface ActiveSession {
@@ -29,6 +32,7 @@ interface ActiveSession {
     server: McpServer;
     createdAt: Date;
 }
+
 
 /**
  * Creates an Express app that handles MCP HTTP transport.
@@ -40,6 +44,7 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
         enableCors = true,
         allowedOrigins,
         getServer,
+        bundleEventEmitter,
     } = options;
 
     const app = express();
@@ -60,11 +65,15 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
     // Store active sessions
     const sessions = new Map<string, ActiveSession>();
 
+    // Store SSE clients for bundle events
+    const bundleEventClients = new Set<Response>();
+
     // Health check endpoint
     app.get("/health", (_req, res) => {
         res.json({
             status: "healthy",
             sessions: sessions.size,
+            sseClients: bundleEventClients.size,
             uptime: process.uptime(),
         });
     });
@@ -77,6 +86,70 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
         }));
         res.json({ sessions: sessionList });
     });
+
+    // ============================================
+    // SSE Events Endpoint for Bundle Reload Notifications
+    // ============================================
+
+    /**
+     * GET /api/events - SSE endpoint for real-time bundle reload notifications
+     * 
+     * Frontend connects to this endpoint and receives events when bundles are reloaded.
+     * Event format: { type: 'bundle-reload', bundleId: string, timestamp: string }
+     */
+    app.get("/api/events", (req: Request, res: Response) => {
+        console.error("[HTTP] SSE client connected for bundle events");
+
+        // Set SSE headers
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx buffering
+        res.flushHeaders();
+
+        // Send initial connection event
+        res.write(`event: connected\ndata: ${JSON.stringify({ message: 'SSE connected' })}\n\n`);
+
+        // Add client to the set
+        bundleEventClients.add(res);
+
+        // Remove client on disconnect
+        req.on('close', () => {
+            console.error("[HTTP] SSE client disconnected");
+            bundleEventClients.delete(res);
+        });
+
+        // Keep connection alive with periodic heartbeat
+        const heartbeat = setInterval(() => {
+            res.write(':heartbeat\n\n');
+        }, 30000);
+
+        req.on('close', () => {
+            clearInterval(heartbeat);
+        });
+    });
+
+    // Subscribe to bundle reload events if emitter is provided
+    if (bundleEventEmitter) {
+        bundleEventEmitter.on('reload', (event: { bundleId: string; bundlePath: string }) => {
+            const eventData = {
+                type: 'bundle-reload',
+                bundleId: event.bundleId,
+                timestamp: new Date().toISOString(),
+            };
+
+            console.error(`[HTTP] Broadcasting bundle-reload to ${bundleEventClients.size} SSE clients`);
+
+            for (const client of bundleEventClients) {
+                try {
+                    client.write(`event: bundle-reload\ndata: ${JSON.stringify(eventData)}\n\n`);
+                } catch (err) {
+                    console.error("[HTTP] Error sending SSE event:", err);
+                    bundleEventClients.delete(client);
+                }
+            }
+        });
+    }
 
     // ============================================
     // PlantUML Rendering API (for web UI only)

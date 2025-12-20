@@ -4,12 +4,13 @@
  * This component composes the main UI layout and connects:
  * - Bundle state (via useBundleState hook)
  * - Keyboard shortcuts (via useKeyboardShortcuts hook)
+ * - Bundle reload events (via useBundleEvents hook for SSE)
  * 
  * The UI is now READ-ONLY for browsing entities.
  * All writes happen via MCP tools called by external LLMs (Claude, Copilot).
  */
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from './types';
 import { EntityNavigator } from './components/EntityNavigator';
 import { EntityDetails } from './components/EntityDetails';
@@ -25,6 +26,7 @@ import { ResizableSidebar } from './components/ResizableSidebar';
 import { ThemeToggle } from './components/ThemeToggle';
 import { createLogger } from './utils/logger';
 import { useBundleState, useKeyboardShortcuts } from './hooks';
+import { useBundleEvents } from './hooks/useBundleEvents';
 
 const log = createLogger('AppShell');
 
@@ -74,6 +76,20 @@ export function AppShell() {
 
   // Output log
   const outputLog = useOutputLog();
+
+  // Subscribe to bundle reload events from server (SSE)
+  // When server detects file changes, it reloads and broadcasts an event
+  const handleBundleReload = useCallback((event: { bundleId: string; timestamp: string }) => {
+    log.info(`Bundle ${event.bundleId} changed on server, reloading...`);
+    outputLog.info(`Bundle ${event.bundleId} changed, auto-reloading...`, 'SSE');
+    reloadBundle();
+  }, [reloadBundle, outputLog]);
+
+  useBundleEvents({
+    onBundleReload: handleBundleReload,
+    enabled: true,
+  });
+
 
   // Auto-select bundle view on initial load (so users don't see "No entity selected")
   const [hasAutoSelected, setHasAutoSelected] = useState(false);

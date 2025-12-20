@@ -4208,6 +4208,46 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
 }
 
+/* Prism.js syntax highlighting for JSON (dark theme) */
+.json-block code {
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Property names (keys) */
+.json-block .token.property {
+  color: #8be9fd;
+  /* cyan */
+}
+
+/* String values */
+.json-block .token.string {
+  color: #f1fa8c;
+  /* yellow */
+}
+
+/* Numbers */
+.json-block .token.number {
+  color: #bd93f9;
+  /* purple */
+}
+
+/* Booleans and null */
+.json-block .token.boolean,
+.json-block .token.null {
+  color: #ff79c6;
+  /* pink */
+}
+
+/* Punctuation (braces, brackets, colons, commas) */
+.json-block .token.punctuation,
+.json-block .token.operator {
+  color: #6272a4;
+  /* muted gray */
+}
+
 /* ========================================
    Entity Sub-Tabs (within Details tab)
    ======================================== */

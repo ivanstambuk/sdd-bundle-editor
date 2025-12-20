@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import yaml from 'js-yaml';
 import Form from '@rjsf/core';
 import { customizeValidator } from '@rjsf/validator-ajv8';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-yaml';
 import type { UiBundleSnapshot, UiEntity, UiDiagnostic, UiEntityTypeConfig } from '../types';
 import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
@@ -884,7 +886,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Render the Raw YAML tab content
+  // Render the Raw YAML tab content with syntax highlighting
+  const highlightedYaml = useMemo(() => {
+    return Prism.highlight(yamlContent, Prism.languages['yaml'], 'yaml');
+  }, [yamlContent]);
+
   const renderYamlTab = () => (
     <div className="yaml-viewer">
       <div className="yaml-actions">
@@ -897,7 +903,12 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           {copyFeedback || '📋 Copy to Clipboard'}
         </button>
       </div>
-      <pre className="code-block yaml-block">{yamlContent}</pre>
+      <pre className="code-block yaml-block">
+        <code
+          className="language-yaml"
+          dangerouslySetInnerHTML={{ __html: highlightedYaml }}
+        />
+      </pre>
     </div>
   );
 

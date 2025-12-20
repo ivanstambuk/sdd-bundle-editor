@@ -4004,6 +4004,67 @@ form input[type="checkbox"] {
   color: var(--color-text-primary);
 }
 
+/* Prism.js syntax highlighting for YAML (dark theme) */
+.yaml-block code {
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Keys */
+.yaml-block .token.key,
+.yaml-block .token.atrule {
+  color: #8be9fd;
+  /* cyan */
+}
+
+/* Values - strings */
+.yaml-block .token.string {
+  color: #f1fa8c;
+  /* yellow */
+}
+
+/* Values - numbers, booleans */
+.yaml-block .token.number,
+.yaml-block .token.boolean {
+  color: #bd93f9;
+  /* purple */
+}
+
+/* Punctuation (colons, dashes) */
+.yaml-block .token.punctuation {
+  color: #6272a4;
+  /* muted gray */
+}
+
+/* Comments */
+.yaml-block .token.comment {
+  color: #6272a4;
+  /* muted gray */
+  font-style: italic;
+}
+
+/* Null values */
+.yaml-block .token.null,
+.yaml-block .token.keyword {
+  color: #ff79c6;
+  /* pink */
+}
+
+/* Anchors and aliases */
+.yaml-block .token.anchor,
+.yaml-block .token.alias {
+  color: #50fa7b;
+  /* green */
+}
+
+/* Important (!) */
+.yaml-block .token.important {
+  color: #ff5555;
+  /* red */
+}
+
 .yaml-actions,
 .json-actions {
   display: flex;

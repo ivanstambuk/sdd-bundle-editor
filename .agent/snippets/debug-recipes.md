@@ -95,6 +95,35 @@ sleep 2 && echo "Servers killed"
 
 ---
 
+## Dev Server Port Cleanup
+
+**Problem**: Port conflicts when restarting dev server (ports 3001 or 5173 in use).
+
+```bash
+# Quick port cleanup - kills processes on dev ports
+fuser -k 3001/tcp 5173/tcp 2>/dev/null
+sleep 2
+echo "Ports cleared"
+
+# Verify ports are free
+lsof -i:3001 -i:5173 || echo "Ports are now free"
+
+# Then restart dev server
+./scripts/local/dev.sh
+```
+
+**Alternative - full process cleanup:**
+```bash
+# Kill by process name (more aggressive)
+pkill -9 -f "concurrently"
+pkill -9 -f "webpack-dev-server"
+pkill -9 -f "mcp-server.*http"
+sleep 2
+./scripts/local/dev.sh
+```
+
+---
+
 ## Finding Entity Files in Sample Bundle
 
 ```bash

@@ -241,3 +241,35 @@
 See `/ui-validation` workflow for detailed process.
 
 **Key insight**: The browser agent is superior to Playwright screenshots for this use case because it provides interactive validation and can navigate to specific components dynamically.
+
+---
+
+## Development Workflow
+
+### 22. MCP server not picking up bundle JSON changes
+- **Symptom**: Changed `bundle-type.*.json` (e.g., added categories) but UI still shows old data
+- **Root cause**: MCP server loads bundles at startup and caches them. Unlike source code (hot-reloaded by webpack), bundle data is loaded once.
+- **Fix**: Restart the dev server after changing bundle JSON:
+  ```bash
+  # Kill and restart dev server
+  fuser -k 3001/tcp 5173/tcp 2>/dev/null
+  sleep 2
+  ./scripts/local/dev.sh
+  ```
+- **Why this happens**: The MCP server is designed for production where bundles don't change at runtime. In development, schema/bundle changes are less frequent than code changes.
+- **Pro tip**: Use `./scripts/local/restart-dev.sh` for quick restarts
+
+### 23. Wrong pnpm build filter syntax
+- **Symptom**: `pnpm build --filter @sdd-bundle-editor/ui-shell` passes `--filter` to tsc, causing errors
+- **Root cause**: Filter flag must come before the script name
+- **Fix**: Use one of these patterns:
+  ```bash
+  # Option 1: cd into package (recommended)
+  cd packages/ui-shell && pnpm build
+  
+  # Option 2: Correct filter syntax (filter BEFORE command)
+  pnpm --filter @sdd-bundle-editor/ui-shell build
+  
+  # Option 3: Build all packages
+  pnpm build
+  ```

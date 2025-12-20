@@ -4897,3 +4897,35 @@ form input[type="checkbox"] {
   border-radius: var(--radius-sm);
   overflow-x: auto;
 }
+
+/* ========================================
+   Date Widget Styles
+   ======================================== */
+.date-widget {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.date-widget--empty {
+  color: var(--color-text-muted);
+}
+
+.date-widget--readonly {
+  font-weight: 400;
+}
+
+.date-widget--editable {
+  padding: var(--spacing-sm);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+}
+
+.date-widget--editable:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-light);
+}

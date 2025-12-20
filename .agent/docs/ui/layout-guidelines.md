@@ -85,6 +85,48 @@ Use `x-sdd-order` to control the sequence:
 
 **Tip**: Leave gaps (5, 10, 15...) so you can insert new fields later.
 
+### Narrative Fields Pattern
+
+For entities that tell a story (ADRs, Design Documents, Analysis Records), use prominence headers to create a clear narrative flow:
+
+| Level | Role | Icon | Example |
+|-------|------|------|---------|
+| `hero` | The Answer | ✅ | Decision, Conclusion |
+| `primary` | The Question | ❓ | Problem, Challenge |
+| `secondary` with header | The Background | 📘 | Context, Background |
+
+**Standard narrative icons:**
+- ❓ Problem/Question - "What are we solving?"
+- 📘 Context/Background - "What's the situation?"
+- ✅ Decision/Answer - "What did we decide?"
+
+**Example ADR configuration:**
+```json
+"problem": {
+  "x-sdd-prominence": "primary",
+  "x-sdd-prominenceLabel": "The Problem",
+  "x-sdd-prominenceIcon": "❓",
+  "x-sdd-order": 30
+},
+"context": {
+  "x-sdd-prominence": "secondary",
+  "x-sdd-prominenceLabel": "The Context",
+  "x-sdd-prominenceIcon": "📘",
+  "x-sdd-order": 35
+},
+"decision": {
+  "x-sdd-prominence": "hero",
+  "x-sdd-prominenceLabel": "The Decision",
+  "x-sdd-prominenceIcon": "✅",
+  "x-sdd-order": 50
+}
+```
+
+**Why this pattern works:**
+- Creates scannable structure ("I can quickly find the decision")
+- Tells a story (problem → context → decision)
+- Consistent across similar entity types
+
 ---
 
 ## Header Metadata

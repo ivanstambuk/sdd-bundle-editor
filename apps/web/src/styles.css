@@ -3283,7 +3283,20 @@ form.rjsf {
   min-height: auto;
 }
 
-/* Secondary prominence - default/normal (no special styling needed) */
+/* Secondary prominence - default/normal, but with optional header for narrative fields */
+.rjsf-field--secondary .rjsf-prominence-header {
+  margin-bottom: var(--spacing-xs);
+}
+
+.rjsf-field--secondary .rjsf-prominence-title {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.rjsf-field--secondary .rjsf-prominence-icon {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+}
 
 /* Tertiary prominence - metadata, supporting info */
 .rjsf-field--tertiary .rjsf-field-label label {

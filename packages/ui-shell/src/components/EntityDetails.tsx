@@ -277,8 +277,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const prominenceIcon = schema?.['x-sdd-prominenceIcon'] as string | undefined;
     const prominenceClass = prominence ? `rjsf-field--${prominence}` : '';
 
-    // Hero and primary prominence get special headers
-    const showProminenceHeader = (prominence === 'hero' || prominence === 'primary') && prominenceLabel;
+    // Hero, primary, and secondary with label get special headers
+    const showProminenceHeader = (prominence === 'hero' || prominence === 'primary' || prominence === 'secondary') && prominenceLabel;
 
     return (
       <div

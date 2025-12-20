@@ -15,6 +15,14 @@ interface TabbedBottomPanelProps {
     minHeight?: number;
     maxHeight?: number;
     storageKey?: string;
+    /** Controlled: external active tab */
+    activeTab?: string;
+    /** Controlled: callback when tab changes */
+    onActiveTabChange?: (tabId: string) => void;
+    /** Controlled: external collapsed state */
+    isCollapsed?: boolean;
+    /** Controlled: callback when collapsed changes */
+    onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 export function TabbedBottomPanel({
@@ -24,7 +32,15 @@ export function TabbedBottomPanel({
     minHeight = 36,
     maxHeight = 500,
     storageKey = 'bottom-panel',
+    activeTab: controlledActiveTab,
+    onActiveTabChange,
+    isCollapsed: controlledIsCollapsed,
+    onCollapsedChange,
 }: TabbedBottomPanelProps) {
+    // Determine if we're in controlled mode
+    const isTabControlled = controlledActiveTab !== undefined;
+    const isCollapsedControlled = controlledIsCollapsed !== undefined;
+
     // Load persisted state
     const getInitialHeight = () => {
         try {
@@ -40,6 +56,7 @@ export function TabbedBottomPanel({
     };
 
     const getInitialCollapsed = () => {
+        if (isCollapsedControlled) return controlledIsCollapsed;
         try {
             const saved = localStorage.getItem(`${storageKey}-collapsed`);
             return saved === 'true';
@@ -48,6 +65,7 @@ export function TabbedBottomPanel({
     };
 
     const getInitialTab = () => {
+        if (isTabControlled) return controlledActiveTab;
         try {
             const saved = localStorage.getItem(`${storageKey}-tab`);
             if (saved && tabs.some(t => t.id === saved)) {
@@ -58,21 +76,29 @@ export function TabbedBottomPanel({
     };
 
     const [height, setHeight] = useState(getInitialHeight);
-    const [isCollapsed, setIsCollapsed] = useState(getInitialCollapsed);
-    const [activeTab, setActiveTab] = useState(getInitialTab);
+    const [internalCollapsed, setInternalCollapsed] = useState(getInitialCollapsed);
+    const [internalActiveTab, setInternalActiveTab] = useState(getInitialTab);
     const [isResizing, setIsResizing] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
     const startY = useRef(0);
     const startHeight = useRef(0);
 
-    // Persist state
+    // Use controlled or internal state
+    const isCollapsed = isCollapsedControlled ? controlledIsCollapsed : internalCollapsed;
+    const activeTab = isTabControlled ? controlledActiveTab : internalActiveTab;
+
+    // Persist state (only for uncontrolled mode)
     useEffect(() => {
         try {
             localStorage.setItem(`${storageKey}-height`, String(height));
-            localStorage.setItem(`${storageKey}-collapsed`, String(isCollapsed));
-            localStorage.setItem(`${storageKey}-tab`, activeTab);
+            if (!isCollapsedControlled) {
+                localStorage.setItem(`${storageKey}-collapsed`, String(isCollapsed));
+            }
+            if (!isTabControlled) {
+                localStorage.setItem(`${storageKey}-tab`, activeTab);
+            }
         } catch { /* ignore */ }
-    }, [height, isCollapsed, activeTab, storageKey]);
+    }, [height, isCollapsed, activeTab, storageKey, isCollapsedControlled, isTabControlled]);
 
     // Handle resize drag
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -90,7 +116,11 @@ export function TabbedBottomPanel({
             const newHeight = Math.min(maxHeight, Math.max(minHeight + 40, startHeight.current + delta));
             setHeight(newHeight);
             if (isCollapsed && newHeight > minHeight + 40) {
-                setIsCollapsed(false);
+                if (isCollapsedControlled) {
+                    onCollapsedChange?.(false);
+                } else {
+                    setInternalCollapsed(false);
+                }
             }
         };
 
@@ -105,18 +135,30 @@ export function TabbedBottomPanel({
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };
-    }, [isResizing, isCollapsed, minHeight, maxHeight]);
+    }, [isResizing, isCollapsed, isCollapsedControlled, onCollapsedChange, minHeight, maxHeight]);
 
     const toggleCollapse = useCallback(() => {
-        setIsCollapsed(prev => !prev);
-    }, []);
+        if (isCollapsedControlled) {
+            onCollapsedChange?.(!isCollapsed);
+        } else {
+            setInternalCollapsed(prev => !prev);
+        }
+    }, [isCollapsedControlled, isCollapsed, onCollapsedChange]);
 
     const handleTabClick = useCallback((tabId: string) => {
         if (isCollapsed) {
-            setIsCollapsed(false);
+            if (isCollapsedControlled) {
+                onCollapsedChange?.(false);
+            } else {
+                setInternalCollapsed(false);
+            }
         }
-        setActiveTab(tabId);
-    }, [isCollapsed]);
+        if (isTabControlled) {
+            onActiveTabChange?.(tabId);
+        } else {
+            setInternalActiveTab(tabId);
+        }
+    }, [isCollapsed, isCollapsedControlled, isTabControlled, onCollapsedChange, onActiveTabChange]);
 
     // Keyboard shortcut: Ctrl+J to toggle
     useEffect(() => {

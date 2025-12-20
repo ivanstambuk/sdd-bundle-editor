@@ -68,6 +68,10 @@ export function AppShell() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
+  // Bottom panel state (controlled mode for auto-open on errors)
+  const [bottomPanelTab, setBottomPanelTab] = useState('diagnostics');
+  const [bottomPanelCollapsed, setBottomPanelCollapsed] = useState(false);
+
   // Output log
   const outputLog = useOutputLog();
 
@@ -93,6 +97,13 @@ export function AppShell() {
       const errors = diagnostics.filter(d => d.severity === 'error').length;
       const warnings = diagnostics.filter(d => d.severity === 'warning').length;
       outputLog.info(`Validation complete: ${errors} errors, ${warnings} warnings`, 'Validation');
+
+      // Auto-open diagnostics panel if there are errors (Option B)
+      if (errors > 0) {
+        setBottomPanelTab('diagnostics');
+        setBottomPanelCollapsed(false);
+        log.info('Auto-opened diagnostics panel due to validation errors');
+      }
     }
   }, [diagnostics]);
 
@@ -302,6 +313,10 @@ export function AppShell() {
           },
         ]}
         defaultTab="diagnostics"
+        activeTab={bottomPanelTab}
+        onActiveTabChange={setBottomPanelTab}
+        isCollapsed={bottomPanelCollapsed}
+        onCollapsedChange={setBottomPanelCollapsed}
       />
     </div>
   );

@@ -60,6 +60,16 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
                 entityTypes: Object.keys(data.bundle.entities),
                 diagnosticsCount: data.diagnostics.length,
             });
+
+            // Auto-validate after load
+            log.info('Running auto-validation after bundle load');
+            try {
+                const validationData = await mcpBundleApi.validate(bundleDir);
+                setDiagnostics(validationData.diagnostics);
+                log.info('Auto-validation complete', { diagnosticsCount: validationData.diagnostics.length });
+            } catch (validationErr) {
+                log.warn('Auto-validation failed, using initial diagnostics', { error: (validationErr as Error).message });
+            }
         } catch (err) {
             const errorMessage = (err as Error).message;
             log.error('Failed to load bundle', { error: errorMessage });

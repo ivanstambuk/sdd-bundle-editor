@@ -5,6 +5,7 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-json';
 import type { UiBundleSnapshot } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
+import { HeaderMetadata } from './HeaderMetadata';
 
 interface EntityTypeDetailsProps {
     bundle: UiBundleSnapshot | null;
@@ -62,7 +63,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     const required = (schema.required as string[]) || [];
     const properties = (schema.properties as Record<string, any>) || {};
 
-    // Extract schema metadata for header display
+    // Extract schema metadata for header display and references
     const meta = schema['x-sdd-meta'] as {
         createdDate?: string;
         lastModifiedDate?: string;
@@ -70,19 +71,6 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
         references?: Array<{ label: string; url: string; type?: string }>;
         tags?: string[];
     } | undefined;
-
-    const formatDate = (isoDate: string | undefined) => {
-        if (!isoDate) return '—';
-        try {
-            return new Date(isoDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-            });
-        } catch {
-            return isoDate;
-        }
-    };
 
     const handleCopyJson = async () => {
         try {
@@ -240,22 +228,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                     <h2>{displayNamePlural}</h2>
                     <span className="entity-type-count">{entityCount} entities</span>
                 </div>
-                {meta && (
-                    <div className="entity-header-metadata">
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Created Date:</span>
-                            <span className="header-metadata-value">{formatDate(meta.createdDate)}</span>
-                        </span>
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Last Modified Date:</span>
-                            <span className="header-metadata-value">{formatDate(meta.lastModifiedDate)}</span>
-                        </span>
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Modified By:</span>
-                            <span className="header-metadata-value">{meta.lastModifiedBy || '—'}</span>
-                        </span>
-                    </div>
-                )}
+                <HeaderMetadata meta={meta} />
             </div>
 
             {/* Tab bar */}

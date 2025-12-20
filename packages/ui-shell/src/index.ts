@@ -11,4 +11,6 @@ export { TabbedBottomPanel, type BottomPanelTab } from './components/TabbedBotto
 export { OutputPanel, useOutputLog, type OutputEntry } from './components/OutputPanel';
 export { SearchResultsPanel, type SearchResult } from './components/SearchResultsPanel';
 export { ThemeToggle } from './components/ThemeToggle';
+export { HeaderMetadata, type HeaderMetadataProps } from './components/HeaderMetadata';
+export { formatDate } from './utils/dateUtils';
 export * from './types';

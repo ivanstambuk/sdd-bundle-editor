@@ -5,6 +5,7 @@ import type { UiBundleSnapshot } from '../types';
 import { TabBar, type Tab } from './TabBar';
 import { EmptyState } from './EmptyState';
 import { EntityTypeBadge } from './EntityTypeBadge';
+import { HeaderMetadata } from './HeaderMetadata';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
@@ -248,22 +249,6 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
-    // Extract bundle type metadata
-    const bundleMeta = bundleDef?.['x-sdd-meta'];
-
-    const formatDate = (isoDate: string | undefined) => {
-        if (!isoDate) return '—';
-        try {
-            return new Date(isoDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-            });
-        } catch {
-            return isoDate;
-        }
-    };
-
     return (
         <div className="bundle-overview">
             {/* Bundle header */}
@@ -273,22 +258,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                     <h2>{manifest?.metadata?.name || 'Bundle'}</h2>
                     <span className="bundle-type-badge">{manifest?.metadata?.bundleType || 'sdd'}</span>
                 </div>
-                {bundleMeta && (
-                    <div className="entity-header-metadata">
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Created Date:</span>
-                            <span className="header-metadata-value">{formatDate(bundleMeta.createdDate)}</span>
-                        </span>
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Last Modified Date:</span>
-                            <span className="header-metadata-value">{formatDate(bundleMeta.lastModifiedDate)}</span>
-                        </span>
-                        <span className="header-metadata-item">
-                            <span className="header-metadata-label">Modified By:</span>
-                            <span className="header-metadata-value">{bundleMeta.lastModifiedBy || '—'}</span>
-                        </span>
-                    </div>
-                )}
+                <HeaderMetadata meta={bundleDef?.['x-sdd-meta']} />
             </div>
 
             {/* Tab bar - using reusable TabBar component */}

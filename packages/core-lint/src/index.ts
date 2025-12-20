@@ -10,6 +10,7 @@ import {
   type LintDiagnostic,
   type LintRule,
   type QualityCheckRule,
+  type RedundantBidirectionalLinkRule,
   type RegexRule,
   type RequiredFieldRule,
 } from './types';
@@ -380,6 +381,69 @@ function getDescriptiveHint(entityType: string): string {
   return hints[entityType] ?? 'descriptive-name';
 }
 
+/**
+ * Detects redundant bidirectional links where A→B and B→A both exist.
+ * 
+ * When two entities reference each other, only one direction is needed.
+ * The reverse link is redundant and adds maintenance burden.
+ * 
+ * Example: If Requirement REQ-001 has `realizesFeatureIds: [FEAT-001]`
+ * and Feature FEAT-001 has `requirementIds: [REQ-001]`, then one of those
+ * links is redundant. The recommendation is to keep the forward link from
+ * the "child" to the "parent" (REQ→FEAT) and remove the backlink.
+ */
+function runRedundantBidirectionalLinkRule(
+  bundle: LintBundle,
+  ruleName: string,
+  rule: RedundantBidirectionalLinkRule
+): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  // Build a map of all edges: key = "fromId|toId", value = edge info
+  // Normalized key ensures we can detect A→B and B→A as the same pair
+  type EdgeInfo = { fromEntityType: string; fromId: string; fromField: string; toEntityType: string; toId: string };
+  const forwardEdges = new Map<string, EdgeInfo>();
+  const reportedPairs = new Set<string>();
+
+  // First pass: collect all edges indexed by their directed key
+  for (const edge of bundle.refGraph.edges) {
+    const key = `${edge.fromId}|${edge.toId}`;
+    forwardEdges.set(key, edge);
+  }
+
+  // Second pass: check for reverse edges
+  for (const edge of bundle.refGraph.edges) {
+    const reverseKey = `${edge.toId}|${edge.fromId}`;
+    const reverseEdge = forwardEdges.get(reverseKey);
+
+    if (reverseEdge) {
+      // Create a normalized pair key to avoid duplicate reports
+      const pairKey = [edge.fromId, edge.toId].sort().join('|');
+
+      if (!reportedPairs.has(pairKey)) {
+        reportedPairs.add(pairKey);
+
+        // Report on the "backlink" - typically from the higher entity to the lower
+        // Heuristic: the entity with shorter ID or alphabetically first is likely the "parent"
+        const isCurrentTheBacklink = edge.fromId > edge.toId;
+        const redundantEdge = isCurrentTheBacklink ? edge : reverseEdge;
+
+        diagnostics.push({
+          code: ruleName,
+          message: `Redundant bidirectional link: ${redundantEdge.fromEntityType} "${redundantEdge.fromId}" links to ${redundantEdge.toEntityType} "${redundantEdge.toId}" via "${redundantEdge.fromField}", but "${redundantEdge.toId}" already links back. Consider removing one direction.`,
+          severity: rule.severity ?? 'warning',
+          entityType: redundantEdge.fromEntityType,
+          entityId: redundantEdge.fromId,
+          field: redundantEdge.fromField,
+          source: 'lint',
+        });
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
 export function runLintRules(bundle: LintBundle, config: LintConfig | undefined): LintDiagnostic[] {
   if (!config?.rules) return [];
   const diagnostics: LintDiagnostic[] = [];
@@ -410,6 +474,9 @@ export function runLintRules(bundle: LintBundle, config: LintConfig | undefined)
         break;
       case 'descriptive-id':
         diagnostics.push(...runDescriptiveIdRule(bundle, name, rule));
+        break;
+      case 'redundant-bidirectional-link':
+        diagnostics.push(...runRedundantBidirectionalLinkRule(bundle, name, rule));
         break;
       default:
         break;

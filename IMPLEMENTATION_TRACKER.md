@@ -54,20 +54,11 @@ The following major milestones have been completed:
 - [ ] Resource template completions (autocomplete for bundleId, entityType, id)
 - [ ] Prompt argument completions using `completable()` wrapper
 
-### UI Refactoring
-- [x] ~~Create `formatDateForDisplay()` utility~~ – Done as `formatDate()` in `utils/formatters.ts`
-- [x] ~~Extract `EntityHeaderMetadata` component~~ – Done as `HeaderMetadata` component
-- [x] ~~Extract `ProminenceHeader` component~~ – Done in `components/ProminenceHeader.tsx`
-- [x] ~~Extract `EntityHeaderBadges` component~~ – Done in `components/EntityHeaderBadges.tsx`
-- [x] ~~Extract `SyntaxHighlighter` component~~ – Done in `components/SyntaxHighlighter.tsx`
-  - Used in EntityDetails, EntityTypeDetails, BundleOverview
-
 ### Schema Validation
-- [ ] Redundant bidirectional link detection
-  - Rule: If A→B exists, B→A is redundant
-  - Validate at bundle load time
-  - Warn in MCP diagnostics or bundle validation
-  - See "No Redundant Forward Links" rule in schema-authoring-guide.md
+- [x] ~~Redundant bidirectional link detection~~ – Done in `core-lint` package
+  - Rule type: `redundant-bidirectional-link` 
+  - Detects when A→B and B→A both exist in refGraph
+  - Configurable via lint config with warning severity
 
 ### Schema Filtering & Display Logic
 - [ ] Extract schema filtering to shared utility

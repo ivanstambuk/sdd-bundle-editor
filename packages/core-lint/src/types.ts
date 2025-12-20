@@ -1,7 +1,7 @@
 export type LintSeverity = 'error' | 'warning';
 
 export interface LintRuleBase {
-  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id';
+  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id' | 'redundant-bidirectional-link';
   severity?: LintSeverity;
 }
 
@@ -78,7 +78,16 @@ export interface DescriptiveIdRule extends LintRuleBase {
   targetEntities?: string[]; // If omitted, applies to all entity types
 }
 
-export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule;
+/**
+ * Detects redundant bidirectional links where both A→B and B→A exist.
+ * If A already links to B, there's no need for B to link back to A.
+ * The reverse link is just redundant information that adds maintenance burden.
+ */
+export interface RedundantBidirectionalLinkRule extends LintRuleBase {
+  type: 'redundant-bidirectional-link';
+}
+
+export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule | RedundantBidirectionalLinkRule;
 
 export interface FeatureConfig {
   enabled?: boolean;

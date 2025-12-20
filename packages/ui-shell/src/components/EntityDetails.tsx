@@ -162,6 +162,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       ...schema,
       properties: sortedProps,
       required: filteredRequired,
+      additionalProperties: false,
     };
   };
 
@@ -186,6 +187,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       ...schema,
       properties: filteredProps,
       required: filteredRequired,
+      additionalProperties: false,
     };
   }, [schema, headerFieldNames]);
 

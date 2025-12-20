@@ -316,3 +316,45 @@ with open('entity.yaml', 'w') as f:
 "
 ```
 
+
+---
+
+## Schema Field Audit
+
+**Problem**: Need to see at a glance which fields have which `x-sdd-*` display hints, layout groups, and ordering.
+
+### View all fields with their display configuration
+
+```bash
+# Show all fields with their x-sdd-* properties (sorted by group, then order)
+cat schemas/ADR.schema.json | jq '[.properties | to_entries[] | {
+  field: .key,
+  layoutGroup: .value["x-sdd-layoutGroup"] // "NONE",
+  displayLocation: .value["x-sdd-displayLocation"] // "form",
+  order: .value["x-sdd-order"] // 999,
+  displayHint: .value["x-sdd-displayHint"] // null
+}] | sort_by(.layoutGroup, .order)'
+```
+
+### Find header-only fields
+
+```bash
+# List fields that should only appear in entity header
+cat schemas/ADR.schema.json | jq '[.properties | to_entries[] | 
+  select(.value["x-sdd-displayLocation"] == "header") | .key]'
+```
+
+### Find fields without layout group
+
+```bash
+# Find orphan fields (no layout group assignment)
+cat schemas/ADR.schema.json | jq '[.properties | to_entries[] | 
+  select(.value["x-sdd-layoutGroup"] == null) | .key]'
+```
+
+### View specific field's full config
+
+```bash
+# Deep-dive into one field's schema
+cat schemas/ADR.schema.json | jq '.properties.confidence'
+```

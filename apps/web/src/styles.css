@@ -4301,6 +4301,123 @@ form input[type="checkbox"] {
 }
 
 /* ========================================
+   View Toggle (List/Map) - Shared Pattern
+   ======================================== */
+.view-toggle {
+  display: inline-flex;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.view-toggle-btn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+.view-toggle-btn.active {
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
+}
+
+/* Dependencies tab header with toggle */
+.dependencies-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.dependencies-stats {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ========================================
+   Entity Dependency Graph (React Flow)
+   ======================================== */
+.entity-dependency-graph {
+  width: 100%;
+  height: 400px;
+  background: var(--color-bg-secondary);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  overflow: hidden;
+}
+
+.entity-dependency-graph-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+}
+
+.entity-dependency-graph-empty-icon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.5;
+}
+
+/* React Flow overrides for entity graph */
+.entity-dependency-graph .react-flow__background {
+  background-color: var(--color-bg-secondary);
+}
+
+.entity-dependency-graph .react-flow__controls {
+  box-shadow: var(--shadow-md);
+}
+
+.entity-dependency-graph .react-flow__controls-button {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  fill: var(--color-text-primary);
+}
+
+.entity-dependency-graph .react-flow__controls-button:hover {
+  background: var(--color-bg-hover);
+}
+
+.entity-dependency-graph .react-flow__node:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+/* Dependencies container for toggle views */
+.dependencies-container {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.dependencies-list {
+  padding: var(--spacing-sm);
+}
+
+/* ========================================
    Entity Tabs (for Entity Details)
    ======================================== */
 .entity-tabs {

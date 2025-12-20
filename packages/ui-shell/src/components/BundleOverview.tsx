@@ -14,7 +14,7 @@ interface BundleOverviewProps {
     onSelectType?: (entityType: string) => void;
 }
 
-type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'relationshipMap' | 'rawSchema';
+type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
 
 /**
  * BundleOverview - Shows the bundle's metaschema (entities, relationships, metadata).
@@ -24,6 +24,7 @@ type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'relationshipMap'
 export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     const [activeTab, setActiveTab] = useState<BundleTab>('details');
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+    const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('map'); // Relationships view mode
 
     if (!bundle) {
         return (
@@ -50,12 +51,11 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         [bundle.schemas]
     );
 
-    // Define tabs with badges
+    // Define tabs with badges (merged relationships + map into one)
     const tabs: Tab[] = useMemo(() => [
         { id: 'details', label: '📋 Details', testId: 'details' },
         { id: 'entityTypes', label: '🏷️ Entity Types', badge: entityTypes.length, testId: 'entity-types' },
         { id: 'relationships', label: '🔗 Relationships', badge: relations.length > 0 ? relations.length : undefined, testId: 'relationships' },
-        { id: 'relationshipMap', label: '🗺️ Relationship Map', testId: 'relationship-map' },
         { id: 'rawSchema', label: '📄 Raw Schema', testId: 'raw-schema' },
     ], [entityTypes.length, relations.length]);
 
@@ -146,70 +146,112 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         });
     }, [relations]);
 
-    // Render the Relationships tab content
-    const renderRelationshipsTab = () => (
-        <div className="bundle-tab-content">
-            {sortedRelations.length > 0 ? (
-                <>
-                    <div className="bundle-relations">
-                        <table className="properties-table">
-                            <thead>
-                                <tr>
-                                    <th>From Entity</th>
-                                    <th>Relationship</th>
-                                    <th>To Entity</th>
-                                    <th>Cardinality</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sortedRelations.map((rel, idx) => {
-                                    return (
-                                        <tr key={idx}>
-                                            <td>
-                                                <EntityTypeBadge
-                                                    entityType={rel.fromEntity}
-                                                    entityConfigs={entityConfigs}
-                                                />
-                                            </td>
-                                            <td title={`Field: ${rel.fromField}`}>{rel.displayName}</td>
-                                            <td>
-                                                <EntityTypeBadge
-                                                    entityType={rel.toEntity}
-                                                    entityConfigs={entityConfigs}
-                                                />
-                                            </td>
-                                            <td>{rel.isMany ? 'many' : 'one'}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
+    // Render the Relationships tab content (with List/Map toggle)
+    const renderRelationshipsTab = () => {
+        // List view: table of relationships
+        const renderListView = () => (
+            <>
+                <div className="bundle-relations">
+                    <table className="properties-table">
+                        <thead>
+                            <tr>
+                                <th>From Entity</th>
+                                <th>Relationship</th>
+                                <th>To Entity</th>
+                                <th>Cardinality</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {sortedRelations.map((rel, idx) => {
+                                return (
+                                    <tr key={idx}>
+                                        <td>
+                                            <EntityTypeBadge
+                                                entityType={rel.fromEntity}
+                                                entityConfigs={entityConfigs}
+                                            />
+                                        </td>
+                                        <td title={`Field: ${rel.fromField}`}>{rel.displayName}</td>
+                                        <td>
+                                            <EntityTypeBadge
+                                                entityType={rel.toEntity}
+                                                entityConfigs={entityConfigs}
+                                            />
+                                        </td>
+                                        <td>{rel.isMany ? 'many' : 'one'}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                <p className="bundle-relations-hint">
+                    These relationships define how {manifest?.metadata?.name || 'this bundle'}'s entities reference each other.
+                </p>
+            </>
+        );
 
-                        </table>
-                    </div>
-                    <p className="bundle-relations-hint">
-                        These relationships define how {manifest?.metadata?.name || 'this bundle'}'s entities reference each other.
-                    </p>
-                </>
-            ) : (
-                <EmptyState
-                    icon="🔗"
-                    message="No relationships defined in this bundle."
-                />
-            )}
-        </div>
-    );
-
-    // Render the Relationship Map tab content
-    const renderRelationshipMapTab = () => (
-        <div className="bundle-tab-content">
+        // Map view: interactive graph
+        const renderMapView = () => (
             <RelationshipGraph
                 entityConfigs={entityConfigs}
                 categories={bundleDef?.categories}
                 schemas={bundle.schemas}
                 onSelectType={onSelectType}
             />
-        </div>
-    );
+        );
+
+        if (sortedRelations.length === 0) {
+            return (
+                <div className="bundle-tab-content">
+                    <EmptyState
+                        icon="🔗"
+                        message="No relationships defined in this bundle."
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div className="bundle-tab-content">
+                <div className="dependencies-container">
+                    {/* Header with toggle */}
+                    <div className="dependencies-header">
+                        <div className="view-toggle">
+                            <button
+                                type="button"
+                                className={`view-toggle-btn ${relViewMode === 'list' ? 'active' : ''}`}
+                                onClick={() => setRelViewMode('list')}
+                                data-testid="rel-view-list"
+                            >
+                                📋 List
+                            </button>
+                            <button
+                                type="button"
+                                className={`view-toggle-btn ${relViewMode === 'map' ? 'active' : ''}`}
+                                onClick={() => setRelViewMode('map')}
+                                data-testid="rel-view-map"
+                            >
+                                🗺️ Map
+                            </button>
+                        </div>
+                        <span className="dependencies-stats">
+                            {entityConfigs.length} types • {sortedRelations.length} relationships
+                        </span>
+                    </div>
+
+                    {/* Content based on view mode */}
+                    {relViewMode === 'list' ? (
+                        <div className="dependencies-list">
+                            {renderListView()}
+                        </div>
+                    ) : (
+                        renderMapView()
+                    )}
+                </div>
+            </div>
+        );
+    };
 
     // Memoize schema JSON for copy and display
     const schemaJson = useMemo(() => {
@@ -278,7 +320,6 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                 {activeTab === 'details' && renderDetailsTab()}
                 {activeTab === 'entityTypes' && renderEntityTypesTab()}
                 {activeTab === 'relationships' && renderRelationshipsTab()}
-                {activeTab === 'relationshipMap' && renderRelationshipMapTab()}
                 {activeTab === 'rawSchema' && renderRawSchemaTab()}
             </div>
         </div>

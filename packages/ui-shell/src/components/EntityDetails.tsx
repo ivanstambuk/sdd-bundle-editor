@@ -21,6 +21,7 @@ import { ProminenceHeader } from './ProminenceHeader';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
+import { EntityDependencyGraph } from './EntityDependencyGraph';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -58,6 +59,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   const [activeTab, setActiveTab] = useState<EntityTab>('details');
   const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+  const [depViewMode, setDepViewMode] = useState<'list' | 'map'>('list'); // Dependencies view mode
 
   if (!bundle || !entity) {
     return (
@@ -763,7 +765,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Render the Dependency Graph tab content
+  // Render the Dependencies tab content with List/Map toggle
   const renderGraphTab = () => {
     // Group incoming edges by relationship display name
     const incomingByRelation = incoming.reduce((acc, edge) => {
@@ -780,7 +782,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       a[0].localeCompare(b[0])
     );
 
-    return (
+    const totalDeps = outgoing.length + incoming.length;
+
+    // Render List View (existing tree layout)
+    const renderListView = () => (
       <div className="dependency-graph">
         {/* Current entity as root */}
         <div className="graph-node graph-root">
@@ -844,6 +849,57 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
         {outgoing.length === 0 && incoming.length === 0 && (
           <div className="reference-empty">No dependencies</div>
+        )}
+      </div>
+    );
+
+    // Render Map View (React Flow graph)
+    const renderMapView = () => (
+      <EntityDependencyGraph
+        entityType={entity.entityType}
+        entityId={entity.id}
+        outgoing={outgoing}
+        incoming={incoming}
+        entityConfigs={entityConfigs || []}
+        onNavigate={handleReferenceClick}
+        getFieldDisplay={getFieldDisplay}
+      />
+    );
+
+    return (
+      <div className="dependencies-container">
+        {/* Header with toggle */}
+        <div className="dependencies-header">
+          <div className="view-toggle">
+            <button
+              type="button"
+              className={`view-toggle-btn ${depViewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setDepViewMode('list')}
+              data-testid="dep-view-list"
+            >
+              📋 List
+            </button>
+            <button
+              type="button"
+              className={`view-toggle-btn ${depViewMode === 'map' ? 'active' : ''}`}
+              onClick={() => setDepViewMode('map')}
+              data-testid="dep-view-map"
+            >
+              🗺️ Map
+            </button>
+          </div>
+          <span className="dependencies-stats">
+            {outgoing.length} outgoing • {incoming.length} incoming
+          </span>
+        </div>
+
+        {/* Content based on view mode */}
+        {depViewMode === 'list' ? (
+          <div className="dependencies-list">
+            {renderListView()}
+          </div>
+        ) : (
+          renderMapView()
         )}
       </div>
     );
@@ -955,7 +1011,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           onClick={() => setActiveTab('graph')}
           data-testid="tab-graph"
         >
-          🔗 Dependency Graph
+          🔗 Dependencies
         </button>
         <button
           type="button"

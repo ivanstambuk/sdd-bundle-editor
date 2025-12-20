@@ -90,15 +90,51 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
     /**
      * Normalize PlantUML code by ensuring it has @startuml/@enduml tags
      * and injecting theme directives based on the requested theme.
+     * 
+     * Uses skinparam for compatibility with older PlantUML versions (1.2020+).
+     * The !theme directive is only available in newer versions (2021+).
      */
     function normalizePlantUml(code: string, theme?: 'light' | 'dark'): string {
         const trimmed = code.trim();
 
-        // Build theme directives
+        // Build theme directives using skinparam (compatible with older PlantUML)
         let themeDirectives = '';
         if (theme === 'dark') {
-            // Use cyborg theme for dark mode with transparent background
-            themeDirectives = '!theme cyborg\nskinparam backgroundColor transparent\n';
+            // Dark theme with Dracula-inspired colors
+            themeDirectives = `skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontColor #F8F8F2
+skinparam ArrowColor #00BFFF
+skinparam sequence {
+  ArrowColor #00BFFF
+  LifeLineBorderColor #6272A4
+  LifeLineBackgroundColor #44475A
+  ParticipantBorderColor #6272A4
+  ParticipantBackgroundColor #44475A
+  ParticipantFontColor #F8F8F2
+  BoxBorderColor #6272A4
+  BoxBackgroundColor #282A36
+}
+skinparam note {
+  BackgroundColor #44475A
+  BorderColor #6272A4
+  FontColor #F8F8F2
+}
+skinparam rectangle {
+  BackgroundColor #44475A
+  BorderColor #6272A4
+  FontColor #F8F8F2
+}
+skinparam database {
+  BackgroundColor #44475A
+  BorderColor #6272A4
+  FontColor #F8F8F2
+}
+skinparam actor {
+  BackgroundColor #44475A
+  BorderColor #BD93F9
+}
+`;
         } else if (theme === 'light') {
             // Light theme just needs transparent background to blend
             themeDirectives = 'skinparam backgroundColor transparent\n';

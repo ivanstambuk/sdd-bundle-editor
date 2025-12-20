@@ -4975,6 +4975,232 @@ form input[type="checkbox"] {
 }
 
 /* ========================================
+   Graph Filter Dropdown
+   ======================================== */
+.relationship-graph-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.relationship-graph-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.graph-filter-dropdown {
+  position: relative;
+}
+
+.graph-filter-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 150px;
+}
+
+.graph-filter-trigger:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-accent);
+}
+
+.graph-filter-trigger.has-filter {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.graph-filter-icon {
+  font-size: 1rem;
+}
+
+.graph-filter-text {
+  flex: 1;
+  text-align: left;
+}
+
+.graph-filter-chevron {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.graph-filter-chevron.open {
+  transform: rotate(180deg);
+}
+
+.graph-filter-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  min-width: 280px;
+  max-height: 400px;
+  margin-top: var(--spacing-xs);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-filter-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.graph-filter-action {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.graph-filter-action:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.graph-filter-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.graph-filter-groups {
+  overflow-y: auto;
+  max-height: 340px;
+  padding: var(--spacing-sm) 0;
+}
+
+.graph-filter-group {
+  margin-bottom: var(--spacing-xs);
+}
+
+.graph-filter-category {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.graph-filter-category:hover {
+  background: var(--color-bg-hover);
+}
+
+.graph-filter-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.graph-filter-checkbox.checked {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg-primary);
+}
+
+.graph-filter-checkbox.partial {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.graph-filter-category-label {
+  flex: 1;
+}
+
+.graph-filter-category-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.graph-filter-items {
+  padding-left: var(--spacing-lg);
+}
+
+.graph-filter-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.graph-filter-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.graph-filter-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.graph-filter-color {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.graph-filter-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+/* Toolbar hint text */
+.graph-filter-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+/* ========================================
    Markdown Widget
    ======================================== */
 .markdown-widget {

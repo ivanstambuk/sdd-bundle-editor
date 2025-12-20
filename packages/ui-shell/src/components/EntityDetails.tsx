@@ -491,11 +491,33 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
   // Custom select widget - shows tooltip with description for current value
+  // In read-only mode with x-sdd-enumStyles, renders as a colored badge
   const CustomSelectWidget = (props: any) => {
     const { id, value, onChange, options, disabled, readonly, schema } = props;
     const enumDescriptions = schema?.['x-sdd-enumDescriptions'] as Record<string, string> | undefined;
+    const enumStyles = schema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
     const currentDescription = enumDescriptions?.[value];
 
+    // In read-only mode with enum styles, render as a colored badge
+    if ((readonly || disabled) && enumStyles && value) {
+      const styleConfig = enumStyles[value];
+      const colorClass = styleConfig?.color ? `rjsf-enum-badge--${styleConfig.color}` : 'rjsf-enum-badge--neutral';
+
+      return (
+        <div className="rjsf-enum-badge-container">
+          <span className={`rjsf-enum-badge ${colorClass}`}>
+            {value}
+          </span>
+          {currentDescription && (
+            <span className="field-help-icon" title={currentDescription}>
+              ⓘ
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    // Default: editable dropdown
     return (
       <div className="rjsf-select-with-tooltip">
         <select

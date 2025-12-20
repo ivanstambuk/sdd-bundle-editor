@@ -3652,6 +3652,58 @@ form input[type="checkbox"] {
 }
 
 /* ========================================
+   Enum Badge (x-sdd-enumStyles)
+   Schema-driven colored badges for enum fields
+   ======================================== */
+.rjsf-enum-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+/* Success - green (accepted, high, complete) */
+.rjsf-enum-badge--success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Warning - amber (deprecated, low, caution) */
+.rjsf-enum-badge--warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-warning);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Error - red (superseded, critical) */
+.rjsf-enum-badge--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-error);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Info - blue (proposed, medium, in-progress) */
+.rjsf-enum-badge--info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Neutral - gray (draft, pending, default) */
+.rjsf-enum-badge--neutral {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+/* ========================================
    Bullet List Layout (x-sdd-layout: "bulletList")
    Compact display for string arrays - matches markdown style
    ======================================== */

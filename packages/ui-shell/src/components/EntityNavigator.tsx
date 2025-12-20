@@ -101,6 +101,52 @@ export function EntityNavigator({
     }
   }, [bundle, categoryGroups, uncategorizedTypes]);
 
+  // Auto-expand category and entity type group when selection changes externally
+  // (e.g., navigation from diagnostics log, relationship graph, or bundle overview)
+  useEffect(() => {
+    const entityTypeToReveal = selected?.entityType ?? selectedType;
+    if (!entityTypeToReveal || !bundle?.bundleTypeDefinition) return;
+
+    // Find which category contains this entity type
+    const entityConfigs = bundle.bundleTypeDefinition.entities ?? [];
+    const config = entityConfigs.find(c => c.entityType === entityTypeToReveal);
+    const categoryName = config?.category;
+
+    // Expand the category containing this entity type
+    if (categoryName) {
+      setCollapsedCategories(prev => {
+        if (prev.has(categoryName)) {
+          const next = new Set(prev);
+          next.delete(categoryName);
+          return next;
+        }
+        return prev;
+      });
+    } else if (uncategorizedTypes.includes(entityTypeToReveal)) {
+      // Handle uncategorized types
+      setCollapsedCategories(prev => {
+        if (prev.has('__uncategorized')) {
+          const next = new Set(prev);
+          next.delete('__uncategorized');
+          return next;
+        }
+        return prev;
+      });
+    }
+
+    // Expand the entity type group (if an entity is selected)
+    if (selected) {
+      setCollapsedGroups(prev => {
+        if (prev.has(entityTypeToReveal)) {
+          const next = new Set(prev);
+          next.delete(entityTypeToReveal);
+          return next;
+        }
+        return prev;
+      });
+    }
+  }, [selected, selectedType, bundle?.bundleTypeDefinition, uncategorizedTypes]);
+
   // Build metadata lookup from schemas - uses plural for headers
   const getMetadata = useMemo(() => {
     const schemas = bundle?.schemas ?? {};

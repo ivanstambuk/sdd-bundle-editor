@@ -93,11 +93,11 @@ For entities that tell a story (ADRs, Design Documents, Analysis Records), use p
 |-------|------|------|---------|
 | `hero` | The Answer | ✅ | Decision, Conclusion |
 | `primary` | The Question | ❓ | Problem, Challenge |
-| `secondary` with header | The Background | 📘 | Context, Background |
+| `secondary` with header | The Background | 🧭 | Context, Background |
 
 **Standard narrative icons:**
 - ❓ Problem/Question - "What are we solving?"
-- 📘 Context/Background - "What's the situation?"
+- 🧭 Context/Background - "Orient yourself here"
 - ✅ Decision/Answer - "What did we decide?"
 
 **Example ADR configuration:**

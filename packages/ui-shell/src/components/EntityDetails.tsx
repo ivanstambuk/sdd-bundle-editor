@@ -799,74 +799,90 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
   // Render the Dependency Graph tab content
-  const renderGraphTab = () => (
-    <div className="dependency-graph">
-      {/* Current entity as root */}
-      <div className="graph-node graph-root">
-        <EntityTypeBadge
-          entityType={entity.entityType}
-          entityConfigs={entityConfigs}
-        />
-        <span className="graph-node-id">{entity.id}</span>
+  const renderGraphTab = () => {
+    // Group incoming edges by relationship display name
+    const incomingByRelation = incoming.reduce((acc, edge) => {
+      const relationName = getFieldDisplay(edge.fromEntityType, edge.fromField);
+      if (!acc[relationName]) {
+        acc[relationName] = [];
+      }
+      acc[relationName].push(edge);
+      return acc;
+    }, {} as Record<string, typeof incoming>);
+
+    // Sort relationship groups alphabetically
+    const relationGroups = Object.entries(incomingByRelation).sort((a, b) =>
+      a[0].localeCompare(b[0])
+    );
+
+    return (
+      <div className="dependency-graph">
+        {/* Current entity as root */}
+        <div className="graph-node graph-root">
+          <EntityTypeBadge
+            entityType={entity.entityType}
+            entityConfigs={entityConfigs}
+          />
+          <span className="graph-node-id">{entity.id}</span>
+        </div>
+
+        {/* Outgoing (Uses) */}
+        {outgoing.length > 0 && (
+          <div className="graph-branch">
+            <div className="graph-branch-label">Uses →</div>
+            <div className="graph-children">
+              {outgoing.map((edge, idx) => (
+                <button
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={idx}
+                  type="button"
+                  className="graph-node graph-child"
+                  onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
+                  data-testid={`graph-uses-${edge.toId}`}
+                >
+                  <EntityTypeBadge
+                    entityType={edge.toEntityType}
+                    entityConfigs={entityConfigs}
+                  />
+                  <span className="graph-node-id">{edge.toId}</span>
+                  <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Incoming - grouped by relationship name */}
+        {relationGroups.map(([relationName, edges]) => (
+          <div key={relationName} className="graph-branch">
+            <div className="graph-branch-label graph-branch-incoming">{relationName}</div>
+            <div className="graph-children">
+              {edges.map((edge, idx) => (
+                <button
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={idx}
+                  type="button"
+                  className="graph-node graph-child"
+                  onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
+                  data-testid={`graph-usedby-${edge.fromId}`}
+                >
+                  <EntityTypeBadge
+                    entityType={edge.fromEntityType}
+                    entityConfigs={entityConfigs}
+                  />
+                  <span className="graph-node-id">{edge.fromId}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {outgoing.length === 0 && incoming.length === 0 && (
+          <div className="reference-empty">No dependencies</div>
+        )}
       </div>
-
-      {/* Outgoing (Uses) */}
-      {outgoing.length > 0 && (
-        <div className="graph-branch">
-          <div className="graph-branch-label">Uses →</div>
-          <div className="graph-children">
-            {outgoing.map((edge, idx) => (
-              <button
-                // eslint-disable-next-line react/no-array-index-key
-                key={idx}
-                type="button"
-                className="graph-node graph-child"
-                onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
-                data-testid={`graph-uses-${edge.toId}`}
-              >
-                <EntityTypeBadge
-                  entityType={edge.toEntityType}
-                  entityConfigs={entityConfigs}
-                />
-                <span className="graph-node-id">{edge.toId}</span>
-                <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Incoming (Used By) */}
-      {incoming.length > 0 && (
-        <div className="graph-branch">
-          <div className="graph-branch-label">← Used By</div>
-          <div className="graph-children">
-            {incoming.map((edge, idx) => (
-              <button
-                // eslint-disable-next-line react/no-array-index-key
-                key={idx}
-                type="button"
-                className="graph-node graph-child"
-                onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
-                data-testid={`graph-usedby-${edge.fromId}`}
-              >
-                <EntityTypeBadge
-                  entityType={edge.fromEntityType}
-                  entityConfigs={entityConfigs}
-                />
-                <span className="graph-node-id">{edge.fromId}</span>
-                <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {outgoing.length === 0 && incoming.length === 0 && (
-        <div className="reference-empty">No dependencies</div>
-      )}
-    </div>
-  );
+    );
+  };
 
   // Render the Raw YAML tab content
   const renderYamlTab = () => (

@@ -18,7 +18,7 @@ const validator = customizeValidator({
     keywords: [
       'x-sdd-displayHint', 'x-sdd-enumDescriptions',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-indicator',
+      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
       'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel'
     ],
   },
@@ -39,6 +39,7 @@ type EntityTab = 'details' | 'graph' | 'yaml';
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [], entityConfigs }: EntityDetailsProps) {
   // Active tab state
   const [activeTab, setActiveTab] = useState<EntityTab>('details');
+  const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   if (!bundle || !entity) {
@@ -58,6 +59,56 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
 
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
+
+  // Extract layout groups from schema (for sub-tabs within Details)
+  const layoutGroupsConfig = schema?.['x-sdd-layoutGroups'] as Record<string, { title: string; order: number }> | undefined;
+  const hasLayoutGroups = layoutGroupsConfig && Object.keys(layoutGroupsConfig).length > 0;
+
+  // Build sorted list of sub-tabs from layout groups
+  const subTabs = hasLayoutGroups
+    ? Object.entries(layoutGroupsConfig)
+      .map(([key, config]) => ({ key, title: config.title, order: config.order }))
+      .sort((a, b) => a.order - b.order)
+    : [];
+
+  // Build a map of which fields belong to which group
+  const fieldToGroup: Record<string, string> = {};
+  if (hasLayoutGroups && schema?.properties) {
+    const props = schema.properties as Record<string, any>;
+    for (const [fieldName, fieldSchema] of Object.entries(props)) {
+      const group = fieldSchema?.['x-sdd-layoutGroup'];
+      if (group) {
+        fieldToGroup[fieldName] = group;
+      }
+    }
+  }
+
+  // Create a filtered schema for a specific layout group
+  const createFilteredSchema = (groupKey: string): Record<string, unknown> | null => {
+    if (!schema || !schema.properties) return null;
+
+    const props = schema.properties as Record<string, any>;
+    const filteredProps: Record<string, any> = {};
+    const filteredRequired: string[] = [];
+
+    for (const [fieldName, fieldSchema] of Object.entries(props)) {
+      if (fieldToGroup[fieldName] === groupKey) {
+        filteredProps[fieldName] = fieldSchema;
+        // Check if field is in required list
+        if (Array.isArray(schema.required) && schema.required.includes(fieldName)) {
+          filteredRequired.push(fieldName);
+        }
+      }
+    }
+
+    if (Object.keys(filteredProps).length === 0) return null;
+
+    return {
+      ...schema,
+      properties: filteredProps,
+      required: filteredRequired,
+    };
+  };
 
   // Helper to get display name from any entity type's schema
   const getDisplayName = (entityType: string): string => {
@@ -547,39 +598,88 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   const yamlContent = yaml.dump(entity.data, { indent: 2, lineWidth: -1 });
 
   // Render the Details tab content
-  const renderDetailsTab = () => (
-    <>
-      {/* Entity form/properties */}
-      {schema ? (
-        <AnyForm
-          className="rjsf"
-          schema={schema as any}
-          formData={entity.data}
-          uiSchema={uiSchema}
-          widgets={widgets}
-          fields={fields}
-          templates={templates}
-          validator={validator}
-          readonly={readOnly}
-          disabled={readOnly}
+  const renderDetailsTab = () => {
+    // If no layout groups, render the full form
+    if (!hasLayoutGroups || subTabs.length === 0) {
+      return (
+        <>
+          {schema ? (
+            <AnyForm
+              className="rjsf"
+              schema={schema as any}
+              formData={entity.data}
+              uiSchema={uiSchema}
+              widgets={widgets}
+              fields={fields}
+              templates={templates}
+              validator={validator}
+              readonly={readOnly}
+              disabled={readOnly}
+              onChange={() => { }}
+              onSubmit={() => { }}
+              onError={() => { }}
+            >
+              <></>
+            </AnyForm>
+          ) : (
+            <div className="entity-no-schema">
+              <p className="text-muted">Schema not found for entity type "{getDisplayName(entity.entityType)}".</p>
+              <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
+            </div>
+          )}
+        </>
+      );
+    }
 
-          onChange={() => { }}
+    // With layout groups: render sub-tabs
+    const currentSubTabSchema = createFilteredSchema(activeSubTab);
 
-          onSubmit={() => { }}
-
-          onError={() => { }}
-        >
-          {/* Hide submit button in read-only mode */}
-          <></>
-        </AnyForm>
-      ) : (
-        <div className="entity-no-schema">
-          <p className="text-muted">Schema not found for entity type "{getDisplayName(entity.entityType)}".</p>
-          <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
+    return (
+      <>
+        {/* Sub-tab bar */}
+        <div className="entity-subtabs">
+          {subTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={`entity-subtab ${activeSubTab === tab.key ? 'active' : ''}`}
+              onClick={() => setActiveSubTab(tab.key)}
+              data-testid={`subtab-${tab.key}`}
+            >
+              {tab.title}
+            </button>
+          ))}
         </div>
-      )}
-    </>
-  );
+
+        {/* Sub-tab content */}
+        <div className="entity-subtab-content">
+          {currentSubTabSchema ? (
+            <AnyForm
+              className="rjsf"
+              schema={currentSubTabSchema as any}
+              formData={entity.data}
+              uiSchema={uiSchema}
+              widgets={widgets}
+              fields={fields}
+              templates={templates}
+              validator={validator}
+              readonly={readOnly}
+              disabled={readOnly}
+              onChange={() => { }}
+              onSubmit={() => { }}
+              onError={() => { }}
+            >
+              <></>
+            </AnyForm>
+          ) : (
+            <div className="entity-subtab-empty">
+              <p className="text-muted">No fields in this section.</p>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
 
   // Render the Dependency Graph tab content
   const renderGraphTab = () => (

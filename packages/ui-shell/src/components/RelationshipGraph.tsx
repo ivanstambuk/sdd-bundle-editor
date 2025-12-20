@@ -1,6 +1,9 @@
 /**
  * RelationshipGraph - Interactive graph visualization of entity type relationships.
  * Uses React Flow for rendering and dagre for automatic hierarchical layout.
+ * 
+ * ARCHITECTURAL NOTE: Relationships are derived from schema x-sdd-refTargets as
+ * the SINGLE SOURCE OF TRUTH. The bundle-type.json.relations array is NOT used.
  */
 import { useCallback, useMemo } from 'react';
 import ReactFlow, {
@@ -20,23 +23,21 @@ import 'reactflow/dist/style.css';
 
 import type {
     BundleTypeEntityConfig,
-    BundleTypeRelationConfig,
     BundleTypeCategoryConfig,
 } from '@sdd-bundle-editor/shared-types';
-import { getFieldDisplayName } from '../utils/schemaUtils';
+import { extractRelationsFromSchemas, type SchemaRelation } from '../utils/schemaUtils';
 
 interface RelationshipGraphProps {
     /** Entity type configurations */
     entityConfigs: BundleTypeEntityConfig[];
-    /** Relationship configurations */
-    relations: BundleTypeRelationConfig[];
     /** Category configurations for grouping */
     categories?: BundleTypeCategoryConfig[];
-    /** Entity schemas for looking up display names */
+    /** Entity schemas - SINGLE SOURCE OF TRUTH for relationships */
     schemas?: Record<string, unknown>;
     /** Callback when an entity type node is clicked */
     onSelectType?: (entityType: string) => void;
 }
+
 
 // Default colors for entity types without explicit colors
 const DEFAULT_COLORS = [
@@ -104,12 +105,12 @@ function getLayoutedElements(
 
 /**
  * Transform bundle type definitions into React Flow nodes and edges.
+ * Relationships are derived from schemas (x-sdd-refTargets) as SSOT.
  */
 function transformToFlowElements(
     entityConfigs: BundleTypeEntityConfig[],
-    relations: BundleTypeRelationConfig[],
-    _categories?: BundleTypeCategoryConfig[],
-    schemas?: Record<string, unknown>
+    relations: SchemaRelation[],
+    _categories?: BundleTypeCategoryConfig[]
 ): { nodes: Node[]; edges: Edge[] } {
     // Create nodes for each entity type
     const nodes: Node[] = entityConfigs.map((config, index) => {
@@ -141,12 +142,11 @@ function transformToFlowElements(
     // Track edge count between node pairs to offset overlapping edges
     const edgePairCount: Record<string, number> = {};
 
-    // Create edges for each relationship
+    // Create edges for each relationship (derived from schema)
     const edges: Edge[] = relations.map((rel, index) => {
         // Format label: display name with cardinality indicator
-        const displayName = getFieldDisplayName(schemas, rel.fromEntity, rel.fromField);
-        const cardinalitySymbol = rel.multiplicity === 'many' ? ' [*]' : '';
-        const label = displayName + cardinalitySymbol;
+        const cardinalitySymbol = rel.isMany ? ' [*]' : '';
+        const label = rel.displayName + cardinalitySymbol;
 
         // Track how many edges exist between this pair (for offset calculation)
         const pairKey = `${rel.fromEntity}-${rel.toEntity}`;
@@ -201,19 +201,25 @@ function transformToFlowElements(
 
 export function RelationshipGraph({
     entityConfigs,
-    relations,
     categories,
     schemas,
     onSelectType,
 }: RelationshipGraphProps) {
+    // Extract relationships from schemas - SINGLE SOURCE OF TRUTH
+    const relations = useMemo(
+        () => extractRelationsFromSchemas(schemas),
+        [schemas]
+    );
+
     // Transform data to React Flow format with dagre layout
     const { nodes: initialNodes, edges: initialEdges } = useMemo(
-        () => transformToFlowElements(entityConfigs, relations, categories, schemas),
-        [entityConfigs, relations, categories, schemas]
+        () => transformToFlowElements(entityConfigs, relations, categories),
+        [entityConfigs, relations, categories]
     );
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
 
     // Handle node click -> navigate to entity type
     const onNodeClick: NodeMouseHandler = useCallback(

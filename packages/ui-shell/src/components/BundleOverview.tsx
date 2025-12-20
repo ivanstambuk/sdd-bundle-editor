@@ -6,7 +6,7 @@ import { EntityTypeBadge } from './EntityTypeBadge';
 import { HeaderMetadata } from './HeaderMetadata';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { RelationshipGraph } from './RelationshipGraph';
-import { getFieldDisplayName } from '../utils/schemaUtils';
+import { extractRelationsFromSchemas } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
     bundle: UiBundleSnapshot | null;
@@ -43,7 +43,12 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     // Get entity type configs from bundle definition
     const entityConfigs = bundleDef?.entities || [];
-    const relations = bundleDef?.relations || [];
+
+    // Extract relationships from schemas - SINGLE SOURCE OF TRUTH
+    const relations = useMemo(
+        () => extractRelationsFromSchemas(bundle.schemas),
+        [bundle.schemas]
+    );
 
     // Define tabs with badges
     const tabs: Tab[] = useMemo(() => [
@@ -158,11 +163,6 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                             </thead>
                             <tbody>
                                 {sortedRelations.map((rel, idx) => {
-                                    const displayName = getFieldDisplayName(
-                                        bundle.schemas,
-                                        rel.fromEntity,
-                                        rel.fromField
-                                    );
                                     return (
                                         <tr key={idx}>
                                             <td>
@@ -171,18 +171,19 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                                                     entityConfigs={entityConfigs}
                                                 />
                                             </td>
-                                            <td title={`Field: ${rel.fromField}`}>{displayName}</td>
+                                            <td title={`Field: ${rel.fromField}`}>{rel.displayName}</td>
                                             <td>
                                                 <EntityTypeBadge
                                                     entityType={rel.toEntity}
                                                     entityConfigs={entityConfigs}
                                                 />
                                             </td>
-                                            <td>{rel.multiplicity || '—'}</td>
+                                            <td>{rel.isMany ? 'many' : 'one'}</td>
                                         </tr>
                                     );
                                 })}
                             </tbody>
+
                         </table>
                     </div>
                     <p className="bundle-relations-hint">
@@ -203,7 +204,6 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         <div className="bundle-tab-content">
             <RelationshipGraph
                 entityConfigs={entityConfigs}
-                relations={relations}
                 categories={bundleDef?.categories}
                 schemas={bundle.schemas}
                 onSelectType={onSelectType}

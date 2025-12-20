@@ -59,3 +59,75 @@ export function camelCaseToTitleCase(str: string): string {
         .replace(/\bId\b/g, 'ID')
         .replace(/\bUrl\b/g, 'URL');
 }
+
+/**
+ * Represents a relationship extracted from schema x-sdd-refTargets.
+ * This is the canonical relationship format derived from schemas as SSOT.
+ */
+export interface SchemaRelation {
+    /** Source entity type */
+    fromEntity: string;
+    /** Field name on source entity */
+    fromField: string;
+    /** Target entity type(s) - from x-sdd-refTargets */
+    toEntity: string;
+    /** Display name for the relationship (from schema title or derived) */
+    displayName: string;
+    /** Whether this is a one-to-many relationship (array field) */
+    isMany: boolean;
+}
+
+/**
+ * Extract all relationships from schemas by scanning for x-sdd-refTargets.
+ * 
+ * This is the SINGLE SOURCE OF TRUTH for relationships.
+ * The bundle-type.json.relations array is deprecated in favor of this.
+ * 
+ * @param schemas - Record of entity type to JSON schema
+ * @returns Array of relationships derived from schema properties
+ */
+export function extractRelationsFromSchemas(
+    schemas: Record<string, unknown> | undefined
+): SchemaRelation[] {
+    if (!schemas) return [];
+
+    const relations: SchemaRelation[] = [];
+
+    for (const [entityType, schemaObj] of Object.entries(schemas)) {
+        const schema = schemaObj as Record<string, unknown>;
+        if (!schema || typeof schema.properties !== 'object') continue;
+
+        const properties = schema.properties as Record<string, unknown>;
+
+        for (const [fieldName, propSchemaObj] of Object.entries(properties)) {
+            const propSchema = propSchemaObj as Record<string, unknown>;
+            if (!propSchema) continue;
+
+            // Check for x-sdd-refTargets (array of target entity types)
+            const refTargets = propSchema['x-sdd-refTargets'] as string[] | undefined;
+            if (!refTargets || !Array.isArray(refTargets) || refTargets.length === 0) continue;
+
+            // Determine if it's a many relationship (array type or items with refTargets)
+            const isMany = propSchema.type === 'array' ||
+                Boolean(propSchema.items && typeof propSchema.items === 'object');
+
+            // Get display name from title or derive from field name
+            const displayName = typeof propSchema.title === 'string'
+                ? propSchema.title
+                : camelCaseToTitleCase(fieldName);
+
+            // Create a relation for each target entity type
+            for (const toEntity of refTargets) {
+                relations.push({
+                    fromEntity: entityType,
+                    fromField: fieldName,
+                    toEntity,
+                    displayName,
+                    isMany,
+                });
+            }
+        }
+    }
+
+    return relations;
+}

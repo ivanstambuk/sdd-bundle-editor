@@ -5,6 +5,7 @@ import { EmptyState } from './EmptyState';
 import { EntityTypeBadge } from './EntityTypeBadge';
 import { HeaderMetadata } from './HeaderMetadata';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
+import { RelationshipGraph } from './RelationshipGraph';
 import { getFieldDisplayName } from '../utils/schemaUtils';
 
 interface BundleOverviewProps {
@@ -13,7 +14,7 @@ interface BundleOverviewProps {
     onSelectType?: (entityType: string) => void;
 }
 
-type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
+type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'relationshipMap' | 'rawSchema';
 
 /**
  * BundleOverview - Shows the bundle's metaschema (entities, relationships, metadata).
@@ -49,6 +50,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         { id: 'details', label: '📋 Details', testId: 'details' },
         { id: 'entityTypes', label: '🏷️ Entity Types', badge: entityTypes.length, testId: 'entity-types' },
         { id: 'relationships', label: '🔗 Relationships', badge: relations.length > 0 ? relations.length : undefined, testId: 'relationships' },
+        { id: 'relationshipMap', label: '🗺️ Relationship Map', testId: 'relationship-map' },
         { id: 'rawSchema', label: '📄 Raw Schema', testId: 'raw-schema' },
     ], [entityTypes.length, relations.length]);
 
@@ -196,6 +198,19 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
+    // Render the Relationship Map tab content
+    const renderRelationshipMapTab = () => (
+        <div className="bundle-tab-content">
+            <RelationshipGraph
+                entityConfigs={entityConfigs}
+                relations={relations}
+                categories={bundleDef?.categories}
+                schemas={bundle.schemas}
+                onSelectType={onSelectType}
+            />
+        </div>
+    );
+
     // Memoize schema JSON for copy and display
     const schemaJson = useMemo(() => {
         return bundleDef ? JSON.stringify(bundleDef, null, 2) : '';
@@ -263,6 +278,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                 {activeTab === 'details' && renderDetailsTab()}
                 {activeTab === 'entityTypes' && renderEntityTypesTab()}
                 {activeTab === 'relationships' && renderRelationshipsTab()}
+                {activeTab === 'relationshipMap' && renderRelationshipMapTab()}
                 {activeTab === 'rawSchema' && renderRawSchemaTab()}
             </div>
         </div>

@@ -57,16 +57,15 @@ The following major milestones have been completed:
 ### Entity Relationship Graph Visualization
 - [ ] Interactive graph view for entity types and relationships
   - **Tab**: New "🗺️ Relationship Map" tab in BundleOverview
-  - **Library**: React Flow + dagre layout (recommended)
+  - **Library**: React Flow + dagre layout
   - **Nodes**: Entity types with colors from bundle-type config
   - **Edges**: Relationships with labels (field name + cardinality)
   - **Clustering**: Group nodes by category (already implemented in bundle-type.json)
   - **Interactions**:
     - Click node → navigate to entity type in sidebar
-    - Click edge → show relationship details tooltip
     - Pan/zoom with minimap
-    - Optional: drag nodes to customize layout
-  - **Effort**: ~3 days for production-ready feature
+    - Drag nodes to customize layout
+  - **Effort**: 4-6 hours (MVP in 4h, polished in 6h)
 
 <details>
 <summary>Reference PlantUML Diagram (click to expand)</summary>

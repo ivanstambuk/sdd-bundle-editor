@@ -1163,7 +1163,7 @@ body {
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text-primary);
-  background: var(--color-bg-tertiary);
+  background: transparent;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1173,7 +1173,7 @@ body {
 }
 
 .entity-category-header:hover {
-  background: var(--color-bg-hover);
+  background: var(--color-bg-tertiary);
 }
 
 .entity-category-chevron {

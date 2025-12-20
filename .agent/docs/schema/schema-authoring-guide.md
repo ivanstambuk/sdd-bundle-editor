@@ -79,6 +79,17 @@ This document defines all custom JSON Schema extension keywords (`x-sdd-*`) reco
 
 This section defines the canonical rules for which entity should hold reference fields in a relationship.
 
+#### Terminology
+
+| Term | Meaning | Examples |
+|------|---------|----------|
+| **Upstream / Governor** | Entities that constrain, govern, or specify other entities | ADR, Requirement, Constraint, Policy, Principle, Decision |
+| **Downstream / Implementable** | Entities that are constrained, governed, or implement upstream specs | Feature, Component, Protocol, Scenario |
+| **Outgoing edge** | Graph edge FROM this entity TO another (this entity has the reference field) | `Feature.governedByAdrIds → ADR` |
+| **Incoming edge** | Graph edge TO this entity FROM another (other entity has the reference field) | `Requirement.realizesFeatureIds → Feature` |
+
+**Key insight**: "Upstream" and "downstream" describe **semantic direction** (what constrains what). "Outgoing" and "incoming" describe **graph direction** (who holds the reference field). Our convention aligns these: **downstream entities hold outgoing edges to their upstream governors**.
+
 #### Rule 1: Target-Holds-Reference (Passive Voice)
 
 **Principle**: The entity being **constrained, governed, or implemented** holds the reference to its **constraints, governors, or specifiers**.

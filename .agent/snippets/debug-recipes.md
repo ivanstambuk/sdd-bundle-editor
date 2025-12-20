@@ -497,3 +497,57 @@ curl -s http://localhost:3001/mcp -X POST ... | jq '.result'
 git add -A && git commit -m "fix: ..."
 ```
 
+---
+
+## Schema Relationship Reference Audit
+
+**Problem**: Need to audit all entity-to-entity relationships defined via `x-sdd-refTargets` across all schemas.
+
+**Use case**: Before refactoring or migrating relationship fields, understand the current state.
+
+### List all reference fields in a schema directory
+
+```bash
+# Audit all x-sdd-refTargets fields across all schemas
+for schema in /home/ivan/dev/sdd-sample-bundle/schemas/*.json; do
+  echo "=== $(basename $schema) ==="
+  jq -r '
+    .properties // {} | to_entries[] | 
+    select(.value["x-sdd-refTargets"] != null or (.value.items // {})["x-sdd-refTargets"] != null) |
+    {field: .key, targets: (.value["x-sdd-refTargets"] // .value.items["x-sdd-refTargets"]), title: (.value.title // .value.items.title // "no title")}
+  ' "$schema" 2>/dev/null
+done
+```
+
+### Filter by target entity type
+
+```bash
+# Find all fields that reference Feature
+for schema in /home/ivan/dev/sdd-sample-bundle/schemas/*.json; do
+  jq -r --arg target "Feature" '
+    .properties // {} | to_entries[] | 
+    select(
+      (.value["x-sdd-refTargets"] // []) + ((.value.items // {})["x-sdd-refTargets"] // []) 
+      | any(. == $target)
+    ) |
+    "\(input_filename | split("/")[-1]): \(.key)"
+  ' "$schema" 2>/dev/null
+done
+```
+
+### Count relationships by direction
+
+```bash
+# Summarize: which entity types point to which (for migration planning)
+for schema in /home/ivan/dev/sdd-sample-bundle/schemas/*.json; do
+  from=$(basename "$schema" .schema.json)
+  jq -r --arg from "$from" '
+    .properties // {} | to_entries[] | 
+    ((.value["x-sdd-refTargets"] // []) + ((.value.items // {})["x-sdd-refTargets"] // [])) |
+    .[] | 
+    "\($from) → \(.)"
+  ' "$schema" 2>/dev/null
+done | sort | uniq -c | sort -rn
+```
+
+**Why save**: Complex jq pattern used to audit 60+ relationships across 20+ schemas during the Target-Holds-Reference migration planning.

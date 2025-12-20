@@ -127,6 +127,81 @@ For entities that tell a story (ADRs, Design Documents, Analysis Records), use p
 - Tells a story (problem → context → decision)
 - Consistent across similar entity types
 
+### Prominence Headers vs Regular Labels
+
+Fields can be displayed with either a **prominence header** (styled section header with icon) or a **regular label** (muted uppercase text). Understanding when to use each is crucial.
+
+#### How Headers Are Triggered
+
+A prominence header appears when **BOTH** conditions are met:
+1. `x-sdd-prominence` is set to `hero`, `primary`, or `secondary`
+2. `x-sdd-prominenceLabel` is provided
+
+```json
+// ✅ Gets a prominence header
+"decision": {
+  "x-sdd-prominence": "hero",
+  "x-sdd-prominenceLabel": "The Decision",  // Required for header
+  "x-sdd-prominenceIcon": "✅"              // Optional icon
+}
+
+// ❌ Gets regular label (no prominenceLabel)
+"decidedDate": {
+  "x-sdd-prominence": "tertiary"
+  // No prominenceLabel → uses regular muted label
+}
+```
+
+#### Works for Any Field Type
+
+Prominence headers are **not limited to markdown**. They can be used for any field type:
+
+| Field Type | Can Use Header? | Typical Use |
+|------------|-----------------|-------------|
+| Markdown | ✅ Yes | Narrative sections (problem, context, decision) |
+| Plain string | ✅ Yes | Important single-line content |
+| Arrays | ✅ Yes | Section headers for lists |
+| Nested objects | ✅ Yes | Complex grouped content |
+| Numbers/dates | ⚠️ Possible but unusual | Generally use regular labels |
+
+#### Decision Table: Header vs Label
+
+| Field Character | Use Header? | Use Label? | Rationale |
+|-----------------|-------------|------------|-----------|
+| **Narrative/rich content** (markdown paragraphs) | ✅ | | Signals "this is a section" |
+| **Story flow items** (problem → context → decision) | ✅ | | Creates scannable narrative |
+| **Major array sections** (alternatives, consequences) | ✅ | | Groups related items visually |
+| **Short metadata** (title, name, ID) | | ✅ | Too much visual weight for small values |
+| **Dates/timestamps** | | ✅ | Simple values, not sections |
+| **Status/enum badges** | | ✅ | Badges have their own visual treatment |
+| **Simple inputs** (numbers, short text) | | ✅ | Don't need section treatment |
+
+#### Example: ADR Field Breakdown
+
+| Field | Type | Header? | Why |
+|-------|------|---------|-----|
+| `title` | string | ❌ Label | Short metadata value |
+| `status` | enum | ❌ Label | Uses badge styling |
+| `decidedDate` | date | ❌ Label | Simple metadata |
+| `problem` | markdown | ✅ Header | Narrative section |
+| `context` | markdown | ✅ Header | Narrative section |
+| `decision` | markdown | ✅ Header | Narrative section (hero) |
+| `alternativesConsidered` | array | ✅ Header | Major array section |
+| `assumptions` | array | ❌ Label | Supporting list, not a section |
+| `tags` | array | ❌ Label | Chip display, not a section |
+
+#### Rule of Thumb
+
+**Use prominence headers when:**
+- Content is substantial (multiple paragraphs, rich formatting)
+- It's part of a narrative flow (question → background → answer)
+- You want to say "this is a major section of the entity"
+
+**Use regular labels when:**
+- Values are short (single line, few words)
+- It's metadata (dates, status, confidence)
+- The field has its own visual treatment (badges, chips)
+
 ---
 
 ## Header Metadata

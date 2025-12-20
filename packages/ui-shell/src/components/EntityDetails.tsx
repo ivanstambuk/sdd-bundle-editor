@@ -258,6 +258,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <div className="rjsf-prominence-header">
             {prominenceIcon && <span className="rjsf-prominence-icon">{prominenceIcon}</span>}
             <span className="rjsf-prominence-title">{prominenceLabel}</span>
+            {hasDescription && (
+              <span className="field-help-icon" title={rawDescription}>
+                ⓘ
+              </span>
+            )}
           </div>
         )}
 

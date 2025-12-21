@@ -594,3 +594,77 @@ done | sort | uniq -c | sort -rn
 ```
 
 **Why save**: Complex jq pattern used to audit 60+ relationships across 20+ schemas during the Target-Holds-Reference migration planning.
+
+---
+
+## Flexbox Child Width Debugging
+
+**Problem**: Input fields or text content inside flexbox containers are truncated/cut off instead of expanding to fill available width.
+
+**Root cause**: Flexbox children don't automatically expand. Need `flex: 1`, `min-width: 0`, and often `width: 100%` on wrapper.
+
+### Diagnose width issues via browser console
+
+```javascript
+// Run in browser console - replace INPUT_ID with actual element ID
+(() => {
+  const input = document.getElementById('root_assumptions_0'); // or any input
+  if (!input) return { error: 'Input not found - check ID' };
+  
+  const style = window.getComputedStyle(input);
+  const parentStyle = window.getComputedStyle(input.parentElement);
+  const grandParentStyle = window.getComputedStyle(input.parentElement.parentElement);
+  
+  return {
+    inputWidth: style.width,           // Is this too small?
+    inputFlex: style.flex,             // Should be "1" or "1 1 auto"
+    parentWidth: parentStyle.width,    // Is parent full width?
+    parentFlex: parentStyle.flex,      // Should be "1"
+    grandParentWidth: grandParentStyle.width,
+    grandParentDisplay: grandParentStyle.display  // Should be "flex"
+  };
+})();
+```
+
+### CSS fix pattern for flexbox child expansion
+
+```css
+/* Parent container - already flex */
+.flexContainer {
+    display: flex;
+}
+
+/* REQUIRED: Child must flex AND have min-width: 0 */
+.flexContainer > * {
+    flex: 1;
+    min-width: 0;  /* Allows shrinking below content size */
+}
+
+/* REQUIRED: Content wrapper needs explicit width */
+.contentWrapper {
+    width: 100%;  /* Forces inputs/text to expand */
+}
+```
+
+**Why both are needed**:
+- `flex: 1` tells the child to grow
+- `min-width: 0` overrides default `min-width: auto` which prevents shrinking
+- `width: 100%` on wrapper ensures nested content (inputs) fills available space
+
+**Debug checklist**:
+1. Is parent `display: flex`?
+2. Does child have `flex: 1`?
+3. Does child have `min-width: 0`?
+4. Does content wrapper have `width: 100%`?
+
+**Example real fix** (RjsfStyles.module.css):
+```css
+.bulletItem > * {
+    flex: 1;
+    min-width: 0;
+}
+
+.arrayItemContent {
+    width: 100%;
+}
+```

@@ -134,3 +134,25 @@ Use descriptive names: `{component}_{action}_{state}`
    - Any visual design decision with multiple viable approaches
 
 This enables informed decision-making based on actual visual representation rather than text descriptions.
+
+## ⚠️ CRITICAL: Validate Before Declaring Done
+
+**NEVER claim a UI change is "done" without viewing the actual screenshot.**
+
+After making any visual/CSS change:
+
+1. **Run browser_subagent** to capture a screenshot of the affected area
+2. **View the screenshot** using `view_file` tool - actually look at it
+3. **Check for regressions**: truncation, overflow, misalignment, wrong colors
+4. **Only then** tell the user the fix is complete
+
+**Common post-fix issues to check:**
+| What to Check | Common Problem |
+|---------------|----------------|
+| Text content | Truncated/cut off (flexbox child width issues) |
+| Alignment | Bullet points, icons misaligned with text |
+| Colors | Wrong shade, inconsistent with design system |
+| Spacing | Too tight or too loose gaps |
+| Hover states | Only visible on interaction, test them |
+
+**If you say "done" and the user finds an issue, you have violated this rule.**

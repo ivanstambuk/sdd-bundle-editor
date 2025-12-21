@@ -198,5 +198,36 @@ Reusable code patterns are stored in `.agent/snippets/`:
 | Snippet | Description |
 |---------|-------------|
 | `mcp-patterns.md` | MCP tool registration patterns |
+| `debug-recipes.md` | Debugging patterns, jq/JS snippets |
 
 When you discover a reusable pattern, add it to snippets for future sessions.
+
+---
+
+## CSS Modern Patterns
+
+### Using :has() for Conditional Styling
+
+**Problem**: Need to hide a pseudo-element (::before, ::after) when a specific child element is present.
+
+**Solution**: Use the `:has()` CSS selector (supported in all modern browsers as of 2023):
+
+```css
+/* Default: show bullet point */
+.listItem::before {
+    content: '•';
+    color: var(--color-accent);
+}
+
+/* Hide bullet when custom marker span is present */
+.listItem:has(.customMarker)::before {
+    content: none;
+}
+```
+
+**Why not use classes?** Dynamic classes (like `.hasCustomIndicator`) require JavaScript to add/remove them, and don't work with CSS Modules well. `:has()` works purely in CSS based on DOM structure.
+
+**Other uses for :has()**:
+- Style parent based on child state: `.field:has(input:focus) { border-color: blue; }`
+- Hide empty containers: `.list:has(:empty) { display: none; }`
+- Conditional layout: `.card:has(img) { grid-template-columns: 1fr 2fr; }`

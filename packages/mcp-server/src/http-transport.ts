@@ -96,9 +96,12 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
      * 
      * Frontend connects to this endpoint and receives events when bundles are reloaded.
      * Event format: { type: 'bundle-reload', bundleId: string, timestamp: string }
+     * 
+     * NOTE: No connection limit - supports multi-user deployment.
+     * For local dev with many tabs, be aware browsers limit ~6 HTTP/1.1 connections per domain.
      */
     app.get("/api/events", (req: Request, res: Response) => {
-        console.error("[HTTP] SSE client connected for bundle events");
+        console.error(`[HTTP] SSE client connected for bundle events (${bundleEventClients.size + 1} active)`);
 
         // Set SSE headers
         res.setHeader('Content-Type', 'text/event-stream');
@@ -115,7 +118,7 @@ export function createMcpHttpServer(options: HttpTransportOptions) {
 
         // Remove client on disconnect
         req.on('close', () => {
-            console.error("[HTTP] SSE client disconnected");
+            console.error(`[HTTP] SSE client disconnected (${bundleEventClients.size - 1} remaining)`);
             bundleEventClients.delete(res);
         });
 

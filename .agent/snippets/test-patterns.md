@@ -351,3 +351,28 @@ For `saveEntity()` and `deleteEntity()`, you must pass `bundleDir`:
 await saveEntity(entity, bundleDir);
 await deleteEntity(bundle, 'Feature', 'FEAT-001', bundleDir, true);
 ```
+
+---
+
+## CSS Module Class Name Testing
+
+**Problem**: CSS Modules generate hashed class names (e.g., `_entityBtnSelected_c297df`), so `toHaveClass('selected')` fails.
+
+```typescript
+// ❌ Wrong - raw class name won't exist after CSS Module migration
+const button = screen.getByRole('button', { name: 'FEAT-001' });
+expect(button).toHaveClass('selected');
+// Error: Expected element to have class "selected", but got "_entityBtn_c297df _entityBtnSelected_c297df"
+
+// ✅ Correct - check for pattern in hashed class name
+expect(button.className).toMatch(/Selected/);
+
+// ✅ Alternative - check data attribute (if you control the component)
+// Add data-selected={isSelected} to the component
+expect(button).toHaveAttribute('data-selected', 'true');
+
+// ✅ For Playwright E2E tests - use CSS attribute selector
+await expect(page.locator('[class*="Selected"]')).toBeVisible();
+```
+
+**When to use**: After migrating a component to CSS Modules, update any tests that check for specific class names.

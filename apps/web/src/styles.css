@@ -1,7 +1,48 @@
 /* SDD Bundle Editor - Component Styles
    =====================================
    
-   NOTE: This file is being migrated to CSS Modules.
+   ⚠️ MIGRATION STATUS: CSS Modules migration COMPLETE (Dec 2024)
+   
+   ALL 29 ui-shell components now use CSS Modules!
+   The following component styles in this file are LEGACY and can be removed:
+   
+   FULLY MIGRATED (safe to remove from this file):
+   - .entity-navigator, .bundle-nav-*, .entity-group-*, .entity-category-*
+   - .entity-details, .entity-details-header, .entity-tabs, .entity-subtabs
+   - .bundle-overview, .bundle-overview-header, .bundle-info-*
+   - .syntax-highlighter, .prism-*
+   - .breadcrumb, .breadcrumb-*
+   - .diagnostics-panel, .diagnostics-*
+   - .theme-toggle, .toggle-*
+   - .tab-bar, .tab-item
+   - .empty-state
+   - .yaml-viewer, .yaml-actions, .copy-button
+   - .dependency-graph, .graph-node, .graph-branch, .graph-children
+   - .view-toggle, .view-toggle-btn, .dependencies-*
+   - .entity-type-badge
+   - .markdown-content, .prose
+   - .plantuml-diagram
+   - .sdd-ref-link
+   - .output-panel
+   - .search-results
+   - .resizable-sidebar, .resizable-bottom-panel
+   - .tabbed-bottom-panel
+   - .entity-type-details
+   - .relationship-graph
+   - .entity-dependency-graph
+   - .graph-filter-dropdown
+   - .labeled-edge
+   - .date-widget
+   - .entity-header-badges
+   - .tabbed-array-field
+   - .domain-knowledge-panel
+   - .prominence-header
+   - .header-metadata
+
+   STILL NEEDED (do not remove yet):
+   - .app-shell, .app-header, .info-banner (App.tsx - not in ui-shell)
+   - .rjsf-* (RJSF form integration styles)
+   - Utility classes if not in utilities.css
    
    Foundation styles have been extracted to:
    - styles/tokens.css   - Design tokens (CSS variables)
@@ -9,10 +50,7 @@
    - styles/globals.css  - Base reset and typography
    - styles/utilities.css - Utility classes
    
-   As components are migrated to CSS Modules, their styles will be
-   removed from this file and co-located with their components.
-   
-   Current status: ~5700 lines remaining (from original ~5900)
+   TODO: Remove legacy component styles listed above (~3000 lines reduction)
 */
 
 /* ========================================

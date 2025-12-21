@@ -1,0 +1,239 @@
+/* RjsfStyles.module.css - React JSON Schema Form integration styles */
+
+/* Form container */
+.rjsf {
+    padding: var(--spacing-md);
+}
+
+/* Field wrapper */
+.field {
+    margin-bottom: var(--spacing-md);
+}
+
+.fieldSmall {
+    margin-bottom: var(--spacing-sm);
+}
+
+.fieldLarge {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Prominence styles */
+.fieldProminenceHigh {
+    font-size: 1.1em;
+}
+
+.fieldProminenceLow {
+    opacity: 0.9;
+    font-size: 0.95em;
+}
+
+/* Field label */
+.fieldLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.fieldLabelMuted {
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.requiredAsterisk {
+    color: var(--color-error);
+}
+
+.fieldHelpIcon {
+    cursor: help;
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+/* Field content */
+.fieldContent {
+    color: var(--color-text-primary);
+}
+
+/* Arrays */
+.array {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.arrayItemContent {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-tertiary);
+}
+
+.arrayAddBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.arrayAddBtn:hover {
+    background: var(--color-bg-hover);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* Chips layout */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.chipsEmpty {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Bullet list layout */
+.bulletList {
+    padding-left: 0;
+}
+
+.bulletItems {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hasIndicator {
+    margin-left: var(--spacing-md);
+}
+
+.bulletItem {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+}
+
+.bulletMarker {
+    flex-shrink: 0;
+    font-size: 1em;
+}
+
+.bulletEmpty {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.bulletAdd {
+    margin-top: var(--spacing-sm);
+}
+
+/* Indicator for pros/cons/etc */
+.indicator {
+    flex-shrink: 0;
+    font-size: 1em;
+}
+
+/* Object wrapper */
+.object {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* Enum badge */
+.enumBadgeContainer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.enumBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    text-transform: capitalize;
+}
+
+.enumBadge.success {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.enumBadge.warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.enumBadge.error {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+}
+
+.enumBadge.info {
+    background: var(--color-info-bg);
+    color: var(--color-info);
+}
+
+.enumBadge.muted {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+}
+
+/* Select with tooltip */
+.selectWithTooltip {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+/* Checkbox field */
+.checkboxField {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Description */
+.description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+.descriptionMarkdown {
+    line-height: 1.5;
+}
+
+.descriptionMarkdown p {
+    margin: 0;
+}

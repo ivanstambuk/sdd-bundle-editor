@@ -24,6 +24,7 @@ import { DateWidget } from './DateWidget';
 import { EntityDependencyGraph } from './EntityDependencyGraph';
 import { TabbedArrayField } from './TabbedArrayField';
 import styles from './EntityDetails.module.css';
+import rjsfStyles from './RjsfStyles.module.css';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -187,7 +188,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // These should just render the input without our wrapper/label
     const isArrayItem = id && /_\d+$/.test(id);
     if (isArrayItem) {
-      return <div className="rjsf-array-item-content">{children}</div>;
+      return <div className={rjsfStyles.arrayItemContent}>{children}</div>;
     }
 
     // Detect boolean fields inside objects (checkboxes in qualityAttributes)
@@ -196,10 +197,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     if (isCheckbox) {
       const checkboxDescription = schema?.description || rawDescription;
       return (
-        <div className="rjsf-checkbox-field">
+        <div className={rjsfStyles.checkboxField}>
           {children}
           {checkboxDescription && (
-            <span className="field-help-icon" title={checkboxDescription}>
+            <span className={rjsfStyles.fieldHelpIcon} title={checkboxDescription}>
               ⓘ
             </span>
           )}
@@ -283,17 +284,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <div className={`rjsf-field-label ${labelStyleClass}`}>
             <label htmlFor={id}>
               {formattedLabel}
-              {required && <span className="required-asterisk">*</span>}
+              {required && <span className={rjsfStyles.requiredAsterisk}>*</span>}
             </label>
             {hasDescription && (
-              <span className="field-help-icon" title={rawDescription}>
+              <span className={rjsfStyles.fieldHelpIcon} title={rawDescription}>
                 ⓘ
               </span>
             )}
           </div>
         )}
 
-        <div className="rjsf-field-content">
+        <div className={rjsfStyles.fieldContent}>
           {children}
         </div>
       </div>
@@ -307,14 +308,14 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Chips layout - inline tags for short string arrays (e.g., tags)
   const renderChipsLayout = (formData: string[]) => (
-    <div className="rjsf-chips">
+    <div className={rjsfStyles.chips}>
       {formData.map((item: string, index: number) => (
-        <span key={index} className="rjsf-chip">
+        <span key={index} className={rjsfStyles.chip}>
           {item}
         </span>
       ))}
       {formData.length === 0 && (
-        <span className="rjsf-chips-empty">No items</span>
+        <span className={rjsfStyles.chipsEmpty}>No items</span>
       )}
     </div>
   );
@@ -326,22 +327,22 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     showAddButton: boolean,
     onAddClick: () => void
   ) => (
-    <div className="rjsf-bullet-list">
-      <ul className={`rjsf-bullet-items ${indicator ? 'has-indicator' : ''}`}>
+    <div className={rjsfStyles.bulletList}>
+      <ul className={`${rjsfStyles.bulletItems} ${indicator ? rjsfStyles.hasIndicator : ''}`}>
         {items.map((item: any, index: number) => (
-          <li key={item.key || index} className="rjsf-bullet-item">
-            {indicator && <span className="rjsf-bullet-marker">{indicator}</span>}
+          <li key={item.key || index} className={rjsfStyles.bulletItem}>
+            {indicator && <span className={rjsfStyles.bulletMarker}>{indicator}</span>}
             {item.children}
           </li>
         ))}
       </ul>
       {items.length === 0 && (
-        <span className="rjsf-bullet-empty">No items</span>
+        <span className={rjsfStyles.bulletEmpty}>No items</span>
       )}
       {showAddButton && (
         <button
           type="button"
-          className="rjsf-array-add-btn rjsf-bullet-add"
+          className={`${rjsfStyles.arrayAddBtn} ${rjsfStyles.bulletAdd}`}
           onClick={onAddClick}
         >
           + Add
@@ -366,17 +367,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     };
 
     return (
-      <div className="rjsf-array">
+      <div className={rjsfStyles.array}>
         {items.map((item: any, index: number) => (
           <div key={item.key || index} className={getItemClass()}>
-            {indicator && <span className="rjsf-indicator">{indicator}</span>}
+            {indicator && <span className={rjsfStyles.indicator}>{indicator}</span>}
             {item.children}
           </div>
         ))}
         {showAddButton && (
           <button
             type="button"
-            className="rjsf-array-add-btn"
+            className={rjsfStyles.arrayAddBtn}
             onClick={onAddClick}
           >
             + Add Item
@@ -437,7 +438,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   const CustomObjectFieldTemplate = (props: any) => {
     const { properties } = props;
     return (
-      <div className="rjsf-object">
+      <div className={rjsfStyles.object}>
         {properties.map((prop: any) => prop.content)}
       </div>
     );
@@ -475,15 +476,15 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // In read-only mode with enum styles, render as a colored badge
     if ((readonly || disabled) && enumStyles && value) {
       const styleConfig = enumStyles[value];
-      const colorClass = styleConfig?.color ? `rjsf-enum-badge--${styleConfig.color}` : 'rjsf-enum-badge--neutral';
+      const colorClass = styleConfig?.color ? `${rjsfStyles.enumBadge} ${styleConfig.color}` : `${rjsfStyles.enumBadge} ${rjsfStyles.muted}`;
 
       return (
-        <div className="rjsf-enum-badge-container">
-          <span className={`rjsf-enum-badge ${colorClass}`}>
+        <div className={rjsfStyles.enumBadgeContainer}>
+          <span className={colorClass}>
             {value}
           </span>
           {currentDescription && (
-            <span className="field-help-icon" title={currentDescription}>
+            <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
               ⓘ
             </span>
           )}
@@ -493,7 +494,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
     // Default: editable dropdown
     return (
-      <div className="rjsf-select-with-tooltip">
+      <div className={rjsfStyles.selectWithTooltip}>
         <select
           id={id}
           value={value || ''}
@@ -508,7 +509,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           ))}
         </select>
         {currentDescription && (
-          <span className="field-help-icon" title={currentDescription}>
+          <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
             ⓘ
           </span>
         )}
@@ -540,7 +541,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       const displayHint = formSchema?.['x-sdd-displayHint'];
       if (displayHint === 'markdown') {
         return (
-          <div className="rjsf-description rjsf-description--markdown">
+          <div className={`${rjsfStyles.description} ${rjsfStyles.descriptionMarkdown}`}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {description}
             </ReactMarkdown>
@@ -548,7 +549,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         );
       }
       // Default: plain text
-      return <p className="rjsf-description">{description}</p>;
+      return <p className={rjsfStyles.description}>{description}</p>;
     },
   };
 
@@ -653,7 +654,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         <>
           {schemaWithoutHeaderFields ? (
             <AnyForm
-              className="rjsf"
+              className={rjsfStyles.rjsf}
               schema={schemaWithoutHeaderFields as any}
               formData={filterFormDataToSchema(entity.data as Record<string, any>, schemaWithoutHeaderFields)}
               uiSchema={uiSchema}
@@ -703,7 +704,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         <div className="entity-subtab-content">
           {currentSubTabSchema ? (
             <AnyForm
-              className="rjsf"
+              className={rjsfStyles.rjsf}
               schema={currentSubTabSchema as any}
               formData={filterFormDataToSchema(entity.data as Record<string, any>, currentSubTabSchema)}
               uiSchema={uiSchema}

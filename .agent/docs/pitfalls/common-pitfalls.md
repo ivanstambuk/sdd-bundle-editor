@@ -333,3 +333,20 @@ See `/ui-validation` workflow for detailed process.
   for i in {1..30}; do curl -s --max-time 2 http://localhost:5173/ > /dev/null && break; sleep 1; done
   ```
 - **Key insight**: The main session can run shell commands to check server status. The browser subagent cannot. Do the check in the main session before delegating to subagent.
+
+### 26. Testing CSS Module class names with toHaveClass()
+- **Symptom**: Test fails with `Expected element to have class "selected", but got "_entityBtn_c297df _entityBtnSelected_c297df"`
+- **Root cause**: CSS Modules generate hashed class names (e.g., `_entityBtnSelected_c297df`), but test checks for raw class name `selected`
+- **Fix**: Use pattern matching instead of exact class name:
+  ```typescript
+  // ❌ Wrong - raw class name doesn't exist
+  expect(button).toHaveClass('selected');
+  
+  // ✅ Correct - pattern match hashed class
+  expect(button.className).toMatch(/Selected/);
+  
+  // ✅ Alternative - use data attribute
+  expect(button).toHaveAttribute('data-selected', 'true');
+  ```
+- **When this happens**: After migrating components to CSS Modules, any tests that check specific class names will break
+- **See also**: `.agent/snippets/test-patterns.md` for more patterns

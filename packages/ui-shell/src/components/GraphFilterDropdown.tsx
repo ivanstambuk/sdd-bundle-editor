@@ -4,6 +4,7 @@
  */
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { BundleTypeEntityConfig, BundleTypeCategoryConfig } from '@sdd-bundle-editor/shared-types';
+import styles from './GraphFilterDropdown.module.css';
 
 interface GraphFilterDropdownProps {
     /** All entity type configurations */
@@ -158,31 +159,31 @@ export function GraphFilterDropdown({
     };
 
     return (
-        <div className="graph-filter-dropdown" ref={dropdownRef}>
+        <div className={styles.dropdown} ref={dropdownRef}>
             <button
-                className={`graph-filter-trigger ${someSelected ? 'has-filter' : ''}`}
+                className={`${styles.trigger} ${someSelected ? styles.hasFilter : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
             >
-                <span className="graph-filter-icon">🔍</span>
-                <span className="graph-filter-text">{getSummaryText()}</span>
-                <span className={`graph-filter-chevron ${isOpen ? 'open' : ''}`}>▾</span>
+                <span className={styles.icon}>🔍</span>
+                <span className={styles.text}>{getSummaryText()}</span>
+                <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>▾</span>
             </button>
 
             {isOpen && (
-                <div className="graph-filter-panel" role="listbox">
+                <div className={styles.panel} role="listbox">
                     {/* Header actions */}
-                    <div className="graph-filter-actions">
+                    <div className={styles.actions}>
                         <button
-                            className="graph-filter-action"
+                            className={styles.action}
                             onClick={selectAll}
                             disabled={allSelected}
                         >
                             Show All
                         </button>
                         <button
-                            className="graph-filter-action"
+                            className={styles.action}
                             onClick={clearSelection}
                             disabled={selectedTypes.size === 0}
                         >
@@ -191,7 +192,7 @@ export function GraphFilterDropdown({
                     </div>
 
                     {/* Category groups */}
-                    <div className="graph-filter-groups">
+                    <div className={styles.groups}>
                         {groupedTypes.map((group, groupIndex) => {
                             const categoryId = group.category?.name || null;
                             const categoryLabel = group.category?.displayName || 'Other';
@@ -199,29 +200,29 @@ export function GraphFilterDropdown({
                             const isPartiallySelected = isCategoryPartiallySelected(categoryId);
 
                             return (
-                                <div key={groupIndex} className="graph-filter-group">
+                                <div key={groupIndex} className={styles.group}>
                                     {/* Category header */}
                                     <button
-                                        className="graph-filter-category"
+                                        className={styles.category}
                                         onClick={() => toggleCategory(categoryId)}
                                     >
-                                        <span className={`graph-filter-checkbox ${isFullySelected ? 'checked' : ''} ${isPartiallySelected ? 'partial' : ''}`}>
+                                        <span className={`${styles.checkbox} ${isFullySelected ? styles.checkboxChecked : ''} ${isPartiallySelected ? styles.checkboxPartial : ''}`}>
                                             {isFullySelected ? '✓' : isPartiallySelected ? '−' : ''}
                                         </span>
-                                        <span className="graph-filter-category-label">{categoryLabel}</span>
-                                        <span className="graph-filter-category-count">
+                                        <span className={styles.categoryLabel}>{categoryLabel}</span>
+                                        <span className={styles.categoryCount}>
                                             ({group.types.length})
                                         </span>
                                     </button>
 
                                     {/* Entity types in category */}
-                                    <div className="graph-filter-items">
+                                    <div className={styles.items}>
                                         {group.types.map(config => {
                                             const isSelected = selectedTypes.size === 0 || selectedTypes.has(config.entityType);
                                             return (
                                                 <label
                                                     key={config.entityType}
-                                                    className="graph-filter-item"
+                                                    className={styles.item}
                                                 >
                                                     <input
                                                         type="checkbox"
@@ -229,10 +230,10 @@ export function GraphFilterDropdown({
                                                         onChange={() => toggleType(config.entityType)}
                                                     />
                                                     <span
-                                                        className="graph-filter-color"
+                                                        className={styles.color}
                                                         style={{ backgroundColor: config.color || '#7aa2f7' }}
                                                     />
-                                                    <span className="graph-filter-label">
+                                                    <span className={styles.label}>
                                                         {config.entityType}
                                                     </span>
                                                 </label>

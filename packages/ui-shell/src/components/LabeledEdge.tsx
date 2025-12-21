@@ -13,6 +13,7 @@ import {
     getSmoothStepPath,
     type EdgeProps,
 } from 'reactflow';
+import styles from './LabeledEdge.module.css';
 
 export interface LabeledEdgeData {
     label: string;
@@ -53,19 +54,9 @@ export function LabeledEdge({
             {data?.label && (
                 <EdgeLabelRenderer>
                     <div
-                        className="react-flow__edge-label-html"
+                        className={styles.label}
                         style={{
-                            position: 'absolute',
                             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
-                            pointerEvents: 'none',
-                            // Label styling
-                            fontSize: 11,
-                            fontWeight: 500,
-                            color: 'var(--color-text-secondary, #9aa5ce)',
-                            backgroundColor: 'var(--color-surface-secondary, #24283b)',
-                            padding: '4px 6px',
-                            borderRadius: 4,
-                            whiteSpace: 'nowrap',
                         }}
                     >
                         {data.label}
@@ -75,3 +66,4 @@ export function LabeledEdge({
         </>
     );
 }
+

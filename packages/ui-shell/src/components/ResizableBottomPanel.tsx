@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react';
+import styles from './ResizableBottomPanel.module.css';
 
 interface ResizableBottomPanelProps {
     children: ReactNode;
@@ -119,12 +120,12 @@ export function ResizableBottomPanel({
     return (
         <div
             ref={panelRef}
-            className={`resizable-bottom-panel ${isCollapsed ? 'collapsed' : ''} ${isResizing ? 'resizing' : ''}`}
+            className={`${styles.panel} ${isCollapsed ? styles.collapsed : ''} ${isResizing ? styles.resizing : ''}`}
             style={{ height: displayHeight }}
         >
             {/* Resize handle */}
             <div
-                className="resize-handle"
+                className={styles.resizeHandle}
                 onMouseDown={handleMouseDown}
                 title="Drag to resize"
             />
@@ -132,26 +133,26 @@ export function ResizableBottomPanel({
             {/* Panel header */}
             <button
                 type="button"
-                className="panel-header"
+                className={styles.header}
                 onClick={toggleCollapse}
                 data-testid="bottom-panel-toggle"
             >
-                <span className="panel-chevron">{isCollapsed ? '▲' : '▼'}</span>
-                <span className="panel-title">{title}</span>
+                <span className={styles.chevron}>{isCollapsed ? '▲' : '▼'}</span>
+                <span className={styles.title}>{title}</span>
                 {badgeCount > 0 && (
-                    <span className={`panel-badge ${badgeCount > 0 ? 'has-issues' : ''}`}>
+                    <span className={`${styles.badge} ${styles.badgeHasIssues}`}>
                         {badgeCount} {badgeCount === 1 ? 'issue' : 'issues'}
                     </span>
                 )}
                 {badgeCount === 0 && (
-                    <span className="panel-badge success">✓ No issues</span>
+                    <span className={`${styles.badge} ${styles.badgeSuccess}`}>✓ No issues</span>
                 )}
-                <span className="panel-shortcut">Ctrl+J</span>
+                <span className={styles.shortcut}>Ctrl+J</span>
             </button>
 
             {/* Panel content */}
             {!isCollapsed && (
-                <div className="panel-content">
+                <div className={styles.content}>
                     {children}
                 </div>
             )}

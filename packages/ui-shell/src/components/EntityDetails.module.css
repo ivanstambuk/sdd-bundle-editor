@@ -76,7 +76,7 @@
 .subtabs {
     display: inline-flex;
     gap: 0;
-    margin: 0 var(--spacing-lg) var(--spacing-sm);
+    margin: var(--spacing-md) var(--spacing-lg) var(--spacing-sm) calc(var(--spacing-lg) + var(--spacing-sm));
     padding: 3px;
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-md);

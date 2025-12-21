@@ -250,6 +250,12 @@ function formatFieldName(name: string): string {
 
 /**
  * Collect dependencies (outgoing references) for an entity.
+ * 
+ * Note: The caller may pre-add targets to `visited` to exclude them from
+ * the dependency list. This function processes edges regardless of whether
+ * the entity itself is in visited, but uses visited to:
+ * 1. Track which dependencies have already been collected (de-duplication)
+ * 2. Prevent infinite loops on circular references
  */
 function collectDependencies(
     entity: Entity,
@@ -261,8 +267,16 @@ function collectDependencies(
     if (depth >= maxDepth) return [];
 
     const key = `${entity.entityType}:${entity.id}`;
-    if (visited.has(key)) return [];
+
+    // Add self to visited to prevent cycles, but DON'T return early
+    // (caller may have pre-added targets to exclude them from results,
+    // but we still need to collect THEIR dependencies)
+    const wasAlreadyVisited = visited.has(key);
     visited.add(key);
+
+    // If we've already processed this entity's edges, skip
+    // (this happens in recursive calls for circular refs)
+    if (wasAlreadyVisited && depth > 0) return [];
 
     const dependencies: Entity[] = [];
 
@@ -273,6 +287,8 @@ function collectDependencies(
             if (targetEntity) {
                 const targetKey = `${edge.toEntityType}:${edge.toId}`;
                 if (!visited.has(targetKey)) {
+                    // Mark as visited BEFORE recursing to prevent duplicates
+                    visited.add(targetKey);
                     dependencies.push(targetEntity);
                     // Recursively collect dependencies
                     dependencies.push(...collectDependencies(

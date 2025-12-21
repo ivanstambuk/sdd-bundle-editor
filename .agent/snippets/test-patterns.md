@@ -303,3 +303,34 @@ title: Test Requirement
 
 **Common Error**: `TypeError: The "path" argument must be of type string. Received undefined`
 → Missing `directory` field in bundle type definition
+
+---
+
+## RefGraph Requires `relations` in Bundle Type Definition
+
+**Problem**: Test bundles have empty `refGraph.edges` even with proper schema `x-sdd-refTargets`.
+
+**Root Cause**: `core-model`'s `buildRefGraph()` uses **`bundleTypeDefinition.relations`**, NOT schema's `x-sdd-refTargets`.
+
+```typescript
+// ❌ refGraph will be EMPTY with this:
+const bundleType = {
+    entities: [...],
+    relations: []  // ← Empty! No edges built
+};
+
+// ✅ To get refGraph edges, MUST declare relations:
+const bundleType = {
+    entities: [...],
+    relations: [
+        { fromEntity: "Feature", fromField: "realizesRequirementIds", toEntity: "Requirement" },
+        { fromEntity: "Feature", fromField: "governedByAdrIds", toEntity: "ADR" },
+    ]
+};
+```
+
+**Key Insight**:
+- `x-sdd-refTargets` in schemas → used for **validation** and **UI** (entity pickers)
+- `relations` in bundle-type.json → used for **building refGraph** (dependency traversal)
+
+Both must be kept in sync for the full system to work correctly.

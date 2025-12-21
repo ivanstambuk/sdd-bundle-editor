@@ -19,6 +19,10 @@ let testBundleDir: string;
 
 /**
  * Collect dependencies for an entity (same logic as export-tools.ts).
+ * 
+ * Note: The caller may pre-add targets to `visited` to exclude them from
+ * the dependency list. This function processes edges regardless of whether
+ * the entity itself is in visited.
  */
 function collectDependencies(
     entity: Entity,
@@ -30,8 +34,14 @@ function collectDependencies(
     if (depth >= maxDepth) return [];
 
     const key = `${entity.entityType}:${entity.id}`;
-    if (visited.has(key)) return [];
+
+    // Add self to visited to prevent cycles, but DON'T return early at depth 0
+    const wasAlreadyVisited = visited.has(key);
     visited.add(key);
+
+    // If we've already processed this entity's edges, skip
+    // (this happens in recursive calls for circular refs)
+    if (wasAlreadyVisited && depth > 0) return [];
 
     const dependencies: Entity[] = [];
 
@@ -42,6 +52,8 @@ function collectDependencies(
             if (targetEntity) {
                 const targetKey = `${edge.toEntityType}:${edge.toId}`;
                 if (!visited.has(targetKey)) {
+                    // Mark as visited BEFORE recursing to prevent duplicates
+                    visited.add(targetKey);
                     dependencies.push(targetEntity);
                     // Recursively collect dependencies
                     dependencies.push(...collectDependencies(
@@ -101,7 +113,7 @@ spec:
 `;
     await fs.writeFile(path.join(bundleDir, 'sdd-bundle.yaml'), manifest);
 
-    // Create bundle-type definition
+    // Create bundle-type definition with relations for refGraph
     const bundleType = {
         bundleType: "test",
         version: "1.0.0",
@@ -128,7 +140,11 @@ spec:
                 filePattern: "{id}.yaml"
             },
         ],
-        relations: []
+        // Relations define edges for refGraph (needed for dependency traversal)
+        relations: [
+            { fromEntity: "Feature", fromField: "realizesRequirementIds", toEntity: "Requirement" },
+            { fromEntity: "Feature", fromField: "governedByAdrIds", toEntity: "ADR" },
+        ]
     };
     await fs.writeFile(
         path.join(bundleDir, 'schemas', 'bundle-type.json'),
@@ -313,6 +329,55 @@ describe('export_context tool functionality', () => {
             const deps = collectDependencies(feature!, bundle, 0, 0, visited);
 
             expect(deps.length).toBe(0);
+        });
+
+        it('collects direct dependencies with depth 1', async () => {
+            const { bundle } = await loadBundleWithSchemaValidation(testBundleDir);
+            const feature = bundle.entities.get('Feature')?.get('auth-login');
+            expect(feature).toBeDefined();
+
+            // Verify refGraph has edges now
+            expect(bundle.refGraph.edges.length).toBeGreaterThan(0);
+
+            const visited = new Set<string>();
+            visited.add(`Feature:auth-login`);
+            const deps = collectDependencies(feature!, bundle, 0, 1, visited);
+
+            // auth-login references: REQ-001, REQ-002, ADR-001 = 3 dependencies
+            expect(deps.length).toBe(3);
+
+            const depIds = deps.map(d => d.id);
+            expect(depIds).toContain('REQ-001');
+            expect(depIds).toContain('REQ-002');
+            expect(depIds).toContain('ADR-001');
+        });
+
+        it('de-duplicates dependencies across multiple targets', async () => {
+            const { bundle } = await loadBundleWithSchemaValidation(testBundleDir);
+            const authLogin = bundle.entities.get('Feature')?.get('auth-login');
+            const authLogout = bundle.entities.get('Feature')?.get('auth-logout');
+            expect(authLogin).toBeDefined();
+            expect(authLogout).toBeDefined();
+
+            // Shared visited set for both targets
+            const visited = new Set<string>();
+            visited.add('Feature:auth-login');
+            visited.add('Feature:auth-logout');
+
+            const deps1 = collectDependencies(authLogin!, bundle, 0, 1, visited);
+            const deps2 = collectDependencies(authLogout!, bundle, 0, 1, visited);
+
+            // Combine all dependencies
+            const allDeps = [...deps1, ...deps2];
+
+            // REQ-002 is shared between both features, but should only appear once
+            const req002Count = allDeps.filter(d => d.id === 'REQ-002').length;
+            expect(req002Count).toBe(1); // De-duplicated
+
+            // auth-login: REQ-001, REQ-002, ADR-001 (3 deps)
+            // auth-logout: REQ-002 (already visited, so 0 new deps)
+            // Total: 3 unique dependencies
+            expect(allDeps.length).toBe(3);
         });
 
         it('separates targets from dependencies', async () => {

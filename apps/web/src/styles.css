@@ -3521,6 +3521,13 @@ form.rjsf {
   min-height: auto;
 }
 
+/* Plain value style - removes box styling from prominence fields (schema-driven: x-sdd-valueStyle: "plain") */
+.rjsf-field--primary.rjsf-value--plain,
+.rjsf-field--hero.rjsf-value--plain {
+  background: transparent;
+  background-image: none;
+}
+
 /* Secondary prominence - default/normal, but with optional header for narrative fields */
 .rjsf-field--secondary .rjsf-prominence-header {
   margin-bottom: var(--spacing-xs);
@@ -5334,6 +5341,13 @@ form input[type="checkbox"] {
   font-size: var(--font-size-sm);
   /* Match form text size (13px) */
   line-height: 1.5;
+}
+
+/* Plain value style removes markdown background/border (schema-driven: x-sdd-valueStyle: "plain") */
+.rjsf-value--plain .markdown-readonly {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 .markdown-empty {

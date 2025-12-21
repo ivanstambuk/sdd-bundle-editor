@@ -277,3 +277,25 @@ When doing a retrospective, scan for issues in these categories:
 - [ ] Context not preserved between sessions
 - [ ] Unclear handover information
 - [ ] Repeated work across sessions
+
+### CSS Regressions
+- [ ] **Interaction-blocking CSS**: Did `pointer-events: none` or similar block hover/click?
+  - If yes → Add regression test that reads CSS file and verifies property values
+  - Example: `expect(cssContent).toMatch(/pointer-events\s*:\s*auto/)`
+- [ ] **Layout-breaking CSS**: Did CSS changes cause visual regressions?
+  - If yes → Consider adding CSS property verification tests
+- [ ] **Pattern**: When a CSS bug is fixed, add a test that will fail if it regresses:
+  ```typescript
+  // Example: packages/ui-shell/src/components/LabeledEdge.test.ts
+  import { readFileSync } from 'fs';
+  import { resolve } from 'path';
+  
+  describe('ComponentName.module.css', () => {
+      const cssPath = resolve(__dirname, './ComponentName.module.css');
+      const cssContent = readFileSync(cssPath, 'utf-8');
+      
+      it('should have pointer-events: auto to allow interactions', () => {
+          expect(cssContent).toMatch(/pointer-events\s*:\s*auto/);
+      });
+  });
+  ```

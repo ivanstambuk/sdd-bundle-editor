@@ -668,3 +668,79 @@ done | sort | uniq -c | sort -rn
     width: 100%;
 }
 ```
+
+---
+
+## Interactive Element CSS Verification
+
+**Problem**: Hover tooltips, click handlers, or other interactive behaviors don't work even though the HTML attributes are correct.
+
+**Root cause**: CSS properties like `pointer-events: none` can block interaction events from reaching elements.
+
+**Use case**: This exact pattern caught the relationship graph tooltip bug where `title` attributes were present but hover never triggered.
+
+### Verify element can receive interactions
+
+```javascript
+// Run in browser console - finds elements and checks interaction-blocking CSS
+(() => {
+  const selector = '[title]'; // Or any selector for interactive elements
+  const elements = document.querySelectorAll(selector);
+  
+  return Array.from(elements).slice(0, 5).map(el => {
+    const style = window.getComputedStyle(el);
+    return {
+      text: el.textContent?.substring(0, 30),
+      title: el.getAttribute('title'),
+      // CRITICAL: Must be 'auto' or 'all' for tooltips/clicks to work
+      pointerEvents: style.pointerEvents,
+      cursor: style.cursor,
+      visibility: style.visibility,
+      display: style.display
+    };
+  });
+})();
+```
+
+### Quick check for specific element
+
+```javascript
+// Check a labeled edge or similar element
+(() => {
+  const el = document.querySelector('[class*="label"][title]');
+  if (!el) return 'No element found with title attribute';
+  const style = window.getComputedStyle(el);
+  return {
+    canReceiveHover: style.pointerEvents !== 'none',
+    pointerEvents: style.pointerEvents,
+    hasTitle: el.hasAttribute('title'),
+    title: el.getAttribute('title')
+  };
+})();
+```
+
+### Common blocking patterns and fixes
+
+| CSS Property | Blocking Value | Fix |
+|--------------|----------------|-----|
+| `pointer-events` | `none` | Change to `auto` |
+| `visibility` | `hidden` | Change to `visible` |
+| `display` | `none` | Change to block/flex/etc |
+| `opacity` | `0` | Still receives events, but check if parent blocks |
+
+**Real-world fix example** (LabeledEdge.module.css):
+```css
+/* BEFORE: Blocks hover, tooltip never appears */
+.label {
+    pointer-events: none;
+}
+
+/* AFTER: Allows hover, tooltip works */
+.label {
+    pointer-events: auto;
+    cursor: default;
+}
+```
+
+**Why save**: This pattern immediately identified the tooltip bug that visual inspection and DOM attribute checks missed.
+

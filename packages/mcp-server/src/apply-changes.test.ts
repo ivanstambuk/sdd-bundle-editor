@@ -265,7 +265,7 @@ describe('apply_changes functionality', () => {
             entity!.data.priority = 'high';
 
             // Save to disk
-            await saveEntity(entity!);
+            await saveEntity(entity!, testBundleDir);
 
             // Reload and verify
             const { bundle: reloaded } = await loadBundleWithSchemaValidation(testBundleDir);
@@ -381,7 +381,7 @@ describe('apply_changes functionality', () => {
 
             // Set invalid priority (not in enum)
             entity!.data.priority = 'invalid-priority';
-            await saveEntity(entity!);
+            await saveEntity(entity!, testBundleDir);
 
             // Reload and validate
             const { diagnostics } = await loadBundleWithSchemaValidation(testBundleDir);

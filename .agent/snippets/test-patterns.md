@@ -334,3 +334,20 @@ const bundleType = {
 - `relations` in bundle-type.json → used for **building refGraph** (dependency traversal)
 
 Both must be kept in sync for the full system to work correctly.
+
+---
+
+## Entity filePath is Always Relative
+
+`entity.filePath` is always **relative to bundleDir**. When you need the full path for file operations:
+
+```typescript
+const fullPath = path.join(bundleDir, entity.filePath);
+// e.g., /home/user/bundle + bundle/features/FEAT-001.yaml
+```
+
+For `saveEntity()` and `deleteEntity()`, you must pass `bundleDir`:
+```typescript
+await saveEntity(entity, bundleDir);
+await deleteEntity(bundle, 'Feature', 'FEAT-001', bundleDir, true);
+```

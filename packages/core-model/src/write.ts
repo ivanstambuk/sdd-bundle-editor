@@ -35,7 +35,7 @@ function setPath(obj: Record<string, unknown>, path: string, value: unknown): vo
 
 /**
  * Creates a new entity and adds it to the bundle.
- * Generates a file path based on the bundle's manifest layout configuration.
+ * Generates a file path (relative to bundleDir) based on the bundle's manifest layout configuration.
  * 
  * @param bundle - The bundle to add the entity to
  * @param bundleDir - Root directory of the bundle
@@ -66,23 +66,22 @@ export function createEntity(
     // Determine file path from bundle's layout configuration
     // Layout is defined in manifest.spec.layout.documents[entityType]
     const layout = bundle.manifest.spec.layout.documents[entityType];
-    let filePath: string;
+    let relativeFilePath: string;
 
     if (layout) {
         // Use layout from manifest (e.g., { dir: "bundle/features", filePattern: "{id}.yaml" })
         const fileName = layout.filePattern.replace('{id}', entityId);
-        filePath = path.join(bundleDir, layout.dir, fileName);
+        relativeFilePath = path.join(layout.dir, fileName);
     } else {
         // Fallback to default pattern if no layout is defined for this entity type
-        const entityTypeDir = path.join(bundleDir, entityType.toLowerCase());
-        filePath = path.join(entityTypeDir, `${entityId}.yaml`);
+        relativeFilePath = path.join(entityType.toLowerCase(), `${entityId}.yaml`);
     }
 
-    // Create the entity
+    // Create the entity with relative path (consistent with discoverEntities)
     const entity: Entity = {
         id: entityId,
         entityType,
-        filePath,
+        filePath: relativeFilePath,
         data,
     };
 
@@ -94,18 +93,26 @@ export function createEntity(
 
 /**
  * Writes an entity back to its file path in YAML format.
- * Preserves the file path from the entity record.
+ * The entity's filePath is relative to bundleDir.
+ * 
+ * @param entity - The entity to save
+ * @param bundleDir - Root directory of the bundle (to resolve relative paths)
  */
-export async function saveEntity(entity: Entity): Promise<void> {
+export async function saveEntity(entity: Entity, bundleDir: string): Promise<void> {
     if (!entity.filePath) {
         throw new Error(`Entity ${entity.id} (${entity.entityType}) has no filePath, cannot save.`);
     }
 
+    // Resolve the full path from bundleDir + relative filePath
+    const fullPath = path.join(bundleDir, entity.filePath);
+
+    // Ensure directory exists
+    const dir = path.dirname(fullPath);
+    await fs.mkdir(dir, { recursive: true });
+
     // We use the 'yaml' package which is already a dependency.
-    // We rely on standard stringify. 
-    // In a real IDE we might want to preserve comments, but for now strict serialization is fine.
     const content = stringifyYaml(entity.data);
-    await fs.writeFile(entity.filePath, content, 'utf8');
+    await fs.writeFile(fullPath, content, 'utf8');
 }
 
 /**
@@ -114,6 +121,7 @@ export async function saveEntity(entity: Entity): Promise<void> {
  * @param bundle - The bundle to remove the entity from
  * @param entityType - Type of entity to delete
  * @param entityId - ID of the entity to delete
+ * @param bundleDir - Root directory of the bundle (to resolve relative paths)
  * @param deleteFile - If true, also delete the file from disk (default: false for in-memory only)
  * @returns The deleted entity, or undefined if not found
  */
@@ -121,6 +129,7 @@ export async function deleteEntity(
     bundle: Bundle,
     entityType: string,
     entityId: string,
+    bundleDir: string,
     deleteFile: boolean = false
 ): Promise<Entity | undefined> {
     const entityMap = bundle.entities.get(entityType);
@@ -142,7 +151,8 @@ export async function deleteEntity(
     // Optionally delete the file from disk
     if (deleteFile && entity.filePath) {
         try {
-            await fs.unlink(entity.filePath);
+            const fullPath = path.join(bundleDir, entity.filePath);
+            await fs.unlink(fullPath);
         } catch (err) {
             // File might not exist on disk yet (newly created but not saved)
             // Ignore ENOENT errors

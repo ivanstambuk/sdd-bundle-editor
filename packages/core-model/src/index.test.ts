@@ -27,9 +27,12 @@ describe('core-model basic wiring', () => {
     expect(requirements?.size).toBe(4);
     expect(tasks?.size).toBe(3);
 
-    // We expect at least one edge from Requirement -> Feature and Task -> Requirement.
+    // We expect edges based on the current bundle-type.json relations:
+    // - Feature -> ADR (governedByAdrIds)
+    // - Task -> Feature (belongsToFeatureIds)
+    // - Task -> Requirement (fulfillsRequirementIds)
     const edges = bundle.refGraph.edges;
-    expect(edges.some((e) => e.fromEntityType === 'Requirement' && e.toEntityType === 'Feature')).toBe(
+    expect(edges.some((e) => e.fromEntityType === 'Feature' && e.toEntityType === 'ADR')).toBe(
       true,
     );
     expect(edges.some((e) => e.fromEntityType === 'Task' && e.toEntityType === 'Requirement')).toBe(

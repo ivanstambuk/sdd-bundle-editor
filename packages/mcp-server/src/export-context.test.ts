@@ -418,11 +418,8 @@ describe('export_context tool functionality', () => {
             const data = adr!.data as Record<string, unknown>;
             expect(data.lastModifiedDate).toBeUndefined();
 
-            // filePath may be full path or relative - check what we have
-            const filePath = adr!.filePath;
-            const fullPath = filePath.startsWith('/')
-                ? filePath
-                : path.join(testBundleDir, filePath);
+            // filePath is now always relative to bundleDir
+            const fullPath = path.join(testBundleDir, adr!.filePath);
             const stats = await fs.stat(fullPath);
             expect(stats.mtime).toBeDefined();
             expect(stats.mtime).toBeInstanceOf(Date);

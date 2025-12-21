@@ -80,18 +80,23 @@ describe('write module', () => {
     });
 
     describe('saveEntity', () => {
+        beforeEach(() => {
+            vi.mocked(fs.mkdir).mockResolvedValue(undefined);
+        });
+
         it('should write entity data as YAML to filePath', async () => {
             const entity: Entity = {
                 id: 'user',
                 entityType: 'Profile',
                 data: { foo: 'bar' },
-                filePath: '/test/path.yaml'
+                filePath: 'profiles/user.yaml'  // relative path
             };
 
-            await saveEntity(entity);
+            await saveEntity(entity, '/test/bundle');
 
+            expect(fs.mkdir).toHaveBeenCalledWith('/test/bundle/profiles', { recursive: true });
             expect(fs.writeFile).toHaveBeenCalledWith(
-                '/test/path.yaml',
+                '/test/bundle/profiles/user.yaml',
                 expect.stringContaining('foo: bar'),
                 'utf8'
             );

@@ -189,7 +189,7 @@ export function registerMutationTools(ctx: ToolContext): void {
                                 }
 
                                 result.resultEntity = entity.data;
-                                result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                                result.affectedFiles = [entity.filePath];
                                 if (!modifiedFiles.includes(entity.filePath)) {
                                     modifiedFiles.push(entity.filePath);
                                 }
@@ -197,7 +197,7 @@ export function registerMutationTools(ctx: ToolContext): void {
                                 // No validation - just create
                                 const entity = createEntity(workingBundle, bundleDir, change.entityType, change.entityId, entityData);
                                 result.resultEntity = entity.data;
-                                result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                                result.affectedFiles = [entity.filePath];
                                 if (!modifiedFiles.includes(entity.filePath)) {
                                     modifiedFiles.push(entity.filePath);
                                 }
@@ -322,7 +322,7 @@ export function registerMutationTools(ctx: ToolContext): void {
                             }
 
                             result.resultEntity = entity.data;
-                            result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                            result.affectedFiles = [entity.filePath];
                             if (!modifiedFiles.includes(entity.filePath)) {
                                 modifiedFiles.push(entity.filePath);
                             }
@@ -372,7 +372,7 @@ export function registerMutationTools(ctx: ToolContext): void {
                             }
 
                             deletedFiles.push(entity.filePath);
-                            result.affectedFiles = [path.relative(bundleDir, entity.filePath)];
+                            result.affectedFiles = [entity.filePath];
 
                             // Remove from bundle in-memory
                             entityMap!.delete(change.entityId);
@@ -422,8 +422,8 @@ export function registerMutationTools(ctx: ToolContext): void {
                     validate: effectiveValidate,
                     referencePolicy: effectiveRefPolicy,
                     wouldApply: changes.length,
-                    wouldModify: modifiedFiles.map(f => path.relative(bundleDir, f)),
-                    wouldDelete: deletedFiles.map(f => path.relative(bundleDir, f)),
+                    wouldModify: modifiedFiles,
+                    wouldDelete: deletedFiles,
                     results,
                 }, {
                     bundleId: effectiveBundleId,
@@ -438,17 +438,15 @@ export function registerMutationTools(ctx: ToolContext): void {
                     const entityMap = workingBundle.entities.get(change.entityType);
                     const entity = entityMap?.get(change.entityId);
                     if (entity) {
-                        const dir = path.dirname(entity.filePath);
-                        await fs.mkdir(dir, { recursive: true });
-                        await saveEntity(entity);
+                        await saveEntity(entity, bundleDir);
                     }
                 }
             }
 
             // Delete files
-            for (const filePath of deletedFiles) {
+            for (const relPath of deletedFiles) {
                 try {
-                    await fs.unlink(filePath);
+                    await fs.unlink(path.join(bundleDir, relPath));
                 } catch (err) {
                     if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
                         throw err;
@@ -473,8 +471,8 @@ export function registerMutationTools(ctx: ToolContext): void {
                 validate: effectiveValidate,
                 referencePolicy: effectiveRefPolicy,
                 applied: changes.length,
-                modifiedFiles: modifiedFiles.map(f => path.relative(bundleDir, f)),
-                deletedFiles: deletedFiles.map(f => path.relative(bundleDir, f)),
+                modifiedFiles: modifiedFiles,
+                deletedFiles: deletedFiles,
                 results,
             }, {
                 bundleId: effectiveBundleId,

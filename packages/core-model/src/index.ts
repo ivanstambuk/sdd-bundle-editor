@@ -73,17 +73,19 @@ async function discoverEntities(
       if (!filename.endsWith('.yaml') && !filename.endsWith('.yml')) {
         continue;
       }
-      const filePath = path.join(dirPath, filename);
+      const absolutePath = path.join(dirPath, filename);
+      // Store relative path (relative to bundleDir) for consistent handling
+      const relativeFilePath = path.join(entityConfig.directory, filename);
       let data: unknown;
       try {
-        const raw = await fs.readFile(filePath, 'utf8');
+        const raw = await fs.readFile(absolutePath, 'utf8');
         data = parseYaml(raw) as unknown;
       } catch (err) {
         diagnostics.push({
           severity: 'error',
-          message: `Failed to parse YAML for "${filePath}": ${String(err)}`,
+          message: `Failed to parse YAML for "${absolutePath}": ${String(err)}`,
           entityType: entityConfig.entityType,
-          filePath,
+          filePath: relativeFilePath,
         });
         continue;
       }
@@ -91,9 +93,9 @@ async function discoverEntities(
       if (!data || typeof data !== 'object') {
         diagnostics.push({
           severity: 'error',
-          message: `YAML document in "${filePath}" is not an object`,
+          message: `YAML document in "${absolutePath}" is not an object`,
           entityType: entityConfig.entityType,
-          filePath,
+          filePath: relativeFilePath,
         });
         continue;
       }
@@ -103,9 +105,9 @@ async function discoverEntities(
       if (typeof idValue !== 'string') {
         diagnostics.push({
           severity: 'error',
-          message: `Missing or non-string id field "${entityConfig.idField}" in "${filePath}"`,
+          message: `Missing or non-string id field "${entityConfig.idField}" in "${absolutePath}"`,
           entityType: entityConfig.entityType,
-          filePath,
+          filePath: relativeFilePath,
         });
         continue;
       }
@@ -115,7 +117,7 @@ async function discoverEntities(
         id,
         entityType: entityConfig.entityType,
         data: record,
-        filePath,
+        filePath: relativeFilePath,
       };
 
       if (idRegistry.has(id)) {
@@ -124,7 +126,7 @@ async function discoverEntities(
           message: `Duplicate entity id "${id}"`,
           entityId: id,
           entityType: entityConfig.entityType,
-          filePath,
+          filePath: relativeFilePath,
         });
         continue;
       }
@@ -133,7 +135,7 @@ async function discoverEntities(
       idRegistry.set(id, {
         entityType: entityConfig.entityType,
         id,
-        filePath,
+        filePath: relativeFilePath,
       });
     }
   }

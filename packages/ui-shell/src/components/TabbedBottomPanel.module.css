@@ -1,6 +1,7 @@
 /* TabbedBottomPanel.module.css */
 
 .panel {
+    grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
     border-top: 1px solid var(--color-border);

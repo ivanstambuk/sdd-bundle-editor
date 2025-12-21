@@ -1,0 +1,27 @@
+/* DomainKnowledgePanel.module.css */
+
+.panel {
+    padding: var(--spacing-lg);
+}
+
+.title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.content {
+    margin-top: var(--spacing-md);
+    /* Container for domain knowledge content */
+}
+
+.viewer {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: var(--font-size-sm);
+    white-space: pre-wrap;
+    background: var(--color-bg-tertiary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+}

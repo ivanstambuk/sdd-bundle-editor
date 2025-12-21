@@ -1,3 +1,5 @@
+import styles from './EntityHeaderBadges.module.css';
+
 interface HeaderMetadataField {
     fieldName: string;
     label: string;
@@ -9,6 +11,14 @@ interface EntityHeaderBadgesProps {
     /** Fields extracted from schema with x-sdd-displayLocation: "header" and x-sdd-enumStyles */
     fields: HeaderMetadataField[];
 }
+
+const colorStyles: Record<string, string> = {
+    success: styles.badgeSuccess,
+    warning: styles.badgeWarning,
+    error: styles.badgeError,
+    info: styles.badgeInfo,
+    neutral: styles.badgeNeutral,
+};
 
 /**
  * EntityHeaderBadges - Renders styled enum badges in the entity header.
@@ -31,16 +41,16 @@ export function EntityHeaderBadges({ fields }: EntityHeaderBadgesProps) {
     }
 
     return (
-        <div className="entity-header-badges">
+        <div className={styles.badges}>
             {badgeFields.map((field) => {
                 const enumStyles = field.fieldSchema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
                 const styleConfig = enumStyles?.[field.value];
-                const colorClass = styleConfig?.color
-                    ? `rjsf-enum-badge--${styleConfig.color}`
-                    : 'rjsf-enum-badge--neutral';
+                const colorClass = styleConfig?.color && colorStyles[styleConfig.color]
+                    ? colorStyles[styleConfig.color]
+                    : styles.badgeNeutral;
 
                 return (
-                    <span key={field.fieldName} className={`rjsf-enum-badge ${colorClass}`}>
+                    <span key={field.fieldName} className={`${styles.badge} ${colorClass}`}>
                         {field.value || '—'}
                     </span>
                 );
@@ -48,3 +58,4 @@ export function EntityHeaderBadges({ fields }: EntityHeaderBadgesProps) {
         </div>
     );
 }
+

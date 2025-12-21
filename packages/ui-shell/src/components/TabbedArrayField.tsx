@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import styles from './TabbedArrayField.module.css';
 
 interface TabbedArrayFieldProps {
     /** RJSF items array */
@@ -68,15 +69,13 @@ export function TabbedArrayField({
     // Handle empty array
     if (!Array.isArray(formData) || formData.length === 0) {
         return (
-            <div className="rjsf-tabbed-array rjsf-tabbed-array--empty">
-                <div className="rjsf-tabbed-array-empty">
-                    <span className="rjsf-tabbed-array-empty-icon">📋</span>
-                    <span>No items</span>
-                </div>
+            <div className={`${styles.container} ${styles.empty}`}>
+                <span className={styles.emptyIcon}>📋</span>
+                <span>No items</span>
                 {canAdd && !readOnly && onAddClick && (
                     <button
                         type="button"
-                        className="rjsf-array-add-btn"
+                        className={styles.addButton}
                         onClick={onAddClick}
                     >
                         + Add Item
@@ -89,9 +88,9 @@ export function TabbedArrayField({
     const activeItem = sortedItems[activeTabIndex];
 
     return (
-        <div className="rjsf-tabbed-array">
+        <div className={styles.container}>
             {/* Tab bar */}
-            <div className="rjsf-tabbed-array-tabs">
+            <div className={styles.tabs}>
                 {sortedItems.map((sortedItem, idx) => {
                     const label = sortedItem.data?.[tabLabelField] || `Item ${sortedItem.index + 1}`;
                     const isChosen = sortedItem.isChosen;
@@ -101,13 +100,13 @@ export function TabbedArrayField({
                         <button
                             key={sortedItem.item.key || sortedItem.index}
                             type="button"
-                            className={`rjsf-tabbed-array-tab ${isActive ? 'active' : ''} ${isChosen ? 'chosen' : 'rejected'}`}
+                            className={`${styles.tab} ${isActive ? styles.tabActive : ''} ${isChosen ? styles.tabChosen : ''}`}
                             onClick={() => setActiveTabIndex(idx)}
                             title={label}
                         >
-                            <span className="rjsf-tabbed-array-tab-label">{label}</span>
+                            <span className={styles.tabLabel}>{label}</span>
                             {isChosen && (
-                                <span className="rjsf-tabbed-array-tab-badge rjsf-tabbed-array-tab-badge--chosen">✓</span>
+                                <span className={styles.tabBadge}>✓</span>
                             )}
                         </button>
                     );
@@ -117,7 +116,7 @@ export function TabbedArrayField({
                 {canAdd && !readOnly && onAddClick && (
                     <button
                         type="button"
-                        className="rjsf-tabbed-array-add-tab"
+                        className={styles.addTab}
                         onClick={onAddClick}
                         title="Add new item"
                     >
@@ -127,9 +126,9 @@ export function TabbedArrayField({
             </div>
 
             {/* Tab content */}
-            <div className="rjsf-tabbed-array-content">
+            <div className={styles.content}>
                 {/* Render the active item's children */}
-                <div className="rjsf-tabbed-array-item-content">
+                <div className={styles.itemContent}>
                     {activeItem.item.children}
                 </div>
             </div>

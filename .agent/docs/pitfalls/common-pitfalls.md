@@ -443,4 +443,18 @@ See `/ui-validation` workflow for detailed process.
   - `packages/ui-shell/src/components/EntityDetails.tsx` (AJV validator)
 - **Automation**: Use `scripts/add-enum-titles.js` to add titles to all schemas
 
+### 32. Duplicate CSS selectors in CSS Modules
+- **Symptom**: CSS changes don't apply despite correct syntax; computed styles show old values
+- **Root cause**: Same selector defined twice in the CSS file - later rule silently overrides the earlier one
+- **Example case**: `.subtabContent { padding: 0 ... }` at line 110 was overridden by `.subtabContent { padding: var(--spacing-lg) }` at line 410
+- **Why hard to debug**:
+  1. No build errors or warnings
+  2. Browser DevTools shows the "winning" rule, not the duplicate
+  3. You see your correct code in the source file but it has no effect
+- **Fix**: Run CSS health check test that catches duplicates:
+  ```bash
+  pnpm --filter @sdd-bundle-editor/ui-shell test
+  ```
+- **Prevention**: The `CssModules.test.ts` file now automatically checks all CSS modules for duplicate selectors
+- **See also**: Pitfall 27 for CSS module rebuild requirements
 

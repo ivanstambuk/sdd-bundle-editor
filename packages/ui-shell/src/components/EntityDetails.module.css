@@ -76,7 +76,7 @@
 .subtabs {
     display: inline-flex;
     gap: 0;
-    margin: var(--spacing-sm) var(--spacing-lg);
+    margin: 0 var(--spacing-lg) var(--spacing-sm);
     padding: 3px;
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-md);
@@ -108,7 +108,12 @@
 }
 
 .subtabContent {
-    padding: var(--spacing-lg);
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+/* Remove padding from forms inside subtabContent to avoid double-padding */
+.subtabContent form {
+    padding-top: 0 !important;
 }
 
 .subtabEmpty {
@@ -399,9 +404,4 @@
     text-align: center;
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
-}
-
-/* Sub-tab content area */
-.subtabContent {
-    padding: var(--spacing-lg);
 }

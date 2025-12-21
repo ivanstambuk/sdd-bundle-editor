@@ -422,3 +422,53 @@ describe('Critical CSS properties', () => {
 **When to use**: After fixing any CSS layout bug, write a test that asserts the critical property. This catches accidental reverts during future refactoring.
 
 **See**: `packages/ui-shell/src/components/RjsfStyles.test.ts` for the full pattern.
+
+---
+
+## CSS Duplicate Selector Detection
+
+**Problem**: Duplicate CSS selectors in the same file cause silent overrides. The later rule wins, and there's no warning.
+
+**Root Cause Example**: `.subtabContent { padding: 0 }` at line 110 was overridden by `.subtabContent { padding: 1.2rem }` at line 410, causing 20+ min of debugging.
+
+```typescript
+// packages/ui-shell/src/components/CssModules.test.ts
+import { readFileSync, readdirSync } from 'fs';
+import { resolve, join } from 'path';
+
+function extractSelectors(cssContent: string): string[] {
+    const selectors: string[] = [];
+    const lines = cssContent.split('\n');
+    
+    for (const line of lines) {
+        const match = line.trim().match(/^(\.[a-zA-Z_][\w-]*)\s*\{/);
+        if (match) selectors.push(match[1]);
+    }
+    return selectors;
+}
+
+function findDuplicates(selectors: string[]): string[] {
+    const seen = new Set<string>();
+    return selectors.filter(sel => {
+        if (seen.has(sel)) return true;
+        seen.add(sel);
+        return false;
+    }).filter((v, i, a) => a.indexOf(v) === i);
+}
+
+describe('CSS Module Health', () => {
+    const cssFiles = readdirSync(__dirname).filter(f => f.endsWith('.module.css'));
+    
+    for (const file of cssFiles) {
+        it(`${file} has no duplicate selectors`, () => {
+            const css = readFileSync(join(__dirname, file), 'utf-8');
+            const duplicates = findDuplicates(extractSelectors(css));
+            expect(duplicates).toEqual([]);
+        });
+    }
+});
+```
+
+**When to use**: Run automatically on all CSS modules. Especially important after merging changes or refactoring CSS.
+
+**See**: `packages/ui-shell/src/components/CssModules.test.ts` for the full implementation.

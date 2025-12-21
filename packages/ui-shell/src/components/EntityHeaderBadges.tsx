@@ -49,9 +49,15 @@ export function EntityHeaderBadges({ fields }: EntityHeaderBadgesProps) {
                     ? colorStyles[styleConfig.color]
                     : styles.badgeNeutral;
 
+                // Show label in badge when x-sdd-showLabelInBadge is true (e.g., "CONFIDENCE: HIGH")
+                const showLabel = field.fieldSchema?.['x-sdd-showLabelInBadge'] === true;
+                const badgeText = showLabel
+                    ? `${field.label}: ${field.value || '—'}`
+                    : (field.value || '—');
+
                 return (
                     <span key={field.fieldName} className={`${styles.badge} ${colorClass}`}>
-                        {field.value || '—'}
+                        {badgeText}
                     </span>
                 );
             })}

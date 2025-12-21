@@ -393,3 +393,54 @@ See `/ui-validation` workflow for detailed process.
 - **Why this matters**: The user cannot see your code changes. They see the browser. If it doesn't work in the browser, it doesn't work.
 - **Exception**: None. Even "trivial" changes can fail due to caching, build issues, or incorrect assumptions about how the DOM/CSS works.
 
+### 30. Browser tabs hanging after opening 5-6 tabs
+- **Symptom**: Opening the 6th browser tab to the app causes it to hang/never load
+- **Root cause**: Browsers limit HTTP/1.1 connections to ~6 per domain. Each tab opens an SSE (Server-Sent Events) connection to `/api/events` for live reload notifications. These connections stay open, consuming all available slots.
+- **Why server-side limit doesn't work**: The 6th tab's request never reaches the server - it's blocked by the browser before transmission
+- **Fix**: Use SharedWorker to share one SSE connection across all tabs:
+  - `apps/web/public/sse-worker.js` - SharedWorker maintains single SSE
+  - `useBundleEvents.ts` hook connects to SharedWorker instead of direct EventSource
+- **Architecture**:
+  ```
+  Tab 1 ──┐
+  Tab 2 ──┼──► SharedWorker ──► SSE ──► Server (1 connection)
+  Tab 3 ──┤     (broadcasts to all tabs)
+  Tab N ──┘
+  ```
+- **Fallback**: If SharedWorker unavailable (e.g., private browsing), falls back to direct EventSource
+- **Debug SharedWorkers**: `chrome://inspect/#workers`
+
+### 31. Three-Tier Enum Display Pattern (x-sdd-enumTitles)
+- **Background**: Enum fields need concise labels for dropdown display, while also providing detailed descriptions for tooltips
+- **Pattern**: Use three schema extensions for enum presentation:
+  | Extension | Purpose | Example |
+  |-----------|---------|---------|
+  | `x-sdd-enumTitles` | Concise display label | "User Experience" |
+  | `x-sdd-enumDescriptions` | Detailed tooltip text | "Usability and accessibility requirements" |
+  | `x-sdd-enumStyles` | Badge styling for header enums | `{value: "accepted", style: "success"}` |
+- **Schema example**:
+  ```json
+  "category": {
+    "type": "string",
+    "enum": ["user-experience", "security", "performance"],
+    "x-sdd-enumTitles": {
+      "user-experience": "User Experience",
+      "security": "Security",
+      "performance": "Performance"
+    },
+    "x-sdd-enumDescriptions": {
+      "user-experience": "Usability and accessibility requirements",
+      "security": "Authentication, authorization, and data protection",
+      "performance": "Response time, throughput, and resource usage"
+    }
+  }
+  ```
+- **UI rendering**:
+  - **Header enums** (with `x-sdd-displayLocation: "header"`): Rendered as colored badges using `x-sdd-enumStyles`
+  - **Form body enums**: Rendered as dropdowns with `x-sdd-enumTitles` as option labels, `x-sdd-enumDescriptions` as ⓘ tooltips
+- **Keyword registration**: Both keywords must be in `passthroughKeywords` in:
+  - `packages/core-schema/src/index.ts`
+  - `packages/ui-shell/src/components/EntityDetails.tsx` (AJV validator)
+- **Automation**: Use `scripts/add-enum-titles.js` to add titles to all schemas
+
+

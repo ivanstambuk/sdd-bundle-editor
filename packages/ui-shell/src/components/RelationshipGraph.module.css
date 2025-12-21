@@ -22,8 +22,8 @@
 }
 
 .graph {
-    flex: 1;
-    min-height: 400px;
+    flex: none;
+    height: 400px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;

@@ -13,29 +13,39 @@ description: Validate UI changes using browser agent before and after modificati
 
 ## Standard Process
 
-### 0. Pre-flight: Verify Server Is Running
-**IMPORTANT**: Always verify the dev server is healthy BEFORE calling browser_subagent.
-The subagent cannot debug connection issues effectively.
+### 0. Pre-flight: MANDATORY Server Restart
+**CRITICAL**: The webpack-dev-server can become unresponsive after extended use, causing browser timeouts.
+**ALWAYS restart the server before browser validation** - this is not optional.
 
 ```bash
-# Check if server responds (timeout after 5 seconds)
-curl -s --max-time 5 http://localhost:5173/ > /dev/null && echo "✓ Server ready" || echo "✗ Server not responding"
+# Step 1: Kill any existing dev server processes
+// turbo
+./scripts/local/restart-dev.sh
 ```
 
-If server is not ready:
 ```bash
-# Start/restart the dev server
-./scripts/local/restart-dev.sh
-
-# Wait for server to be ready (poll health endpoint)
+# Step 2: Wait for server to be fully ready (with health check loop)
+// turbo
 for i in {1..30}; do
-  curl -s --max-time 2 http://localhost:5173/ > /dev/null && break
+  curl -s --max-time 2 http://localhost:5173/ > /dev/null && echo "✓ Server ready" && break
   echo "Waiting for server... ($i/30)"
   sleep 1
 done
 ```
 
-Only proceed to browser_subagent after server responds.
+```bash
+# Step 3: Add buffer time for webpack compilation to complete
+// turbo
+sleep 3
+
+# Step 4: Final health check before proceeding
+curl -s --max-time 5 http://localhost:5173/ > /dev/null && echo "✓ Ready for browser validation"
+```
+
+**DO NOT proceed to browser_subagent until the final health check passes.**
+
+⚠️ **Why mandatory restart?** The dev server accumulates state (HMR connections, file watchers, memory)
+that can cause it to stop responding. A fresh restart ensures reliable browser agent execution.
 
 ### 1. Before Making Changes
 Use browser agent to capture the **current state**:

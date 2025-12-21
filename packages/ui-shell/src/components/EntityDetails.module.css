@@ -168,6 +168,8 @@
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-sm);
     margin-bottom: var(--spacing-xs);
+    text-align: left;
+    /* Override button default centering */
 }
 
 .graphRoot {

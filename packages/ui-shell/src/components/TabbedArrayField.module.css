@@ -28,7 +28,7 @@
     font-family: inherit;
     cursor: pointer;
     transition: all var(--transition-fast);
-    max-width: 140px;
+    white-space: nowrap;
 }
 
 .tab:hover {
@@ -44,12 +44,6 @@
 
 .tabChosen {
     border-left: 2px solid var(--color-success);
-}
-
-.tabLabel {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .tabBadge {

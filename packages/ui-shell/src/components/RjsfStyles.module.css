@@ -67,10 +67,10 @@
 }
 
 .arrayItemContent {
-    padding: var(--spacing-sm);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-sm);
-    background: var(--color-bg-tertiary);
+    padding: var(--spacing-xs) 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
 }
 
 .arrayAddBtn {

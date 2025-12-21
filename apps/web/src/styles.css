@@ -511,6 +511,450 @@
 }
 
 /* ========================================
+   RJSF Form Styles
+   These are global styles for React JSON Schema Form integration.
+   Used by EntityDetails.tsx and other form components.
+   ======================================== */
+
+/* Base form styles */
+.rjsf {
+  font-family: inherit;
+}
+
+.rjsf .form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.rjsf label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Form inputs */
+.rjsf input[type="text"],
+.rjsf input[type="number"],
+.rjsf textarea,
+.rjsf select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  transition: border-color var(--transition-fast);
+}
+
+.rjsf input:focus,
+.rjsf textarea:focus,
+.rjsf select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.rjsf input:disabled,
+.rjsf textarea:disabled,
+.rjsf select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Read-only mode: plain text styling for short string inputs */
+.rjsf input[type="text"][readonly],
+.rjsf input[type="number"][readonly] {
+  background: transparent;
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 1;
+  cursor: default;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* Keep box styling for textareas (multiline content needs boundaries) */
+.rjsf textarea[readonly] {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  opacity: 1;
+  cursor: default;
+}
+
+/* Keep box styling for selects in readonly */
+.rjsf select:disabled {
+  background: var(--color-bg-tertiary);
+}
+
+.rjsf fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rjsf legend {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+  padding: 0;
+}
+
+/* Hide RJSF submit button */
+.rjsf button[type="submit"] {
+  display: none;
+}
+
+/* RJSF Form Grid Layout */
+form.rjsf {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.rjsf-field {
+  grid-column: span 4;
+}
+
+/* Small fields (enums, short strings ≤30 chars) - 1 column */
+.rjsf-field-small {
+  grid-column: span 1;
+}
+
+/* Medium fields (31-80 chars) - 2 columns */
+.rjsf-field-medium {
+  grid-column: span 2;
+}
+
+/* Large fields (title alongside ID) - 3 columns */
+.rjsf-field-large {
+  grid-column: span 3;
+}
+
+/* Full width fields (multiline, arrays, objects) - 4 columns */
+.rjsf-field-full {
+  grid-column: span 4;
+}
+
+/* Responsive: on smaller screens, reduce columns */
+@media (max-width: 900px) {
+
+  form.rjsf,
+  .rjsf-object {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rjsf-field-small {
+    grid-column: span 1;
+  }
+
+  .rjsf-field-medium,
+  .rjsf-field-large,
+  .rjsf-field-full {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+
+  form.rjsf,
+  .rjsf-object {
+    grid-template-columns: 1fr;
+  }
+
+  .rjsf-field-small,
+  .rjsf-field-medium,
+  .rjsf-field-large,
+  .rjsf-field-full {
+    grid-column: span 1;
+  }
+}
+
+/* Field label styling */
+.rjsf-field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: 2px;
+}
+
+/* Muted (default): smaller, gray, uppercase */
+.rjsf-field-label.rjsf-label--muted label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Prominent: normal size, primary color */
+.rjsf-field-label.rjsf-label--prominent label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Plain value styling (default) */
+.rjsf-value--plain input[type="text"][readonly],
+.rjsf-value--plain input[type="number"][readonly] {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  height: auto;
+  min-height: unset;
+}
+
+/* Boxed value styling */
+.rjsf-value--boxed input[type="text"][readonly],
+.rjsf-value--boxed input[type="number"][readonly] {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm);
+  color: var(--color-text-primary);
+  font-weight: 400;
+}
+
+/* Fallback for base label style */
+.rjsf-field-label label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Field content inputs */
+.rjsf-field-content input,
+.rjsf-field-content textarea,
+.rjsf-field-content select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  transition: border-color var(--transition-fast);
+}
+
+.rjsf-field-content input:focus,
+.rjsf-field-content textarea:focus,
+.rjsf-field-content select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-light);
+}
+
+.rjsf-field-content input:disabled,
+.rjsf-field-content textarea:disabled,
+.rjsf-field-content select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Read-only inputs should look like plain text */
+.rjsf-field-content input[readonly],
+.rjsf-field-content input:disabled:not([type="checkbox"]) {
+  background: transparent;
+  border: none;
+  padding: 0;
+  opacity: 1;
+  cursor: default;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* Keep box styling for textareas to maintain readability of multiline content */
+.rjsf-field-content textarea[readonly],
+.rjsf-field-content textarea:disabled {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  opacity: 1;
+}
+
+.rjsf-field-content textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Object wrapper styling */
+.rjsf-object {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+/* Nested objects get flexbox layout - minimal styling for cleaner read-only view */
+.rjsf-object .rjsf-object {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+/* Prominence Header */
+.rjsf-prominence-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.rjsf-prominence-icon {
+  font-size: var(--font-size-lg);
+}
+
+.rjsf-prominence-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Hero prominence - THE key answer/decision */
+.rjsf-field--hero {
+  background: linear-gradient(135deg, var(--color-bg-secondary), rgba(16, 185, 129, 0.15));
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-md) 0;
+}
+
+.rjsf-field--hero .rjsf-prominence-header {
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-success);
+  margin-bottom: var(--spacing-md);
+}
+
+.rjsf-field--hero .rjsf-prominence-title {
+  font-size: var(--font-size-base);
+  color: var(--color-success);
+}
+
+.rjsf-field--hero .rjsf-prominence-icon {
+  color: var(--color-success);
+}
+
+.rjsf-field--hero .rjsf-field-content input,
+.rjsf-field--hero .rjsf-field-content textarea,
+.rjsf-field--hero .rjsf-field-content select {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Primary prominence - important emphasized field */
+.rjsf-field--primary {
+  border-left: 4px solid var(--color-accent);
+  padding-left: var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.rjsf-field--primary .rjsf-prominence-header {
+  margin-bottom: var(--spacing-xs);
+}
+
+.rjsf-field--primary .rjsf-prominence-title {
+  font-size: var(--font-size-sm);
+  color: var(--color-accent);
+}
+
+.rjsf-field--primary .rjsf-prominence-icon {
+  color: var(--color-accent);
+  font-size: var(--font-size-base);
+}
+
+.rjsf-field--primary .rjsf-field-content input,
+.rjsf-field--primary .rjsf-field-content textarea,
+.rjsf-field--primary .rjsf-field-content select {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Secondary prominence - moderate emphasis */
+.rjsf-field--secondary .rjsf-prominence-header {
+  margin-bottom: var(--spacing-xs);
+}
+
+.rjsf-field--secondary .rjsf-prominence-title {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.rjsf-field--secondary .rjsf-prominence-icon {
+  font-size: var(--font-size-base);
+}
+
+/* Tertiary prominence - de-emphasized */
+.rjsf-field--tertiary .rjsf-field-label label {
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+.rjsf-field--tertiary .rjsf-field-content input,
+.rjsf-field--tertiary .rjsf-field-content select {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs);
+}
+
+/* Array item styling - minimal for read-only view */
+.rjsf-array-item {
+  padding: var(--spacing-sm);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.rjsf-array-simple-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rjsf-indicated-item {
+  padding: var(--spacing-xs) 0;
+}
+
+/* Checkbox styling */
+.rjsf-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rjsf-checkbox-field input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-accent);
+}
+
+.rjsf-checkbox-field label {
+  text-transform: capitalize;
+  font-size: var(--font-size-sm);
+}
+
+/* ========================================
+   End RJSF Form Styles
+   ======================================== */
+
+
+/* ========================================
    Agent Backend Badge
    ======================================== */
 .agent-backend-badge {

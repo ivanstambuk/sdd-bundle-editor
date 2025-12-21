@@ -778,7 +778,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         {/* Outgoing (Uses) */}
         {outgoing.length > 0 && (
           <div className={styles.graphBranch}>
-            <div className={styles.graphBranchLabel}>Uses →</div>
+            <div className={styles.graphBranchLabel}>uses</div>
             <div className={styles.graphChildren}>
               {outgoing.map((edge, idx) => (
                 <button

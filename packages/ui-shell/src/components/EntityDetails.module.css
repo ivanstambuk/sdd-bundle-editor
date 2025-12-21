@@ -181,14 +181,23 @@
     cursor: pointer;
     width: fit-content;
     /* Prevent stretching to full width in flex container */
+    background: transparent;
+    /* No boxed background for list items */
+    border: none;
+    /* Remove button border */
+    padding: var(--spacing-xs) 0;
+    /* Minimal padding, just vertical spacing */
 }
 
 .graphChild:hover {
     background: var(--color-bg-hover);
+    border-radius: var(--radius-sm);
 }
 
 .graphNodeId {
     /* Content naturally flows, no flex expansion */
+    color: var(--color-text-primary);
+    /* Ensure good contrast in dark theme */
 }
 
 .graphBranch {
@@ -398,7 +407,8 @@
 /* Graph field label */
 .graphField {
     font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
+    /* Better contrast than muted */
     margin-left: auto;
 }
 

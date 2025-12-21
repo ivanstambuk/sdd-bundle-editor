@@ -5,6 +5,8 @@
  * Supports optional badges on tabs for showing counts.
  */
 
+import styles from './TabBar.module.css';
+
 export interface Tab {
     /** Unique identifier for the tab */
     id: string;
@@ -29,21 +31,22 @@ interface TabBarProps {
 
 export function TabBar({ tabs, activeTab, onSelect, testIdPrefix }: TabBarProps) {
     return (
-        <div className="entity-tabs" data-testid={testIdPrefix ? `${testIdPrefix}-tabs` : undefined}>
+        <div className={styles.tabBar} data-testid={testIdPrefix ? `${testIdPrefix}-tabs` : undefined}>
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
                     type="button"
-                    className={`entity-tab ${activeTab === tab.id ? 'active' : ''}`}
+                    className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
                     onClick={() => onSelect(tab.id)}
                     data-testid={testIdPrefix ? `${testIdPrefix}-tab-${tab.testId || tab.id}` : `tab-${tab.testId || tab.id}`}
                 >
                     {tab.label}
                     {tab.badge !== undefined && tab.badge > 0 && (
-                        <span className="tab-badge">{tab.badge}</span>
+                        <span className={styles.badge}>{tab.badge}</span>
                     )}
                 </button>
             ))}
         </div>
     );
 }
+

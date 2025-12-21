@@ -1,3 +1,5 @@
+import styles from './SearchResultsPanel.module.css';
+
 export interface SearchResult {
     entityType: string;
     entityId: string;
@@ -21,9 +23,9 @@ export function SearchResultsPanel({
 }: SearchResultsPanelProps) {
     if (!query) {
         return (
-            <div className="search-results-panel">
-                <div className="search-empty">
-                    <span className="search-empty-icon">🔍</span>
+            <div className={styles.panel}>
+                <div className={styles.empty}>
+                    <span className={styles.emptyIcon}>🔍</span>
                     <span>Enter a search query to find entities across the bundle.</span>
                 </div>
             </div>
@@ -32,9 +34,9 @@ export function SearchResultsPanel({
 
     if (isSearching) {
         return (
-            <div className="search-results-panel">
-                <div className="search-loading">
-                    <span className="search-spinner">⏳</span>
+            <div className={styles.panel}>
+                <div className={styles.loading}>
+                    <span className={styles.spinner}>⏳</span>
                     <span>Searching for "{query}"...</span>
                 </div>
             </div>
@@ -43,9 +45,9 @@ export function SearchResultsPanel({
 
     if (results.length === 0) {
         return (
-            <div className="search-results-panel">
-                <div className="search-empty">
-                    <span className="search-empty-icon">😕</span>
+            <div className={styles.panel}>
+                <div className={styles.empty}>
+                    <span className={styles.emptyIcon}>😕</span>
                     <span>No results found for "{query}"</span>
                 </div>
             </div>
@@ -69,29 +71,29 @@ export function SearchResultsPanel({
     const groups = Object.values(grouped);
 
     return (
-        <div className="search-results-panel">
-            <div className="search-summary">
+        <div className={styles.panel}>
+            <div className={styles.summary}>
                 Found {results.length} match{results.length !== 1 ? 'es' : ''} in {groups.length} entit{groups.length !== 1 ? 'ies' : 'y'}
             </div>
-            <div className="search-results-list">
+            <div className={styles.list}>
                 {groups.map(group => (
-                    <div key={`${group.entityType}:${group.entityId}`} className="search-result-group">
+                    <div key={`${group.entityType}:${group.entityId}`} className={styles.group}>
                         <button
                             type="button"
-                            className="search-result-header"
+                            className={styles.header}
                             onClick={() => onNavigate(group.entityType, group.entityId)}
                             data-testid={`search-result-${group.entityId}`}
                         >
-                            <span className="result-entity-type">{group.entityType}</span>
-                            <span className="result-entity-id">{group.entityId}</span>
-                            <span className="result-match-count">({group.matches.length})</span>
+                            <span className={styles.entityType}>{group.entityType}</span>
+                            <span className={styles.entityId}>{group.entityId}</span>
+                            <span className={styles.matchCount}>({group.matches.length})</span>
                         </button>
-                        <ul className="search-result-matches">
+                        <ul className={styles.matches}>
                             {group.matches.slice(0, 3).map((match, idx) => (
-                                <li key={idx} className="search-result-match">
-                                    <span className="match-field">{match.field}:</span>
+                                <li key={idx} className={styles.match}>
+                                    <span className={styles.matchField}>{match.field}:</span>
                                     <span
-                                        className="match-context"
+                                        className={styles.matchContext}
                                         dangerouslySetInnerHTML={{
                                             __html: highlightMatch(match.context, match.match)
                                         }}
@@ -99,7 +101,7 @@ export function SearchResultsPanel({
                                 </li>
                             ))}
                             {group.matches.length > 3 && (
-                                <li className="search-result-more">
+                                <li className={styles.more}>
                                     +{group.matches.length - 3} more matches
                                 </li>
                             )}
@@ -110,6 +112,7 @@ export function SearchResultsPanel({
         </div>
     );
 }
+
 
 function highlightMatch(context: string, match: string): string {
     if (!match) return escapeHtml(context);

@@ -1,0 +1,133 @@
+/* SearchResultsPanel.module.css */
+
+.panel {
+    padding: var(--spacing-md);
+}
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.emptyIcon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    color: var(--color-text-secondary);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.summary {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-md);
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.group {
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border: none;
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.header:hover {
+    background: var(--color-bg-hover);
+}
+
+.entityType {
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+.entityId {
+    flex: 1;
+}
+
+.matchCount {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.matches {
+    list-style: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.match {
+    padding: var(--spacing-xs) 0;
+    font-size: var(--font-size-xs);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.match:last-child {
+    border-bottom: none;
+}
+
+.matchField {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-right: var(--spacing-xs);
+}
+
+.matchContext {
+    color: var(--color-text-muted);
+}
+
+.matchContext :global(mark) {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.more {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: var(--spacing-xs) 0;
+}

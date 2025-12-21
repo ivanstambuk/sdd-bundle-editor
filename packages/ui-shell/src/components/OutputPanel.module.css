@@ -1,0 +1,79 @@
+/* OutputPanel.module.css */
+
+.panel {
+    padding: var(--spacing-sm);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: var(--font-size-xs);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.empty {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    color: var(--color-text-muted);
+}
+
+.emptyIcon {
+    font-size: var(--font-size-lg);
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.entry {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.entryInfo {
+    background: var(--color-bg-secondary);
+}
+
+.entryWarn {
+    background: var(--color-warning-bg);
+}
+
+.entryError {
+    background: var(--color-error-bg);
+}
+
+.entrySuccess {
+    background: var(--color-success-bg);
+}
+
+.timestamp {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.source {
+    color: var(--color-accent);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.message {
+    flex: 1;
+    color: var(--color-text-primary);
+    word-break: break-word;
+}
+
+.entryError .message {
+    color: var(--color-error);
+}
+
+.entryWarn .message {
+    color: var(--color-warning);
+}
+
+.entrySuccess .message {
+    color: var(--color-success);
+}

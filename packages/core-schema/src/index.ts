@@ -38,6 +38,7 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
     // Visual hierarchy keywords
     'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
     'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-valueStyle', 'x-sdd-labelStyle',
+    'x-sdd-showLabelInBadge',
     // Schema metadata keyword
     'x-sdd-meta'
   ];

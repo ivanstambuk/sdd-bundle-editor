@@ -1,8 +1,9 @@
 /**
  * useBundleEvents - React hook for subscribing to bundle reload SSE events.
  * 
- * Connects to the server's /api/events endpoint and triggers a callback
- * when bundle-reload events are received. Handles reconnection automatically.
+ * Uses a SharedWorker to share a single SSE connection across all tabs,
+ * solving the browser's HTTP/1.1 connection limit (~6 per domain).
+ * Falls back to direct EventSource if SharedWorker is not available.
  */
 
 import { useEffect, useRef, useCallback } from 'react';
@@ -18,37 +19,89 @@ interface UseBundleEventsOptions {
     onBundleReload?: (event: BundleReloadEvent) => void;
     /** Whether to enable SSE connection (default: true) */
     enabled?: boolean;
-    /** SSE endpoint URL (default: /api/events) */
+    /** SSE endpoint URL (default: /api/events) - only used in fallback mode */
     eventsUrl?: string;
+}
+
+// SharedWorker instance (shared across all hook instances in the same tab)
+let sharedWorker: SharedWorker | null = null;
+let workerSupported: boolean | null = null;
+
+/**
+ * Check if SharedWorker is supported
+ */
+function isSharedWorkerSupported(): boolean {
+    if (workerSupported !== null) return workerSupported;
+
+    try {
+        workerSupported = typeof SharedWorker !== 'undefined';
+    } catch {
+        workerSupported = false;
+    }
+
+    return workerSupported;
+}
+
+/**
+ * Get or create the SharedWorker instance
+ */
+function getSharedWorker(): SharedWorker | null {
+    if (!isSharedWorkerSupported()) return null;
+
+    if (!sharedWorker) {
+        try {
+            sharedWorker = new SharedWorker('/sse-worker.js', { name: 'sse-events' });
+            console.log('[SSE] Using SharedWorker for SSE connection');
+        } catch (err) {
+            console.warn('[SSE] Failed to create SharedWorker, falling back to EventSource:', err);
+            workerSupported = false;
+            return null;
+        }
+    }
+
+    return sharedWorker;
 }
 
 /**
  * Hook that subscribes to server-sent events for bundle changes.
- * Automatically reconnects on disconnect.
+ * Uses SharedWorker to share connection across tabs.
+ * Falls back to direct EventSource if SharedWorker unavailable.
  */
 export function useBundleEvents(options: UseBundleEventsOptions) {
     const { onBundleReload, enabled = true, eventsUrl = '/api/events' } = options;
     const eventSourceRef = useRef<EventSource | null>(null);
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Stable callback ref to avoid re-creating EventSource
+    // Stable callback ref to avoid re-creating connections
     const onBundleReloadRef = useRef(onBundleReload);
     onBundleReloadRef.current = onBundleReload;
 
-    const connect = useCallback(() => {
+    // SharedWorker message handler
+    const handleWorkerMessage = useCallback((event: MessageEvent) => {
+        const msg = event.data;
+
+        if (msg.type === 'sse-event' && msg.event === 'bundle-reload') {
+            console.log('[SSE] Bundle reload event via SharedWorker:', msg.data);
+            onBundleReloadRef.current?.(msg.data as BundleReloadEvent);
+        } else if (msg.type === 'sse-status') {
+            console.log('[SSE] Status:', msg.status);
+        }
+    }, []);
+
+    // Fallback: Direct EventSource connection
+    const connectDirect = useCallback(() => {
         if (!enabled) return;
 
-        // Clean up any existing connection
         if (eventSourceRef.current) {
             eventSourceRef.current.close();
         }
 
         try {
-            console.log('[SSE] Connecting to', eventsUrl);
+            console.log('[SSE] Connecting directly to', eventsUrl);
             const eventSource = new EventSource(eventsUrl);
             eventSourceRef.current = eventSource;
 
-            eventSource.addEventListener('connected', (e) => {
+            eventSource.addEventListener('connected', () => {
                 console.log('[SSE] Connected to bundle events');
             });
 
@@ -62,16 +115,15 @@ export function useBundleEvents(options: UseBundleEventsOptions) {
                 }
             });
 
-            eventSource.onerror = (err) => {
+            eventSource.onerror = () => {
                 console.error('[SSE] Connection error, will reconnect in 5s');
                 eventSource.close();
                 eventSourceRef.current = null;
 
-                // Schedule reconnection
                 if (reconnectTimeoutRef.current) {
                     clearTimeout(reconnectTimeoutRef.current);
                 }
-                reconnectTimeoutRef.current = setTimeout(connect, 5000);
+                reconnectTimeoutRef.current = setTimeout(connectDirect, 5000);
             };
         } catch (err) {
             console.error('[SSE] Failed to create EventSource:', err);
@@ -79,24 +131,40 @@ export function useBundleEvents(options: UseBundleEventsOptions) {
     }, [enabled, eventsUrl]);
 
     useEffect(() => {
-        connect();
+        if (!enabled) return;
 
-        return () => {
-            if (eventSourceRef.current) {
-                console.log('[SSE] Disconnecting');
-                eventSourceRef.current.close();
-                eventSourceRef.current = null;
-            }
-            if (reconnectTimeoutRef.current) {
-                clearTimeout(reconnectTimeoutRef.current);
-                reconnectTimeoutRef.current = null;
-            }
-        };
-    }, [connect]);
+        const worker = getSharedWorker();
 
-    // Return a manual reconnect function if needed
+        if (worker) {
+            // Use SharedWorker
+            worker.port.addEventListener('message', handleWorkerMessage);
+            worker.port.start();
+            worker.port.postMessage({ type: 'subscribe' });
+
+            return () => {
+                worker.port.removeEventListener('message', handleWorkerMessage);
+                // Don't close the port - other components may still be using it
+            };
+        } else {
+            // Fallback to direct EventSource
+            connectDirect();
+
+            return () => {
+                if (eventSourceRef.current) {
+                    console.log('[SSE] Disconnecting');
+                    eventSourceRef.current.close();
+                    eventSourceRef.current = null;
+                }
+                if (reconnectTimeoutRef.current) {
+                    clearTimeout(reconnectTimeoutRef.current);
+                    reconnectTimeoutRef.current = null;
+                }
+            };
+        }
+    }, [enabled, handleWorkerMessage, connectDirect]);
+
     return {
-        reconnect: connect,
+        reconnect: connectDirect,
         isConnected: () => eventSourceRef.current?.readyState === EventSource.OPEN,
     };
 }

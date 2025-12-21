@@ -1,0 +1,88 @@
+/* PlantUmlDiagram.module.css */
+
+.diagram {
+    margin: var(--spacing-md) 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-md);
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    background: var(--color-error-bg);
+    border: 1px solid var(--color-error);
+    padding: var(--spacing-md);
+}
+
+.errorHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-error);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.errorMessage {
+    background: var(--color-bg-tertiary);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    white-space: pre-wrap;
+    margin-bottom: var(--spacing-sm);
+}
+
+.sourceDetails {
+    font-size: var(--font-size-sm);
+}
+
+.sourceDetails summary {
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+
+.source {
+    background: var(--color-bg-tertiary);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: var(--font-size-xs);
+    white-space: pre-wrap;
+    margin-top: var(--spacing-xs);
+}
+
+.rendered {
+    background: var(--color-bg-secondary);
+    padding: var(--spacing-md);
+    text-align: center;
+    overflow-x: auto;
+}
+
+.rendered :global(svg) {
+    max-width: 100%;
+    height: auto;
+}

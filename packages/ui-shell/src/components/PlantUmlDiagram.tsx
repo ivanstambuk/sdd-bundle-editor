@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from './PlantUmlDiagram.module.css';
 
 interface PlantUmlDiagramProps {
     /** The PlantUML source code (without the fenced code block markers) */
@@ -156,8 +157,8 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
 
     if (loading) {
         return (
-            <div className="plantuml-diagram plantuml-loading">
-                <div className="plantuml-spinner">⏳</div>
+            <div className={`${styles.diagram} ${styles.loading}`}>
+                <div className={styles.spinner}>⏳</div>
                 <span>Rendering diagram...</span>
             </div>
         );
@@ -165,14 +166,14 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
 
     if (error) {
         return (
-            <div className="plantuml-diagram plantuml-error">
-                <div className="plantuml-error-header">
+            <div className={`${styles.diagram} ${styles.error}`}>
+                <div className={styles.errorHeader}>
                     <span>⚠️ Failed to render PlantUML diagram</span>
                 </div>
-                <pre className="plantuml-error-message">{error}</pre>
-                <details className="plantuml-source-details">
+                <pre className={styles.errorMessage}>{error}</pre>
+                <details className={styles.sourceDetails}>
                     <summary>Show source</summary>
-                    <pre className="plantuml-source">{code}</pre>
+                    <pre className={styles.source}>{code}</pre>
                 </details>
             </div>
         );
@@ -184,7 +185,7 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
 
     return (
         <div
-            className="plantuml-diagram plantuml-rendered"
+            className={`${styles.diagram} ${styles.rendered}`}
             dangerouslySetInnerHTML={{ __html: svg }}
             role="img"
             aria-label={alt || 'PlantUML diagram'}

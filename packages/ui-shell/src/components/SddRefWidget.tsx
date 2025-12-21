@@ -1,5 +1,6 @@
 import React from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
+import styles from './SddRefWidget.module.css';
 
 interface SddRefWidgetProps {
   id: string;
@@ -54,7 +55,14 @@ export function SddRefWidget(props: SddRefWidgetProps) {
     };
 
     return (
-      <select id={id} multiple value={current} disabled={isDisabled} onChange={handleChange}>
+      <select
+        id={id}
+        multiple
+        value={current}
+        disabled={isDisabled}
+        onChange={handleChange}
+        className={`${styles.select} ${styles.selectMultiple}`}
+      >
         {entities.map((e) => {
           const title = (e.data as any)?.title as string | undefined;
           const label = title ? `${e.id} – ${title}` : e.id;
@@ -76,7 +84,13 @@ export function SddRefWidget(props: SddRefWidgetProps) {
   };
 
   return (
-    <select id={id} value={current} disabled={isDisabled} onChange={handleSingleChange}>
+    <select
+      id={id}
+      value={current}
+      disabled={isDisabled}
+      onChange={handleSingleChange}
+      className={styles.select}
+    >
       <option value="">(none)</option>
       {entities.map((e) => {
         const title = (e.data as any)?.title as string | undefined;
@@ -90,3 +104,4 @@ export function SddRefWidget(props: SddRefWidgetProps) {
     </select>
   );
 }
+

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PlantUmlDiagram } from './PlantUmlDiagram';
+import styles from './MarkdownWidget.module.css';
 
 interface MarkdownWidgetProps {
     id: string;
@@ -96,14 +97,14 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
     if (isReadOnly) {
         if (!textValue.trim()) {
             return (
-                <div className="markdown-widget markdown-empty">
-                    <em className="text-muted">No content</em>
+                <div className={`${styles.widget} ${styles.empty}`}>
+                    <em className={styles.textMuted}>No content</em>
                 </div>
             );
         }
 
         return (
-            <div className="markdown-widget markdown-readonly">
+            <div className={`${styles.widget} ${styles.readonly}`}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
                     {textValue}
                 </ReactMarkdown>
@@ -113,18 +114,18 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
 
     // Edit mode: textarea with preview toggle
     return (
-        <div className="markdown-widget markdown-editable">
-            <div className="markdown-toolbar">
+        <div className={`${styles.widget} ${styles.editable}`}>
+            <div className={styles.toolbar}>
                 <button
                     type="button"
-                    className={`markdown-toggle ${!showPreview ? 'active' : ''}`}
+                    className={`${styles.toggle} ${!showPreview ? styles.toggleActive : ''}`}
                     onClick={() => setShowPreview(false)}
                 >
                     ✏️ Edit
                 </button>
                 <button
                     type="button"
-                    className={`markdown-toggle ${showPreview ? 'active' : ''}`}
+                    className={`${styles.toggle} ${showPreview ? styles.toggleActive : ''}`}
                     onClick={() => setShowPreview(true)}
                 >
                     👁️ Preview
@@ -132,13 +133,13 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
             </div>
 
             {showPreview ? (
-                <div className="markdown-preview">
+                <div className={styles.preview}>
                     {textValue.trim() ? (
                         <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
                             {textValue}
                         </ReactMarkdown>
                     ) : (
-                        <em className="text-muted">Nothing to preview</em>
+                        <em className={styles.textMuted}>Nothing to preview</em>
                     )}
                 </div>
             ) : (
@@ -147,10 +148,11 @@ export function MarkdownWidget(props: MarkdownWidgetProps) {
                     value={textValue}
                     onChange={(e) => onChange(e.target.value || undefined)}
                     placeholder={placeholder || 'Enter markdown text...'}
-                    className="markdown-textarea"
+                    className={styles.textarea}
                     rows={6}
                 />
             )}
         </div>
     );
 }
+

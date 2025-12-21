@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './DateWidget.module.css';
 
 interface DateWidgetProps {
     id: string;
@@ -26,7 +27,7 @@ export function DateWidget(props: DateWidgetProps) {
     if (isReadOnly) {
         if (!value) {
             return (
-                <span className="date-widget date-widget--empty">—</span>
+                <span className={`${styles.widget} ${styles.empty}`}>—</span>
             );
         }
 
@@ -48,7 +49,7 @@ export function DateWidget(props: DateWidgetProps) {
                     hour12: true,
                 });
                 return (
-                    <span className="date-widget date-widget--readonly">{formatted}</span>
+                    <span className={`${styles.widget} ${styles.readonly}`}>{formatted}</span>
                 );
             } else {
                 // Show date only
@@ -58,13 +59,13 @@ export function DateWidget(props: DateWidgetProps) {
                     day: 'numeric',
                 });
                 return (
-                    <span className="date-widget date-widget--readonly">{formatted}</span>
+                    <span className={`${styles.widget} ${styles.readonly}`}>{formatted}</span>
                 );
             }
         } catch {
             // If date parsing fails, show raw value
             return (
-                <span className="date-widget date-widget--readonly">{value}</span>
+                <span className={`${styles.widget} ${styles.readonly}`}>{value}</span>
             );
         }
     }
@@ -78,7 +79,8 @@ export function DateWidget(props: DateWidgetProps) {
             id={id}
             value={value || ''}
             onChange={(e) => onChange(e.target.value || undefined)}
-            className="date-widget date-widget--editable"
+            className={`${styles.widget} ${styles.editable}`}
         />
     );
 }
+

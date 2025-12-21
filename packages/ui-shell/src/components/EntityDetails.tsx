@@ -670,9 +670,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
               <></>
             </AnyForm>
           ) : (
-            <div className="entity-no-schema">
-              <p className="text-muted">Schema not found for entity type "{getDisplayName(entity.entityType)}".</p>
-              <p className="text-muted text-sm">This entity cannot be displayed without a valid schema.</p>
+            <div className={styles.noSchema}>
+              <p className={styles.textMuted}>Schema not found for entity type "{getDisplayName(entity.entityType)}".</p>
+              <p className={`${styles.textMuted} ${styles.textSm}`}>This entity cannot be displayed without a valid schema.</p>
             </div>
           )}
         </>
@@ -685,12 +685,12 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     return (
       <>
         {/* Sub-tab bar */}
-        <div className="entity-subtabs">
+        <div className={styles.subtabs}>
           {subTabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
-              className={`entity-subtab ${activeSubTab === tab.key ? 'active' : ''}`}
+              className={`${styles.subtab} ${activeSubTab === tab.key ? styles.subtabActive : ''}`}
               onClick={() => setActiveSubTab(tab.key)}
               data-testid={`subtab-${tab.key}`}
             >
@@ -720,8 +720,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
               <></>
             </AnyForm>
           ) : (
-            <div className="entity-subtab-empty">
-              <p className="text-muted">No fields in this section.</p>
+            <div className={styles.subtabEmpty}>
+              <p className={styles.textMuted}>No fields in this section.</p>
             </div>
           )}
         </div>
@@ -750,27 +750,27 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
     // Render List View (existing tree layout)
     const renderListView = () => (
-      <div className="dependency-graph">
+      <div className={styles.dependencyGraph}>
         {/* Current entity as root */}
-        <div className="graph-node graph-root">
+        <div className={`${styles.graphNode} ${styles.graphRoot}`}>
           <EntityTypeBadge
             entityType={entity.entityType}
             entityConfigs={entityConfigs}
           />
-          <span className="graph-node-id">{entity.id}</span>
+          <span className={styles.graphNodeId}>{entity.id}</span>
         </div>
 
         {/* Outgoing (Uses) */}
         {outgoing.length > 0 && (
-          <div className="graph-branch">
-            <div className="graph-branch-label">Uses →</div>
-            <div className="graph-children">
+          <div className={styles.graphBranch}>
+            <div className={styles.graphBranchLabel}>Uses →</div>
+            <div className={styles.graphChildren}>
               {outgoing.map((edge, idx) => (
                 <button
                   // eslint-disable-next-line react/no-array-index-key
                   key={idx}
                   type="button"
-                  className="graph-node graph-child"
+                  className={`${styles.graphNode} ${styles.graphChild}`}
                   onClick={() => handleReferenceClick(edge.toEntityType, edge.toId)}
                   data-testid={`graph-uses-${edge.toId}`}
                 >
@@ -778,7 +778,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     entityType={edge.toEntityType}
                     entityConfigs={entityConfigs}
                   />
-                  <span className="graph-node-id">{edge.toId}</span>
+                  <span className={styles.graphNodeId}>{edge.toId}</span>
                   <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
                 </button>
               ))}
@@ -788,15 +788,15 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
         {/* Incoming - grouped by relationship name */}
         {relationGroups.map(([relationName, edges]) => (
-          <div key={relationName} className="graph-branch">
-            <div className="graph-branch-label graph-branch-incoming">{relationName}</div>
-            <div className="graph-children">
+          <div key={relationName} className={styles.graphBranch}>
+            <div className={styles.graphBranchLabel}>{relationName}</div>
+            <div className={styles.graphChildren}>
               {edges.map((edge, idx) => (
                 <button
                   // eslint-disable-next-line react/no-array-index-key
                   key={idx}
                   type="button"
-                  className="graph-node graph-child"
+                  className={`${styles.graphNode} ${styles.graphChild}`}
                   onClick={() => handleReferenceClick(edge.fromEntityType, edge.fromId)}
                   data-testid={`graph-usedby-${edge.fromId}`}
                 >
@@ -804,7 +804,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     entityType={edge.fromEntityType}
                     entityConfigs={entityConfigs}
                   />
-                  <span className="graph-node-id">{edge.fromId}</span>
+                  <span className={styles.graphNodeId}>{edge.fromId}</span>
                 </button>
               ))}
             </div>
@@ -834,13 +834,13 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
 
     return (
-      <div className="dependencies-container">
+      <div className={styles.dependenciesContainer}>
         {/* Header with toggle */}
-        <div className="dependencies-header">
-          <div className="view-toggle">
+        <div className={styles.dependenciesHeader}>
+          <div className={styles.viewToggle}>
             <button
               type="button"
-              className={`view-toggle-btn ${depViewMode === 'list' ? 'active' : ''}`}
+              className={`${styles.viewToggleBtn} ${depViewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
               onClick={() => setDepViewMode('list')}
               data-testid="dep-view-list"
             >
@@ -848,21 +848,21 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             </button>
             <button
               type="button"
-              className={`view-toggle-btn ${depViewMode === 'map' ? 'active' : ''}`}
+              className={`${styles.viewToggleBtn} ${depViewMode === 'map' ? styles.viewToggleBtnActive : ''}`}
               onClick={() => setDepViewMode('map')}
               data-testid="dep-view-map"
             >
               🗺️ Map
             </button>
           </div>
-          <span className="dependencies-stats">
+          <span className={styles.dependenciesStats}>
             {outgoing.length} outgoing • {incoming.length} incoming
           </span>
         </div>
 
         {/* Content based on view mode */}
         {depViewMode === 'list' ? (
-          <div className="dependencies-list">
+          <div className={styles.dependenciesList}>
             {renderListView()}
           </div>
         ) : (
@@ -874,11 +874,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Render the Raw YAML tab content with syntax highlighting
   const renderYamlTab = () => (
-    <div className="yaml-viewer">
-      <div className="yaml-actions">
+    <div className={styles.yamlViewer}>
+      <div className={styles.yamlActions}>
         <button
           type="button"
-          className="copy-button"
+          className={styles.copyButton}
           onClick={handleCopyYaml}
           data-testid="copy-yaml-button"
         >
@@ -890,9 +890,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   );
 
   return (
-    <div className="entity-details">
-      <div className="entity-details-header">
-        <div className="entity-header-left">
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
           <EntityTypeBadge
             entityType={entity.entityType}
             entityConfigs={entityConfigs}
@@ -963,10 +963,10 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       </div>
 
       {/* Tab bar */}
-      <div className="entity-tabs">
+      <div className={styles.tabs}>
         <button
           type="button"
-          className={`entity-tab ${activeTab === 'details' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'details' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('details')}
           data-testid="tab-details"
         >
@@ -974,7 +974,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         </button>
         <button
           type="button"
-          className={`entity-tab ${activeTab === 'graph' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'graph' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('graph')}
           data-testid="tab-graph"
         >
@@ -982,7 +982,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         </button>
         <button
           type="button"
-          className={`entity-tab ${activeTab === 'yaml' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'yaml' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('yaml')}
           data-testid="tab-yaml"
         >
@@ -990,7 +990,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         </button>
       </div>
 
-      <div className="entity-details-body">
+      <div className={styles.body}>
         {activeTab === 'details' && renderDetailsTab()}
         {activeTab === 'graph' && renderGraphTab()}
         {activeTab === 'yaml' && renderYamlTab()}

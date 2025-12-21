@@ -71,7 +71,8 @@ describe('EntityNavigator', () => {
     fireEvent.click(screen.getByTestId('entity-group-Feature'));
 
     const button = screen.getByRole('button', { name: 'FEAT-001' });
-    expect(button).toHaveClass('selected');
+    // CSS Modules generate hashed class names like '_entityBtnSelected_c297df'
+    expect(button.className).toMatch(/Selected/);
   });
 });
 

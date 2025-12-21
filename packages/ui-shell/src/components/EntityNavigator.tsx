@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
 import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import type { BundleTypeCategoryConfig } from '@sdd-bundle-editor/shared-types';
+import styles from './EntityNavigator.module.css';
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
@@ -161,9 +162,9 @@ export function EntityNavigator({
 
   if (!bundle) {
     return (
-      <div className="entity-navigator">
-        <div className="entity-placeholder">
-          <div className="entity-placeholder-icon">📦</div>
+      <div className={styles.navigator}>
+        <div className={styles.placeholder}>
+          <div className={styles.placeholderIcon}>📦</div>
           <div>No bundle loaded.</div>
         </div>
       </div>
@@ -228,40 +229,40 @@ export function EntityNavigator({
     return (
       <div
         key={entityType}
-        className={`entity-group ${isCollapsed ? 'collapsed' : ''}`}
+        className={styles.group}
         data-type={entityType}
       >
-        <div className={`entity-group-header-wrapper ${isTypeSelected ? 'selected' : ''}`}>
+        <div className={`${styles.groupHeaderWrapper} ${isTypeSelected ? styles.groupHeaderWrapperSelected : ''}`}>
           <button
             type="button"
-            className="entity-group-chevron-btn"
+            className={styles.groupChevronBtn}
             onClick={(e) => toggleGroup(entityType, e)}
             data-testid={`entity-group-chevron-${entityType}`}
             aria-label={isCollapsed ? `Expand ${displayName}` : `Collapse ${displayName}`}
           >
-            <span className="entity-group-chevron">{isCollapsed ? '▸' : '▾'}</span>
+            <span className={`${styles.groupChevron} ${isCollapsed ? styles.groupChevronCollapsed : ''}`}>▸</span>
           </button>
           <button
             type="button"
-            className="entity-group-header"
+            className={styles.groupHeader}
             onClick={() => handleTypeClick(entityType)}
             data-testid={`entity-group-${entityType}`}
           >
-            {icon && <span className="entity-group-icon">{icon}</span>}
-            <span className="entity-group-name">{displayName}</span>
-            <span className="entity-group-count">{count}</span>
+            {icon && <span className={styles.groupIcon}>{icon}</span>}
+            <span className={styles.groupName}>{displayName}</span>
+            <span className={styles.groupCount}>{count}</span>
           </button>
         </div>
         {!isCollapsed && (
-          <ul className="entity-list">
+          <ul className={styles.list}>
             {entities.map((entity) => {
               const isSelected =
                 selected?.entityType === entity.entityType && selected?.id === entity.id;
               return (
-                <li key={entity.id} className="entity-item">
+                <li key={entity.id} className={styles.item}>
                   <button
                     type="button"
-                    className={`entity-btn ${isSelected ? 'selected' : ''}`}
+                    className={`${styles.entityBtn} ${isSelected ? styles.entityBtnSelected : ''}`}
                     data-testid={`entity-item-${entityType}-${entity.id}`}
                     onClick={() => onSelect(entity)}
                   >
@@ -280,17 +281,17 @@ export function EntityNavigator({
   const hasCategories = categoryGroups.length > 0;
 
   return (
-    <div className="entity-navigator" data-testid="entity-navigator">
+    <div className={styles.navigator} data-testid="entity-navigator">
       {/* Bundle header */}
       <button
         type="button"
-        className={`bundle-nav-header ${selectedBundle ? 'selected' : ''}`}
+        className={`${styles.bundleNavHeader} ${selectedBundle ? styles.bundleNavHeaderSelected : ''}`}
         onClick={handleBundleClick}
         data-testid="bundle-header"
       >
-        <span className="bundle-nav-icon">📦</span>
-        <span className="bundle-nav-name">{bundleName}</span>
-        <span className="bundle-nav-count">{totalEntities}</span>
+        <span className={styles.bundleNavIcon}>📦</span>
+        <span className={styles.bundleNavName}>{bundleName}</span>
+        <span className={styles.bundleNavCount}>{totalEntities}</span>
       </button>
 
       <h2>Entities</h2>
@@ -308,26 +309,26 @@ export function EntityNavigator({
             return (
               <div
                 key={category.name}
-                className={`entity-category ${isCategoryCollapsed ? 'collapsed' : ''}`}
+                className={styles.category}
                 data-category={category.name}
               >
                 <button
                   type="button"
-                  className="entity-category-header"
+                  className={styles.categoryHeader}
                   onClick={(e) => toggleCategory(category.name, e)}
                   data-testid={`category-${category.name}`}
                 >
-                  <span className="entity-category-chevron">
+                  <span className={styles.categoryChevron}>
                     {isCategoryCollapsed ? '▸' : '▾'}
                   </span>
                   {category.icon && (
-                    <span className="entity-category-icon">{category.icon}</span>
+                    <span className={styles.categoryIcon}>{category.icon}</span>
                   )}
-                  <span className="entity-category-name">{category.displayName}</span>
-                  <span className="entity-category-count">{categoryEntityCount}</span>
+                  <span className={styles.categoryName}>{category.displayName}</span>
+                  <span className={styles.categoryCount}>{categoryEntityCount}</span>
                 </button>
                 {!isCategoryCollapsed && (
-                  <div className="entity-category-content">
+                  <div className={styles.categoryContent}>
                     {entityTypes.map(renderEntityTypeGroup)}
                   </div>
                 )}
@@ -338,21 +339,21 @@ export function EntityNavigator({
           {/* Render uncategorized entity types if any */}
           {uncategorizedTypes.length > 0 && (
             <div
-              className={`entity-category ${collapsedCategories.has('__uncategorized') ? 'collapsed' : ''}`}
+              className={styles.category}
               data-category="uncategorized"
             >
               <button
                 type="button"
-                className="entity-category-header"
+                className={styles.categoryHeader}
                 onClick={(e) => toggleCategory('__uncategorized', e)}
                 data-testid="category-uncategorized"
               >
-                <span className="entity-category-chevron">
+                <span className={styles.categoryChevron}>
                   {collapsedCategories.has('__uncategorized') ? '▸' : '▾'}
                 </span>
-                <span className="entity-category-icon">📁</span>
-                <span className="entity-category-name">Uncategorized</span>
-                <span className="entity-category-count">
+                <span className={styles.categoryIcon}>📁</span>
+                <span className={styles.categoryName}>Uncategorized</span>
+                <span className={styles.categoryCount}>
                   {uncategorizedTypes.reduce(
                     (sum, et) => sum + (bundle.entities[et]?.length ?? 0),
                     0
@@ -360,7 +361,7 @@ export function EntityNavigator({
                 </span>
               </button>
               {!collapsedCategories.has('__uncategorized') && (
-                <div className="entity-category-content">
+                <div className={styles.categoryContent}>
                   {uncategorizedTypes.map(renderEntityTypeGroup)}
                 </div>
               )}

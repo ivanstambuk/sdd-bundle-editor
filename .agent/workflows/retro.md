@@ -225,6 +225,23 @@ Update relevant files:
 - `.agent/workflows/` - Add workflows if repeatable
 - `packages/*/README.md` - Document patterns
 
+## Step 6: Commit All Changes
+
+**CRITICAL**: After implementing improvements, ALWAYS commit. Do NOT report completion without committing.
+
+```bash
+git add -A && git status
+git commit -m "fix: [main fix description]
+
+Retro improvements:
+- [list improvements implemented]"
+```
+
+**Checklist before reporting done:**
+- [ ] All tests pass
+- [ ] All changes staged and committed
+- [ ] Commit message includes both the main fix AND retro improvements
+
 ---
 
 ## Categories to Check

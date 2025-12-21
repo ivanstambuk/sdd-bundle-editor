@@ -266,4 +266,5 @@ This tool collects **dependencies** (what the target needs to read), not **refer
 ---
 
 *Design spec created: 2025-12-20*  
-*Decisions finalized: 2025-12-21*
+*Decisions finalized: 2025-12-21*  
+*Implemented: 2025-12-21*

@@ -1,0 +1,187 @@
+/* CodeBlock.module.css
+   CSS Module for syntax-highlighted code blocks (YAML, JSON)
+   
+   This module provides scoped styles for code blocks.
+   
+   MONOREPO NOTE: CSS Modules must be in apps/web because that's where
+   the webpack bundler runs. Components in packages/ui-shell can't use
+   CSS Modules directly - they rely on global CSS imported by apps/web.
+   
+   For future migration:
+   - Consider moving display components to apps/web
+   - Or configure ui-shell to bundle its own CSS
+   - Or use CSS-in-JS for true component co-location
+*/
+
+/* Base code block styling */
+.codeBlock {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* YAML-specific styling */
+.yamlBlock {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* JSON-specific styling */
+.jsonBlock {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Code element styling */
+.yamlBlock code,
+.jsonBlock code {
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+}
+
+/* ========================================
+   YAML Syntax Highlighting (Prism.js tokens)
+   ======================================== */
+
+/* Keys */
+.yamlBlock :global(.token.key),
+.yamlBlock :global(.token.atrule) {
+    color: var(--syntax-key);
+}
+
+/* Values - strings */
+.yamlBlock :global(.token.string) {
+    color: var(--syntax-string);
+}
+
+/* Values - numbers, booleans */
+.yamlBlock :global(.token.number),
+.yamlBlock :global(.token.boolean) {
+    color: var(--syntax-number);
+}
+
+/* Punctuation (colons, dashes) */
+.yamlBlock :global(.token.punctuation) {
+    color: var(--syntax-punctuation);
+}
+
+/* Comments */
+.yamlBlock :global(.token.comment) {
+    color: var(--syntax-comment);
+    font-style: italic;
+}
+
+/* Null values */
+.yamlBlock :global(.token.null),
+.yamlBlock :global(.token.keyword) {
+    color: var(--syntax-boolean);
+}
+
+/* Anchors and aliases */
+.yamlBlock :global(.token.anchor),
+.yamlBlock :global(.token.alias) {
+    color: var(--syntax-green);
+}
+
+/* Important (!) */
+.yamlBlock :global(.token.important) {
+    color: var(--color-error);
+}
+
+/* ========================================
+   JSON Syntax Highlighting (Prism.js tokens)
+   ======================================== */
+
+/* Property names (keys) */
+.jsonBlock :global(.token.property) {
+    color: var(--syntax-key);
+}
+
+/* String values */
+.jsonBlock :global(.token.string) {
+    color: var(--syntax-string);
+}
+
+/* Numbers */
+.jsonBlock :global(.token.number) {
+    color: var(--syntax-number);
+}
+
+/* Booleans and null */
+.jsonBlock :global(.token.boolean),
+.jsonBlock :global(.token.null) {
+    color: var(--syntax-boolean);
+}
+
+/* Punctuation (braces, brackets, colons, commas) */
+.jsonBlock :global(.token.punctuation),
+.jsonBlock :global(.token.operator) {
+    color: var(--syntax-punctuation);
+}
+
+/* ========================================
+   YAML/JSON Viewer Container
+   ======================================== */
+.viewer {
+    padding: var(--spacing-sm);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--spacing-sm);
+}
+
+.copyButton {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.copyButton:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+    border-color: var(--color-accent);
+}

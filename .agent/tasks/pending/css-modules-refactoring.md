@@ -1,8 +1,16 @@
 # CSS Modules Refactoring Plan
 
+## Status: Phase 1 Complete ✅
+
+**Last Updated**: 2025-12-21
+
+Phase 1 (Foundation Setup) has been completed. The styles directory structure is in place with tokens, themes, and globals extracted.
+
+---
+
 ## Problem Statement
 
-The current `styles.css` file has grown to ~6,000 lines, causing:
+The current `styles.css` file has grown to ~5,700 lines (reduced from ~5,900), causing:
 - **Cascade conflicts**: Changes to one component unexpectedly affect others
 - **Maintainability issues**: Hard to find and understand styles
 - **No isolation**: Global scope means everything affects everything
@@ -10,92 +18,97 @@ The current `styles.css` file has grown to ~6,000 lines, causing:
 
 ## Solution: CSS Modules + Organized Architecture
 
-### Target Architecture
+### Current Architecture (Phase 1 Complete)
 
 ```
-src/
-├── styles/
-│   ├── globals.css           # Resets, base typography, truly global styles
-│   ├── tokens.css            # CSS custom properties (colors, spacing, radii, etc.)
-│   ├── theme-light.css       # Light theme overrides
-│   ├── theme-dark.css        # Dark theme overrides (current default)
-│   └── utilities.css         # Optional utility classes (.visually-hidden, etc.)
+apps/web/src/
+├── styles/                   # ✅ CREATED
+│   ├── index.css             # Main entry point
+│   ├── tokens.css            # CSS custom properties
+│   ├── themes.css            # Light/dark theme overrides  
+│   ├── globals.css           # Resets, base typography
+│   └── utilities.css         # Utility classes
 │
-├── components/
-│   ├── EntityNavigator/
-│   │   ├── EntityNavigator.tsx
-│   │   └── EntityNavigator.module.css
-│   ├── EntityDetails/
-│   │   ├── EntityDetails.tsx
-│   │   └── EntityDetails.module.css
-│   ├── YamlViewer/
-│   │   ├── YamlViewer.tsx
-│   │   └── YamlViewer.module.css
-│   └── ... (each component gets its own module)
+├── components/               # For future CSS Modules
+│   └── CodeBlock.module.css  # Example CSS Module (unused placeholder)
+│
+├── styles.css                # Legacy component styles (~5,700 lines)
+│
+packages/ui-shell/src/
+├── components/               # React components (NO CSS Modules - see note below)
+│   ├── EntityNavigator.tsx
+│   ├── EntityDetails.tsx
+│   └── SyntaxHighlighter.tsx
 ```
+
+### ⚠️ Monorepo Architecture Constraint
+
+**CSS Modules cannot be in `packages/ui-shell`** because:
+1. ui-shell uses `tsc` (TypeScript compiler only, no bundler)
+2. CSS Module processing requires webpack/vite
+3. apps/web runs webpack which processes CSS
+
+**Implications for Phase 2+:**
+- Option A: Create wrapper components in apps/web that apply CSS Modules
+- Option B: Move display-only components from ui-shell to apps/web
+- Option C: Configure ui-shell to use a bundler (significant effort)
+- Option D: Use CSS-in-JS for true component co-location (different tradeoffs)
 
 ### Why CSS Modules?
 
 1. **Scoped by default** - Class names are hashed, no global conflicts
 2. **Co-location** - Styles live next to their component
-3. **Zero config** - Vite supports `.module.css` files natively
+3. **Zero config** - Webpack/Vite supports `.module.css` files natively
 4. **Gradual migration** - Can migrate one component at a time
 5. **TypeScript support** - Can generate type declarations for class names
+
 
 ---
 
 ## Implementation Phases
 
-### Phase 1: Foundation Setup (1 session)
+### Phase 1: Foundation Setup ✅ COMPLETE
 
-**Goal**: Establish the architecture without breaking existing styles.
+**Status**: Completed on 2025-12-21
 
-1. **Create directory structure**:
-   ```
-   src/styles/tokens.css      # Extract CSS custom properties
-   src/styles/globals.css     # Extract resets and base styles
-   src/styles/themes.css      # Extract theme variables
-   ```
+**What was done**:
+1. ✅ Created `apps/web/src/styles/` directory structure
+2. ✅ Extracted CSS custom properties to `tokens.css` (~100 lines)
+3. ✅ Extracted light theme overrides to `themes.css` (~80 lines)  
+4. ✅ Extracted base reset/typography to `globals.css` (~60 lines)
+5. ✅ Created `utilities.css` with common utility classes
+6. ✅ Created `index.css` as main entry point with proper import order
+7. ✅ Updated `index.tsx` to import from new structure
+8. ✅ Removed duplicated styles from legacy `styles.css`
+9. ✅ Validated visually - no regressions in dark/light themes
 
-2. **Extract CSS custom properties** from `styles.css`:
-   - All `--color-*` variables
-   - All `--spacing-*` variables
-   - All `--font-*` variables
-   - All `--radius-*` variables
-   - All `--shadow-*` variables
+**Result**: Legacy `styles.css` reduced from ~5,895 to ~5,686 lines
 
-3. **Update imports** in `main.tsx`:
-   ```tsx
-   import './styles/tokens.css';
-   import './styles/globals.css';
-   import './styles/themes.css';
-   import './styles.css';  // Keep remaining styles for now
-   ```
+### Phase 2: Architectural Decision Required
 
-4. **Validation**: Verify app looks identical after extraction.
+**Status**: Blocked pending architecture decision
 
-### Phase 2: Pilot Migration - YamlViewer (1 session)
+**Discovery**: CSS Modules cannot be used in `packages/ui-shell` because:
+- ui-shell uses `tsc` only (no bundler)
+- CSS Module imports fail at webpack build time
+- CSS Module files in ui-shell/dist/ are not processed
 
-**Goal**: Prove the pattern works with a simple, self-contained component.
+**Options to Evaluate**:
 
-1. **Create `YamlViewer.module.css`**:
-   - Extract `.yaml-viewer`, `.json-viewer`, `.copy-button`, `.yaml-block`, `.json-block` styles
-   - Convert to CSS Module syntax
+| Option | Pros | Cons |
+|--------|------|------|
+| **A: Wrapper components in apps/web** | No ui-shell changes | Extra indirection, duplication |
+| **B: Move components to apps/web** | Clean co-location | Major refactor, breaks package boundary |
+| **C: Add bundler to ui-shell** | True co-location | Significant build complexity |
+| **D: CSS-in-JS (styled-components, etc)** | True co-location + runtime theming | New dependency, learning curve |
+| **E: Keep global CSS** | No changes needed | Original problem remains |
 
-2. **Update `YamlViewer.tsx`**:
-   ```tsx
-   import styles from './YamlViewer.module.css';
-   
-   // Use: className={styles.viewer} instead of className="yaml-viewer"
-   ```
+**Recommendation**: Discuss with user before proceeding. The effort vs benefit tradeoff needs to be evaluated.
 
-3. **Remove migrated styles** from `styles.css`.
-
-4. **Validation**: Verify Raw YAML tab renders correctly.
-
-### Phase 3: Core Layout Components (2-3 sessions)
+### Phase 3: Core Layout Components (IF Phase 2 proceeds)
 
 **Priority order** (least dependencies first):
+
 
 1. **HeaderMetadata** (simple, isolated)
 2. **EntityHeader** (entity header bar)

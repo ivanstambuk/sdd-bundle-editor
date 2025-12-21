@@ -513,6 +513,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             ⓘ
           </span>
         )}
+        {(readonly || disabled) && currentDescription && (
+          <span className={rjsfStyles.enumDescription}>{currentDescription}</span>
+        )}
       </div>
     );
   };

@@ -195,11 +195,12 @@
     font-size: 1em;
 }
 
-/* Object wrapper */
+/* Object wrapper - grid layout for field size classes */
 .object {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    align-items: start;
 }
 
 /* Enum badge */

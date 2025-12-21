@@ -231,3 +231,50 @@ const edges: Edge<LabeledEdgeData>[] = [{
 - `transform: translate(-50%, -50%)` centers the label on the coordinates
 - `offset` param curves parallel edges to avoid overlap
 - Edge types must be memoized outside render to prevent recreation
+
+---
+
+## React Flow: Container Sizing (Avoiding 0px Height)
+
+React Flow requires explicit height on its container. Using `flex: 1` in a flexbox layout can cause the container to collapse to 0px.
+
+**Problem:** The container has `flex: 1` and `height: 400px`, but the graph doesn't render because computed height is 0px.
+
+**Root Cause:** `flex: 1` expands to `flex: 1 1 0%`. The `flex-basis: 0%` combined with no content causes the container to shrink. The explicit `height` is ignored when `flex-shrink` is active.
+
+**Solution:** Use `flex: none` with explicit height:
+
+```css
+/* ❌ WRONG - flex: 1 causes height to collapse to 0px */
+.graphContainer {
+    flex: 1;
+    height: 400px;  /* Ignored due to flex-basis: 0% */
+}
+
+/* ✅ CORRECT - flex: none respects explicit height */
+.graphContainer {
+    flex: none;     /* Don't grow or shrink */
+    height: 400px;  /* Now respected */
+    overflow: hidden;
+}
+```
+
+**Also add style to ReactFlow component:**
+```tsx
+<ReactFlow
+    style={{ height: '400px', width: '100%' }}
+    // ... other props
+>
+```
+
+**When to use:**
+- Any React Flow graph in a flexbox layout
+- Containers that need fixed height regardless of content
+- Grid cells where you want explicit sizing
+
+**Debug tip:** If React Flow renders blank, check computed styles:
+```javascript
+// Browser console
+document.querySelector('.react-flow').getBoundingClientRect();
+// If height is 0, check parent's flex property
+

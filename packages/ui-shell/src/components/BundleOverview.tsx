@@ -25,7 +25,7 @@ type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
 export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     const [activeTab, setActiveTab] = useState<BundleTab>('details');
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
-    const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('map'); // Relationships view mode
+    const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('list'); // Relationships view mode
 
     if (!bundle) {
         return (

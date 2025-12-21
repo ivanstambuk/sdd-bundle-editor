@@ -350,3 +350,28 @@ See `/ui-validation` workflow for detailed process.
   ```
 - **When this happens**: After migrating components to CSS Modules, any tests that check specific class names will break
 - **See also**: `.agent/snippets/test-patterns.md` for more patterns
+
+### 27. CSS Module changes require explicit ui-shell rebuild
+- **Symptom**: CSS module changes not appearing in browser, even after hot-reload
+- **Root cause**: The `ui-shell` package uses a custom build step that copies `.module.css` files to `dist/`. Hot-reload only watches the source, but webpack loads from `dist/`.
+- **Fix**: After changing any CSS module in `packages/ui-shell/src/components/`:
+  ```bash
+  cd packages/ui-shell && pnpm build
+  ```
+- **Why**: The build script includes: `find src -name '*.module.css' -exec sh -c 'cp "$1" "dist/${1#src/}"' _ {} \;`
+- **Pro tip**: If CSS changes seem to be ignored, rebuild ui-shell first before debugging further
+
+### 28. Removing global CSS without validating actual usage
+- **Symptom**: UI breaks after CSS "cleanup" - missing styles, broken layouts, components not rendering
+- **Root cause**: Global CSS may contain styles used by third-party libraries (like RJSF) or via string class names that don't appear in TypeScript imports
+- **Fix**: Before removing global CSS:
+  1. **Search for string class names**: `grep -r "className.*rjsf" packages/`
+  2. **Check third-party library docs**: Libraries like RJSF use their own class naming conventions
+  3. **Validate with browser agent**: Take before/after screenshots of affected components
+  4. **Test all entity types**: Different schemas may exercise different UI code paths
+- **Anti-pattern**: Assuming that if a class isn't imported in TypeScript, it's unused
+- **What to watch for**:
+  - `.rjsf-*` classes (used by React JSON Schema Form)
+  - Global utility classes still used via template strings
+  - CSS referenced by library components, not your code
+

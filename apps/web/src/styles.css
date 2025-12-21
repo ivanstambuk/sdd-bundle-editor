@@ -615,7 +615,7 @@
 form.rjsf {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
   align-items: start;
 }
 
@@ -797,7 +797,7 @@ form.rjsf {
 .rjsf-object {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
   width: 100%;
 }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import styles from './ResizableSidebar.module.css';
 
 interface ResizableSidebarProps {
     children: React.ReactNode;
@@ -82,13 +83,13 @@ export function ResizableSidebar({
     return (
         <aside
             ref={sidebarRef}
-            className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}
+            className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}
             style={{ width: isCollapsed ? '50px' : `${width}px` }}
         >
             {children}
             {!isCollapsed && (
                 <div
-                    className="sidebar-resize-handle"
+                    className={styles.resizeHandle}
                     onMouseDown={startResizing}
                     data-testid="sidebar-resize-handle"
                 />
@@ -96,3 +97,4 @@ export function ResizableSidebar({
         </aside>
     );
 }
+

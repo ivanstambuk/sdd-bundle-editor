@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react';
+import styles from './TabbedBottomPanel.module.css';
 
 export interface BottomPanelTab {
     id: string;
@@ -175,44 +176,51 @@ export function TabbedBottomPanel({
     const displayHeight = isCollapsed ? minHeight : height;
     const activeTabContent = tabs.find(t => t.id === activeTab)?.content;
 
+    const badgeStyles: Record<string, string> = {
+        default: styles.tabBadge,
+        warning: `${styles.tabBadge} ${styles.tabBadgeWarning}`,
+        error: `${styles.tabBadge} ${styles.tabBadgeError}`,
+        success: `${styles.tabBadge} ${styles.tabBadgeSuccess}`,
+    };
+
     return (
         <div
             ref={panelRef}
-            className={`tabbed-bottom-panel ${isCollapsed ? 'collapsed' : ''} ${isResizing ? 'resizing' : ''}`}
+            className={`${styles.panel} ${isCollapsed ? styles.collapsed : ''} ${isResizing ? styles.resizing : ''}`}
             style={{ height: displayHeight }}
         >
             {/* Resize handle */}
             <div
-                className="resize-handle"
+                className={styles.resizeHandle}
                 onMouseDown={handleMouseDown}
                 title="Drag to resize"
             />
 
             {/* Tab bar */}
-            <div className="panel-tab-bar">
-                <div className="panel-tabs">
+            <div className={styles.tabBar}>
+                <div className={styles.tabs}>
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             type="button"
-                            className={`panel-tab ${activeTab === tab.id ? 'active' : ''}`}
+                            className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
                             onClick={() => handleTabClick(tab.id)}
                             data-testid={`panel-tab-${tab.id}`}
                         >
-                            <span className="tab-label">{tab.label}</span>
+                            <span className={styles.tabLabel}>{tab.label}</span>
                             {tab.badge !== undefined && (
-                                <span className={`tab-badge ${tab.badgeType || 'default'}`}>
+                                <span className={badgeStyles[tab.badgeType || 'default']}>
                                     {tab.badge}
                                 </span>
                             )}
                         </button>
                     ))}
                 </div>
-                <div className="panel-actions">
-                    <span className="panel-shortcut">Ctrl+J</span>
+                <div className={styles.actions}>
+                    <span className={styles.shortcut}>Ctrl+J</span>
                     <button
                         type="button"
-                        className="panel-collapse-btn"
+                        className={styles.collapseBtn}
                         onClick={toggleCollapse}
                         data-testid="bottom-panel-toggle"
                         title={isCollapsed ? 'Expand panel' : 'Collapse panel'}
@@ -224,7 +232,7 @@ export function TabbedBottomPanel({
 
             {/* Tab content */}
             {!isCollapsed && (
-                <div className="panel-content">
+                <div className={styles.content}>
                     {activeTabContent}
                 </div>
             )}

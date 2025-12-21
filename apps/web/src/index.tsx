@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { AppShell } from '@sdd-bundle-editor/ui-shell';
-import './styles.css';
+import './styles/index.css';
 
 const container = document.getElementById('root');
 

@@ -1,0 +1,109 @@
+/* ========================================
+   CSS Variables / Design Tokens
+   ======================================== 
+   
+   This file defines all design tokens as CSS custom properties.
+   These values are the foundation of the design system and should
+   be used throughout the application via var(--token-name).
+   
+   Token Categories:
+   - Colors (backgrounds, text, semantic, entity types, code, diff)
+   - Spacing
+   - Typography
+   - Border radius
+   - Shadows
+   - Transitions
+   - Syntax highlighting
+*/
+
+:root {
+  /* Colors - Antigravity Dark Theme (default) */
+  --color-bg-primary: #1a1b26;
+  --color-bg-secondary: #16161e;
+  --color-bg-tertiary: #24283b;
+  --color-bg-hover: #2f3549;
+
+  --color-text-primary: #c0caf5;
+  --color-text-secondary: #9aa5ce;
+  --color-text-muted: #565f89;
+
+  --color-accent: #7aa2f7;
+  --color-accent-hover: #7dcfff;
+  --color-accent-light: rgba(122, 162, 247, 0.15);
+  --color-accent-secondary: #6366f1;
+
+  --color-success: #9ece6a;
+  --color-success-bg: rgba(158, 206, 106, 0.15);
+  --color-warning: #e0af68;
+  --color-warning-bg: rgba(224, 175, 104, 0.15);
+  --color-error: #f7768e;
+  --color-error-bg: rgba(247, 118, 142, 0.15);
+
+  --color-border: #24283b;
+  --color-border-light: #2f3549;
+  --color-border-focus: rgba(255, 255, 255, 0.5);
+
+  /* Entity type colors - Muted palette */
+  --color-feature: #bb9af7;
+  --color-requirement: #7dcfff;
+  --color-task: #ff9e64;
+  --color-adr: #9ece6a;
+  --color-profile: #f7768e;
+  --color-fixture: #e0af68;
+
+  /* Code blocks */
+  --color-code-bg: #0f172a;
+  --color-code-text: #e2e8f0;
+  --color-code-inline-bg: rgba(0, 0, 0, 0.2);
+  --color-code-inline-bg-user: rgba(255, 255, 255, 0.2);
+
+  /* Diff colors */
+  --color-diff-old: #fca5a5;
+  --color-diff-old-bg: rgba(62, 27, 27, 0.4);
+  --color-diff-old-border: #ef4444;
+  --color-diff-old-label-bg: rgba(239, 68, 68, 0.15);
+  --color-diff-new: #86efac;
+  --color-diff-new-bg: rgba(27, 62, 32, 0.4);
+  --color-diff-new-border: #22c55e;
+  --color-diff-new-label-bg: rgba(34, 197, 94, 0.15);
+
+  /* Spacing - Balanced Density (15% reduction) */
+  --spacing-xs: 0.2rem;   /* ~3px, was 4px */
+  --spacing-sm: 0.4rem;   /* ~6px, was 8px */
+  --spacing-md: 0.75rem;  /* ~12px, was 16px */
+  --spacing-lg: 1.2rem;   /* ~19px, was 24px */
+  --spacing-xl: 1.7rem;   /* ~27px, was 32px */
+
+  /* Typography - Balanced Density (14px base) */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.6875rem;  /* 11px */
+  --font-size-sm: 0.8125rem;  /* 13px */
+  --font-size-md: 0.875rem;   /* 14px - new base */
+  --font-size-lg: 1rem;       /* 16px */
+  --font-size-xl: 1.125rem;   /* 18px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows - Slightly stronger for darker bg */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Syntax highlighting colors for dark mode (Dracula-inspired) */
+  --syntax-key: #8be9fd;          /* cyan - property names, keys */
+  --syntax-string: #f1fa8c;       /* yellow - string values */
+  --syntax-number: #bd93f9;       /* purple - numbers */
+  --syntax-boolean: #ff79c6;      /* pink - booleans, null, keywords */
+  --syntax-comment: #6272a4;      /* muted gray - comments */
+  --syntax-punctuation: #6272a4;  /* muted gray - punctuation */
+  --syntax-green: #50fa7b;        /* green - anchors, aliases */
+}

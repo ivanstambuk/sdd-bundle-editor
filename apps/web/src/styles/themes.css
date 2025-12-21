@@ -1,0 +1,91 @@
+/* ========================================
+   Theme Overrides
+   ======================================== 
+   
+   This file contains theme-specific overrides for the design tokens.
+   The default theme (dark) is defined in tokens.css.
+   
+   Themes are applied via data-theme attribute on the root element:
+   - No attribute or data-theme="dark" → Dark theme (default from tokens.css)
+   - data-theme="light" → Light theme (overrides below)
+*/
+
+/* ========================================
+   Light Theme
+   ======================================== */
+[data-theme="light"] {
+    /* Backgrounds */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f6f8fa;
+    --color-bg-tertiary: #f0f2f5;
+    --color-bg-hover: #e8eaed;
+
+    /* Text */
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #656d76;
+    --color-text-muted: #8b949e;
+
+    /* Accent - GitHub blue */
+    --color-accent: #0969da;
+    --color-accent-hover: #0550ae;
+    --color-accent-light: rgba(9, 105, 218, 0.12);
+    --color-accent-secondary: #6366f1;
+
+    /* Semantic colors - darker for light backgrounds */
+    --color-success: #1a7f37;
+    --color-success-bg: rgba(26, 127, 55, 0.1);
+    --color-warning: #9a6700;
+    --color-warning-bg: rgba(154, 103, 0, 0.1);
+    --color-error: #cf222e;
+    --color-error-bg: rgba(207, 34, 46, 0.1);
+
+    /* Borders */
+    --color-border: #d1d9e0;
+    --color-border-light: #e1e4e8;
+    --color-border-focus: rgba(0, 0, 0, 0.3);
+
+    /* Entity type colors - Adjusted for light mode contrast */
+    --color-feature: #8250df;
+    --color-requirement: #0969da;
+    --color-task: #bf5700;
+    --color-adr: #1a7f37;
+    --color-profile: #cf222e;
+    --color-fixture: #9a6700;
+
+    /* Code blocks */
+    --color-code-bg: #f6f8fa;
+    --color-code-text: #24292f;
+    --color-code-inline-bg: rgba(175, 184, 193, 0.2);
+    --color-code-inline-bg-user: rgba(0, 0, 0, 0.1);
+
+    /* Diff colors */
+    --color-diff-old: #82071e;
+    --color-diff-old-bg: rgba(255, 129, 130, 0.3);
+    --color-diff-old-border: #cf222e;
+    --color-diff-old-label-bg: rgba(207, 34, 46, 0.12);
+    --color-diff-new: #116329;
+    --color-diff-new-bg: rgba(46, 160, 67, 0.2);
+    --color-diff-new-border: #1a7f37;
+    --color-diff-new-label-bg: rgba(26, 127, 55, 0.12);
+
+    /* Shadows - softer for light backgrounds */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.12);
+
+    /* Syntax highlighting colors for light mode (readable on light backgrounds) */
+    --syntax-key: #0969da;
+    /* blue - property names, keys */
+    --syntax-string: #0a3069;
+    /* dark blue - string values */
+    --syntax-number: #8250df;
+    /* purple - numbers */
+    --syntax-boolean: #cf222e;
+    /* red - booleans, null, keywords */
+    --syntax-comment: #6e7781;
+    /* gray - comments */
+    --syntax-punctuation: #57606a;
+    /* dark gray - punctuation */
+    --syntax-green: #116329;
+    /* green - anchors, aliases */
+}

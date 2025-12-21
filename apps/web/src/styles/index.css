@@ -1,0 +1,24 @@
+/* ========================================
+   Main Style Entry Point
+   ======================================== 
+   
+   This file orchestrates the CSS import order for the application.
+   The order matters:
+   1. tokens.css   - Design tokens (CSS custom properties)
+   2. themes.css   - Theme-specific overrides
+   3. globals.css  - Base reset and typography
+   4. utilities.css - Utility classes
+   5. styles.css   - Component styles (legacy, being migrated)
+   
+   As components are migrated to CSS Modules, their styles will be
+   removed from styles.css and co-located with their components.
+*/
+
+/* Foundation */
+@import './tokens.css';
+@import './themes.css';
+@import './globals.css';
+@import './utilities.css';
+
+/* Legacy component styles - will shrink as CSS Modules migration progresses */
+@import '../styles.css';

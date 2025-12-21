@@ -1,0 +1,66 @@
+/* ========================================
+   Global Base Styles
+   ======================================== 
+   
+   This file contains truly global styles that apply to all elements:
+   - CSS reset (box-sizing, margin, padding)
+   - Base typography (html, body)
+   - Root element setup
+   
+   These styles have no component-specific rules and should rarely change.
+*/
+
+/* CSS Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base Typography */
+html {
+    font-size: 14px;
+    /* Balanced density base */
+    line-height: 1.45;
+    /* Tighter for more content */
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    /* Smooth theme transition */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Root Container */
+#root {
+    min-height: 100vh;
+}
+
+/* Selection styling */
+::selection {
+    background: var(--color-accent-light);
+    color: var(--color-text-primary);
+}
+
+/* Focus visible styling for accessibility */
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

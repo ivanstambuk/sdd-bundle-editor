@@ -82,10 +82,7 @@ interface ExportedEntity {
   entityType: string;
   id: string;
   data: Record<string, unknown>;
-  // Source tracking
-  source: {
-    filePath: string;  // Relative path within bundle
-  };
+  lastModified: string;  // ISO timestamp - for stale context detection
 }
 
 interface RelationEdge {
@@ -142,7 +139,7 @@ interface RelationEdge {
           "description": "...",
           "realizesRequirementIds": ["REQ-001", "REQ-002"]
         },
-        "source": { "filePath": "bundle/Feature/auth-login.yaml" }
+        "lastModified": "2025-12-20T14:30:00Z"
       }
     ],
     "dependencies": [
@@ -150,7 +147,7 @@ interface RelationEdge {
         "entityType": "Requirement",
         "id": "REQ-001",
         "data": { "id": "REQ-001", "title": "Secure authentication", "..." },
-        "source": { "filePath": "bundle/Requirement/REQ-001.yaml" }
+        "lastModified": "2025-12-19T10:15:00Z"
       }
     ],
     "relations": [
@@ -192,6 +189,15 @@ We follow the **Target-Holds-Reference** convention: each entity holds reference
 - `loadSchema()` in `export-tools.ts` - schema loading from disk
 - Response envelope from `response-helpers.ts`
 - Tool registration via `registerReadOnlyTool`
+
+### `lastModified` Timestamp
+
+Each exported entity includes a `lastModified` ISO timestamp. Data source priority:
+
+1. **Entity data field** - Use `lastModifiedDate` if present in entity data (schema-driven)
+2. **File system mtime** - Fallback to YAML file's modification time
+
+**Use case**: Agents can detect stale context by comparing timestamps from a previous export. If any dependency's `lastModified` is newer, the agent should re-analyze that entity.
 
 ### Schema Collection
 

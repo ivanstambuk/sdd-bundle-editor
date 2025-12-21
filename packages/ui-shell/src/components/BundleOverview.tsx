@@ -7,6 +7,7 @@ import { HeaderMetadata } from './HeaderMetadata';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { RelationshipGraph } from './RelationshipGraph';
 import { extractRelationsFromSchemas } from '../utils/schemaUtils';
+import styles from './BundleOverview.module.css';
 
 interface BundleOverviewProps {
     bundle: UiBundleSnapshot | null;
@@ -28,7 +29,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     if (!bundle) {
         return (
-            <div className="bundle-overview">
+            <div className={styles.container}>
                 <EmptyState
                     icon="📦"
                     message="No bundle loaded."
@@ -61,35 +62,35 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     // Render the Details tab content
     const renderDetailsTab = () => (
-        <div className="bundle-tab-content">
-            <div className="bundle-info">
-                <div className="bundle-info-row">
-                    <span className="bundle-info-label">Name:</span>
-                    <span className="bundle-info-value">{manifest?.metadata?.name || 'Unknown'}</span>
+        <div className={styles.tabContent}>
+            <div className={styles.info}>
+                <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Name:</span>
+                    <span className={styles.infoValue}>{manifest?.metadata?.name || 'Unknown'}</span>
                 </div>
-                <div className="bundle-info-row">
-                    <span className="bundle-info-label">Type:</span>
-                    <span className="bundle-info-value">{manifest?.metadata?.bundleType || 'sdd'}</span>
+                <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Type:</span>
+                    <span className={styles.infoValue}>{manifest?.metadata?.bundleType || 'sdd'}</span>
                 </div>
                 {manifest?.metadata?.version && (
-                    <div className="bundle-info-row">
-                        <span className="bundle-info-label">Version:</span>
-                        <span className="bundle-info-value">{manifest.metadata.version}</span>
+                    <div className={styles.infoRow}>
+                        <span className={styles.infoLabel}>Version:</span>
+                        <span className={styles.infoValue}>{manifest.metadata.version}</span>
                     </div>
                 )}
                 {manifest?.metadata?.description && (
-                    <div className="bundle-info-row">
-                        <span className="bundle-info-label">Description:</span>
-                        <span className="bundle-info-value">{manifest.metadata.description}</span>
+                    <div className={styles.infoRow}>
+                        <span className={styles.infoLabel}>Description:</span>
+                        <span className={styles.infoValue}>{manifest.metadata.description}</span>
                     </div>
                 )}
-                <div className="bundle-info-row">
-                    <span className="bundle-info-label">Entity Types:</span>
-                    <span className="bundle-info-value">{entityTypes.length}</span>
+                <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Entity Types:</span>
+                    <span className={styles.infoValue}>{entityTypes.length}</span>
                 </div>
-                <div className="bundle-info-row">
-                    <span className="bundle-info-label">Total Entities:</span>
-                    <span className="bundle-info-value">{totalEntities}</span>
+                <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Total Entities:</span>
+                    <span className={styles.infoValue}>{totalEntities}</span>
                 </div>
             </div>
         </div>
@@ -97,9 +98,9 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     // Render the Entity Types tab content
     const renderEntityTypesTab = () => (
-        <div className="bundle-tab-content">
-            <div className="bundle-entity-types">
-                <table className="properties-table">
+        <div className={styles.tabContent}>
+            <div className={styles.entityTypes}>
+                <table className={styles.propertiesTable}>
                     <thead>
                         <tr>
                             <th>Type</th>
@@ -151,8 +152,8 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         // List view: table of relationships
         const renderListView = () => (
             <>
-                <div className="bundle-relations">
-                    <table className="properties-table">
+                <div className={styles.relations}>
+                    <table className={styles.propertiesTable}>
                         <thead>
                             <tr>
                                 <th>From Entity</th>
@@ -185,7 +186,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                         </tbody>
                     </table>
                 </div>
-                <p className="bundle-relations-hint">
+                <p className={styles.relationsHint}>
                     These relationships define how {manifest?.metadata?.name || 'this bundle'}'s entities reference each other.
                 </p>
             </>
@@ -203,7 +204,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
         if (sortedRelations.length === 0) {
             return (
-                <div className="bundle-tab-content">
+                <div className={styles.tabContent}>
                     <EmptyState
                         icon="🔗"
                         message="No relationships defined in this bundle."
@@ -213,14 +214,14 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         }
 
         return (
-            <div className="bundle-tab-content">
-                <div className="dependencies-container">
+            <div className={styles.tabContent}>
+                <div className={styles.dependenciesContainer}>
                     {/* Header with toggle */}
-                    <div className="dependencies-header">
-                        <div className="view-toggle">
+                    <div className={styles.dependenciesHeader}>
+                        <div className={styles.viewToggle}>
                             <button
                                 type="button"
-                                className={`view-toggle-btn ${relViewMode === 'list' ? 'active' : ''}`}
+                                className={`${styles.viewToggleBtn} ${relViewMode === 'list' ? styles.viewToggleBtnActive : ''}`}
                                 onClick={() => setRelViewMode('list')}
                                 data-testid="rel-view-list"
                             >
@@ -228,21 +229,21 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                             </button>
                             <button
                                 type="button"
-                                className={`view-toggle-btn ${relViewMode === 'map' ? 'active' : ''}`}
+                                className={`${styles.viewToggleBtn} ${relViewMode === 'map' ? styles.viewToggleBtnActive : ''}`}
                                 onClick={() => setRelViewMode('map')}
                                 data-testid="rel-view-map"
                             >
                                 🗺️ Map
                             </button>
                         </div>
-                        <span className="dependencies-stats">
+                        <span className={styles.dependenciesStats}>
                             {entityConfigs.length} types • {sortedRelations.length} relationships
                         </span>
                     </div>
 
                     {/* Content based on view mode */}
                     {relViewMode === 'list' ? (
-                        <div className="dependencies-list">
+                        <div className={styles.dependenciesList}>
                             {renderListView()}
                         </div>
                     ) : (
@@ -271,13 +272,13 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     }, [schemaJson]);
 
     const renderRawSchemaTab = () => (
-        <div className="bundle-tab-content">
+        <div className={styles.tabContent}>
             {bundleDef ? (
-                <div className="yaml-viewer">
-                    <div className="yaml-actions">
+                <div className={styles.yamlViewer}>
+                    <div className={styles.yamlActions}>
                         <button
                             type="button"
-                            className="copy-button"
+                            className={styles.copyButton}
                             onClick={handleCopySchema}
                             data-testid="copy-schema-button"
                         >
@@ -296,13 +297,13 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     );
 
     return (
-        <div className="bundle-overview">
+        <div className={styles.container}>
             {/* Bundle header */}
-            <div className="bundle-overview-header">
-                <div className="bundle-overview-header-left">
-                    <span className="bundle-icon">📦</span>
+            <div className={styles.header}>
+                <div className={styles.headerLeft}>
+                    <span className={styles.icon}>📦</span>
                     <h2>{manifest?.metadata?.name || 'Bundle'}</h2>
-                    <span className="bundle-type-badge">{manifest?.metadata?.bundleType || 'sdd'}</span>
+                    <span className={styles.typeBadge}>{manifest?.metadata?.bundleType || 'sdd'}</span>
                 </div>
                 <HeaderMetadata meta={bundleDef?.['x-sdd-meta']} />
             </div>
@@ -316,7 +317,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
             />
 
             {/* Tab content */}
-            <div className="bundle-details-body">
+            <div className={styles.body}>
                 {activeTab === 'details' && renderDetailsTab()}
                 {activeTab === 'entityTypes' && renderEntityTypesTab()}
                 {activeTab === 'relationships' && renderRelationshipsTab()}

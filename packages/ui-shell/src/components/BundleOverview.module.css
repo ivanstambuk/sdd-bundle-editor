@@ -1,0 +1,199 @@
+/* BundleOverview.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.headerLeft h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.icon {
+    font-size: 1.5rem;
+}
+
+.typeBadge {
+    padding: 2px 8px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tabContent {
+    padding: var(--spacing-lg);
+}
+
+/* Info rows */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.infoRow {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.infoLabel {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.infoValue {
+    color: var(--color-text-primary);
+}
+
+/* Entity Types Table */
+.entityTypes {
+    overflow-x: auto;
+}
+
+.propertiesTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.propertiesTable th,
+.propertiesTable td {
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.propertiesTable th {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-secondary);
+}
+
+.propertiesTable code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9em;
+}
+
+/* Relations */
+.relations {
+    overflow-x: auto;
+}
+
+.relationsHint {
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+/* Dependencies */
+.dependenciesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.dependenciesHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.viewToggle {
+    display: flex;
+    gap: 2px;
+    background: var(--color-bg-tertiary);
+    padding: 2px;
+    border-radius: var(--radius-sm);
+}
+
+.viewToggleBtn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-xs);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.viewToggleBtn:hover {
+    background: var(--color-bg-hover);
+}
+
+.viewToggleBtnActive {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+}
+
+.dependenciesStats {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.dependenciesList {
+    overflow-x: auto;
+}
+
+/* YAML Viewer */
+.yamlViewer {
+    position: relative;
+}
+
+.yamlActions {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    z-index: 1;
+}
+
+.copyButton {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.copyButton:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}

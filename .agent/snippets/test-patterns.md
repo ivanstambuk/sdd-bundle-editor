@@ -114,3 +114,192 @@ TEST_ENTITIES.FEATURE         // 'FEAT-secure-auth'
 TEST_ENTITIES.PROFILE         // 'PROF-BASIC'
 TEST_ENTITIES.COMPONENT       // 'COMP-api-gateway'
 ```
+
+---
+
+## MCP Unit Test Pattern: Direct Bundle Loading
+
+**Problem**: MCP HTTP endpoints require session management. Unit tests should NOT use HTTP.
+
+```typescript
+// ✅ CORRECT: Use direct bundle loading for unit tests
+import { loadBundleWithSchemaValidation } from '@sdd-bundle-editor/core-model';
+import type { Bundle, Entity } from '@sdd-bundle-editor/core-model';
+
+describe('MCP tool functionality', () => {
+    let testBundleDir: string;
+
+    beforeEach(async () => {
+        testBundleDir = await createTestBundle();
+    });
+
+    afterEach(async () => {
+        await fs.rm(testBundleDir, { recursive: true, force: true });
+    });
+
+    it('tests the core logic', async () => {
+        const { bundle } = await loadBundleWithSchemaValidation(testBundleDir);
+        
+        // Access entities directly
+        const feature = bundle.entities.get('Feature')?.get('auth-login');
+        expect(feature).toBeDefined();
+        
+        // Access refGraph for dependency testing
+        expect(bundle.refGraph.edges).toBeDefined();
+    });
+});
+
+// ❌ WRONG: HTTP calls require session ID management
+// This will fail with "No valid session ID provided"
+async function wrongApproach() {
+    const result = await fetch("http://localhost:3001/mcp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            jsonrpc: "2.0", id: 1,
+            method: "tools/call",
+            params: { name: "some_tool", arguments: {} }
+        })
+    });
+    // Error: "No valid session ID provided"
+}
+```
+
+**When to use HTTP**: Only in E2E tests where `playwright-mcp-session.ts` handles session management.
+
+---
+
+## Test Bundle Template (Copy-Paste Ready)
+
+**Problem**: Bundle type definitions have many required fields that cause cryptic errors if missing.
+
+```typescript
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { tmpdir } from 'node:os';
+import { randomUUID } from 'node:crypto';
+
+async function createTestBundle(): Promise<string> {
+    const bundleDir = path.join(tmpdir(), `test-bundle-${randomUUID()}`);
+
+    // Create directories
+    await fs.mkdir(bundleDir, { recursive: true });
+    await fs.mkdir(path.join(bundleDir, 'schemas'), { recursive: true });
+    await fs.mkdir(path.join(bundleDir, 'bundle', 'Feature'), { recursive: true });
+    await fs.mkdir(path.join(bundleDir, 'bundle', 'Requirement'), { recursive: true });
+
+    // Create manifest
+    const manifest = `
+apiVersion: sdd.v1
+kind: Bundle
+metadata:
+  name: Test Bundle
+  bundleType: test
+  schemaVersion: 1.0.0
+spec:
+  bundleTypeDefinition: schemas/bundle-type.json
+  schemas:
+    documents:
+      Feature: schemas/Feature.schema.json
+      Requirement: schemas/Requirement.schema.json
+  layout:
+    documents:
+      Feature:
+        dir: bundle/Feature
+        filePattern: "{id}.yaml"
+      Requirement:
+        dir: bundle/Requirement
+        filePattern: "{id}.yaml"
+`;
+    await fs.writeFile(path.join(bundleDir, 'sdd-bundle.yaml'), manifest);
+
+    // ⚠️ Bundle type definition - ALL FIELDS REQUIRED!
+    const bundleType = {
+        bundleType: "test",
+        version: "1.0.0",
+        entities: [
+            {
+                entityType: "Feature",
+                idField: "id",
+                schemaPath: "schemas/Feature.schema.json",
+                directory: "bundle/Feature",      // ⚠️ REQUIRED - causes cryptic error if missing
+                filePattern: "{id}.yaml"          // ⚠️ REQUIRED - causes cryptic error if missing
+            },
+            {
+                entityType: "Requirement",
+                idField: "id",
+                schemaPath: "schemas/Requirement.schema.json",
+                directory: "bundle/Requirement",
+                filePattern: "{id}.yaml"
+            },
+        ],
+        relations: []
+    };
+    await fs.writeFile(
+        path.join(bundleDir, 'schemas', 'bundle-type.json'),
+        JSON.stringify(bundleType, null, 2)
+    );
+
+    // Create schemas
+    const featureSchema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "Feature",
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            // Add reference fields if testing dependencies:
+            "realizesRequirementIds": {
+                "type": "array",
+                "items": { 
+                    "type": "string", 
+                    "format": "sdd-ref", 
+                    "x-sdd-refTargets": ["Requirement"] 
+                }
+            }
+        }
+    };
+    await fs.writeFile(
+        path.join(bundleDir, 'schemas', 'Feature.schema.json'),
+        JSON.stringify(featureSchema, null, 2)
+    );
+
+    const reqSchema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "Requirement",
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+            "id": { "type": "string" },
+            "title": { "type": "string" }
+        }
+    };
+    await fs.writeFile(
+        path.join(bundleDir, 'schemas', 'Requirement.schema.json'),
+        JSON.stringify(reqSchema, null, 2)
+    );
+
+    // Create test entities
+    await fs.writeFile(
+        path.join(bundleDir, 'bundle', 'Feature', 'test-feature.yaml'),
+        `id: test-feature
+name: Test Feature
+realizesRequirementIds:
+  - REQ-001
+`
+    );
+
+    await fs.writeFile(
+        path.join(bundleDir, 'bundle', 'Requirement', 'REQ-001.yaml'),
+        `id: REQ-001
+title: Test Requirement
+`
+    );
+
+    return bundleDir;
+}
+```
+
+**Common Error**: `TypeError: The "path" argument must be of type string. Received undefined`
+→ Missing `directory` field in bundle type definition

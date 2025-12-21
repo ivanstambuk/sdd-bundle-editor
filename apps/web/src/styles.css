@@ -575,6 +575,8 @@
   cursor: default;
   color: var(--color-text-primary);
   font-weight: 500;
+  width: 100%;
+  /* Fill container width - prevents text truncation */
 }
 
 /* Keep box styling for textareas (multiline content needs boundaries) */
@@ -711,6 +713,8 @@ form.rjsf {
   font-weight: 500;
   height: auto;
   min-height: unset;
+  width: 100%;
+  /* Fill container width - prevents text truncation */
 }
 
 /* Boxed value styling */
@@ -772,6 +776,8 @@ form.rjsf {
   cursor: default;
   color: var(--color-text-primary);
   font-weight: 500;
+  width: 100%;
+  /* Fill container width - prevents text truncation */
 }
 
 /* Keep box styling for textareas to maintain readability of multiline content */

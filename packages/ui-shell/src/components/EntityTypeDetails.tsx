@@ -5,6 +5,7 @@ import type { UiBundleSnapshot } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import { HeaderMetadata } from './HeaderMetadata';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
+import styles from './EntityTypeDetails.module.css';
 
 interface EntityTypeDetailsProps {
     bundle: UiBundleSnapshot | null;
@@ -23,11 +24,11 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
     if (!bundle || !entityType) {
         return (
-            <div className="entity-type-details">
-                <div className="entity-placeholder">
-                    <div className="entity-placeholder-icon">📋</div>
+            <div className={styles.container}>
+                <div className={styles.placeholder}>
+                    <div className={styles.placeholderIcon}>📋</div>
                     <div>No entity type selected.</div>
-                    <div className="text-muted text-sm mt-md">Click on an entity type header to view its schema.</div>
+                    <div className={`${styles.textMuted} ${styles.textSm} ${styles.mtMd}`}>Click on an entity type header to view its schema.</div>
                 </div>
             </div>
         );
@@ -41,14 +42,14 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
     if (!schema) {
         return (
-            <div className="entity-type-details">
-                <div className="entity-type-header">
-                    {icon && <span className="entity-type-icon">{icon}</span>}
+            <div className={styles.container}>
+                <div className={styles.header}>
+                    {icon && <span className={styles.icon}>{icon}</span>}
                     <h2>{displayNamePlural}</h2>
-                    <span className="entity-type-count">{entityCount} entities</span>
+                    <span className={styles.count}>{entityCount} entities</span>
                 </div>
-                <div className="entity-no-schema">
-                    <p className="text-muted">No schema found for entity type "{entityType}".</p>
+                <div className={styles.noSchema}>
+                    <p className={styles.textMuted}>No schema found for entity type "{entityType}".</p>
                 </div>
             </div>
         );
@@ -88,20 +89,20 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
         return (
             <>
                 {/* Schema overview */}
-                <section className="schema-section">
+                <section className={styles.section}>
                     <h3>Schema Overview</h3>
-                    <div className="schema-info">
-                        <div className="schema-info-row">
-                            <span className="schema-info-label">Name:</span>
-                            <span className="schema-info-value">{title}</span>
+                    <div className={styles.info}>
+                        <div className={styles.infoRow}>
+                            <span className={styles.infoLabel}>Name:</span>
+                            <span className={styles.infoValue}>{title}</span>
                         </div>
-                        <div className="schema-info-row">
-                            <span className="schema-info-label">ID:</span>
-                            <code className="schema-info-value">{schemaId}</code>
+                        <div className={styles.infoRow}>
+                            <span className={styles.infoLabel}>ID:</span>
+                            <code className={styles.infoValue}>{schemaId}</code>
                         </div>
-                        <div className="schema-info-row schema-info-row--description">
-                            <span className="schema-info-label">Description:</span>
-                            <div className="schema-info-value rjsf-description--markdown">
+                        <div className={`${styles.infoRow} ${styles.infoRowDescription}`}>
+                            <span className={styles.infoLabel}>Description:</span>
+                            <div className={styles.infoValue}>
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {description}
                                 </ReactMarkdown>
@@ -112,11 +113,11 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
                 {/* Tags (optional, schema-driven) */}
                 {meta?.tags && meta.tags.length > 0 && (
-                    <section className="schema-section">
+                    <section className={styles.section}>
                         <h3>Tags</h3>
-                        <div className="schema-tags">
+                        <div className={styles.tags}>
                             {meta.tags.map(tag => (
-                                <span key={tag} className="schema-tag">{tag}</span>
+                                <span key={tag} className={styles.tag}>{tag}</span>
                             ))}
                         </div>
                     </section>
@@ -124,16 +125,16 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
                 {/* External References (optional, schema-driven) */}
                 {meta?.references && meta.references.length > 0 && (
-                    <section className="schema-section">
+                    <section className={styles.section}>
                         <h3>External References</h3>
-                        <ul className="schema-references">
+                        <ul className={styles.references}>
                             {meta.references.map((ref, idx) => (
-                                <li key={idx} className="schema-reference">
+                                <li key={idx} className={styles.reference}>
                                     <a href={ref.url} target="_blank" rel="noopener noreferrer">
                                         {ref.label}
                                     </a>
                                     {ref.type && (
-                                        <span className="reference-type">{ref.type}</span>
+                                        <span className={styles.referenceType}>{ref.type}</span>
                                     )}
                                 </li>
                             ))}
@@ -142,10 +143,10 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                 )}
 
                 {/* Properties table */}
-                <section className="schema-section">
+                <section className={styles.section}>
                     <h3>Properties ({Object.keys(properties).length})</h3>
-                    <div className="schema-properties">
-                        <table className="properties-table">
+                    <div className={styles.properties}>
+                        <table className={styles.propertiesTable}>
                             <thead>
                                 <tr>
                                     <th>Property</th>
@@ -166,21 +167,21 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                                     return (
                                         <tr key={propName}>
                                             <td>
-                                                <code className="property-name">{propName}</code>
+                                                <code className={styles.propertyName}>{propName}</code>
                                             </td>
                                             <td>
-                                                <span className="property-type">
+                                                <span className={styles.propertyType}>
                                                     {type}{format}{enumValues}
                                                 </span>
                                             </td>
                                             <td>
                                                 {isRequired ? (
-                                                    <span className="required-badge">required</span>
+                                                    <span className={styles.requiredBadge}>required</span>
                                                 ) : (
-                                                    <span className="optional-badge">optional</span>
+                                                    <span className={styles.optionalBadge}>optional</span>
                                                 )}
                                             </td>
-                                            <td className="property-desc">{desc}</td>
+                                            <td className={styles.propertyDesc}>{desc}</td>
                                         </tr>
                                     );
                                 })}
@@ -196,11 +197,11 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     const jsonContent = useMemo(() => JSON.stringify(schema, null, 2), [schema]);
 
     const renderJsonTab = () => (
-        <div className="json-viewer">
-            <div className="json-actions">
+        <div className={styles.jsonViewer}>
+            <div className={styles.jsonActions}>
                 <button
                     type="button"
-                    className="copy-button"
+                    className={styles.copyButton}
                     onClick={handleCopyJson}
                     data-testid="copy-json-button"
                 >
@@ -212,21 +213,21 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     );
 
     return (
-        <div className="entity-type-details">
-            <div className="entity-type-header">
-                <div className="entity-type-header-left">
-                    {icon && <span className="entity-type-icon">{icon}</span>}
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <div className={styles.headerLeft}>
+                    {icon && <span className={styles.icon}>{icon}</span>}
                     <h2>{displayNamePlural}</h2>
-                    <span className="entity-type-count">{entityCount} entities</span>
+                    <span className={styles.count}>{entityCount} entities</span>
                 </div>
                 <HeaderMetadata meta={meta} />
             </div>
 
             {/* Tab bar */}
-            <div className="entity-tabs">
+            <div className={styles.tabs}>
                 <button
                     type="button"
-                    className={`entity-tab ${activeTab === 'details' ? 'active' : ''}`}
+                    className={`${styles.tab} ${activeTab === 'details' ? styles.tabActive : ''}`}
                     onClick={() => setActiveTab('details')}
                     data-testid="tab-details"
                 >
@@ -234,7 +235,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                 </button>
                 <button
                     type="button"
-                    className={`entity-tab ${activeTab === 'json' ? 'active' : ''}`}
+                    className={`${styles.tab} ${activeTab === 'json' ? styles.tabActive : ''}`}
                     onClick={() => setActiveTab('json')}
                     data-testid="tab-json"
                 >
@@ -242,7 +243,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                 </button>
             </div>
 
-            <div className="entity-type-body">
+            <div className={styles.body}>
                 {activeTab === 'details' && renderDetailsTab()}
                 {activeTab === 'json' && renderJsonTab()}
             </div>

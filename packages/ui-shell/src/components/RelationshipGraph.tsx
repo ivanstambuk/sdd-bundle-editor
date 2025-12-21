@@ -35,6 +35,7 @@ import { extractRelationsFromSchemas, type SchemaRelation } from '../utils/schem
 import { getEntityColor } from '../utils/entityColors';
 import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
 import { GraphFilterDropdown } from './GraphFilterDropdown';
+import styles from './RelationshipGraph.module.css';
 
 interface RelationshipGraphProps {
     /** Entity type configurations */
@@ -246,8 +247,8 @@ export function RelationshipGraph({
     // Empty state
     if (entityConfigs.length === 0) {
         return (
-            <div className="relationship-graph-empty">
-                <span className="relationship-graph-empty-icon">🗺️</span>
+            <div className={styles.empty}>
+                <span className={styles.emptyIcon}>🗺️</span>
                 <p>No entity types defined in this bundle.</p>
             </div>
         );
@@ -259,22 +260,22 @@ export function RelationshipGraph({
     const edgeCount = edges.length;
 
     return (
-        <div className="relationship-graph-container">
+        <div className={styles.container}>
             {/* Toolbar with filter */}
-            <div className="relationship-graph-toolbar">
+            <div className={styles.toolbar}>
                 <GraphFilterDropdown
                     entityConfigs={entityConfigs}
                     categories={categories}
                     selectedTypes={selectedTypes}
                     onSelectionChange={handleFilterChange}
                 />
-                <span className="graph-filter-hint">
+                <span className={styles.hint}>
                     {visibleCount} types • {edgeCount} relationships
                 </span>
             </div>
 
             {/* Graph */}
-            <div className="relationship-graph" data-testid="relationship-graph">
+            <div className={styles.graph} data-testid="relationship-graph">
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}

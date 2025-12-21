@@ -24,6 +24,7 @@ import 'reactflow/dist/style.css';
 import type { BundleTypeEntityConfig } from '@sdd-bundle-editor/shared-types';
 import { getEntityColorFromConfigs } from '../utils/entityColors';
 import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
+import styles from './EntityDependencyGraph.module.css';
 
 /** Edge representing a reference from one entity to another */
 export interface EntityEdge {
@@ -273,15 +274,15 @@ export function EntityDependencyGraph({
     // Empty state
     if (outgoing.length === 0 && incoming.length === 0) {
         return (
-            <div className="entity-dependency-graph-empty">
-                <span className="entity-dependency-graph-empty-icon">🔗</span>
+            <div className={styles.empty}>
+                <span className={styles.emptyIcon}>🔗</span>
                 <p>No dependencies for this entity.</p>
             </div>
         );
     }
 
     return (
-        <div className="entity-dependency-graph" data-testid="entity-dependency-graph">
+        <div className={styles.graph} data-testid="entity-dependency-graph">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

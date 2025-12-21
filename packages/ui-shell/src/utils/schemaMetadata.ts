@@ -57,7 +57,20 @@ export function getSchemaUiMetadata(schema: unknown): SddUiMetadata | undefined 
 }
 
 /**
+ * Split a camelCase or PascalCase string into words.
+ * e.g., "OpenQuestion" → "Open Question", "TelemetrySchema" → "Telemetry Schema"
+ */
+function splitCamelCase(str: string): string {
+    return str
+        // Insert space before uppercase letters (but not at start)
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        // Handle sequences of uppercase (e.g., "HTTPServer" → "HTTP Server")
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+}
+
+/**
  * Get singular display name for an entity type from its schema.
+ * Priority: x-sdd-ui.displayName > schema.title (with camelCase split)
  * Returns undefined if not available in schema.
  */
 export function getEntityDisplayName(schema: unknown): string | undefined {
@@ -66,10 +79,14 @@ export function getEntityDisplayName(schema: unknown): string | undefined {
         return metadata.displayName;
     }
 
-    // Fallback to schema title if available
+    // Fallback to schema title if available, split camelCase into words
     if (schema && typeof schema === 'object') {
         const s = schema as EntitySchema;
         if (s.title) {
+            // Split camelCase if title matches entityType pattern (no spaces)
+            if (!/\s/.test(s.title)) {
+                return splitCamelCase(s.title);
+            }
             return s.title;
         }
     }

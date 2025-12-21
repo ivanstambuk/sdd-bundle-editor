@@ -151,45 +151,40 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
     const renderRelationshipsTab = () => {
         // List view: table of relationships
         const renderListView = () => (
-            <>
-                <div className={styles.relations}>
-                    <table className={styles.propertiesTable}>
-                        <thead>
-                            <tr>
-                                <th>From Entity</th>
-                                <th>Relationship</th>
-                                <th>To Entity</th>
-                                <th>Cardinality</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sortedRelations.map((rel, idx) => {
-                                return (
-                                    <tr key={idx}>
-                                        <td>
-                                            <EntityTypeBadge
-                                                entityType={rel.fromEntity}
-                                                entityConfigs={entityConfigs}
-                                            />
-                                        </td>
-                                        <td title={`Field: ${rel.fromField}`}>{rel.displayName}</td>
-                                        <td>
-                                            <EntityTypeBadge
-                                                entityType={rel.toEntity}
-                                                entityConfigs={entityConfigs}
-                                            />
-                                        </td>
-                                        <td>{rel.isMany ? 'many' : 'one'}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                <p className={styles.relationsHint}>
-                    These relationships define how {manifest?.metadata?.name || 'this bundle'}'s entities reference each other.
-                </p>
-            </>
+            <div className={styles.relations}>
+                <table className={styles.propertiesTable}>
+                    <thead>
+                        <tr>
+                            <th>From Entity</th>
+                            <th>Relationship</th>
+                            <th>To Entity</th>
+                            <th>Cardinality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedRelations.map((rel, idx) => {
+                            return (
+                                <tr key={idx}>
+                                    <td>
+                                        <EntityTypeBadge
+                                            entityType={rel.fromEntity}
+                                            entityConfigs={entityConfigs}
+                                        />
+                                    </td>
+                                    <td title={`Field: ${rel.fromField}`}>{rel.displayName}</td>
+                                    <td>
+                                        <EntityTypeBadge
+                                            entityType={rel.toEntity}
+                                            entityConfigs={entityConfigs}
+                                        />
+                                    </td>
+                                    <td>{rel.isMany ? 'many' : 'one'}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
         );
 
         // Map view: interactive graph

@@ -33,6 +33,7 @@ import type {
 } from '@sdd-bundle-editor/shared-types';
 import { extractRelationsFromSchemas, type SchemaRelation } from '../utils/schemaUtils';
 import { getEntityColor } from '../utils/entityColors';
+import { getEntityDisplayName } from '../utils/schemaMetadata';
 import { LabeledEdge, type LabeledEdgeData } from './LabeledEdge';
 import { GraphFilterDropdown } from './GraphFilterDropdown';
 import styles from './RelationshipGraph.module.css';
@@ -101,11 +102,13 @@ function getLayoutedElements(
  * @param entityConfigs - Entity type configurations to create nodes for
  * @param relations - Relationship data (already filtered if needed)
  * @param visibleTypes - Set of entity types to show (empty = show all)
+ * @param schemas - Entity schemas for display name lookup
  */
 function transformToFlowElements(
     entityConfigs: BundleTypeEntityConfig[],
     relations: SchemaRelation[],
-    visibleTypes: Set<string>
+    visibleTypes: Set<string>,
+    schemas?: Record<string, unknown>
 ): { nodes: Node[]; edges: Edge[] } {
     // Filter to visible types only
     const filteredConfigs = visibleTypes.size === 0
@@ -115,12 +118,15 @@ function transformToFlowElements(
     // Create nodes for each visible entity type
     const nodes: Node[] = filteredConfigs.map((config, index) => {
         const color = getEntityColor(config.entityType, config, index);
+        // Get display name from schema (e.g., "Open Question" instead of "OpenQuestion")
+        const schema = schemas?.[config.entityType];
+        const displayName = getEntityDisplayName(schema) || config.entityType;
 
         return {
             id: config.entityType,
             type: 'default',
             data: {
-                label: config.entityType,
+                label: displayName,
             },
             position: { x: 0, y: 0 }, // Will be set by dagre
             style: {
@@ -175,6 +181,8 @@ function transformToFlowElements(
             data: {
                 label,
                 offset: pathOffset,
+                sourceEntity: rel.fromEntity,
+                targetEntity: rel.toEntity,
             },
             style: {
                 stroke: 'var(--color-border, #414868)',
@@ -211,8 +219,8 @@ export function RelationshipGraph({
 
     // Transform data to React Flow format with dagre layout
     const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(
-        () => transformToFlowElements(entityConfigs, relations, selectedTypes),
-        [entityConfigs, relations, selectedTypes]
+        () => transformToFlowElements(entityConfigs, relations, selectedTypes, schemas),
+        [entityConfigs, relations, selectedTypes, schemas]
     );
 
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
@@ -266,6 +274,7 @@ export function RelationshipGraph({
                 <GraphFilterDropdown
                     entityConfigs={entityConfigs}
                     categories={categories}
+                    schemas={schemas}
                     selectedTypes={selectedTypes}
                     onSelectionChange={handleFilterChange}
                 />

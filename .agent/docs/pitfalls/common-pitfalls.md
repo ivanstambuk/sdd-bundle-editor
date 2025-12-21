@@ -375,3 +375,21 @@ See `/ui-validation` workflow for detailed process.
   - Global utility classes still used via template strings
   - CSS referenced by library components, not your code
 
+### 29. Skipping UI validation for "simple" changes
+- **Symptom**: User reports that a feature doesn't work, despite "successful" code changes and builds
+- **Root cause**: Agent assumed simple code patterns (e.g., HTML `title` attribute, CSS tweaks) would "just work" without visual verification
+- **Anti-patterns** that lead to this:
+  1. **Task batching without verification**: Processing multiple UI changes in quick succession, declaring each "done" after build passes
+  2. **Overconfidence in trivial patterns**: "It's just a title attribute, it'll work"
+  3. **Prioritizing throughput over correctness**: Rushing to report completion instead of validating
+- **Fix**: **ALWAYS** run browser validation before reporting any UI change as complete:
+  ```bash
+  # Before claiming "done", MUST do this:
+  1. Verify dev server is running: curl -s --max-time 5 http://localhost:5173/
+  2. Use browser_subagent to navigate to the affected component
+  3. Take screenshot PROVING the change works
+  4. Report with evidence, not assumptions
+  ```
+- **Why this matters**: The user cannot see your code changes. They see the browser. If it doesn't work in the browser, it doesn't work.
+- **Exception**: None. Even "trivial" changes can fail due to caching, build issues, or incorrect assumptions about how the DOM/CSS works.
+

@@ -4,6 +4,7 @@
  */
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { BundleTypeEntityConfig, BundleTypeCategoryConfig } from '@sdd-bundle-editor/shared-types';
+import { getEntityDisplayName } from '../utils/schemaMetadata';
 import styles from './GraphFilterDropdown.module.css';
 
 interface GraphFilterDropdownProps {
@@ -11,6 +12,8 @@ interface GraphFilterDropdownProps {
     entityConfigs: BundleTypeEntityConfig[];
     /** Category configurations for grouping */
     categories?: BundleTypeCategoryConfig[];
+    /** Entity schemas for display name lookup */
+    schemas?: Record<string, unknown>;
     /** Currently selected entity types (empty = show all) */
     selectedTypes: Set<string>;
     /** Callback when selection changes */
@@ -25,6 +28,7 @@ interface GroupedEntityTypes {
 export function GraphFilterDropdown({
     entityConfigs,
     categories,
+    schemas,
     selectedTypes,
     onSelectionChange,
 }: GraphFilterDropdownProps) {
@@ -234,7 +238,7 @@ export function GraphFilterDropdown({
                                                         style={{ backgroundColor: config.color || '#7aa2f7' }}
                                                     />
                                                     <span className={styles.label}>
-                                                        {config.entityType}
+                                                        {getEntityDisplayName(schemas?.[config.entityType]) || config.entityType}
                                                     </span>
                                                 </label>
                                             );

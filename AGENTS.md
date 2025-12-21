@@ -112,7 +112,13 @@ See `.agent/workflows/` for detailed instructions.
 ## Critical Rules
 
 1. **Build after TypeScript changes**: Run `pnpm build` after modifying any `packages/*` source
-2. **Use browser_subagent for UI validation**: For visual changes, use `browser_subagent` to verify the UI looks correct before committing. Take screenshots and validate layout/styling.
+2. **MANDATORY UI validation before completion**: For ANY visual change, you MUST:
+   - ✅ Verify dev server is running (`curl -s http://localhost:5173/`)
+   - ✅ Use `browser_subagent` to navigate to the affected component
+   - ✅ Take a screenshot PROVING the change works
+   - ✅ Report with visual evidence, not assumptions
+   - ❌ Never skip this because it "seems simple"
+   - ❌ Never batch multiple changes without validating each
 3. **CSS-first for UI**: Add CSS classes before JSX, use design system variables
 4. **Commit incrementally**: Don't accumulate large changesets
 5. **Test before commit**: Run `pnpm test` (and `pnpm test:e2e` for UI changes)
@@ -124,6 +130,7 @@ See `.agent/workflows/` for detailed instructions.
    - Verify tests pass
    - This prevents regressions and documents expected behavior
 8. **Implement Now, Don't Defer**: When the user expresses interest in a feature or asks "what do you think about X?", **always offer to implement it now**. NEVER suggest "add to IMPLEMENTATION_TRACKER for later". The tracker is for the user's own backlog management, not for agent-suggested deferrals. If you think the feature is complex, break it into phases and offer to start with phase 1.
+
 
 ---
 

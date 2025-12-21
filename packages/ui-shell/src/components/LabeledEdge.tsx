@@ -18,6 +18,10 @@ import styles from './LabeledEdge.module.css';
 export interface LabeledEdgeData {
     label: string;
     offset?: number;
+    /** Source entity type name (for tooltip) */
+    sourceEntity?: string;
+    /** Target entity type name (for tooltip) */
+    targetEntity?: string;
 }
 
 export function LabeledEdge({
@@ -45,6 +49,11 @@ export function LabeledEdge({
         borderRadius: 8,
     });
 
+    // Build tooltip text showing which entities the relationship connects
+    const tooltip = data?.sourceEntity && data?.targetEntity
+        ? `${data.sourceEntity} → ${data.targetEntity}`
+        : undefined;
+
     return (
         <>
             {/* The SVG edge path */}
@@ -58,6 +67,7 @@ export function LabeledEdge({
                         style={{
                             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
                         }}
+                        title={tooltip}
                     >
                         {data.label}
                     </div>

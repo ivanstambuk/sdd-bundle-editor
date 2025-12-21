@@ -473,7 +473,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     const enumStyles = schema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
     const currentDescription = enumDescriptions?.[value];
 
-    // In read-only mode with enum styles, render as a colored badge
+    // In read-only mode with enum styles, render as a colored badge (for header fields)
     if ((readonly || disabled) && enumStyles && value) {
       const styleConfig = enumStyles[value];
       const colorClass = styleConfig?.color ? `${rjsfStyles.enumBadge} ${styleConfig.color}` : `${rjsfStyles.enumBadge} ${rjsfStyles.muted}`;
@@ -488,6 +488,18 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
               ⓘ
             </span>
           )}
+        </div>
+      );
+    }
+
+    // In read-only mode with descriptions (but no styles), show description text directly
+    if ((readonly || disabled) && currentDescription) {
+      return (
+        <div className={rjsfStyles.enumValueDisplay}>
+          <span className={rjsfStyles.enumValueText}>{currentDescription}</span>
+          <span className={rjsfStyles.fieldHelpIcon} title={`Value: ${value}`}>
+            ⓘ
+          </span>
         </div>
       );
     }
@@ -512,9 +524,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
             ⓘ
           </span>
-        )}
-        {(readonly || disabled) && currentDescription && (
-          <span className={rjsfStyles.enumDescription}>{currentDescription}</span>
         )}
       </div>
     );

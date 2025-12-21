@@ -274,6 +274,17 @@
     font-style: italic;
 }
 
+.enumValueDisplay {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.enumValueText {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+}
+
 /* Checkbox field */
 .checkboxField {
     display: flex;

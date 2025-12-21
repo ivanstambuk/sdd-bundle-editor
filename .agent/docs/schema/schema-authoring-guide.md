@@ -127,6 +127,17 @@ This section defines the canonical rules for which entity should hold reference 
 | `{verb}By{Target}Id` | `ownedByActorId` | "owned by Actor" |
 | `constrainedBy{Target}Ids` | `constrainedByConstraintIds` | "constrained by Constraint" |
 
+**Title Naming Convention (for `title` property)**:
+
+The `title` property is the human-readable label shown in the UI. For relationship fields, use **verb-only** titles:
+
+| ✅ Correct | ❌ Wrong | Why |
+|-----------|----------|-----|
+| `"constrained by"` | `"constrained by constraint"` | Target type is redundant (shown via chip) |
+| `"governed by"` | `"governed by ADR"` | The target chip already shows "ADR" |
+| `"realized by"` | `"realized by requirement"` | Avoid repeating what the UI already displays |
+| `"observed by"` | `"telemetry schema"` | Use consistent verb pattern |
+
 **Correct Pattern:**
 ```json
 // Feature.schema.json - Feature holds reference to its governors

@@ -218,6 +218,49 @@ ls -la "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" 2>/dev
 
 ---
 
+## WSL Chrome Restart (When browser_subagent Gets Stuck)
+
+**Problem**: Browser subagent hangs on page load, "target closed" errors, or "page not found" from browser tools.
+
+**Root cause**: Chrome loses connection or enters bad state. Need full restart.
+
+**Solution 1: Use the restart script**:
+```bash
+./scripts/wsl/restart-chrome.sh
+```
+
+**Solution 2: Manual PowerShell commands from WSL**:
+```bash
+# Kill ONLY Chrome instances with 'ag-cdp' profile (preserves regular browser windows)
+cd /mnt/c && /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "
+    Get-Process chrome -ErrorAction SilentlyContinue | ForEach-Object {
+        \$wmi = Get-CimInstance Win32_Process -Filter \"ProcessId = \$(\$_.Id)\" -ErrorAction SilentlyContinue
+        if (\$wmi.CommandLine -match 'ag-cdp') { Stop-Process -Id \$_.Id -Force }
+    }
+"
+
+# Wait for cleanup
+sleep 2
+
+# Start Chrome with remote debugging
+cd /mnt/c && /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "Start-Process -FilePath 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList '--remote-debugging-port=9222','--user-data-dir=C:\Temp\ag-cdp','--disable-search-engine-choice-screen'"
+
+# Verify Chrome is ready
+curl -s http://localhost:9222/json/version | grep Browser
+```
+
+**Why PowerShell instead of cmd.exe**: cmd.exe fails with "UNC paths are not supported" when run from WSL paths. PowerShell handles it correctly via `cd /mnt/c`.
+
+**Why kill only 'ag-cdp' instances**: The script only terminates Chrome processes that have 'ag-cdp' in their command line, preserving your regular browser windows.
+
+**Verify Chrome is accessible**:
+```bash
+curl -s http://localhost:9222/json/version
+# Should return: {"Browser": "Chrome/...", "Protocol-Version": "1.3", ...}
+```
+
+---
+
 ## JSON Schema Manipulation with jq
 
 **Problem**: Need to modify schemas outside workspace (e.g., sample bundle) or do complex JSON edits.

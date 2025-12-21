@@ -179,6 +179,8 @@
 
 .graphChild {
     cursor: pointer;
+    width: fit-content;
+    /* Prevent stretching to full width in flex container */
 }
 
 .graphChild:hover {
@@ -186,7 +188,7 @@
 }
 
 .graphNodeId {
-    flex: 1;
+    /* Content naturally flows, no flex expansion */
 }
 
 .graphBranch {

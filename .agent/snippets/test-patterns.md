@@ -376,3 +376,49 @@ await expect(page.locator('[class*="Selected"]')).toBeVisible();
 ```
 
 **When to use**: After migrating a component to CSS Modules, update any tests that check for specific class names.
+
+---
+
+## CSS Layout Property Regression Testing
+
+**Problem**: CSS layout bugs (e.g., grid vs flex) can break visual appearance but have no TypeScript errors. Need to prevent regressions after fixing.
+
+```typescript
+// Read CSS file directly and assert critical properties
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
+const cssContent = fs.readFileSync(
+  path.join(__dirname, 'RjsfStyles.module.css'), 
+  'utf-8'
+);
+
+// Helper to extract a CSS rule block
+function getCssRuleContent(css: string, selector: string): string | null {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`${escapedSelector}\\s*\\{([^}]+)\\}`, 'g');
+  const match = regex.exec(css);
+  return match ? match[1] : null;
+}
+
+describe('Critical CSS properties', () => {
+  it('should use grid layout for form field sizing', () => {
+    const objectRule = getCssRuleContent(cssContent, '.object');
+    
+    // CRITICAL: Must be grid, not flex, for column sizing to work
+    expect(objectRule).toMatch(/display:\s*grid/);
+    expect(objectRule).not.toMatch(/display:\s*flex/);
+  });
+
+  it('should prevent flex-grow on marker icons', () => {
+    const markerRule = getCssRuleContent(cssContent, '.bulletMarker');
+    
+    // flex: none prevents icon from taking half the row width
+    expect(markerRule).toMatch(/flex:\s*none/);
+  });
+});
+```
+
+**When to use**: After fixing any CSS layout bug, write a test that asserts the critical property. This catches accidental reverts during future refactoring.
+
+**See**: `packages/ui-shell/src/components/RjsfStyles.test.ts` for the full pattern.

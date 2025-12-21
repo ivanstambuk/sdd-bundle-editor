@@ -123,9 +123,9 @@ See `.agent/workflows/` for detailed instructions.
 4. **Commit incrementally**: Don't accumulate large changesets
 5. **Test before commit**: Run `pnpm test` (and `pnpm test:e2e` for UI changes)
 6. **Generate visual mockups for UI proposals**: When proposing UI changes with multiple options, proactively generate image mockups using the image generation tool (Gemini 3 Pro) to show each option visually before implementation. This enables informed decision-making.
-7. **Test-Driven Bug Fixing**: When fixing a bug in **utility functions or data transformation logic**, ALWAYS write unit tests:
-   - Write tests that would have caught the bug BEFORE fixing
-   - Verify tests fail with the old code logic (conceptually)
+7. **Test-Driven Bug Fixing**: When fixing a bug, ALWAYS write unit tests to prevent regressions:
+   - **For utility functions/data logic**: Write tests that would have caught the bug
+   - **For CSS layout fixes**: Write tests that assert the critical CSS property (e.g., `display: grid` not `flex`). Read the CSS file and check properties. See `RjsfStyles.test.ts` for the pattern.
    - Fix the bug
    - Verify tests pass
    - This prevents regressions and documents expected behavior

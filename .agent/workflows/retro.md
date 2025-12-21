@@ -257,6 +257,16 @@ When doing a retrospective, scan for issues in these categories:
 - [ ] Complex code that could be simplified
 - [ ] Features that would benefit from extraction to separate package
 
+### Code Health / Technical Debt
+- [ ] **File size growth**: Any file exceeding ~2000 lines? Consider splitting
+- [ ] **CSS sprawl**: Is styles.css getting unwieldy? Consider CSS Modules
+- [ ] **Cascade effects**: Did a small change break unrelated things?
+- [ ] **Copy-paste patterns**: Am I copying similar code between components?
+- [ ] **Naming conflicts**: Are class names or variables starting to collide?
+- [ ] **Dead code accumulation**: Are we keeping unused components/utilities?
+- [ ] **Dependency sprawl**: Are we adding packages for trivial functionality?
+- [ ] **Accumulating TODOs**: Are we adding tech debt without tracking?
+
 ### Documentation
 - [ ] Missing "gotchas" in AGENTS.md
 - [ ] Outdated instructions

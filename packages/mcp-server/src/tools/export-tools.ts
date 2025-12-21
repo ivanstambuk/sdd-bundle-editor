@@ -419,4 +419,221 @@ export function registerExportTools(ctx: ToolContext): void {
             });
         }
     );
+
+    // Tool: export_context
+    // Exports structured JSON/YAML for AI agent consumption with dependencies and schemas
+    registerReadOnlyTool(
+        server,
+        "export_context",
+        "Export a machine-parseable subset of the bundle for AI agent implementation work. Returns target entities, their transitive dependencies (what they need to read), relationship metadata, and relevant schemas. Use for offline work, implementation planning, or context snapshots.",
+        {
+            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
+            targets: z.array(z.object({
+                entityType: z.string().describe("Entity type (e.g., 'Feature')"),
+                entityId: z.string().describe("Entity ID (e.g., 'auth-login')"),
+            })).min(1).describe("Array of entities to export"),
+            includeSchemas: z.boolean().optional().default(true)
+                .describe("Include JSON schemas for exported entity types (default: true)"),
+            dependencyDepth: z.number().optional().default(3)
+                .describe("How deep to traverse dependencies (default: 3, max: 5)"),
+            format: z.enum(["json", "yaml"]).optional().default("json")
+                .describe("Output format (default: json)"),
+            includeRelationMetadata: z.boolean().optional().default(true)
+                .describe("Include relationship edges between entities (default: true)"),
+        },
+        async ({ bundleId, targets, includeSchemas, dependencyDepth, format, includeRelationMetadata }) => {
+            const TOOL_NAME = "export_context";
+
+            // Resolve bundle
+            const loaded = getBundle(bundleId);
+            if (!loaded) {
+                if (!bundleId && !isSingleBundleMode()) {
+                    return toolError(TOOL_NAME, "BAD_REQUEST",
+                        "Multiple bundles loaded. Please specify bundleId.",
+                        { availableBundles: getBundleIds() });
+                }
+                return toolError(TOOL_NAME, "NOT_FOUND",
+                    `Bundle not found: ${bundleId}`, { bundleId });
+            }
+
+            const bundle = loaded.bundle;
+            const maxDepth = Math.min(dependencyDepth ?? 3, 5);
+
+            // Collect all target entities
+            const targetEntities: Entity[] = [];
+            const notFound: Array<{ entityType: string; entityId: string }> = [];
+
+            for (const target of targets) {
+                const entity = bundle.entities.get(target.entityType)?.get(target.entityId);
+                if (entity) {
+                    targetEntities.push(entity);
+                } else {
+                    notFound.push(target);
+                }
+            }
+
+            // If some targets not found, report as error
+            if (notFound.length > 0) {
+                return toolError(TOOL_NAME, "NOT_FOUND",
+                    `Some target entities not found`,
+                    { notFound, bundleId: loaded.id });
+            }
+
+            // Collect dependencies for all targets
+            const visited = new Set<string>();
+            const allDependencies: Entity[] = [];
+
+            // Mark all targets as visited first (so they don't appear in dependencies)
+            for (const target of targetEntities) {
+                visited.add(`${target.entityType}:${target.id}`);
+            }
+
+            // Collect dependencies for each target
+            for (const target of targetEntities) {
+                const deps = collectDependencies(target, bundle, 0, maxDepth, visited);
+                allDependencies.push(...deps);
+            }
+
+            // Helper to get lastModified for an entity
+            const getLastModified = async (entity: Entity): Promise<string> => {
+                // Priority 1: Entity's lastModifiedDate field
+                const data = entity.data as Record<string, unknown>;
+                if (data.lastModifiedDate && typeof data.lastModifiedDate === 'string') {
+                    return data.lastModifiedDate;
+                }
+
+                // Priority 2: File system mtime
+                try {
+                    const fullPath = path.join(loaded.path, entity.filePath);
+                    const stats = await fs.stat(fullPath);
+                    return stats.mtime.toISOString();
+                } catch {
+                    // Fallback to current time if file not accessible
+                    return new Date().toISOString();
+                }
+            };
+
+            // Export entity structure
+            interface ExportedEntity {
+                entityType: string;
+                id: string;
+                data: Record<string, unknown>;
+                lastModified: string;
+            }
+
+            // Build exported entities for targets
+            const exportedTargets: ExportedEntity[] = await Promise.all(
+                targetEntities.map(async (entity) => ({
+                    entityType: entity.entityType,
+                    id: entity.id,
+                    data: entity.data,
+                    lastModified: await getLastModified(entity),
+                }))
+            );
+
+            // Build exported entities for dependencies
+            const exportedDependencies: ExportedEntity[] = await Promise.all(
+                allDependencies.map(async (entity) => ({
+                    entityType: entity.entityType,
+                    id: entity.id,
+                    data: entity.data,
+                    lastModified: await getLastModified(entity),
+                }))
+            );
+
+            // Collect relation edges if requested
+            interface RelationEdge {
+                from: { entityType: string; entityId: string };
+                to: { entityType: string; entityId: string };
+                field: string;
+                displayName: string;
+            }
+
+            const relations: RelationEdge[] = [];
+            if (includeRelationMetadata) {
+                // Get all entity IDs in the export (targets + dependencies)
+                const exportedIds = new Set<string>();
+                for (const e of [...exportedTargets, ...exportedDependencies]) {
+                    exportedIds.add(`${e.entityType}:${e.id}`);
+                }
+
+                // Find all edges where both endpoints are in our export
+                for (const edge of bundle.refGraph.edges) {
+                    const fromKey = `${edge.fromEntityType}:${edge.fromId}`;
+                    const toKey = `${edge.toEntityType}:${edge.toId}`;
+
+                    if (exportedIds.has(fromKey) && exportedIds.has(toKey)) {
+                        // Get display name for the relationship field
+                        const schema = await loadSchema(loaded, edge.fromEntityType);
+                        const props = (schema?.properties ?? {}) as Record<string, Record<string, unknown>>;
+                        const fieldSchema = props[edge.fromField];
+                        const displayName = (fieldSchema?.title || formatFieldName(edge.fromField)) as string;
+
+                        relations.push({
+                            from: { entityType: edge.fromEntityType, entityId: edge.fromId },
+                            to: { entityType: edge.toEntityType, entityId: edge.toId },
+                            field: edge.fromField,
+                            displayName,
+                        });
+                    }
+                }
+            }
+
+            // Collect schemas if requested
+            const schemas: Record<string, Record<string, unknown>> = {};
+            if (includeSchemas) {
+                // Collect unique entity types
+                const entityTypes = new Set<string>();
+                for (const e of [...exportedTargets, ...exportedDependencies]) {
+                    entityTypes.add(e.entityType);
+                }
+
+                // Load each schema
+                for (const entityType of entityTypes) {
+                    const schema = await loadSchema(loaded, entityType);
+                    if (schema) {
+                        schemas[entityType] = schema;
+                    }
+                }
+            }
+
+            // Build the export response
+            const exportData = {
+                exportMeta: {
+                    bundleId: loaded.id,
+                    bundleName: bundle.manifest.metadata.name,
+                    exportedAt: new Date().toISOString(),
+                    targetCount: exportedTargets.length,
+                    dependencyCount: exportedDependencies.length,
+                    totalEntities: exportedTargets.length + exportedDependencies.length,
+                    format: format ?? "json",
+                    version: "1.0" as const,
+                },
+                targets: exportedTargets,
+                dependencies: exportedDependencies,
+                relations,
+                ...(includeSchemas && Object.keys(schemas).length > 0 ? { schemas } : {}),
+            };
+
+            // Format output
+            let outputData: unknown;
+            if (format === "yaml") {
+                // For YAML, we return the object and let the agent handle serialization
+                // (or we could use js-yaml here, but keeping deps minimal)
+                outputData = exportData;
+            } else {
+                outputData = exportData;
+            }
+
+            return toolSuccess(TOOL_NAME, outputData, {
+                bundleId: loaded.id,
+                meta: {
+                    targetCount: exportedTargets.length,
+                    dependencyCount: exportedDependencies.length,
+                    relationCount: relations.length,
+                    schemaCount: Object.keys(schemas).length,
+                },
+            });
+        }
+    );
 }

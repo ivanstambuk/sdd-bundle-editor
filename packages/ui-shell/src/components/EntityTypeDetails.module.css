@@ -71,6 +71,20 @@
     font-weight: 500;
 }
 
+.tabBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    padding: 0 6px;
+    margin-left: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    background: var(--color-bg-tertiary);
+    border-radius: 999px;
+    color: var(--color-text-muted);
+}
+
 .body {
     flex: 1;
     overflow-y: auto;

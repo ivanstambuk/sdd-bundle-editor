@@ -12,14 +12,14 @@ interface EntityTypeDetailsProps {
     entityType: string | null;
 }
 
-type EntityTypeTab = 'details' | 'json';
+type EntityTypeTab = 'overview' | 'properties' | 'json';
 
 /**
  * EntityTypeDetails - Shows the schema for an entity type (not an individual entity).
  * Displayed when clicking on an entity type header in the navigator.
  */
 export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps) {
-    const [activeTab, setActiveTab] = useState<EntityTypeTab>('details');
+    const [activeTab, setActiveTab] = useState<EntityTypeTab>('overview');
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
     if (!bundle || !entityType) {
@@ -62,6 +62,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
     const displayHint = schema['x-sdd-displayHint'] as string | undefined;
     const required = (schema.required as string[]) || [];
     const properties = (schema.properties as Record<string, any>) || {};
+    const propertyCount = Object.keys(properties).length;
 
     // Extract schema metadata for header display and references
     const meta = schema['x-sdd-meta'] as {
@@ -84,8 +85,8 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
         }
     };
 
-    // Render the Details tab content
-    const renderDetailsTab = () => {
+    // Render the Overview tab content (schema info, tags, references)
+    const renderOverviewTab = () => {
         return (
             <>
                 {/* Schema overview */}
@@ -141,55 +142,58 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                         </ul>
                     </section>
                 )}
-
-                {/* Properties table */}
-                <section className={styles.section}>
-                    <h3>Properties ({Object.keys(properties).length})</h3>
-                    <div className={styles.properties}>
-                        <table className={styles.propertiesTable}>
-                            <thead>
-                                <tr>
-                                    <th>Property</th>
-                                    <th>Type</th>
-                                    <th>Required</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Object.entries(properties).map(([propName, propSchema]) => {
-                                    const ps = propSchema as any;
-                                    const type = ps.type || 'any';
-                                    const isRequired = required.includes(propName);
-                                    const desc = ps.description || '—';
-                                    const format = ps.format ? ` (${ps.format})` : '';
-                                    const enumValues = ps.enum ? `: ${ps.enum.join(' | ')}` : '';
-
-                                    return (
-                                        <tr key={propName}>
-                                            <td>
-                                                <code className={styles.propertyName}>{propName}</code>
-                                            </td>
-                                            <td>
-                                                <span className={styles.propertyType}>
-                                                    {type}{format}{enumValues}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {isRequired ? (
-                                                    <span className={styles.requiredBadge}>required</span>
-                                                ) : (
-                                                    <span className={styles.optionalBadge}>optional</span>
-                                                )}
-                                            </td>
-                                            <td className={styles.propertyDesc}>{desc}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
             </>
+        );
+    };
+
+    // Render the Properties tab content (property table)
+    const renderPropertiesTab = () => {
+        return (
+            <section className={styles.section}>
+                <div className={styles.properties}>
+                    <table className={styles.propertiesTable}>
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(properties).map(([propName, propSchema]) => {
+                                const ps = propSchema as any;
+                                const type = ps.type || 'any';
+                                const isRequired = required.includes(propName);
+                                const desc = ps.description || '—';
+                                const format = ps.format ? ` (${ps.format})` : '';
+                                const enumValues = ps.enum ? `: ${ps.enum.join(' | ')}` : '';
+
+                                return (
+                                    <tr key={propName}>
+                                        <td>
+                                            <code className={styles.propertyName}>{propName}</code>
+                                        </td>
+                                        <td>
+                                            <span className={styles.propertyType}>
+                                                {type}{format}{enumValues}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {isRequired ? (
+                                                <span className={styles.requiredBadge}>required</span>
+                                            ) : (
+                                                <span className={styles.optionalBadge}>optional</span>
+                                            )}
+                                        </td>
+                                        <td className={styles.propertyDesc}>{desc}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         );
     };
 
@@ -227,11 +231,19 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
             <div className={styles.tabs}>
                 <button
                     type="button"
-                    className={`${styles.tab} ${activeTab === 'details' ? styles.tabActive : ''}`}
-                    onClick={() => setActiveTab('details')}
-                    data-testid="tab-details"
+                    className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('overview')}
+                    data-testid="tab-overview"
                 >
-                    📋 Details
+                    📋 Overview
+                </button>
+                <button
+                    type="button"
+                    className={`${styles.tab} ${activeTab === 'properties' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('properties')}
+                    data-testid="tab-properties"
+                >
+                    📦 Properties <span className={styles.tabBadge}>{propertyCount}</span>
                 </button>
                 <button
                     type="button"
@@ -244,7 +256,8 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
             </div>
 
             <div className={styles.body}>
-                {activeTab === 'details' && renderDetailsTab()}
+                {activeTab === 'overview' && renderOverviewTab()}
+                {activeTab === 'properties' && renderPropertiesTab()}
                 {activeTab === 'json' && renderJsonTab()}
             </div>
         </div>

@@ -100,10 +100,11 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 
 ### Relationship Direction
 
-- **Dependency**
-  - An entity that the target entity **depends on** (needed to implement/fulfill the target).
+- **Dependency** (in implementation context)
+  - An entity you need to **read/understand** to implement/fulfill the target.
   - Found by reading the target's reference fields (`x-sdd-refTargets`).
-  - Example: Requirement is a dependency of Feature (Feature depends on Requirement).
+  - Example: Requirement is an implementation dependency of Feature (you need to read the Requirement to implement the Feature).
+  - ⚠️ **Note**: This is different from semantic governance - see "Three Perspectives" below.
 
 - **Referrer**
   - An entity that **depends on** the target (the target is referenced by that entity).
@@ -142,7 +143,23 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 | Outgoing edge (from target) | Dependency | Feature → Requirement |
 | Incoming edge (to target) | Referrer | Component → Feature |
 
-**Key insight**: Our convention aligns graph direction with implementation needs. The entity's "outgoing edges" (its reference fields) point to its "dependencies" (what it needs).
+**Key insight**: Our convention aligns graph direction with implementation needs. The entity's "outgoing edges" (its reference fields) point to its "dependencies" (what it needs to read to be implemented).
+
+### ⚠️ Three Perspectives on "Dependency"
+
+The word "dependency" is overloaded. In SDD Bundle Editor, we use it specifically for **implementation context**:
+
+| Perspective | Direction | Example | Description |
+|-------------|-----------|---------|-------------|
+| **Reference direction** | Feature → Requirement | Feature holds the ref | Where the pointer lives |
+| **Governance direction** | Requirement → Feature | Requirement dictates Feature | Who constrains whom semantically |
+| **Implementation context** ✅ | Feature reads Requirement | You need Requirement to build Feature | **Our definition of "dependency"** |
+
+**Why this matters for `export_context`:**
+- When implementing Feature X, you need to understand its governing Requirements
+- Feature holds refs to Requirements (Target-Holds-Reference convention)
+- So Feature's "dependencies" = its reference targets = what you need to read
+- The Requirement semantically governs Feature, but Feature is the implementable unit that needs context
 
 ---
 

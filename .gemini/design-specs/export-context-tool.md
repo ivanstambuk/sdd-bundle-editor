@@ -232,13 +232,21 @@ const entityTypes = new Set([
 
 ### Terminology Clarification
 
+The word "dependency" is overloaded. This tool uses **implementation context dependency**:
+
+| Perspective | Direction | Example | Our Use? |
+|-------------|-----------|---------|----------|
+| **Reference direction** | Feature → Requirement | Feature holds the ref field | — |
+| **Governance direction** | Requirement → Feature | Requirement dictates Feature | — |
+| **Implementation context** | Feature reads Requirement | You need Requirement to build Feature | ✅ **This** |
+
 | Term | Meaning | Example |
 |------|---------|----------|
-| **Dependency** | An entity that the target entity depends on (referenced via its fields) | Requirement is a dependency of Feature |
-| **Referrer** | An entity that depends on the target (the target is referenced by that entity) | Component is a referrer of Feature |
-| **Reference field** | A field with `x-sdd-refTargets` that contains IDs of other entities | `Feature.realizesRequirementIds` |
+| **Dependency** | Entity you need to **read** to implement the target | Requirement is a dependency of Feature |
+| **Referrer** | Entity that needs the target (target is referenced by it) | Component is a referrer of Feature |
+| **Reference field** | Field with `x-sdd-refTargets` containing IDs | `Feature.realizesRequirementIds` |
 
-This tool collects **dependencies** (what the target needs), not **referrers** (what needs the target).
+This tool collects **dependencies** (what the target needs to read), not **referrers** (what needs the target).
 
 ### Finalized Decisions
 

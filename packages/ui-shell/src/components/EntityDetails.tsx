@@ -701,7 +701,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         </div>
 
         {/* Sub-tab content */}
-        <div className="entity-subtab-content">
+        <div className={styles.subtabContent}>
           {currentSubTabSchema ? (
             <AnyForm
               className={rjsfStyles.rjsf}
@@ -780,7 +780,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     entityConfigs={entityConfigs}
                   />
                   <span className={styles.graphNodeId}>{edge.toId}</span>
-                  <span className="graph-field">({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
+                  <span className={styles.graphField}>({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
                 </button>
               ))}
             </div>
@@ -813,7 +813,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         ))}
 
         {outgoing.length === 0 && incoming.length === 0 && (
-          <div className="reference-empty">No dependencies</div>
+          <div className={styles.referenceEmpty}>No dependencies</div>
         )}
       </div>
     );
@@ -898,7 +898,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             entityType={entity.entityType}
             entityConfigs={entityConfigs}
           />
-          <span className="entity-id">{entity.id}</span>
+          <span className={styles.entityId}>{entity.id}</span>
         </div>
 
         {/* Header status badges - enums with x-sdd-enumStyles go next to entity type */}
@@ -906,7 +906,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
         {/* Header metadata - dates and text fields on the right */}
         {headerMetadataFields.filter(f => !f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
-          <div className="entity-header-metadata">
+          <div className={styles.headerMetadata}>
             {headerMetadataFields
               .filter(f => !f.fieldSchema?.['x-sdd-enumStyles'])
               .map((field, idx, arr) => {
@@ -931,20 +931,20 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                 }
 
                 return (
-                  <span key={field.fieldName} className="header-metadata-item">
-                    <span className="header-metadata-label">{field.label}:</span>
-                    <span className="header-metadata-value">{displayValue || '—'}</span>
-                    {idx < arr.length - 1 && <span className="header-metadata-sep">·</span>}
+                  <span key={field.fieldName} className={styles.metadataItem}>
+                    <span className={styles.metadataLabel}>{field.label}:</span>
+                    <span className={styles.metadataValue}>{displayValue || '—'}</span>
+                    {idx < arr.length - 1 && <span className={styles.metadataSep}>·</span>}
                   </span>
                 );
               })}
           </div>
         )}
 
-        <div className="entity-header-actions">
+        <div className={styles.headerActions}>
           <button
             type="button"
-            className="export-button"
+            className={styles.exportButton}
             onClick={() => {
               const result = exportEntityToMarkdown(entity, bundle, { includeDependencies: true });
               const filename = `${entity.id}.md`;
@@ -955,9 +955,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             📄 Export
           </button>
           {hasDiagnostics && (
-            <span className="diagnostics-badge" title={`${errorCount} errors, ${warningCount} warnings`}>
-              {errorCount > 0 && <span className="error-count">⛔ {errorCount}</span>}
-              {warningCount > 0 && <span className="warning-count">⚠️ {warningCount}</span>}
+            <span className={styles.diagnosticsBadge} title={`${errorCount} errors, ${warningCount} warnings`}>
+              {errorCount > 0 && <span className={styles.errorCount}>⛔ {errorCount}</span>}
+              {warningCount > 0 && <span className={styles.warningCount}>⚠️ {warningCount}</span>}
             </span>
           )}
         </div>

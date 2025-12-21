@@ -38,7 +38,7 @@ const validator = customizeValidator({
       'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
       // Visual hierarchy keywords
       'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
-      'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-showLabelInBadge',
+      'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-showLabelInBadge', 'x-sdd-enumTitles',
       // Schema metadata keyword
       'x-sdd-meta'
     ],
@@ -466,11 +466,21 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
   // Custom select widget - shows tooltip with description for current value
-  // In read-only mode with x-sdd-enumStyles, renders as a colored badge
+  // Uses x-sdd-enumTitles for display, x-sdd-enumDescriptions for tooltips
   const CustomSelectWidget = (props: any) => {
     const { id, value, onChange, options, disabled, readonly, schema } = props;
+    const enumTitles = schema?.['x-sdd-enumTitles'] as Record<string, string> | undefined;
     const enumDescriptions = schema?.['x-sdd-enumDescriptions'] as Record<string, string> | undefined;
     const enumStyles = schema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
+
+    // Get display title: enumTitles > humanized value
+    const getDisplayTitle = (val: string) => {
+      if (enumTitles?.[val]) return enumTitles[val];
+      // Humanize: "user-experience" -> "User Experience"
+      return val.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
+    const currentTitle = value ? getDisplayTitle(value) : '';
     const currentDescription = enumDescriptions?.[value];
 
     // In read-only mode with enum styles, render as a colored badge (for header fields)
@@ -481,7 +491,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       return (
         <div className={rjsfStyles.enumBadgeContainer}>
           <span className={colorClass}>
-            {value}
+            {currentTitle}
           </span>
           {currentDescription && (
             <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
@@ -492,19 +502,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       );
     }
 
-    // In read-only mode with descriptions (but no styles), show description text directly
-    if ((readonly || disabled) && currentDescription) {
-      return (
-        <div className={rjsfStyles.enumValueDisplay}>
-          <span className={rjsfStyles.enumValueText}>{currentDescription}</span>
-          <span className={rjsfStyles.fieldHelpIcon} title={`Value: ${value}`}>
-            ⓘ
-          </span>
-        </div>
-      );
-    }
-
-    // Default: editable dropdown
+    // All other enums: dropdown (disabled in read-only mode) with titles as labels
     return (
       <div className={rjsfStyles.selectWithTooltip}>
         <select
@@ -515,8 +513,12 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
         >
           <option value="">Select...</option>
           {options.enumOptions?.map((opt: any) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
+            <option
+              key={opt.value}
+              value={opt.value}
+              title={enumDescriptions?.[opt.value]}
+            >
+              {getDisplayTitle(opt.value)}
             </option>
           ))}
         </select>

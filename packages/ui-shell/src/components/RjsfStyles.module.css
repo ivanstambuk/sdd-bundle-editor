@@ -71,6 +71,12 @@
     border: none;
     border-radius: 0;
     background: transparent;
+    width: 100%;
+}
+
+/* Ensure inputs in bullet items fill the width */
+.bulletItem .arrayItemContent input {
+    width: 100%;
 }
 
 .arrayAddBtn {
@@ -97,18 +103,25 @@
 .chips {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
 }
 
 .chip {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-sm);
+    padding: 4px 12px;
+    background: var(--color-accent-light);
+    border: 1px solid var(--color-accent);
+    border-radius: 999px;
     font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-weight: 500;
+    color: var(--color-accent);
+    transition: all var(--transition-fast);
+}
+
+.chip:hover {
+    background: var(--color-accent);
+    color: var(--color-bg-primary);
 }
 
 .chipsEmpty {
@@ -137,11 +150,33 @@
     align-items: flex-start;
     gap: var(--spacing-sm);
     padding: var(--spacing-xs) 0;
+    line-height: 1.5;
+}
+
+/* Ensure the input wrapper expands to fill available width */
+.bulletItem>* {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Default bullet when no indicator specified */
+.bulletItem::before {
+    content: '•';
+    color: var(--color-accent);
+    font-weight: bold;
+    flex-shrink: 0;
+    min-width: 1em;
+}
+
+/* Hide default bullet when custom marker is present */
+.bulletItem:has(.bulletMarker)::before {
+    content: none;
 }
 
 .bulletMarker {
     flex-shrink: 0;
     font-size: 1em;
+    min-width: 1em;
 }
 
 .bulletEmpty {

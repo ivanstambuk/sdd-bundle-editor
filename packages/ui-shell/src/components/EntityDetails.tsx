@@ -22,6 +22,7 @@ import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
 import { EntityDependencyGraph } from './EntityDependencyGraph';
+import { TabbedArrayField } from './TabbedArrayField';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -32,7 +33,7 @@ const validator = customizeValidator({
       'x-sdd-displayHint', 'x-sdd-enumDescriptions',
       'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
       'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
-      'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel',
+      'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
       // Visual hierarchy keywords
       'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
       'x-sdd-enumStyles', 'x-sdd-displayLocation',
@@ -348,48 +349,6 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     </div>
   );
 
-  // Alternatives layout - cards with chosen/rejected badges (e.g., ADR alternatives)
-  const renderAlternativesLayout = (
-    items: any[],
-    formData: any[],
-    choiceField: string,
-    chosenLabel: string,
-    rejectedLabel: string,
-    showAddButton: boolean,
-    onAddClick: () => void
-  ) => (
-    <div className="rjsf-array">
-      {items.map((item: any, index: number) => {
-        const itemData = Array.isArray(formData) ? formData[index] : undefined;
-        const isChosen = itemData?.[choiceField] === true;
-        const itemClass = isChosen
-          ? 'rjsf-array-item rjsf-alternative-item rjsf-alternative-chosen'
-          : 'rjsf-array-item rjsf-alternative-item rjsf-alternative-rejected';
-
-        return (
-          <div key={item.key || index} className={itemClass}>
-            {isChosen && (
-              <div className="rjsf-alternative-badge rjsf-badge-chosen">{chosenLabel}</div>
-            )}
-            {!isChosen && (
-              <div className="rjsf-alternative-badge rjsf-badge-rejected">{rejectedLabel}</div>
-            )}
-            {item.children}
-          </div>
-        );
-      })}
-      {showAddButton && (
-        <button
-          type="button"
-          className="rjsf-array-add-btn"
-          onClick={onAddClick}
-        >
-          + Add Item
-        </button>
-      )}
-    </div>
-  );
-
   // Default array layout - row per item, cards for complex objects
   const renderDefaultArrayLayout = (
     items: any[],
@@ -447,13 +406,17 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       return renderBulletListLayout(items, indicator, showAddButton, onAddClick);
     }
 
-    // Alternatives layout for choice arrays (ADR alternatives)
-    if (layout === 'alternatives') {
-      const choiceField = schema?.['x-sdd-choiceField'] || 'isChosen';
-      const chosenLabel = schema?.['x-sdd-chosenLabel'] || '✓ CHOSEN';
-      const rejectedLabel = schema?.['x-sdd-rejectedLabel'] || 'REJECTED';
-      return renderAlternativesLayout(
-        items, formData, choiceField, chosenLabel, rejectedLabel, showAddButton, onAddClick
+    // Tabbed array layout - render each item as a sub-tab (e.g., ADR alternatives)
+    if (layout === 'tabbedArray') {
+      return (
+        <TabbedArrayField
+          items={items}
+          formData={formData}
+          schema={schema}
+          readOnly={readonly || disabled}
+          canAdd={canAdd}
+          onAddClick={onAddClick}
+        />
       );
     }
 

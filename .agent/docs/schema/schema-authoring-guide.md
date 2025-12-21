@@ -369,41 +369,50 @@ These standard JSON Schema properties also affect rendering:
 
 ---
 
-### Alternatives Layout
+### Tabbed Array Layout
 
-For arrays where one item is "chosen" from multiple options (like ADR alternatives), use the alternatives layout:
+For arrays where items should be navigated as tabs instead of scrolled vertically (e.g., ADR alternatives). This layout renders each array item as a clickable tab, eliminating scrolling and improving navigation.
 
 | Keyword | Type | Default | Description |
 |---------|------|---------|-------------|
-| `x-sdd-layout` | `"alternatives"` | - | Enables alternatives layout |
-| `x-sdd-choiceField` | `string` | `"isChosen"` | Field name that indicates the chosen item |
-| `x-sdd-chosenLabel` | `string` | `"✓ CHOSEN"` | Badge text for chosen item |
-| `x-sdd-rejectedLabel` | `string` | `"REJECTED"` | Badge text for rejected items |
+| `x-sdd-layout` | `"tabbedArray"` | - | Enables tabbed layout |
+| `x-sdd-tabLabelField` | `string` | `"name"` | Property to use as tab label |
+| `x-sdd-choiceField` | `string` | `"isChosen"` | Boolean field indicating chosen item (optional) |
 
 **Example:**
 ```json
 "alternativesConsidered": {
   "type": "array",
-  "x-sdd-layout": "alternatives",
+  "x-sdd-layout": "tabbedArray",
+  "x-sdd-tabLabelField": "name",
   "x-sdd-choiceField": "isChosen",
-  "x-sdd-chosenLabel": "✓ CHOSEN",
-  "x-sdd-rejectedLabel": "REJECTED",
   "items": {
     "type": "object",
     "properties": {
       "name": { "type": "string" },
-      "isChosen": { "type": "boolean" },
-      "reasonRejected": { "type": "string" }
+      "description": { "type": "string" },
+      "isChosen": { "type": "boolean", "x-sdd-displayHint": "hidden" },
+      "pros": { "type": "array", "items": { "type": "string" } },
+      "cons": { "type": "array", "items": { "type": "string" } }
     }
   }
 }
 ```
 
 **Visual behavior:**
-- Chosen item: Green border, prominent badge, hidden redundant fields
-- Rejected items: Dimmed styling, "REJECTED" badge, shows rejection reason
+- Each array item becomes a clickable tab
+- If `x-sdd-choiceField` is set, the **chosen item appears first** with green styling and ✓ checkmark
+- Rejected items follow in their original order
+- Clicking a tab shows that item's content (no scrolling needed)
+- Tab labels are truncated with ellipsis if too long
+
+**When to use:**
+- Arrays with 2+ complex items (objects with multiple fields)
+- When each item has substantial content that benefits from full-viewport display
+- Decision/choice arrays where one item is "chosen"
 
 ---
+
 
 ### Bullet List Layout
 

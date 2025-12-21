@@ -91,6 +91,18 @@ Navigate to http://localhost:5173 and verify:
 3. **Check edge cases** - Empty values, long text, different entity types
 4. **Compare before/after** - Visual regression detection
 
+## CRITICAL: Self-Validation Rule
+
+**NEVER ask the user to refresh and validate UI changes before validating yourself via browser agent.**
+
+After ANY CSS, layout, or visual change:
+1. ALWAYS run browser_subagent to verify the change worked correctly
+2. ALWAYS check for regressions (overlapping elements, spacing issues, alignment)
+3. ONLY after successful self-validation, confirm to the user what was fixed
+4. If issues are found, fix them and re-validate before reporting to user
+
+Violations of this rule waste user time and create poor user experience.
+
 ## Recording Names Convention
 Use descriptive names: `{component}_{action}_{state}`
 - `date_widget_validation`

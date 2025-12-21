@@ -130,6 +130,11 @@ See `.agent/workflows/` for detailed instructions.
    - Verify tests pass
    - This prevents regressions and documents expected behavior
 8. **Implement Now, Don't Defer**: When the user expresses interest in a feature or asks "what do you think about X?", **always offer to implement it now**. NEVER suggest "add to IMPLEMENTATION_TRACKER for later". The tracker is for the user's own backlog management, not for agent-suggested deferrals. If you think the feature is complex, break it into phases and offer to start with phase 1.
+9. **Notify User When Awaiting Input**: At the END of every response where you are handing control back to the user (awaiting further input), you MUST send a notification:
+   ```bash
+   /usr/local/bin/codex-notify '{"type": "agent-turn-complete", "last-assistant-message": "[Gemini] Brief summary"}'
+   ```
+   This alerts the user that you've completed your work and are waiting. **No exceptions** - always notify.
 
 
 ---

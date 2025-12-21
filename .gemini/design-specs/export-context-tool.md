@@ -178,10 +178,12 @@ interface RelationEdge {
 
 ### Dependency Collection Algorithm
 
+We follow the **Target-Holds-Reference** convention: each entity holds references to what it depends on. This means traversing the entity's reference fields to find its dependencies.
+
 1. Start with target entities
-2. For each entity, traverse `refGraph.edges` to find outgoing references
-3. Recursively collect until `dependencyDepth` is reached
-4. De-duplicate across all targets (entity may be dep of multiple targets)
+2. For each entity, read its reference fields (`x-sdd-refTargets`) to find the entities it depends on
+3. Recursively collect dependencies until `dependencyDepth` is reached
+4. De-duplicate across all targets (the same entity may be a dependency of multiple targets)
 5. Separate into `targets` (explicitly requested) vs `dependencies` (collected via traversal)
 
 ### Reuse from Existing Code
@@ -226,32 +228,28 @@ const entityTypes = new Set([
 
 ---
 
-## Open Questions
+## Decisions (Finalized)
 
-1. **Should we include "incoming" dependencies (what references the target)?**
-   - Current proposal: only outgoing (what the target references)
-   - Could add `direction: "outgoing" | "both"` parameter
+### Terminology Clarification
 
-2. **File output option?**
-   - Could add `outputPath` to write directly to filesystem
-   - Useful for CI/automation, but adds complexity
+| Term | Meaning | Example |
+|------|---------|----------|
+| **Dependency** | An entity that the target entity depends on (referenced via its fields) | Requirement is a dependency of Feature |
+| **Referrer** | An entity that depends on the target (the target is referenced by that entity) | Component is a referrer of Feature |
+| **Reference field** | A field with `x-sdd-refTargets` that contains IDs of other entities | `Feature.realizesRequirementIds` |
 
-3. **Filtering by entity type in dependencies?**
-   - Could add `includeDependencyTypes: string[]` to limit which types are collected
-   - Prevents explosion when traversing highly-connected graphs
+This tool collects **dependencies** (what the target needs), not **referrers** (what needs the target).
 
----
+### Finalized Decisions
 
-## Decision Points for User
-
-Before implementing:
-
-1. ✅ Targets as explicit array (vs. entityType/entityId single entity)
-2. ✅ JSON/YAML format option
-3. ✅ Include schemas by default
-4. ⚠️ **Outgoing-only vs both directions** - need your input
-5. ⚠️ **File output option** - need your input
+1. ✅ **Targets as explicit array** - Multiple entities in one export
+2. ✅ **JSON/YAML format option** - Both supported
+3. ✅ **Include schemas by default** - `includeSchemas: true`
+4. ✅ **Dependencies only (not referrers)** - Only traverse what the target references, not what references the target. If Feature references Requirement, include Requirement. Don't include Components that happen to reference Feature.
+5. ✅ **No file output** - Standard MCP response envelope, in-memory. Agents handle persistence if needed.
+6. ✅ **No entity type filtering (v1)** - Collect all dependency types. If graph explosion becomes a problem, add `includeDependencyTypes` parameter later.
 
 ---
 
-*Design spec created: 2025-12-20*
+*Design spec created: 2025-12-20*  
+*Decisions finalized: 2025-12-21*

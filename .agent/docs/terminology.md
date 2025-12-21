@@ -1,6 +1,6 @@
 # SDD Bundle Editor – Terminology
 
-Status: Living Document | Last updated: 2025-12-20
+Status: Living Document | Last updated: 2025-12-21
 
 This document defines common terms used across the SDD Bundle Editor docs and specs to ensure consistent vocabulary. As new terms are introduced, this document should be updated.
 
@@ -96,6 +96,56 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 
 ---
 
+## Graph & Dependency Concepts
+
+### Relationship Direction
+
+- **Dependency**
+  - An entity that the target entity **depends on** (needed to implement/fulfill the target).
+  - Found by reading the target's reference fields (`x-sdd-refTargets`).
+  - Example: Requirement is a dependency of Feature (Feature depends on Requirement).
+
+- **Referrer**
+  - An entity that **depends on** the target (the target is referenced by that entity).
+  - Not directly discoverable from the target's fields; requires scanning other entities.
+  - Example: Component is a referrer of Feature (Component references Feature).
+
+- **Reference Field**
+  - A field with `format: "sdd-ref"` and `x-sdd-refTargets` that contains IDs of other entities.
+  - The entity holding the reference field is the **source** of the relationship.
+  - Example: `Feature.realizesRequirementIds` is a reference field on Feature pointing to Requirements.
+
+### Semantic Classification
+
+- **Upstream / Governor**
+  - Entities that constrain, govern, or specify other entities.
+  - Examples: ADR, Requirement, Constraint, Policy, Principle, Decision.
+  - These entities typically **receive** references (are dependencies of downstream entities).
+
+- **Downstream / Implementable**
+  - Entities that are constrained, governed, or implement upstream specs.
+  - Examples: Feature, Component, Protocol, Scenario.
+  - These entities typically **hold** references to their upstream governors.
+
+### Target-Holds-Reference Convention
+
+- **Target-Holds-Reference**
+  - The canonical convention for relationship direction in SDD bundles.
+  - Rule: The entity being **constrained/governed** holds the reference to its **constraints/governors**.
+  - Rationale: To find everything needed to implement Feature X, look at Feature X's reference fields.
+  - See: [Schema Authoring Guide](schema/schema-authoring-guide.md#relationship-direction-convention).
+
+### Graph Direction vs Implementation Semantics
+
+| Graph Term | Implementation Term | Example |
+|------------|---------------------|---------|
+| Outgoing edge (from target) | Dependency | Feature → Requirement |
+| Incoming edge (to target) | Referrer | Component → Feature |
+
+**Key insight**: Our convention aligns graph direction with implementation needs. The entity's "outgoing edges" (its reference fields) point to its "dependencies" (what it needs).
+
+---
+
 ## Architecture Components
 
 ### Packages
@@ -164,6 +214,8 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 | Prominence | Importance, Priority | UI-specific term |
 | Layout Group | Tab Group, Section | Matches schema keyword |
 | Header Metadata | Header Fields, System Fields | Precise term |
+| Dependency | Outgoing reference | Implementation perspective |
+| Referrer | Incoming reference | Implementation perspective |
 
 ### When Introducing New Terms
 

@@ -21,7 +21,25 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        // CSS Modules - for .module.css files
+        test: /\.module\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]--[hash:base64:5]',
+                namedExport: false, // Use default export with class names object
+              },
+            },
+          },
+        ],
+      },
+      {
+        // Regular CSS - for non-module .css files
         test: /\.css$/,
+        exclude: /\.module\.css$/,
         use: ['style-loader', 'css-loader'],
       },
     ],

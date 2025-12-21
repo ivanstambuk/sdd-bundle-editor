@@ -1,0 +1,23 @@
+/* Breadcrumb.module.css */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.item {
+    color: var(--color-text-secondary);
+}
+
+.current {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.separator {
+    color: var(--color-text-muted);
+    user-select: none;
+}

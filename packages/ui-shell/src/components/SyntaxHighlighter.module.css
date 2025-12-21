@@ -1,0 +1,71 @@
+/* SyntaxHighlighter.module.css */
+
+.codeBlock {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin: 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    white-space: pre;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.codeBlock code {
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+}
+
+/* YAML syntax highlighting */
+.codeBlock :global(.token.key),
+.codeBlock :global(.token.atrule) {
+    color: var(--syntax-key);
+}
+
+.codeBlock :global(.token.string) {
+    color: var(--syntax-string);
+}
+
+.codeBlock :global(.token.number),
+.codeBlock :global(.token.boolean) {
+    color: var(--syntax-number);
+}
+
+.codeBlock :global(.token.punctuation) {
+    color: var(--syntax-punctuation);
+}
+
+.codeBlock :global(.token.comment) {
+    color: var(--syntax-comment);
+    font-style: italic;
+}
+
+.codeBlock :global(.token.null),
+.codeBlock :global(.token.keyword) {
+    color: var(--syntax-boolean);
+}
+
+.codeBlock :global(.token.anchor),
+.codeBlock :global(.token.alias) {
+    color: var(--syntax-green);
+}
+
+.codeBlock :global(.token.important) {
+    color: var(--color-error);
+}
+
+/* JSON syntax highlighting */
+.codeBlock :global(.token.property) {
+    color: var(--syntax-key);
+}
+
+.codeBlock :global(.token.operator) {
+    color: var(--syntax-punctuation);
+}

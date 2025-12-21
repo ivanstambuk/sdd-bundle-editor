@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-json';
+import styles from './SyntaxHighlighter.module.css';
 
 export type SyntaxLanguage = 'yaml' | 'json';
 
@@ -35,10 +36,8 @@ export function SyntaxHighlighter({ content, language, className, testId }: Synt
         return Prism.highlight(content, grammar, language);
     }, [content, language]);
 
-    const blockClass = language === 'yaml' ? 'yaml-block' : 'json-block';
-
     return (
-        <pre className={`code-block ${blockClass} ${className || ''}`} data-testid={testId}>
+        <pre className={`${styles.codeBlock} ${className || ''}`} data-testid={testId}>
             <code
                 className={`language-${language}`}
                 dangerouslySetInnerHTML={{ __html: highlightedCode }}

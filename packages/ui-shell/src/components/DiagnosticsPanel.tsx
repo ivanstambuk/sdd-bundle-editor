@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { UiDiagnostic } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural } from '../utils/schemaMetadata';
+import styles from './DiagnosticsPanel.module.css';
 
 interface DiagnosticsPanelProps {
   diagnostics: UiDiagnostic[];
@@ -37,9 +38,9 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
 
   if (!diagnostics.length) {
     return (
-      <div className="diagnostics-panel">
-        <div className="diagnostics-empty">
-          <span className="diagnostics-empty-icon">✓</span>
+      <div className={styles.panel}>
+        <div className={styles.empty}>
+          <span className={styles.emptyIcon}>✓</span>
           <span>No diagnostics.</span>
         </div>
       </div>
@@ -64,16 +65,16 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
   );
 
   return (
-    <div className="diagnostics-panel">
-      <div className="diagnostics-header">
-        <h2 className="diagnostics-title">Diagnostics</h2>
-        <span className="diagnostics-count">
+    <div className={styles.panel}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Diagnostics</h2>
+        <span className={styles.count}>
           {filteredDiagnostics.length} of {diagnostics.length} issue{diagnostics.length !== 1 ? 's' : ''}
         </span>
 
-        <div className="diagnostics-filters">
+        <div className={styles.filters}>
           <select
-            className="filter-select"
+            className={styles.filterSelect}
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value as 'all' | 'error' | 'warning')}
             data-testid="severity-filter"
@@ -84,7 +85,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
           </select>
 
           <select
-            className="filter-select"
+            className={styles.filterSelect}
             value={entityTypeFilter}
             onChange={(e) => setEntityTypeFilter(e.target.value)}
             data-testid="entity-type-filter"
@@ -98,25 +99,25 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
       </div>
 
       {filteredDiagnostics.length === 0 ? (
-        <div className="diagnostics-empty">
-          <span className="diagnostics-empty-icon">🔍</span>
+        <div className={styles.empty}>
+          <span className={styles.emptyIcon}>🔍</span>
           <span>No diagnostics match the current filters.</span>
         </div>
       ) : (
         groups.map(([entityType, group]) => (
-          <div key={entityType} className="diagnostic-group">
-            <h3 className="diagnostic-group-title">{getDisplayNamePlural(entityType)}</h3>
-            <ul className="diagnostic-list">
+          <div key={entityType} className={styles.group}>
+            <h3 className={styles.groupTitle}>{getDisplayNamePlural(entityType)}</h3>
+            <ul className={styles.list}>
               {group.map((d, idx) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <li key={idx} className={`diagnostic-item ${d.severity}`}>
-                  <span className="diagnostic-severity">{d.severity}</span>
-                  <span className="diagnostic-message">
+                <li key={idx} className={`${styles.item} ${d.severity === 'error' ? styles.itemError : styles.itemWarning}`}>
+                  <span className={`${styles.severity} ${d.severity === 'error' ? styles.severityError : styles.severityWarning}`}>{d.severity}</span>
+                  <span className={styles.message}>
                     {d.message}
                     {d.entityId && d.entityType && (
                       <> (<button
                         type="button"
-                        className="diagnostic-entity-link"
+                        className={styles.entityLink}
                         onClick={() => onNavigate?.(d.entityType!, d.entityId!)}
                         data-testid={`diagnostic-link-${d.entityId}`}
                       >
@@ -125,7 +126,7 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
                     )}
                     {d.path && <> @ {d.path}</>}
                   </span>
-                  {d.code && <span className="diagnostic-code">[{d.code}]</span>}
+                  {d.code && <span className={styles.code}>[{d.code}]</span>}
                 </li>
               ))}
             </ul>
@@ -135,3 +136,4 @@ export function DiagnosticsPanel({ diagnostics, entityTypes, schemas, onNavigate
     </div>
   );
 }
+

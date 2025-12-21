@@ -5,6 +5,8 @@
  * Provides consistent styling across the application.
  */
 
+import styles from './EmptyState.module.css';
+
 interface EmptyStateProps {
     /** Icon to display (emoji or react node) */
     icon: React.ReactNode;
@@ -18,10 +20,11 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, message, hint, className = '' }: EmptyStateProps) {
     return (
-        <div className={`empty-state ${className}`}>
-            <div className="empty-state-icon">{icon}</div>
-            <div className="empty-state-message">{message}</div>
-            {hint && <div className="empty-state-hint">{hint}</div>}
+        <div className={`${styles.container} ${className}`}>
+            <div className={styles.icon}>{icon}</div>
+            <div className={styles.message}>{message}</div>
+            {hint && <div className={styles.hint}>{hint}</div>}
         </div>
     );
 }
+

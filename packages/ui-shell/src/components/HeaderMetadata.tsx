@@ -1,4 +1,5 @@
 import { formatDate } from '../utils/dateUtils';
+import styles from './HeaderMetadata.module.css';
 
 /**
  * Metadata structure for header display.
@@ -32,19 +33,20 @@ export function HeaderMetadata({ meta }: HeaderMetadataProps) {
     if (!meta) return null;
 
     return (
-        <div className="entity-header-metadata">
-            <span className="header-metadata-item">
-                <span className="header-metadata-label">Created Date:</span>
-                <span className="header-metadata-value">{formatDate(meta.createdDate)}</span>
+        <div className={styles.container}>
+            <span className={styles.item}>
+                <span className={styles.label}>Created Date:</span>
+                <span className={styles.value}>{formatDate(meta.createdDate)}</span>
             </span>
-            <span className="header-metadata-item">
-                <span className="header-metadata-label">Last Modified Date:</span>
-                <span className="header-metadata-value">{formatDate(meta.lastModifiedDate)}</span>
+            <span className={styles.item}>
+                <span className={styles.label}>Last Modified Date:</span>
+                <span className={styles.value}>{formatDate(meta.lastModifiedDate)}</span>
             </span>
-            <span className="header-metadata-item">
-                <span className="header-metadata-label">Modified By:</span>
-                <span className="header-metadata-value">{meta.lastModifiedBy || '—'}</span>
+            <span className={styles.item}>
+                <span className={styles.label}>Modified By:</span>
+                <span className={styles.value}>{meta.lastModifiedBy || '—'}</span>
             </span>
         </div>
     );
 }
+

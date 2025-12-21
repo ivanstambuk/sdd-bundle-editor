@@ -1,0 +1,30 @@
+/* HeaderMetadata.module.css */
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-left: auto;
+    font-size: var(--font-size-xs);
+}
+
+.item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.label {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+
+.value {
+    color: var(--color-text-secondary);
+}
+
+.separator {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    margin: 0 var(--spacing-xs);
+}

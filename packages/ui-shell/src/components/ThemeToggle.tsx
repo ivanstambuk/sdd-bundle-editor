@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import styles from './ThemeToggle.module.css';
 
 type Theme = 'dark' | 'light';
 
@@ -40,7 +41,7 @@ export const ThemeToggle: React.FC = () => {
 
     return (
         <button
-            className="btn-icon theme-toggle"
+            className={styles.button}
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
@@ -49,3 +50,4 @@ export const ThemeToggle: React.FC = () => {
         </button>
     );
 };
+

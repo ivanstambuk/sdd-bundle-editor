@@ -1,3 +1,5 @@
+import styles from './ProminenceHeader.module.css';
+
 interface ProminenceHeaderProps {
     /** The icon to display (emoji or character) */
     icon?: string;
@@ -16,18 +18,19 @@ interface ProminenceHeaderProps {
  * - primary: Important section headers (e.g., Context, Decision)
  * - secondary: Standard field headers (default for most fields)
  * 
- * The visual styling is controlled via CSS classes (.rjsf-prominence-header).
+ * The visual styling is controlled via CSS classes.
  */
 export function ProminenceHeader({ icon, title, description }: ProminenceHeaderProps) {
     return (
-        <div className="rjsf-prominence-header">
-            {icon && <span className="rjsf-prominence-icon">{icon}</span>}
-            <span className="rjsf-prominence-title">{title}</span>
+        <div className={styles.header}>
+            {icon && <span className={styles.icon}>{icon}</span>}
+            <span className={styles.title}>{title}</span>
             {description && (
-                <span className="field-help-icon" title={description}>
+                <span className={styles.helpIcon} title={description}>
                     ⓘ
                 </span>
             )}
         </div>
     );
 }
+

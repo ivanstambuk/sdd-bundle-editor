@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { UiEntityTypeConfig } from '../types';
+import styles from './EntityTypeBadge.module.css';
 
 interface EntityTypeBadgeProps {
     /** The entity type name to display */
@@ -86,7 +87,7 @@ export function EntityTypeBadge({
         return (
             <button
                 type="button"
-                className="entity-type-badge clickable"
+                className={`${styles.badge} ${styles.clickable}`}
                 data-type={entityType}
                 style={style}
                 onClick={onClick}
@@ -99,7 +100,7 @@ export function EntityTypeBadge({
 
     return (
         <span
-            className="entity-type-badge"
+            className={styles.badge}
             data-type={entityType}
             style={style}
             title={title}
@@ -108,3 +109,4 @@ export function EntityTypeBadge({
         </span>
     );
 }
+

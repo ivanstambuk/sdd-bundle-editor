@@ -1,0 +1,26 @@
+/* ThemeToggle.module.css */
+
+.button {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.button:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-accent-light);
+}

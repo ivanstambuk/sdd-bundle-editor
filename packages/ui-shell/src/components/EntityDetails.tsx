@@ -23,6 +23,7 @@ import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
 import { EntityDependencyGraph } from './EntityDependencyGraph';
 import { TabbedArrayField } from './TabbedArrayField';
+import styles from './EntityDetails.module.css';
 
 // Create a custom validator that allows our schema extension keywords
 // Without this, AJV strict mode throws "unknown keyword" errors
@@ -64,11 +65,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   if (!bundle || !entity) {
     return (
-      <div className="entity-details">
-        <div className="entity-placeholder">
-          <div className="entity-placeholder-icon">📄</div>
+      <div className={styles.container}>
+        <div className={styles.placeholder}>
+          <div className={styles.placeholderIcon}>📄</div>
           <div>No entity selected.</div>
-          <div className="text-muted text-sm mt-md">Select an entity from the sidebar to view details.</div>
+          <div className={`${styles.textMuted} ${styles.textSm} ${styles.mtMd}`}>Select an entity from the sidebar to view details.</div>
         </div>
       </div>
     );

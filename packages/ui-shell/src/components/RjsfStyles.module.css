@@ -154,8 +154,9 @@
     display: flex;
     align-items: flex-start;
     gap: var(--spacing-sm);
-    padding: var(--spacing-xs) 0;
-    line-height: 1.5;
+    padding: 2px 0;
+    /* Compact vertical spacing */
+    line-height: 1.4;
 }
 
 /* Ensure the input wrapper expands to fill available width */

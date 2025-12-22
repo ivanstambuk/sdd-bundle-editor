@@ -744,3 +744,52 @@ done | sort | uniq -c | sort -rn
 
 **Why save**: This pattern immediately identified the tooltip bug that visual inspection and DOM attribute checks missed.
 
+---
+
+## CSS Class Usage Audit
+
+**Problem**: CSS files accumulate dead code when components are deleted but their styles remain.
+
+**Use case**: Found ~1150 lines of unused CSS when AgentPanel component was deleted but styles remained. This pattern helps detect such orphaned styles.
+
+### Audit all CSS classes in styles.css
+
+```bash
+# Find CSS class selectors and check if used in source files
+grep -oh '\.[a-z][a-zA-Z0-9_-]*' apps/web/src/styles.css | \
+  sed 's/^\.//' | sort -u | while read cls; do
+    if ! grep -rq "\"$cls\"\|'$cls'\|className.*$cls\|\`.*$cls" \
+      packages/ui-shell/src apps/web/src \
+      --include="*.tsx" --include="*.ts" 2>/dev/null; then
+      echo "UNUSED: .$cls"
+    fi
+done | head -50
+```
+
+### Audit specific section (e.g., agent- prefixed classes)
+
+```bash
+# Check if any agent-related classes are used
+grep -oh '\.agent-[a-zA-Z0-9_-]*' apps/web/src/styles.css | \
+  sed 's/^\.//' | sort -u | while read cls; do
+    if grep -rq "$cls" packages/ui-shell/src --include="*.tsx" 2>/dev/null; then
+      echo "USED: .$cls"
+    else
+      echo "UNUSED: .$cls"
+    fi
+done
+```
+
+### Quick check for orphaned dist files
+
+```bash
+# Find dist files without corresponding source files
+for f in packages/ui-shell/dist/components/*.js; do
+  base=$(basename "$f" .js)
+  if ! ls packages/ui-shell/src/components/"$base".tsx 2>/dev/null; then
+    echo "ORPHAN: $f"
+  fi
+done
+```
+
+**Why save**: Periodic CSS audits can prevent 50%+ bloat accumulation. Use before major releases.

@@ -23,6 +23,7 @@ import { MarkdownWidget } from './MarkdownWidget';
 import { DateWidget } from './DateWidget';
 import { EntityDependencyGraph } from './EntityDependencyGraph';
 import { TabbedArrayField } from './TabbedArrayField';
+import { ReferenceList } from './ReferenceList';
 import styles from './EntityDetails.module.css';
 import rjsfStyles from './RjsfStyles.module.css';
 
@@ -405,6 +406,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // Chips layout for tags and short label arrays
     if (displayHint === 'chips' && Array.isArray(formData)) {
       return renderChipsLayout(formData);
+    }
+
+    // Reference list layout for external references with type chips
+    if (displayHint === 'referenceList' && Array.isArray(formData)) {
+      return <ReferenceList references={formData} showHeader={false} />;
     }
 
     // Bullet list layout for compact string arrays

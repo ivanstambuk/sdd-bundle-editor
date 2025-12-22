@@ -546,14 +546,27 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       );
     }
 
-    // All other enums: dropdown (disabled in read-only mode) with titles as labels
+    // All other enums: dropdown with titles as labels
+    // In read-only mode: dropdown still opens (to see options) but resets on change
+    const isReadOnly = disabled || readonly;
+
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      if (isReadOnly) {
+        // Reset to original value - allows viewing options but not changing
+        e.target.value = value || '';
+        return;
+      }
+      onChange(e.target.value);
+    };
+
     return (
       <div className={rjsfStyles.selectWithTooltip}>
         <select
           id={id}
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled || readonly}
+          onChange={handleChange}
+          className={isReadOnly ? rjsfStyles.selectReadonly : ''}
+          title={isReadOnly ? 'View available options (read-only)' : undefined}
         >
           <option value="">Select...</option>
           {options.enumOptions?.map((opt: any) => (

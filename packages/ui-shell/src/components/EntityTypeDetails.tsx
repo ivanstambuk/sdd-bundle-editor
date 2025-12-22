@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import type { UiBundleSnapshot } from '../types';
 import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import { HeaderMetadata } from './HeaderMetadata';
+import { ReferenceList } from './ReferenceList';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import styles from './EntityTypeDetails.module.css';
 
@@ -126,22 +127,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
 
                 {/* External References (optional, schema-driven) */}
                 {meta?.references && meta.references.length > 0 && (
-                    <section className={styles.section}>
-                        <h3>External References</h3>
-                        <ul className={styles.references}>
-                            {meta.references.map((ref, idx) => (
-                                <li key={idx} className={styles.reference}>
-                                    <span className={styles.referenceBullet}>•</span>
-                                    {ref.type && (
-                                        <span className={styles.referenceType}>{ref.type}</span>
-                                    )}
-                                    <a href={ref.url} target="_blank" rel="noopener noreferrer">
-                                        {ref.label}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
+                    <ReferenceList references={meta.references} />
                 )}
             </>
         );

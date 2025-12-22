@@ -200,9 +200,14 @@
 .referenceType {
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
-    padding: 1px 4px;
+    padding: 1px 6px;
     background: var(--color-bg-tertiary);
     border-radius: var(--radius-sm);
+}
+
+.referenceBullet {
+    color: var(--color-text-muted);
+    flex-shrink: 0;
 }
 
 /* Properties Table */

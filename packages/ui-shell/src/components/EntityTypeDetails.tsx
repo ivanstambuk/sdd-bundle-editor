@@ -131,12 +131,13 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
                         <ul className={styles.references}>
                             {meta.references.map((ref, idx) => (
                                 <li key={idx} className={styles.reference}>
-                                    <a href={ref.url} target="_blank" rel="noopener noreferrer">
-                                        {ref.label}
-                                    </a>
+                                    <span className={styles.referenceBullet}>•</span>
                                     {ref.type && (
                                         <span className={styles.referenceType}>{ref.type}</span>
                                     )}
+                                    <a href={ref.url} target="_blank" rel="noopener noreferrer">
+                                        {ref.label}
+                                    </a>
                                 </li>
                             ))}
                         </ul>

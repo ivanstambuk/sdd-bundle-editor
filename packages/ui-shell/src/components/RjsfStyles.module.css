@@ -285,8 +285,6 @@
 /* Read-only select: can be opened to view options, but changes are prevented */
 .selectReadonly {
     cursor: default;
-    background: var(--color-bg-secondary) !important;
-    border-style: dashed !important;
 }
 
 .enumDescription {

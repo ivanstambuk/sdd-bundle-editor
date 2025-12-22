@@ -68,11 +68,12 @@
 .array {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
+    gap: 2px;
+    /* Tight spacing for continuous text feel */
 }
 
 .arrayItemContent {
-    padding: var(--spacing-xs) 0;
+    padding: 0;
     border: none;
     border-radius: 0;
     background: transparent;

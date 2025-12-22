@@ -54,7 +54,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     // Define tabs with badges (merged relationships + map into one)
     const tabs: Tab[] = useMemo(() => [
-        { id: 'details', label: '📋 Details', testId: 'details' },
+        { id: 'details', label: '📋 Properties', testId: 'details' },
         { id: 'entityTypes', label: '🏷️ Entity Types', badge: entityTypes.length, testId: 'entity-types' },
         { id: 'relationships', label: '🔗 Relationships', badge: relations.length > 0 ? relations.length : undefined, testId: 'relationships' },
         { id: 'rawSchema', label: '📄 Raw Schema', testId: 'raw-schema' },

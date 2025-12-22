@@ -1043,7 +1043,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           onClick={() => setActiveTab('details')}
           data-testid="tab-details"
         >
-          📋 Details
+          📋 Properties
         </button>
         <button
           type="button"

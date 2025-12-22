@@ -15,7 +15,7 @@ interface BundleOverviewProps {
     onSelectType?: (entityType: string) => void;
 }
 
-type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
+type BundleTab = 'properties' | 'entityTypes' | 'relationships' | 'rawSchema';
 
 /**
  * BundleOverview - Shows the bundle's metaschema (entities, relationships, metadata).
@@ -23,7 +23,7 @@ type BundleTab = 'details' | 'entityTypes' | 'relationships' | 'rawSchema';
  * Uses a tabbed interface similar to EntityDetails for organized content.
  */
 export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
-    const [activeTab, setActiveTab] = useState<BundleTab>('details');
+    const [activeTab, setActiveTab] = useState<BundleTab>('properties');
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
     const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('list'); // Relationships view mode
 
@@ -54,14 +54,14 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
     // Define tabs with badges (merged relationships + map into one)
     const tabs: Tab[] = useMemo(() => [
-        { id: 'details', label: '📋 Properties', testId: 'details' },
+        { id: 'properties', label: '📋 Properties', testId: 'properties' },
         { id: 'entityTypes', label: '🏷️ Entity Types', badge: entityTypes.length, testId: 'entity-types' },
         { id: 'relationships', label: '🔗 Relationships', badge: relations.length > 0 ? relations.length : undefined, testId: 'relationships' },
         { id: 'rawSchema', label: '📄 Raw Schema', testId: 'raw-schema' },
     ], [entityTypes.length, relations.length]);
 
-    // Render the Details tab content
-    const renderDetailsTab = () => (
+    // Render the Properties tab content
+    const renderPropertiesTab = () => (
         <div className={styles.tabContent}>
             <div className={styles.info}>
                 <div className={styles.infoRow}>
@@ -313,7 +313,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
 
             {/* Tab content */}
             <div className={styles.body}>
-                {activeTab === 'details' && renderDetailsTab()}
+                {activeTab === 'properties' && renderPropertiesTab()}
                 {activeTab === 'entityTypes' && renderEntityTypesTab()}
                 {activeTab === 'relationships' && renderRelationshipsTab()}
                 {activeTab === 'rawSchema' && renderRawSchemaTab()}

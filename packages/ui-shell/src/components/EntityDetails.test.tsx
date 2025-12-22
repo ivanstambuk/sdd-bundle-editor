@@ -7,7 +7,7 @@ vi.mock('@rjsf/core', () => ({
   __esModule: true,
   default: (props: any) => (
     // simple stub so we do not depend on RJSF internals in tests
-     
+
     <div data-testid="rjsf-form" data-schema-has-properties={props.schema && 'properties' in props.schema}>
       RJSF form
     </div>
@@ -90,7 +90,7 @@ describe('EntityDetails', () => {
     expect(screen.getByTestId('rjsf-form')).toBeInTheDocument();
 
     // Check that tabs are present
-    expect(screen.getByTestId('tab-details')).toBeInTheDocument();
+    expect(screen.getByTestId('tab-properties')).toBeInTheDocument();
     expect(screen.getByTestId('tab-graph')).toBeInTheDocument();
     expect(screen.getByTestId('tab-yaml')).toBeInTheDocument();
   });

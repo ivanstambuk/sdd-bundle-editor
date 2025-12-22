@@ -55,11 +55,11 @@ interface EntityDetailsProps {
   entityConfigs?: UiEntityTypeConfig[];
 }
 
-type EntityTab = 'details' | 'graph' | 'yaml';
+type EntityTab = 'properties' | 'graph' | 'yaml';
 
 export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [], entityConfigs }: EntityDetailsProps) {
   // Active tab state
-  const [activeTab, setActiveTab] = useState<EntityTab>('details');
+  const [activeTab, setActiveTab] = useState<EntityTab>('properties');
   const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
   const [depViewMode, setDepViewMode] = useState<'list' | 'map'>('list'); // Dependencies view mode
@@ -698,8 +698,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   // Generate YAML for display
   const yamlContent = yaml.dump(entity.data, { indent: 2, lineWidth: -1 });
 
-  // Render the Details tab content
-  const renderDetailsTab = () => {
+  // Render the Properties tab content
+  const renderPropertiesTab = () => {
     // If no layout groups, render the full form
     if (!hasLayoutGroups || subTabs.length === 0) {
       return (
@@ -1039,9 +1039,9 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       <div className={styles.tabs}>
         <button
           type="button"
-          className={`${styles.tab} ${activeTab === 'details' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('details')}
-          data-testid="tab-details"
+          className={`${styles.tab} ${activeTab === 'properties' ? styles.tabActive : ''}`}
+          onClick={() => setActiveTab('properties')}
+          data-testid="tab-properties"
         >
           📋 Properties
         </button>
@@ -1064,7 +1064,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       </div>
 
       <div className={styles.body}>
-        {activeTab === 'details' && renderDetailsTab()}
+        {activeTab === 'properties' && renderPropertiesTab()}
         {activeTab === 'graph' && renderGraphTab()}
         {activeTab === 'yaml' && renderYamlTab()}
       </div>

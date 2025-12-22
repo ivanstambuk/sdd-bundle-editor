@@ -446,21 +446,55 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
 
 
-  // Custom checkbox widget - shows property name as label (not description)
+  // Custom checkbox widget - shows colored status indicators
+  // ✓ green for true, ☐ muted gray for false
   const CustomCheckboxWidget = (props: any) => {
     const { id, value, onChange, label, disabled, readonly } = props;
     const formattedLabel = formatLabel(label || '');
+    const isChecked = !!value;
 
+    // In read-only mode, just show the indicator
+    if (readonly || disabled) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{
+            color: isChecked ? 'var(--color-success)' : 'var(--color-text-muted)',
+            fontSize: '1.1em'
+          }}>
+            {isChecked ? '✓' : '✗'}
+          </span>
+          <span style={{
+            color: isChecked ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+            textTransform: 'capitalize'
+          }}>
+            {formattedLabel}
+          </span>
+        </div>
+      );
+    }
+
+    // Editable mode - clickable
     return (
-      <label htmlFor={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: readonly ? 'default' : 'pointer' }}>
+      <label htmlFor={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
         <input
           type="checkbox"
           id={id}
-          checked={!!value}
+          checked={isChecked}
           onChange={(e) => onChange(e.target.checked)}
-          disabled={disabled || readonly}
+          style={{ display: 'none' }}
         />
-        <span style={{ textTransform: 'capitalize' }}>{formattedLabel}</span>
+        <span style={{
+          color: isChecked ? 'var(--color-success)' : 'var(--color-text-muted)',
+          fontSize: '1.1em'
+        }}>
+          {isChecked ? '✓' : '✗'}
+        </span>
+        <span style={{
+          color: isChecked ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+          textTransform: 'capitalize'
+        }}>
+          {formattedLabel}
+        </span>
       </label>
     );
   };

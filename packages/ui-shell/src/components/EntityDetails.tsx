@@ -746,6 +746,21 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Render the Dependencies tab content with List/Map toggle
   const renderGraphTab = () => {
+    // Group outgoing edges by relationship display name
+    const outgoingByRelation = outgoing.reduce((acc, edge) => {
+      const relationName = getFieldDisplay(edge.fromEntityType, edge.fromField);
+      if (!acc[relationName]) {
+        acc[relationName] = [];
+      }
+      acc[relationName].push(edge);
+      return acc;
+    }, {} as Record<string, typeof outgoing>);
+
+    // Sort outgoing relationship groups alphabetically
+    const outgoingGroups = Object.entries(outgoingByRelation).sort((a, b) =>
+      a[0].localeCompare(b[0])
+    );
+
     // Group incoming edges by relationship display name
     const incomingByRelation = incoming.reduce((acc, edge) => {
       const relationName = getFieldDisplay(edge.fromEntityType, edge.fromField);
@@ -756,7 +771,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       return acc;
     }, {} as Record<string, typeof incoming>);
 
-    // Sort relationship groups alphabetically
+    // Sort incoming relationship groups alphabetically
     const relationGroups = Object.entries(incomingByRelation).sort((a, b) =>
       a[0].localeCompare(b[0])
     );
@@ -775,12 +790,15 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <span className={styles.graphNodeId}>{entity.id}</span>
         </div>
 
-        {/* Outgoing (Uses) */}
-        {outgoing.length > 0 && (
-          <div className={styles.graphBranch}>
-            <div className={styles.graphBranchLabel}>uses</div>
+        {/* Outgoing - this entity references others */}
+        {outgoingGroups.length > 0 && (
+          <div className={styles.graphSectionHeader}>references →</div>
+        )}
+        {outgoingGroups.map(([relationName, edges]) => (
+          <div key={`out-${relationName}`} className={styles.graphBranch}>
+            <div className={styles.graphBranchLabel}>{relationName}</div>
             <div className={styles.graphChildren}>
-              {outgoing.map((edge, idx) => (
+              {edges.map((edge, idx) => (
                 <button
                   // eslint-disable-next-line react/no-array-index-key
                   key={idx}
@@ -794,14 +812,16 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
                     entityConfigs={entityConfigs}
                   />
                   <span className={styles.graphNodeId}>{edge.toId}</span>
-                  <span className={styles.graphField}>({getFieldDisplay(edge.fromEntityType, edge.fromField)})</span>
                 </button>
               ))}
             </div>
           </div>
-        )}
+        ))}
 
-        {/* Incoming - grouped by relationship name */}
+        {/* Incoming - other entities reference this one */}
+        {relationGroups.length > 0 && (
+          <div className={styles.graphSectionHeader}>← referenced by</div>
+        )}
         {relationGroups.map(([relationName, edges]) => (
           <div key={relationName} className={styles.graphBranch}>
             <div className={styles.graphBranchLabel}>{relationName}</div>

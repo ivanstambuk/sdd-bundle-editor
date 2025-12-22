@@ -64,6 +64,21 @@
     color: var(--color-text-primary);
 }
 
+/* Ensure form inputs fill container width */
+.fieldContent input,
+.fieldContent textarea,
+.fieldContent select {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Textarea specific: proper minimum height and resize behavior */
+.fieldContent textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
 /* Arrays */
 .array {
     display: flex;

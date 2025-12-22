@@ -457,7 +457,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
 
   // Custom checkbox widget - shows colored status indicators
-  // ✓ green for true, ☐ muted gray for false
+  // ✓ green for true, ✗ red for false
   const CustomCheckboxWidget = (props: any) => {
     const { id, value, onChange, label, disabled, readonly } = props;
     const formattedLabel = formatLabel(label || '');
@@ -468,7 +468,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{
-            color: isChecked ? 'var(--color-success)' : 'var(--color-text-muted)',
+            color: isChecked ? 'var(--color-success)' : 'var(--color-error)',
             fontSize: '1.1em'
           }}>
             {isChecked ? '✓' : '✗'}
@@ -494,7 +494,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           style={{ display: 'none' }}
         />
         <span style={{
-          color: isChecked ? 'var(--color-success)' : 'var(--color-text-muted)',
+          color: isChecked ? 'var(--color-success)' : 'var(--color-error)',
           fontSize: '1.1em'
         }}>
           {isChecked ? '✓' : '✗'}

@@ -201,6 +201,13 @@
     font-size: 1em;
 }
 
+/* Default bullet for simple string arrays */
+.defaultBullet {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    margin-right: var(--spacing-xs);
+}
+
 /* Object wrapper - grid layout for field size classes */
 .object {
     display: grid;

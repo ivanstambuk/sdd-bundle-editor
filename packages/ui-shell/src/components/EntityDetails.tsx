@@ -366,10 +366,14 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       return 'rjsf-array-simple-item';
     };
 
+    // Simple string arrays get default bullet points
+    const showDefaultBullet = !hasComplexItems && !indicator;
+
     return (
       <div className={rjsfStyles.array}>
         {items.map((item: any, index: number) => (
           <div key={item.key || index} className={getItemClass()}>
+            {showDefaultBullet && <span className={rjsfStyles.defaultBullet}>•</span>}
             {indicator && <span className={rjsfStyles.indicator}>{indicator}</span>}
             {item.children}
           </div>

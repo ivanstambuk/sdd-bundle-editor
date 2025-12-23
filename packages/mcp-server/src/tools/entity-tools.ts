@@ -2,8 +2,7 @@
  * Entity-level tools - CRUD operations on entities.
  * 
  * Tools:
- * - read_entity: Read complete data for a single entity
- * - read_entities: Bulk read multiple entities
+ * - read_entities: Read one or more entities by type and IDs
  * - list_entities: List entity IDs with optional pagination
  * - list_entity_summaries: List entities with summary fields
  */
@@ -19,57 +18,15 @@ import { toolSuccess, toolError } from "../response-helpers.js";
 export function registerEntityTools(ctx: ToolContext): void {
     const { server, bundles, getBundle, getBundleIds, isSingleBundleMode } = ctx;
 
-    // Tool: read_entity
-    registerReadOnlyTool(
-        server,
-        "read_entity",
-        "Read the complete data for a specific entity. Use when you need full details about a Requirement, Task, Feature, Component, Profile, Threat, or any other entity type. Returns all fields including title, description, state, priority, and relationships.",
-        {
-            bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
-            entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
-            id: z.string().describe("Entity ID"),
-        },
-        async ({ bundleId, entityType, id }) => {
-            const TOOL_NAME = "read_entity";
-            const loaded = getBundle(bundleId);
-            if (!loaded) {
-                if (!bundleId && !isSingleBundleMode()) {
-                    return toolError(TOOL_NAME, "BAD_REQUEST", "Multiple bundles loaded. Please specify bundleId.", { availableBundles: getBundleIds() });
-                }
-                return toolError(TOOL_NAME, "NOT_FOUND", `Bundle not found: ${bundleId}`, { bundleId });
-            }
-
-            const entitiesOfType = loaded.bundle.entities.get(entityType);
-            if (!entitiesOfType) {
-                return toolError(TOOL_NAME, "NOT_FOUND", `Unknown entity type: ${entityType}`, { bundleId: loaded.id, entityType });
-            }
-
-            const entity = entitiesOfType.get(id);
-            if (!entity) {
-                return toolError(TOOL_NAME, "NOT_FOUND", `Entity not found: ${id}`, { bundleId: loaded.id, entityType, entityId: id });
-            }
-
-            // Return entity with entityType for consistency
-            return toolSuccess(TOOL_NAME, {
-                id: entity.id,
-                entityType: entity.entityType,
-                ...entity.data,
-            }, {
-                bundleId: loaded.id,
-                diagnostics: [],
-            });
-        }
-    );
-
-    // Tool: read_entities (bulk read)
+    // Tool: read_entities (unified single/bulk read)
     registerReadOnlyTool(
         server,
         "read_entities",
-        "Read multiple entities in a single call. Use when you need 2-50 entities and already know their IDs. Much more efficient than calling read_entity multiple times.",
+        "Read one or more entities by type and IDs. Use for single entity lookup or bulk fetch (1-50 entities). Each returned entity includes id, entityType, and all data fields. Optional field filtering available.",
         {
             bundleId: z.string().optional().describe("Bundle ID (optional in single-bundle mode)"),
             entityType: z.string().describe("Entity type (e.g., Requirement, Task, Feature)"),
-            ids: z.array(z.string()).max(50).describe("Entity IDs to fetch (max 50)"),
+            ids: z.array(z.string()).min(1).max(50).describe("Entity IDs to fetch (1-50)"),
             fields: z.array(z.string()).optional().describe("Specific fields to return (optional, returns all if not specified)"),
         },
         async ({ bundleId, entityType, ids, fields }) => {
@@ -93,14 +50,22 @@ export function registerEntityTools(ctx: ToolContext): void {
             for (const id of ids) {
                 const entity = entitiesOfType.get(id);
                 if (entity) {
-                    let entityData: Record<string, unknown> = { ...entity.data };
+                    // Always include id and entityType (merged from read_entity behavior)
+                    let entityData: Record<string, unknown> = {
+                        id: entity.id,
+                        entityType: entity.entityType,
+                        ...entity.data,
+                    };
 
-                    // Filter fields if specified
+                    // Filter fields if specified (but always keep id and entityType)
                     if (fields && fields.length > 0) {
-                        const filtered: Record<string, unknown> = { id: entity.id };
+                        const filtered: Record<string, unknown> = {
+                            id: entity.id,
+                            entityType: entity.entityType,
+                        };
                         for (const field of fields) {
-                            if (field in entityData) {
-                                filtered[field] = entityData[field];
+                            if (field in entity.data) {
+                                filtered[field] = (entity.data as Record<string, unknown>)[field];
                             }
                         }
                         entityData = filtered;

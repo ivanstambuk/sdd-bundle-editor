@@ -78,7 +78,7 @@ export function formatEntitiesForPrompt(
 
     let result = JSON.stringify(formatted, null, 2);
     if (truncated) {
-        result += `\n\n(Showing ${maxEntities} of ${entities.length}. Use read_entity tool for full details.)`;
+        result += `\n\n(Showing ${maxEntities} of ${entities.length}. Use read_entities tool for full details.)`;
     }
     return result;
 }

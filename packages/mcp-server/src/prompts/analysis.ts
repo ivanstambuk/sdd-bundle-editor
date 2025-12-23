@@ -148,7 +148,7 @@ These are entities that reference ${entityId}. Changes to ${entityId} will affec
 
 ${limitedDownstream.length > 0 ? limitedDownstream.map(d => `- **${d.type}:${d.id}** (depth ${d.depth}, via \`${d.via}\`) - "${d.title}"${d.state ? ` [${d.state}]` : ""}`).join("\n") : "No downstream dependents found - nothing depends on this entity."}${downstreamTruncated ? `\n\n... and ${downstream.length - MAX_TRACE_ENTITIES} more (use \`list_entities\` tool to see all)` : ""}
 
-**Note:** Use \`read_entity\` tool to get full details for any entity listed above.
+**Note:** Use \`read_entities\` tool to get full details for any entity listed above.
 
 ## Your Task
 Analyze this dependency trace and provide:
@@ -343,7 +343,7 @@ ${allEntities.map(e => `- **${e.type}:${e.id}** - "${e.summary.title || e.id}"${
 ## Existing Relations (${allRelations.length} total${relationsTruncated ? `, showing ${MAX_RELATIONS}` : ""})
 ${existingRelations.join("\n") || "No relations found"}${relationsTruncated ? `\n\n... and ${allRelations.length - MAX_RELATIONS} more` : ""}
 
-**Note:** Use \`read_entity\` tool for full entity details.
+**Note:** Use \`read_entities\` tool for full entity details.
 
 ## Confidence Level: ${confidence}
 

@@ -297,20 +297,22 @@ test.describe('MCP Server E2E Tests', () => {
         expect(listResult.meta.total).toBeGreaterThan(0);
     });
 
-    test('read_entity returns entity data', async () => {
+    test('read_entities returns single entity data', async () => {
         const sessionId = await initMcpSession();
 
         // First get a valid entity ID
         const listResult = await callMcpTool(sessionId, 'list_entities', { entityType: 'Requirement' }) as { ids: string[] };
         const testId = listResult.ids[0];
 
-        const result = await callMcpTool(sessionId, 'read_entity', {
+        const result = await callMcpTool(sessionId, 'read_entities', {
             entityType: 'Requirement',
-            id: testId,
-        }) as { id: string; title: string };
+            ids: [testId],
+        }) as { entities: Array<{ id: string; title: string }> };
 
-        expect(result.id).toBe(testId);
-        expect(result.title).toBeTruthy();
+        expect(result.entities).toBeDefined();
+        expect(result.entities.length).toBe(1);
+        expect(result.entities[0].id).toBe(testId);
+        expect(result.entities[0].title).toBeTruthy();
     });
 
     test('search_entities finds matching entities', async () => {
@@ -377,12 +379,12 @@ test.describe('MCP Server E2E Tests', () => {
         expect(applyResult.data.applied).toBe(1);
 
         // Verify the change persisted
-        const readResult = await callMcpTool(sessionId, 'read_entity', {
+        const readResult = await callMcpTool(sessionId, 'read_entities', {
             entityType: 'Requirement',
-            id: testId,
-        }) as { description: string };
+            ids: [testId],
+        }) as { entities: Array<{ description: string }> };
 
-        expect(readResult.description).toBe('Updated via E2E test');
+        expect(readResult.entities[0].description).toBe('Updated via E2E test');
     });
 
     test('apply_changes create and delete entity', async () => {
@@ -419,13 +421,13 @@ test.describe('MCP Server E2E Tests', () => {
         expect(createResult.ok).toBe(true);
 
         // Verify creation
-        const readResult = await callMcpTool(sessionId, 'read_entity', {
+        const readResult = await callMcpTool(sessionId, 'read_entities', {
             entityType: 'Requirement',
-            id: 'REQ-e2e-test-temp',
-        }) as { id: string; title: string };
+            ids: ['REQ-e2e-test-temp'],
+        }) as { entities: Array<{ id: string; title: string }> };
 
-        expect(readResult.id).toBe('REQ-e2e-test-temp');
-        expect(readResult.title).toBe('E2E Test Requirement');
+        expect(readResult.entities[0].id).toBe('REQ-e2e-test-temp');
+        expect(readResult.entities[0].title).toBe('E2E Test Requirement');
 
         // Delete the entity
         const deleteResult = await callMcpTool(sessionId, 'apply_changes', {
@@ -440,18 +442,14 @@ test.describe('MCP Server E2E Tests', () => {
 
         expect(deleteResult.ok).toBe(true);
 
-        // Verify deletion - should throw or return not found
-        try {
-            await callMcpTool(sessionId, 'read_entity', {
-                entityType: 'Requirement',
-                id: 'REQ-e2e-test-temp',
-            });
-            // If we get here, entity wasn't deleted
-            expect(true).toBe(false); // Force fail
-        } catch {
-            // Expected - entity was deleted
-            expect(true).toBe(true);
-        }
+        // Verify deletion - entity should not be found
+        const verifyResult = await callMcpTool(sessionId, 'read_entities', {
+            entityType: 'Requirement',
+            ids: ['REQ-e2e-test-temp'],
+        }) as { meta: { notFound: string[] } };
+
+        // read_entities reports not found IDs in meta
+        expect(verifyResult.meta.notFound).toContain('REQ-e2e-test-temp');
     });
 
     // Phase 1: Bulk Operations Tests

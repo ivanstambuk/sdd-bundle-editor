@@ -42,7 +42,7 @@ export function registerReadOnlyToolNoArgs(
 
 /**
  * Helper to register a read-only tool with standard annotations.
- * Use for tools that only read data: list_bundles, read_entity, search_entities, etc.
+ * Use for tools that only read data: list_bundles, read_entities, search_entities, etc.
  */
 export function registerReadOnlyTool<T extends ZodRawShape | EmptySchema>(
     server: McpServer,

@@ -10,7 +10,7 @@
  * Commands:
  *   list_bundles              List all loaded bundles
  *   list_entities             List all entity IDs
- *   read_entity               Read a specific entity
+ *   read_entities             Read one or more entities
  *   search_entities           Search for entities
  *   validate_bundle           Validate a bundle
  *   apply_changes             Apply changes to a bundle
@@ -173,7 +173,7 @@ Commands:
   sessions            List active sessions
   list_bundles        List all loaded bundles
   list_entities       List all entity IDs
-  read_entity         Read a specific entity
+  read_entities       Read one or more entities
   search_entities     Search for entities
   validate_bundle     Validate a bundle
   apply_changes       Apply changes to a bundle
@@ -181,8 +181,8 @@ Commands:
 Options:
   -p, --port <port>   MCP HTTP server port (default: 3001)
   -b, --bundle <id>   Bundle ID
-  -t, --type <type>   Entity type (for read_entity, list_entities)
-  -i, --id <id>       Entity ID (for read_entity)
+  -t, --type <type>   Entity type (for read_entities, list_entities)
+  -i, --id <id>       Entity ID (for read_entities, can be comma-separated)
   -q, --query <text>  Search query (for search_entities)
   -c, --changes <json> Changes JSON (for apply_changes)
   --dry-run           Preview changes without applying
@@ -197,7 +197,7 @@ Examples:
   npx ts-node scripts/mcp-cli.ts list_bundles
 
   # Read an entity
-  npx ts-node scripts/mcp-cli.ts read_entity -t Requirement -i REQ-001
+  npx ts-node scripts/mcp-cli.ts read_entities -t Requirement -i REQ-001
 
   # Search entities
   npx ts-node scripts/mcp-cli.ts search_entities -q "authentication"
@@ -249,15 +249,17 @@ Examples:
                 });
                 break;
 
-            case "read_entity":
+            case "read_entities":
                 if (!values.type || !values.id) {
-                    console.error("Error: --type and --id are required for read_entity");
+                    console.error("Error: --type and --id are required for read_entities");
                     process.exit(1);
                 }
-                result = await callTool(session, "read_entity", {
+                // Support comma-separated IDs
+                const ids = values.id.split(",").map((id: string) => id.trim());
+                result = await callTool(session, "read_entities", {
                     bundleId: values.bundle,
                     entityType: values.type,
-                    id: values.id,
+                    ids,
                 });
                 break;
 

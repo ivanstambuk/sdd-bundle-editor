@@ -80,7 +80,7 @@ ${topEntities.join(", ")}
 ## Existing Validation Issues
 ${existingIssues.length > 0 ? existingIssues.join("\n") : "None detected by schema validation"}
 
-The full spec is available via MCP tools (get_bundle_snapshot, read_entity, list_entities).
+The full spec is available via MCP tools (get_bundle_snapshot, read_entities, list_entities).
 Use them if you need more detail about specific entities.
 
 ## Evaluation Criteria

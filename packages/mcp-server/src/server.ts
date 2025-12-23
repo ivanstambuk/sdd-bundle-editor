@@ -31,7 +31,7 @@ IMPORTANT DEFAULTS:
 RECOMMENDED WORKFLOW:
 1. list_bundles → get available bundle IDs and entity types
 2. get_bundle_snapshot or list_entity_summaries → understand bundle structure
-3. read_entity / get_context → get detailed entity data with relationships
+3. read_entities / get_context → get detailed entity data with relationships
 4. apply_changes with dryRun=true → preview proposed changes
 5. apply_changes with dryRun=false → persist changes to disk
 
@@ -364,7 +364,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
      * 
      * Tools are organized into modules by category:
      * - bundle-tools.ts: list_bundles, get_bundle_schema, get_bundle_snapshot
-     * - entity-tools.ts: read_entity, read_entities, list_entities, list_entity_summaries
+     * - entity-tools.ts: read_entities, list_entities, list_entity_summaries
      * - schema-tools.ts: get_entity_schema, get_entity_relations
      * - context-tools.ts: get_context, get_conformance_context
      * - search-tools.ts: search_entities

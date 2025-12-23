@@ -64,7 +64,7 @@ node packages/mcp-server/dist/index.js --http --port 3001 /path/to/bundle
 | Tool | Description |
 |------|-------------|
 | `list_bundles` | List all loaded bundles |
-| `read_entity` | Read entity by type and ID |
+| `read_entities` | Read entities by type and IDs |
 | `apply_changes` | Atomic batch changes (create/update/delete) |
 | `validate_bundle` | Validate and return diagnostics |
 | `critique_bundle` | LLM-based spec quality critique |

@@ -353,7 +353,7 @@ The MCP Server provides bundle access to AI assistants:
 | Tool | Description |
 |------|-------------|
 | `list_bundles` | List all loaded bundles |
-| `read_entity` | Read entity by type and ID |
+| `read_entities` | Read entities by type and IDs |
 | `list_entities` | List all entity IDs |
 | `search_entities` | Search across bundles |
 | `validate_bundle` | Validate and return diagnostics |

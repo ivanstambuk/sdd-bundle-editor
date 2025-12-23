@@ -125,7 +125,7 @@ All data operations (read and write) go through the MCP server:
 | Tool | Description |
 |------|-------------|
 | `list_bundles` | List all loaded bundles |
-| `read_entity` | Read entity by type and ID |
+| `read_entities` | Read entities by type and IDs |
 | `list_entities` | List all entity IDs |
 | `get_bundle_snapshot` | Get complete bundle state in one call |
 | `search_entities` | Search across bundles |

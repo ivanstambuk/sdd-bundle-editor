@@ -54,8 +54,7 @@ To use completions in MCP clients:
 | `get_bundle_schema` | Get the bundle type definition (metaschema) for a bundle |
 | `get_entity_schema` | Get the JSON schema for a specific entity type |
 | `get_bundle_snapshot` | Get complete bundle with entities, schemas, refGraph (supports filtering) |
-| `read_entity` | Read a specific entity by bundle, type and ID |
-| `read_entities` | Bulk read multiple entities by ID (more efficient than multiple read_entity calls) |
+| `read_entities` | Read one or more entities by bundle, type and IDs |
 | `list_entities` | List all entity IDs (filter by bundle/type, with stable ordering) |
 | `list_entity_summaries` | List entities with summary fields (id, title, state) |
 | `get_entity_relations` | Get relationships defined for an entity type |
@@ -85,7 +84,7 @@ The `structuredContent` field contains the actual response object for reliable m
 ```json
 {
   "ok": true,
-  "tool": "read_entity",
+  "tool": "read_entities",
   "bundleId": "my-bundle",
   "data": { ... },
   "meta": { ... },
@@ -98,7 +97,7 @@ For errors:
 ```json
 {
   "ok": false,
-  "tool": "read_entity",
+  "tool": "read_entities",
   "error": {
     "code": "NOT_FOUND",
     "message": "Entity not found: Requirement/REQ-999",
@@ -124,7 +123,7 @@ All tools include MCP annotations that help AI agents understand their behavior 
 
 | Category | Tools | Annotations |
 |----------|-------|-------------|
-| Read-only | `list_bundles`, `read_entity`, `read_entities`, `list_entities`, `list_entity_summaries`, `get_bundle_schema`, `get_entity_schema`, `get_bundle_snapshot`, `get_entity_relations`, `get_context`, `get_conformance_context`, `search_entities`, `validate_bundle` | `readOnlyHint: true`, `idempotentHint: true` |
+| Read-only | `list_bundles`, `read_entities`, `list_entities`, `list_entity_summaries`, `get_bundle_schema`, `get_entity_schema`, `get_bundle_snapshot`, `get_entity_relations`, `get_context`, `get_conformance_context`, `search_entities`, `validate_bundle` | `readOnlyHint: true`, `idempotentHint: true` |
 | Mutating | `apply_changes` | `destructiveHint: true`, `idempotentHint: false` |
 | External | `critique_bundle` | `openWorldHint: true` (invokes external LLM) |
 
@@ -279,21 +278,9 @@ Get the JSON schema for a specific entity type. Useful for form rendering or und
 }
 ```
 
-### read_entity
-
-Read complete data for a single entity.
-
-**Parameters:**
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
-| `entityType` | string | required | Entity type |
-| `id` | string | required | Entity ID |
-
 ### read_entities
 
-Bulk read multiple entities in a single call (more efficient than multiple read_entity calls).
+Read one or more entities by type and IDs. Supports both single entity lookup and bulk fetches.
 
 **Parameters:**
 
@@ -301,7 +288,7 @@ Bulk read multiple entities in a single call (more efficient than multiple read_
 |-----------|------|---------|-------------|
 | `bundleId` | string | - | Bundle ID (optional in single-bundle mode) |
 | `entityType` | string | required | Entity type |
-| `ids` | string[] | required | Entity IDs to fetch (max 50) |
+| `ids` | string[] | required | Entity IDs to fetch (1-50) |
 | `fields` | string[] | all | Specific fields to return |
 
 **Response includes `meta.notFound`** listing any IDs that weren't found.
@@ -720,7 +707,7 @@ pnpm mcp-cli health
 pnpm mcp-cli list_bundles
 
 # Read an entity
-pnpm mcp-cli read_entity -t Requirement -i REQ-001
+pnpm mcp-cli read_entities -t Requirement -i REQ-001
 
 # Search entities
 pnpm mcp-cli search_entities -q "authentication"
@@ -767,7 +754,7 @@ When multiple bundles are loaded, most tools require a `bundleId` parameter:
 3. #get_context bundleId="api-spec" entityType="Requirement" id="AUTH-001"
    → Get full context for a specific requirement
 
-4. #read_entity bundleId="security" entityType="Threat" id="THREAT-AUTHZ"
+4. #read_entities bundleId="security" entityType="Threat" ids=["THREAT-AUTHZ"]
    → Read related security threat from another bundle
 ```
 
@@ -807,7 +794,7 @@ When the inspector opens:
 
 **Tools Tab:**
 - `list_bundles` - See what's loaded
-- `read_entity` - Fetch a specific entity
+- `read_entities` - Fetch one or more entities
 - `search_entities` - Search across all bundles
 - `validate_bundle` - Check for errors
 
@@ -1047,7 +1034,7 @@ const summarizeEntity = (data) => ({
 
 4. **Include hints for the LLM** to fetch more:
    ```markdown
-   **Note:** Use `read_entity` tool for full entity details.
+   **Note:** Use `read_entities` tool for full entity details.
    ```
 
 5. **Show truncation indicators**:
@@ -1159,7 +1146,7 @@ packages/mcp-server/
 │   │   ├── types.ts      # ToolContext interface
 │   │   ├── registry.ts   # Factory helpers (registerReadOnlyTool, etc.)
 │   │   ├── bundle-tools.ts    # list_bundles, get_bundle_schema, get_bundle_snapshot
-│   │   ├── entity-tools.ts    # read_entity, read_entities, list_entities, list_entity_summaries
+│   │   ├── entity-tools.ts    # read_entities, list_entities, list_entity_summaries
 │   │   ├── schema-tools.ts    # get_entity_schema, get_entity_relations
 │   │   ├── context-tools.ts   # get_context, get_conformance_context
 │   │   ├── search-tools.ts    # search_entities

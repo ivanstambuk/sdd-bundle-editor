@@ -6,7 +6,7 @@
  * 
  * Tool Categories:
  * - bundle-tools.ts: list_bundles, get_bundle_schema, get_bundle_snapshot
- * - entity-tools.ts: read_entity, read_entities, list_entities, list_entity_summaries
+ * - entity-tools.ts: read_entities, list_entities, list_entity_summaries
  * - schema-tools.ts: get_entity_schema, get_entity_relations
  * - context-tools.ts: get_context, get_conformance_context
  * - search-tools.ts: search_entities

@@ -107,7 +107,7 @@ ${relatedTasks.length > 0 ? formatEntitiesForPrompt(relatedTasks, { maxEntities:
 ${relatedEntities.length > 0 ? formatEntitiesForPrompt(relatedEntities, { maxEntities: MAX_RELATED, mode: "summary" }) : "None"}
 
 ${domainKnowledge ? `## Domain Knowledge\n${domainKnowledge}\n` : ""}
-**Note:** For full entity details, use the \`read_entity\` tool with entityType and entityId.
+**Note:** For full entity details, use the \`read_entities\` tool with entityType and entityId.
 
 ## Your Task
 Create an implementation plan for requirement ${requirementId}.
@@ -220,7 +220,7 @@ ${tasks.map(t => `- **${t.id}** - "${t.summary.title}"${t.summary.state ? ` [${t
   - Dependencies: ${t.dependencies.join(", ") || "None"}
   - Related Reqs: ${t.relatedReqs.join(", ") || "None"}`).join("\n")}
 
-**Note:** Use \`read_entity\` tool for full entity details.
+**Note:** Use \`read_entities\` tool for full entity details.
 
 ## Roadmap Format
 ${formatInstructions[format]}

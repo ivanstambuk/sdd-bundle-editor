@@ -12,7 +12,7 @@ import type { ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
 /**
  * Annotation for read-only tools that don't modify the environment.
  * Used for: list_bundles, get_bundle_schema, get_entity_schema, get_bundle_snapshot,
- * read_entity, read_entities, list_entities, list_entity_summaries, get_entity_relations,
+ * read_entities, list_entities, list_entity_summaries, get_entity_relations,
  * get_context, get_conformance_context, search_entities, validate_bundle
  */
 export const READ_ONLY_TOOL: ToolAnnotations = {

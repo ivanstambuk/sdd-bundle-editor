@@ -111,7 +111,7 @@ ${formatEntitiesForPrompt(allComponents as Array<{ data: Record<string, unknown>
 
 ${profileData.auditTemplate ? `## Audit Template\n${profileData.auditTemplate}\n` : ""}
 
-**Note:** Entity summaries shown above. Use \`read_entity\` tool for full entity details if needed.
+**Note:** Entity summaries shown above. Use \`read_entities\` tool for full entity details if needed.
 
 ## Your Task
 Perform a **${scope}** conformance audit.
@@ -317,7 +317,7 @@ ${JSON.stringify(entity.data, null, 2)}
 ## Related Context (${relatedEntities.length} entities)
 ${relatedEntities.map(e => `- **${e.type}:${e.id}** - "${e.summary.title || e.id}"${e.summary.state ? ` [${e.summary.state}]` : ""}`).join("\n") || "No related entities"}
 
-**Note:** Use \`read_entity\` tool for full details of related entities.
+**Note:** Use \`read_entities\` tool for full details of related entities.
 
 ## Test Style: ${style}
 ${styleInstructions[style]}

@@ -239,7 +239,7 @@ skinparam actor {
     }
 
     /**
-     * Render PlantUML to SVG using the CLI
+     * Render PlantUML to SVG using the project-local JAR file
      * Returns both the SVG and the hash (for ETag)
      */
     async function renderPlantUmlToSvg(code: string, theme?: 'light' | 'dark'): Promise<{ svg: string; hash: string }> {
@@ -253,8 +253,12 @@ skinparam actor {
 
         const normalizedCode = normalizePlantUml(code, theme);
 
+        // Use project-local plantuml.jar (in tools/plantuml/ relative to repo root)
+        const path = require('node:path');
+        const jarPath = path.resolve(__dirname, '../../../tools/plantuml/plantuml.jar');
+
         return new Promise((resolve, reject) => {
-            const proc = spawn('plantuml', ['-tsvg', '-pipe'], {
+            const proc = spawn('java', ['-jar', jarPath, '-tsvg', '-pipe'], {
                 stdio: ['pipe', 'pipe', 'pipe'],
             });
 

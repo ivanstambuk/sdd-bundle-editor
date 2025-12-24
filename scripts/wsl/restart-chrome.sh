@@ -37,7 +37,7 @@ cd /mnt/c && $POWERSHELL -Command "
 sleep 2
 
 echo "🚀 Starting Chrome with remote debugging on port $DEBUG_PORT..."
-cd /mnt/c && $POWERSHELL -Command "Start-Process -FilePath '$CHROME_PATH' -ArgumentList '--remote-debugging-port=$DEBUG_PORT','--user-data-dir=$USER_DATA_DIR','--disable-search-engine-choice-screen'"
+cd /mnt/c && $POWERSHELL -Command "Start-Process -FilePath '$CHROME_PATH' -ArgumentList '--remote-debugging-port=$DEBUG_PORT','--user-data-dir=$USER_DATA_DIR','--disable-search-engine-choice-screen','--no-first-run','--no-default-browser-check','--remote-allow-origins=*'"
 
 sleep 2
 

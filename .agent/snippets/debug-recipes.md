@@ -195,25 +195,98 @@ getComputedStyle(el).border  // Check what CSS is actually applied
 
 ---
 
-## WSL Browser Debugging Setup
+## WSL2 Browser Subagent Setup (Complete Guide)
 
-**Problem**: Browser subagent fails with `ECONNREFUSED 127.0.0.1:9222` in WSL.
+**Problem**: Browser subagent fails with `ECONNREFUSED 127.0.0.1:9222` in WSL2.
 
-**Root cause**: Chrome runs on Windows, not accessible from WSL's network namespace.
+**Root cause**: In WSL2's default NAT networking mode, `localhost` inside WSL refers to WSL's own loopback, not Windows' localhost where Chrome is listening.
 
-**Solution**: Start Chrome on Windows with remote debugging:
+### Prerequisites
 
-```cmd
-REM Run in Windows CMD or PowerShell (not WSL)
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\temp\chrome-debug-profile"
+1. **Windows 11 22H2 or later** (for mirrored networking support)
+2. **PowerShell execution policy** must allow scripts:
+   ```powershell
+   # Run in Windows PowerShell as Administrator
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+### Step 1: Enable Mirrored Networking
+
+Edit or create `C:\Users\<YourUsername>\.wslconfig`:
+
+```ini
+[wsl2]
+memory=8GB
+processors=8
+swap=8GB
+networkingMode=mirrored
 ```
 
-Keep this Chrome window open while using browser_subagent.
+**Important**: `localhostForwarding=true` is redundant with mirrored networking (WSL will warn you).
 
-**Finding Chrome path from WSL**:
+After editing, restart WSL:
+```powershell
+# Run in Windows PowerShell
+wsl --shutdown
+wsl
+```
+
+### Step 2: Remove Any Old Port Proxies
+
+If you previously set up port proxies, remove them (run as admin):
+```powershell
+# Run in Windows PowerShell as Administrator
+netsh interface portproxy delete v4tov4 listenport=9222 listenaddress=0.0.0.0
+```
+
+Verify no proxies exist:
+```powershell
+netsh interface portproxy show v4tov4
+# Should show empty table
+```
+
+### Step 3: Start Chrome with Remote Debugging
+
+Use the restart script:
 ```bash
-ls -la "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" 2>/dev/null && echo "Chrome found"
-ls -la "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" 2>/dev/null && echo "Edge found"
+./scripts/wsl/restart-chrome.sh
+```
+
+Or manually:
+```bash
+cd /mnt/c && /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "
+    Get-Process chrome -ErrorAction SilentlyContinue | Stop-Process -Force
+    Start-Sleep -Seconds 2
+    Start-Process -FilePath 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList '--remote-debugging-port=9222','--user-data-dir=C:\Temp\ag-cdp','--no-first-run','--no-default-browser-check','--remote-allow-origins=*'
+"
+```
+
+**Chrome flags explained**:
+- `--remote-debugging-port=9222`: Enable CDP on port 9222
+- `--user-data-dir=C:\Temp\ag-cdp`: Separate profile from your regular Chrome
+- `--no-first-run`: Skip first-run welcome/sign-in screens
+- `--no-default-browser-check`: Skip default browser prompt
+- `--remote-allow-origins=*`: Allow CDP connections from any origin (required)
+
+### Step 4: Install Antigravity Browser Extension
+
+The browser subagent requires the **Antigravity Browser Extension** to be installed in the debug Chrome instance.
+
+1. Open Chrome Web Store: https://chromewebstore.google.com/detail/antigravity-browser-exten/eeijfnjmjelapkebgockoeaadonbchdd
+2. Click "Add to Chrome"
+3. If you get "Download interrupted" errors, try:
+   - Closing and reopening Chrome via the restart script
+   - Using a different network connection
+
+### Step 5: Verify Setup
+
+```bash
+# Test CDP is accessible from WSL
+curl -s http://localhost:9222/json/version
+# Should return: {"Browser": "Chrome/...", "Protocol-Version": "1.3", ...}
+
+# Test browser subagent (from agent chat)
+# The agent should be able to navigate to pages and take screenshots
 ```
 
 ---
@@ -224,40 +297,61 @@ ls -la "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" 2>/dev
 
 **Root cause**: Chrome loses connection or enters bad state. Need full restart.
 
-**Solution 1: Use the restart script**:
+**Solution: Use the restart script**:
 ```bash
 ./scripts/wsl/restart-chrome.sh
 ```
 
-**Solution 2: Manual PowerShell commands from WSL**:
-```bash
-# Kill ONLY Chrome instances with 'ag-cdp' profile (preserves regular browser windows)
-cd /mnt/c && /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "
-    Get-Process chrome -ErrorAction SilentlyContinue | ForEach-Object {
-        \$wmi = Get-CimInstance Win32_Process -Filter \"ProcessId = \$(\$_.Id)\" -ErrorAction SilentlyContinue
-        if (\$wmi.CommandLine -match 'ag-cdp') { Stop-Process -Id \$_.Id -Force }
-    }
-"
-
-# Wait for cleanup
-sleep 2
-
-# Start Chrome with remote debugging
-cd /mnt/c && /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "Start-Process -FilePath 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList '--remote-debugging-port=9222','--user-data-dir=C:\Temp\ag-cdp','--disable-search-engine-choice-screen'"
-
-# Verify Chrome is ready
-curl -s http://localhost:9222/json/version | grep Browser
-```
-
-**Why PowerShell instead of cmd.exe**: cmd.exe fails with "UNC paths are not supported" when run from WSL paths. PowerShell handles it correctly via `cd /mnt/c`.
-
-**Why kill only 'ag-cdp' instances**: The script only terminates Chrome processes that have 'ag-cdp' in their command line, preserving your regular browser windows.
+The script:
+1. Kills only Chrome instances with 'ag-cdp' in their command line (preserves your regular browser)
+2. Starts fresh Chrome with all required flags
+3. Verifies CDP is accessible
 
 **Verify Chrome is accessible**:
 ```bash
 curl -s http://localhost:9222/json/version
 # Should return: {"Browser": "Chrome/...", "Protocol-Version": "1.3", ...}
 ```
+
+---
+
+## WSL2 Browser Debugging Troubleshooting
+
+### Problem: curl returns exit code 7 (ECONNREFUSED)
+
+**Cause**: WSL can't reach Windows' localhost.
+
+**Fix**: Ensure mirrored networking is enabled in `.wslconfig` and WSL was restarted.
+
+### Problem: curl returns exit code 52 (empty reply) or 56 (connection reset)
+
+**Cause**: Chrome is starting or there's a port proxy interfering.
+
+**Fix**: 
+1. Remove any port proxies (see Step 2 above)
+2. Wait a few seconds for Chrome to fully start
+3. Try the restart script
+
+### Problem: Chrome opens with sign-in/first-run screens
+
+**Cause**: Missing `--no-first-run` flag or corrupted profile.
+
+**Fix**: 
+1. Close Chrome
+2. Delete the profile: `Remove-Item -Recurse -Force 'C:\Temp\ag-cdp'` (PowerShell)
+3. Restart Chrome via the script
+
+### Problem: Chrome only listening on IPv6 `[::1]:9222`
+
+**Cause**: Sometimes Chrome only binds to IPv6.
+
+**Fix**: Restart Chrome - it usually binds to both IPv4 and IPv6 on fresh start.
+
+### Problem: Antigravity extension download fails
+
+**Cause**: Fresh Chrome profile may have network issues.
+
+**Fix**: Try closing and reopening Chrome, or temporarily use your regular Chrome profile to install the extension, then copy it to the debug profile.
 
 ---
 

@@ -135,6 +135,8 @@ See `.agent/workflows/` for detailed instructions.
    /usr/local/bin/codex-notify '{"type": "agent-turn-complete", "last-assistant-message": "[Gemini] Brief summary of what was done"}'
    ```
    This alerts the user that you've completed your response. **No exceptions** - always notify at the end of every turn.
+10. **Sudo/Privileged Access**: The user has sudo access. If a task requires it (e.g., installing packages), **DO NOT FAIL**. Instead, pause and ask the user to run the specific command in a terminal code block.
+    - Example: "I need `graphviz`. Please run: `sudo apt install graphviz`."
 
 
 ---

@@ -258,7 +258,7 @@ skinparam actor {
         const jarPath = path.resolve(__dirname, '../../../tools/plantuml/plantuml.jar');
 
         return new Promise((resolve, reject) => {
-            const proc = spawn('java', ['-jar', jarPath, '-tsvg', '-pipe'], {
+            const proc = spawn('java', ['-Djava.awt.headless=true', '-jar', jarPath, '-tsvg', '-pipe'], {
                 stdio: ['pipe', 'pipe', 'pipe'],
             });
 

@@ -57,12 +57,13 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
-    port: 5173,
+    allowedHosts: 'all',
+    port: parseInt(process.env.WEB_PORT || '5174', 10),
     proxy: [
       {
         // MCP server and API endpoints
         context: ['/mcp', '/api'],
-        target: 'http://localhost:3001',
+        target: `http://localhost:${process.env.MCP_HTTP_PORT || '3003'}`,
         changeOrigin: true,
       },
     ],

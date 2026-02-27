@@ -113,7 +113,7 @@ See `.agent/workflows/` for detailed instructions.
 
 1. **Build after TypeScript changes**: Run `pnpm build` after modifying any `packages/*` source
 2. **MANDATORY UI validation before completion**: For ANY visual change, you MUST:
-   - ✅ Verify dev server is running (`curl -s http://localhost:5173/`)
+   - ✅ Verify dev server is running (`curl -s http://localhost:5174/`)
    - ✅ Use `browser_subagent` to navigate to the affected component
    - ✅ Take a screenshot PROVING the change works
    - ✅ Report with visual evidence, not assumptions
@@ -130,13 +130,8 @@ See `.agent/workflows/` for detailed instructions.
    - Verify tests pass
    - This prevents regressions and documents expected behavior
 8. **Implement Now, Don't Defer**: When the user expresses interest in a feature or asks "what do you think about X?", **always offer to implement it now**. NEVER suggest "add to IMPLEMENTATION_TRACKER for later". The tracker is for the user's own backlog management, not for agent-suggested deferrals. If you think the feature is complex, break it into phases and offer to start with phase 1.
-9. **Notify User After Every Response**: At the END of every message you send, you MUST trigger a notification:
-   ```bash
-   /usr/local/bin/codex-notify '{"type": "agent-turn-complete", "last-assistant-message": "[Gemini] Brief summary of what was done"}'
-   ```
-   This alerts the user that you've completed your response. **No exceptions** - always notify at the end of every turn.
-10. **Sudo/Privileged Access**: The user has sudo access. If a task requires it (e.g., installing packages), **DO NOT FAIL**. Instead, pause and ask the user to run the specific command in a terminal code block.
-    - Example: "I need `graphviz`. Please run: `sudo apt install graphviz`."
+9. **Sudo/Privileged Access**: The user has sudo access. If a task requires it (e.g., installing packages), **DO NOT FAIL**. Instead, pause and ask the user to run the specific command in a terminal code block.
+   - Example: "I need `graphviz`. Please run: `sudo apt install graphviz`."
 
 
 ---

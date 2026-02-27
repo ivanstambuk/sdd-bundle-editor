@@ -108,30 +108,34 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
             setError(null);
 
             try {
-                // Compute hash client-side for cacheable GET request
-                const hash = await computeHash(code, theme);
+                let response: Response;
 
-                // Use GET endpoint with hash in URL - browser can cache this!
-                // Include code as query param for first-time renders
-                const params = new URLSearchParams({
-                    code: code,
-                    theme: theme,
-                });
-
-                const response = await fetch(`/api/plantuml/${hash}?${params.toString()}`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'image/svg+xml' },
-                });
+                if (typeof window !== 'undefined' && window.crypto?.subtle) {
+                    // Secure context: use GET with hash for browser-cacheable requests
+                    const hash = await computeHash(code, theme);
+                    const params = new URLSearchParams({ code, theme });
+                    response = await fetch(`/api/plantuml/${hash}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'image/svg+xml' },
+                    });
+                } else {
+                    // Non-secure origin (plain HTTP via Tailscale etc.): use POST directly.
+                    // GET endpoint validates the hash server-side; without crypto.subtle we
+                    // can't produce a matching SHA-256, so POST is the correct fallback.
+                    response = await fetch('/api/plantuml', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code, theme }),
+                    });
+                }
 
                 if (cancelled) return;
 
                 if (response.status === 304) {
-                    // Not modified - should not happen with browser cache, but handle it
                     return;
                 }
 
                 if (!response.ok) {
-                    // Error response is JSON
                     const contentType = response.headers.get('content-type');
                     if (contentType?.includes('application/json')) {
                         const data = await response.json();
@@ -143,8 +147,16 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
                     return;
                 }
 
-                // Success - response is SVG
-                const svgContent = await response.text();
+                // GET returns SVG directly; POST returns { svg, hash }
+                const contentType = response.headers.get('content-type') || '';
+                let svgContent: string;
+                if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    svgContent = data.svg;
+                } else {
+                    svgContent = await response.text();
+                }
+
                 setSvg(svgContent);
                 setError(null);
             } catch (err) {

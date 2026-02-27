@@ -445,8 +445,37 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
 
   // Custom object field template - strips duplicate title/description
   // (parent FieldTemplate already shows these)
+  // Special case: x-sdd-displayHint: 'booleanChips' renders boolean properties as pill chips
   const CustomObjectFieldTemplate = (props: any) => {
-    const { properties } = props;
+    const { properties, schema, formData } = props;
+    const displayHint = schema?.['x-sdd-displayHint'];
+
+    if (displayHint === 'booleanChips') {
+      const subProps = schema?.properties as Record<string, any> | undefined;
+      if (!subProps) return <div className={rjsfStyles.booleanChips} />;
+
+      return (
+        <div className={rjsfStyles.booleanChips}>
+          {Object.entries(subProps).map(([key, propSchema]: [string, any]) => {
+            const isTrue = !!(formData?.[key]);
+            const label = formatLabel(key);
+            const tooltip = propSchema?.description;
+            return (
+              <span
+                key={key}
+                className={`${rjsfStyles.booleanChip} ${isTrue ? rjsfStyles.booleanChipTrue : rjsfStyles.booleanChipFalse}`}
+                title={tooltip}
+              >
+                <i className={rjsfStyles.booleanChipIcon}>{isTrue ? '✓' : '✗'}</i>
+                {label}
+              </span>
+            );
+          })}
+        </div>
+      );
+    }
+
+    // Default: object grid rendering
     return (
       <div className={rjsfStyles.object}>
         {properties.map((prop: any) => prop.content)}

@@ -326,6 +326,45 @@
     gap: var(--spacing-sm);
 }
 
+/* Boolean chips layout — for objects with all-boolean properties (e.g. qualityAttributes) */
+.booleanChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.booleanChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border: 1.5px solid transparent;
+    transition: all var(--transition-fast);
+    cursor: default;
+    white-space: nowrap;
+}
+
+.booleanChipTrue {
+    background: rgba(74, 222, 128, 0.12);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.booleanChipFalse {
+    background: rgba(248, 113, 113, 0.12);
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.booleanChipIcon {
+    font-size: 0.85em;
+    font-style: normal;
+}
+
 /* Description */
 .description {
     font-size: var(--font-size-sm);

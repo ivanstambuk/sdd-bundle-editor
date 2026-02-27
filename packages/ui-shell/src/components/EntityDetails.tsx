@@ -599,7 +599,8 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
             const pillClass = isSelected
               ? `${rjsfStyles.enumPill} ${rjsfStyles.enumPillSelected}`
               : rjsfStyles.enumPill;
-            const tooltip = isSelected && currentDescription ? currentDescription : enumDescriptions?.[opt.value];
+            // Every pill shows its own description on hover, not just the selected one
+            const tooltip = enumDescriptions?.[opt.value];
             return (
               <span key={opt.value} className={pillClass} title={tooltip}>
                 {getDisplayTitle(opt.value)}

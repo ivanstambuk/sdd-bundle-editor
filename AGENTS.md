@@ -138,7 +138,54 @@ See `.agent/workflows/` for detailed instructions.
 
 ---
 
+## Schema Display Hints (`x-sdd-displayHint`)
+
+Set on a **field's schema** (not the entity schema) to control how the UI renders it.
+
+| Value | Applies To | Renderer | Layout Size | Notes |
+|---|---|---|---|---|
+| `multiline` | `string` | Textarea / text block | Full row | For long prose fields |
+| `markdown` | `string` | ReactMarkdown with GFM | Full row | Renders bold/italic/lists/tables |
+| `chips` | `array` of strings | Read-only pill chips | 2 cols | Each array item is a pill; `x-sdd-enumTitles` for labels |
+| `booleanChips` | `object` (all-boolean props) | Colored pill chips | Full row | ✓ green = true, ✗ red = false; use on quality-attribute objects |
+
+**Enum fields** (any field with `"enum": [...]`) are automatically rendered as:
+- **Strip** (≤ 5 options): single horizontal no-wrap row of pills
+- **Wrapping grid** (6–12 options): full-width wrapping flex row of pills
+- **Dropdown** (> 12 options): standard `<select>`
+
+**No hint needed for enums** — the threshold logic is automatic based on `schema.enum.length`.
+
+**Supporting extensions** used alongside display hints:
+
+| Extension | Type | Purpose |
+|---|---|---|
+| `x-sdd-enumTitles` | `Record<string, string>` | Human-readable label for each enum value |
+| `x-sdd-enumDescriptions` | `Record<string, string>` | Tooltip shown on hover for each option pill |
+| `x-sdd-enumStyles` | `Record<string, {color?: string}>` | Header badge color (overrides pill rendering for status-type fields in entity header) |
+
+**Example — adding booleanChips to a schema:**
+```json
+"qualityAttributes": {
+  "type": "object",
+  "x-sdd-displayHint": "booleanChips",
+  "properties": {
+    "atomic":     { "type": "boolean" },
+    "traceable":  { "type": "boolean" },
+    "verifiable": { "type": "boolean" }
+  }
+}
+```
+
+**Currently used in:**
+- `Requirement.qualityAttributes` → `booleanChips`
+- `Feature.tags`, `Requirement.tags` → `chips`
+- `*.statement`, `*.description`, `*.rationale` → `markdown`
+
+---
+
 ## UI Change Proposal Workflow
+
 
 When proposing any UI change with multiple viable approaches:
 

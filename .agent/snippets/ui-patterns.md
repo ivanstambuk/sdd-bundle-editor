@@ -278,3 +278,104 @@ React Flow requires explicit height on its container. Using `flex: 1` in a flexb
 document.querySelector('.react-flow').getBoundingClientRect();
 // If height is 0, check parent's flex property
 
+---
+
+## Enum Pill Selector (Read-Only Enums)
+
+Replaces `<select>` dropdowns for read-only enum display with scannable pill chips.
+Implemented in `CustomSelectWidget` in `EntityDetails.tsx`.
+
+### Threshold Logic
+
+```tsx
+// ≤5 options  → no-wrap horizontal strip (fits in 1 grid column)
+// 6–12 options → full-width wrapping grid (all options visible at once)
+// >12 options  → dropdown <select> (too many to display as pills)
+if (schema?.enum) {
+  const count = (schema.enum as unknown[]).length;
+  if (count <= 5) return 'rjsf-field-small';   // strip
+  if (count <= 12) return 'rjsf-field-full';   // wrapping grid
+  return 'rjsf-field-small';                   // dropdown fallback
+}
+```
+
+### CSS Classes
+
+```css
+.enumPills          { display: flex; flex-wrap: wrap; gap: 6px; }
+.enumPillsStrip     { flex-wrap: nowrap; }            /* for ≤5 options */
+.enumPill           { border: 1.5px solid border; color: muted; radius: 999px; }
+.enumPillSelected   { border-color: accent; background: accent-light; }
+```
+
+### Rendering (in CustomSelectWidget)
+
+```tsx
+// Path 2: pill selector (read-only, ≤12 options)
+if (isReadOnly && realOpts.length > 0 && realOpts.length <= 12) {
+  const containerClass = realOpts.length <= 5
+    ? `${styles.enumPills} ${styles.enumPillsStrip}`
+    : styles.enumPills;
+  return (
+    <div className={containerClass}>
+      {realOpts.map(opt => (
+        <span
+          key={opt.value}
+          className={opt.value === value
+            ? `${styles.enumPill} ${styles.enumPillSelected}`
+            : styles.enumPill}
+          title={enumDescriptions?.[opt.value]}  // tooltip on every pill
+        >
+          {getDisplayTitle(opt.value)}  // uses x-sdd-enumTitles or humanizes raw value
+        </span>
+      ))}
+    </div>
+  );
+}
+```
+
+**Key decisions:**
+- `realOpts` excludes the RJSF blank sentinel `""` option
+- `enumDescriptions?.[opt.value]` gives tooltip on **every** pill, not just selected
+- `enumStyles` (header badges) takes priority over pill rendering — checked first
+- `getDisplayTitle` tries `x-sdd-enumTitles[val]`, falls back to humanizing `kebab-case`
+
+---
+
+## Field Size Heuristics (`getFieldSizeClass`)
+
+Controls which column span a field gets in the 4-column RJSF form grid.
+Located in `EntityDetails.tsx` inside `FieldTemplate`.
+
+```tsx
+// Priority order:
+// 1. displayHint overrides everything
+if (displayHint === 'multiline' || displayHint === 'markdown') return 'rjsf-field-full';
+if (displayHint === 'chips') return 'rjsf-field-medium';
+// 2. Type-based
+if (schema?.type === 'object') return 'rjsf-field-full';
+if (schema?.type === 'array' && displayHint !== 'chips') return 'rjsf-field-full';
+// 3. Enum size
+if (schema?.enum) {
+  const count = schema.enum.length;
+  if (count <= 5) return 'rjsf-field-small';   // 1 col — strip fits
+  if (count <= 12) return 'rjsf-field-full';   // full row — wrapping grid
+  return 'rjsf-field-small';                   // dropdown
+}
+// 4. Date fields
+if (schema?.format === 'date' || schema?.format === 'date-time') return 'rjsf-field-small';
+// 5. maxLength → column span
+// ≤30:  small   (IDs, codes)
+// ≤80:  medium  (short titles)
+// ≤150: large   (longer titles)
+// >150: full    (descriptions)
+// 6. Fallback: string → medium, other → full
+```
+
+**Column span mapping:**
+| Class | `grid-column` span | Typical use |
+|---|---|---|
+| `rjsf-field-small` | 1 | IDs, dates, enum strips |
+| `rjsf-field-medium` | 2 | Short titles, chip arrays |
+| `rjsf-field-large` | 3 | Medium titles (maxLength 81–150) |
+| `rjsf-field-full` | 4 | Markdown, objects, large enum grids |

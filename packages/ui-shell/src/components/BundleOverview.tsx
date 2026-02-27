@@ -7,6 +7,7 @@ import { HeaderMetadata } from './HeaderMetadata';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { RelationshipGraph } from './RelationshipGraph';
 import { extractRelationsFromSchemas } from '../utils/schemaUtils';
+import { getEntityIcon } from '../utils/schemaMetadata';
 import styles from './BundleOverview.module.css';
 
 interface BundleOverviewProps {
@@ -107,7 +108,7 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
                         const count = bundle.entities[entityType]?.length || 0;
                         const schema = bundle.schemas?.[entityType] as Record<string, any> | undefined;
                         const description = (schema?.description as string) || '';
-                        const icon = schema?.['x-sdd-icon'] as string | undefined;
+                        const icon = getEntityIcon(schema);
                         const properties = (schema?.properties as Record<string, any>) || {};
                         const required: string[] = (schema?.required as string[]) || [];
                         // Key fields: required first, then others, max 5

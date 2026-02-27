@@ -273,6 +273,41 @@
     color: var(--color-text-muted);
 }
 
+/* Enum pill selector — replaces <select> for read-only enum display */
+.enumPills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+/* Strip variant: single row, no wrap (≤5 options) */
+.enumPillsStrip {
+    flex-wrap: nowrap;
+}
+
+.enumPill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border: 1.5px solid var(--color-border);
+    color: var(--color-text-muted);
+    background: transparent;
+    white-space: nowrap;
+    transition: none;
+    user-select: none;
+}
+
+.enumPillSelected {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: var(--color-accent-light);
+    font-weight: 600;
+}
+
 /* Select with tooltip */
 .selectWithTooltip {
     display: flex;

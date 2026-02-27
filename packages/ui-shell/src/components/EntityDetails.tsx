@@ -538,53 +538,73 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
-  // Custom select widget - shows tooltip with description for current value
-  // Uses x-sdd-enumTitles for display, x-sdd-enumDescriptions for tooltips
+  // Custom select widget — pill selector in read-only mode
+  // ≤ 5 options  → horizontal no-wrap strip
+  // 6–12 options → wrapping pill grid
+  // > 12 options → keep dropdown
   const CustomSelectWidget = (props: any) => {
     const { id, value, onChange, options, disabled, readonly, schema } = props;
     const enumTitles = schema?.['x-sdd-enumTitles'] as Record<string, string> | undefined;
     const enumDescriptions = schema?.['x-sdd-enumDescriptions'] as Record<string, string> | undefined;
     const enumStyles = schema?.['x-sdd-enumStyles'] as Record<string, { color?: string }> | undefined;
 
-    // Get display title: enumTitles > humanized value
+    // Humanise a raw enum value → display title
     const getDisplayTitle = (val: string) => {
       if (enumTitles?.[val]) return enumTitles[val];
-      // Humanize: "user-experience" -> "User Experience"
       return val.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
     const currentTitle = value ? getDisplayTitle(value) : '';
     const currentDescription = enumDescriptions?.[value];
+    const isReadOnly = disabled || readonly;
+    const enumOpts: { value: string }[] = options.enumOptions ?? [];
+    // Strip the blank sentinel "Select..." option RJSF injects
+    const realOpts = enumOpts.filter(o => o.value !== '');
 
-    // In read-only mode with enum styles, render as a colored badge (for header fields)
-    if ((readonly || disabled) && enumStyles && value) {
+    // ── 1. Header badge path (enumStyles present) ────────────────────────────
+    if (isReadOnly && enumStyles && value) {
       const styleConfig = enumStyles[value];
-      const colorClass = styleConfig?.color ? `${rjsfStyles.enumBadge} ${styleConfig.color}` : `${rjsfStyles.enumBadge} ${rjsfStyles.muted}`;
-
+      const colorClass = styleConfig?.color
+        ? `${rjsfStyles.enumBadge} ${styleConfig.color}`
+        : `${rjsfStyles.enumBadge} ${rjsfStyles.muted}`;
       return (
         <div className={rjsfStyles.enumBadgeContainer}>
-          <span className={colorClass}>
-            {currentTitle}
-          </span>
+          <span className={colorClass}>{currentTitle}</span>
           {currentDescription && (
-            <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
-              ⓘ
-            </span>
+            <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>ⓘ</span>
           )}
         </div>
       );
     }
 
-    // All other enums: dropdown with titles as labels
-    // In read-only mode: dropdown still opens (to see options) but resets on change
-    const isReadOnly = disabled || readonly;
+    // ── 2. Pill selector (read-only, ≤12 options) ────────────────────────────
+    if (isReadOnly && realOpts.length > 0 && realOpts.length <= 12) {
+      const isStrip = realOpts.length <= 5;
+      const containerClass = isStrip
+        ? `${rjsfStyles.enumPills} ${rjsfStyles.enumPillsStrip}`
+        : rjsfStyles.enumPills;
 
+      return (
+        <div className={containerClass}>
+          {realOpts.map(opt => {
+            const isSelected = opt.value === value;
+            const pillClass = isSelected
+              ? `${rjsfStyles.enumPill} ${rjsfStyles.enumPillSelected}`
+              : rjsfStyles.enumPill;
+            const tooltip = isSelected && currentDescription ? currentDescription : enumDescriptions?.[opt.value];
+            return (
+              <span key={opt.value} className={pillClass} title={tooltip}>
+                {getDisplayTitle(opt.value)}
+              </span>
+            );
+          })}
+        </div>
+      );
+    }
+
+    // ── 3. Dropdown fallback (editable or >12 options) ───────────────────────
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      if (isReadOnly) {
-        // Reset to original value - allows viewing options but not changing
-        e.target.value = value || '';
-        return;
-      }
+      if (isReadOnly) { e.target.value = value || ''; return; }
       onChange(e.target.value);
     };
 
@@ -598,24 +618,19 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           title={isReadOnly ? 'View available options (read-only)' : undefined}
         >
           <option value="">Select...</option>
-          {options.enumOptions?.map((opt: any) => (
-            <option
-              key={opt.value}
-              value={opt.value}
-              title={enumDescriptions?.[opt.value]}
-            >
+          {enumOpts.map((opt: any) => (
+            <option key={opt.value} value={opt.value} title={enumDescriptions?.[opt.value]}>
               {getDisplayTitle(opt.value)}
             </option>
           ))}
         </select>
         {currentDescription && (
-          <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>
-            ⓘ
-          </span>
+          <span className={rjsfStyles.fieldHelpIcon} title={currentDescription}>ⓘ</span>
         )}
       </div>
     );
   };
+
 
   const widgets: Record<string, any> = {
     hidden: HiddenWidget,

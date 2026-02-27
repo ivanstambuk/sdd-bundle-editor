@@ -1,17 +1,29 @@
 ---
-description: Conduct a structured retrospective to identify delivery improvements
+description: Session retrospective, process improvements, and handover — combined
 ---
 
-# Retrospective Workflow
+# /retro — Retrospective & Session Handover
 
-Use this workflow when:
-- The user says `/retro` or "retrospective"
+**This workflow replaces `/handover`.** Run at the end of every session or after completing a significant milestone.
+
+Use when:
+- The user says `/retro`, `/handover`, "retrospective", or "session handover"
 - You've spent significant time (>30 min) on a task that could have been faster
 - Multiple iterations were needed to fix something
 - Before context exhaustion (proactively)
 - At the end of a long session
 
-## Step 1: Identify Friction Points
+---
+
+## Step 1: Verification & Git
+// turbo
+- Run `git status` to check for uncommitted changes.
+- Commit all meaningful work if not already done.
+- Format: `feat(sdd): T-XXX title` or `fix:` / `chore:` / `docs:`
+
+---
+
+## Step 2: Identify Friction Points
 
 Review the session and identify what caused delays or extra iterations:
 
@@ -25,9 +37,11 @@ Review the session and identify what caused delays or extra iterations:
 | [e.g., Forgot to rebuild] | ~5 min | No pre-build in E2E |
 ```
 
-## Step 2: Generate Process Improvements
+---
 
-For each friction point, propose a solution with impact assessment:
+## Step 3: Generate Improvements
+
+For each friction point, propose a solution:
 
 ```markdown
 ## Process Improvements
@@ -38,29 +52,17 @@ For each friction point, propose a solution with impact assessment:
 **Problem**: [What went wrong]
 **Solution**: [Specific fix]
 **Files to Change**: [List of files]
-**Effort**: [5 min / 15 min / 30 min / 1 hour]
-**Impact**: [Saves X min per session / Prevents Y type of bugs]
+**Effort**: [5 min / 15 min / 30 min]
 
-### 🟡 Priority 2: Medium Impact, Moderate Effort
-
-#### 2. [Improvement Name]
-...
-
-### 🟢 Priority 3: Nice-to-Have, Future Optimization
-
-#### 3. [Improvement Name]
+### 🟡 Priority 2: Medium Impact
 ...
 ```
 
-## Step 2.5: Architectural & Code Improvements
+---
 
-**⚠️ ARCHITECTURAL-FIRST PRINCIPLE**: When proposing improvements, always recommend the architecturally correct solution, NOT the laziest one. Do NOT recommend "keep current" just because it's less work. See AGENTS.md for full guidelines.
+## Step 3.5: Architectural & Code Improvements
 
-**IMPORTANT**: Beyond process fixes, identify **code and architecture improvements** that would make future development easier. These should be:
-- **Generic** (not task-specific)
-- **Reusable** (benefits multiple future features)
-- **Foundational** (improves reasoning about the code)
-
+**⚠️ ARCHITECTURAL-FIRST PRINCIPLE**: Recommend the correct solution, NOT the laziest one.
 
 ```markdown
 ## Architectural Improvements
@@ -69,50 +71,30 @@ For each friction point, propose a solution with impact assessment:
 | Pattern | Current State | Suggested Improvement | Benefit |
 |---------|---------------|----------------------|---------|
 | [e.g., Error handling] | Ad-hoc try/catch | Centralized Result type | Consistent error flow |
-| [e.g., API responses] | Varied formats | Standardized envelope | Predictable parsing |
 
 ### Refactoring Opportunities
-- [ ] **[Component/Module]**: [What could be simplified or extracted]
-  - Current: [How it works now]
-  - Proposed: [How it should work]
-  - Impact: [Why this helps future development]
-
-### Code Modernization
-- [ ] **[Area]**: [What could be updated]
-  - E.g., "Replace callback pattern with async/await"
-  - E.g., "Extract shared types to dedicated package"
-  - E.g., "Add discriminated unions for state management"
+- [ ] **[Component/Module]**: [What could be simplified]
 
 ### Missing Abstractions
 - [ ] **[Abstraction Name]**: [What's missing that would help]
-  - E.g., "Shared test fixtures for entity creation"
-  - E.g., "Response builder for consistent API formats"
-  - E.g., "Schema-driven form field sizing (already done!)"
 ```
 
-### Questions to Ask Yourself:
-
+Questions to ask yourself:
 1. **Did I repeat similar code?** → Extract to shared utility
 2. **Did I struggle to understand flow?** → Add types or documentation
 3. **Did I have to look up the same thing twice?** → Create helper or constant
 4. **Was error handling inconsistent?** → Standardize pattern
 5. **Did tests require too much setup?** → Extract fixture helpers
-6. **Was the API response format surprising?** → Normalize response shapes
 
-## Step 2.6: Snippet Extraction
+---
 
-**IMPORTANT**: Identify non-trivial code patterns created during this session that should be saved for reuse.
+## Step 3.6: Snippet Extraction
 
-**Criteria for extraction** (must meet at least one):
+Identify patterns worth saving for reuse (must meet at least one):
 - Took >1 attempt to create correctly
 - Used 2+ times in this session
-- Complex enough that you'd have to think about it again
-- Project-specific (not general language knowledge)
-
-**NOT worth extracting**:
-- Simple one-liners (grep, sed basics)
-- Standard language patterns you already know
-- One-off debugging commands
+- Complex enough to think about again
+- Project-specific convention
 
 ```markdown
 ## Snippets to Extract
@@ -121,132 +103,170 @@ For each friction point, propose a solution with impact assessment:
 |---------|----------|-------------|
 | [MCP envelope unwrapper] | TypeScript | .agent/snippets/response-patterns.md |
 | [Dynamic entity selection] | E2E Test | .agent/snippets/test-patterns.md |
-| [Session context finder] | Debug | .agent/snippets/debug-recipes.md |
-
-### Snippet Details
-
-**[Snippet Name]**
-```typescript
-// The actual code pattern
-```
-**Why save**: [Took multiple attempts / Used repeatedly / Non-obvious]
 ```
 
-## Step 2.7: Fixable Issues (NOT Pitfalls!)
+---
 
-**CRITICAL**: For each issue identified, ask: **"Can I fix this now?"**
+## Step 3.7: Fixable Issues (NOT Pitfalls!)
 
-- If **YES** → Add to Quick Wins as a code/config fix
-- If **NO** (external dependency, requires major refactor) → Document as pitfall
+For each issue: **"Can I fix this now?"**
+- **YES** → Fix it now as a Quick Win
+- **NO** (external dependency, major refactor) → Document as pitfall
 
-**NEVER document a pitfall for something you CAN fix.** Examples:
+**NEVER document a pitfall for something you CAN fix.**
 
-| Issue | Can Fix? | Action |
-|-------|----------|--------|
-| Schema and bundle-type.json out of sync | YES | Fix the code to use single source of truth |
-| dev.sh doesn't clean up ports | YES | Add port cleanup to dev.sh |
-| External API has wrong response format | NO | Document as pitfall (we don't control it) |
-| Need to run `pnpm build` before test | YES | Add pre-build step to test script |
+---
 
-**Pitfalls are a LAST RESORT** for things truly outside your control.
+## Step 4: All Improvements — Flat List
+
+**⚠️ DO NOT SORT OR FILTER** — present everything, let the user decide.
 
 ```markdown
-## Anti-Patterns (Only if Unfixable)
+## All Improvements Identified
 
-| Don't Do This | Because | Can We Fix It? | Fix or Pitfall |
-|---------------|---------|----------------|----------------|
-| [Bad pattern] | [Reason] | YES/NO | [If YES: "Fix: ..." / If NO: "Pitfall: ..."] |
+| # | Improvement | Type | Effort | Description |
+|---|-------------|------|--------|-------------|
+| 1 | [Item name] | Process | ~X min | [What it fixes] |
+| 2 | [Item name] | Code | ~X min | [What it fixes] |
+| 3 | [Item name] | Docs | ~X min | [What it fixes] |
 ```
 
+---
 
-## Step 3: Quick Wins Summary
-
-Create a table sorted by effort/impact ratio (include both process AND architectural items):
-
-```markdown
-## Quick Wins for Next Session
-
-| Action | Type | Effort | Impact | Priority |
-|--------|------|--------|--------|----------|
-| [Fix X] | Process | 5 min | Saves 10 min/session | 🔴 Do Now |
-| [Add Y] | Code | 15 min | Prevents flaky tests | 🔴 Do Now |
-| [Refactor Z] | Architecture | 30 min | Better DX | 🟡 Soon |
-| [Extract W] | Abstraction | 1 hour | Reuse across features | 🟢 Backlog |
-```
-
-## Step 4: Propose Changes
+## Step 5: Propose & Implement
 
 **CRITICAL RULES:**
-1. **Offer ALL identified items** - Every item from Quick Wins table MUST appear in proposed actions
-2. **Primary option is "implement ALL now"** - User wants to fix everything by default
-3. **NO BACKLOG OPTION** - Never offer to add items to IMPLEMENTATION_TRACKER. Either implement now or skip.
-4. **When user says "do all" → IMPLEMENT, don't add tasks**
-
-Ask the user which improvements to implement:
+1. List ALL items — no filtering, no priority sorting
+2. Only two options: "Implement ALL" or "Specific items"
+3. Use numbered list (NOT checkboxes — causes strikethrough rendering)
 
 ```markdown
 ## Proposed Actions
 
-I've identified [N] improvements. Here's everything:
+I've identified [N] improvements:
 
-### All Items (implement now)
-1. **[Item 1]** - [One-line description] (~X min)
-2. **[Item 2]** - [One-line description] (~X min)
-3. **[Item 3]** - [One-line description] (~X min)
-...
+1. **[Item]** - [description] (~X min)
+2. **[Item]** - [description] (~X min)
 
 **Total estimated time**: ~X minutes
 
 Would you like me to:
-- [ ] **Implement ALL now** (recommended)
-- [ ] Skip all
-- [ ] Specific items only: [list numbers]
+1. **Implement ALL now** (recommended)
+2. **Specific items only** — tell me which numbers
 ```
 
-**IMPORTANT**: 
-- Do NOT offer "add to IMPLEMENTATION_TRACKER" as an option
-- Do NOT offer partial categories (e.g., "process only", "snippets only")
-- The ONLY options are: implement all, skip all, or specific item numbers
-- If user says "do all" or similar → implement the actual code/tests/docs NOW
-
-## Step 5: Implement Everything
-
-When implementing, actually write the code/tests/docs. Do NOT just add tasks to a tracker.
-
-Examples of what "implement now" means:
-- **Test task** → Write the actual test file with test cases
-- **Snippet task** → Add the snippet to debug-recipes.md
-- **Doc task** → Write the documentation content
-- **Refactor task** → Do the refactoring
+When implementing: actually write the code/tests/docs. Do NOT just add tasks to a tracker.
 
 Update relevant files:
-- `.agent/snippets/` - Add code patterns
-- `AGENTS.md` - Add pitfalls if recurring
-- `.agent/workflows/` - Add workflows if repeatable
-- `packages/*/README.md` - Document patterns
+- `.agent/snippets/` — Add code patterns
+- `AGENTS.md` — Add rules or gotchas
+- `.agent/workflows/` — Add workflows for repeatable processes
+- `packages/*/README.md` — Document patterns
+- `IMPLEMENTATION_TRACKER.md` — Mark progress
 
-## Step 6: Commit All Changes
+---
 
-**CRITICAL**: After implementing improvements, ALWAYS commit. Do NOT report completion without committing.
+## Step 6: Kill Stale Playwright & Clean Recordings
+// turbo
+```bash
+PW_PIDS=$(pgrep -f "ms-playwright/chromium.*ag-cdp" 2>/dev/null)
+if [ -n "$PW_PIDS" ]; then
+  COUNT=$(echo "$PW_PIDS" | wc -l)
+  echo "⚠️  Killing $COUNT stale Playwright Chrome processes"
+  kill $PW_PIDS 2>/dev/null; sleep 1; kill -9 $PW_PIDS 2>/dev/null
+  echo "✅ Playwright Chrome cleaned"
+else
+  echo "✅ No stale Playwright Chrome processes"
+fi
+rm -rf ~/.gemini/antigravity/browser_recordings/* 2>/dev/null && echo "🧹 Cleaned browser recordings" || true
+```
+Playwright renderers survive the agent session and burn 15-30% CPU per tab. Browser recordings can grow to 30GB+. Both safe to clean at session end.
+
+---
+
+## Step 7: Session Handover (replaces `/handover`)
+
+**This step replaces the old `/handover` workflow.** Always run as part of retro — never separately.
+
+### 7a. Update IMPLEMENTATION_TRACKER.md
+// turbo
+- Mark completed tickets as `[DONE]`
+- Update Phase statuses (e.g., `(In Progress)` → `(Completed YYYY-MM-DD)`)
+- Add a "Last Session" summary at the top if the file has one
+
+### 7b. Handle pending-task.md
+
+**File**: `.agent/session/pending-task.md`
+
+**If the current task is COMPLETE:**
+```bash
+rm -f .agent/session/pending-task.md
+```
+The `/init` workflow will read `IMPLEMENTATION_TRACKER.md` to find the next task.
+
+**If work is INCOMPLETE** (stopping mid-task), create/update `pending-task.md`:
+> ⚠️ HARD CAP: 100 LINES MAXIMUM
+
+```markdown
+# Session Context
+<!-- MAX 100 LINES -->
+
+## Current State
+
+- **Focus**: [1-2 sentences: what we're working on]
+- **Next**: [the ONE thing to do when resuming]
+- **Status**: [In Progress / Blocked / Ready]
+- **Phase**: [Phase N, Task N.X]
+
+## Key Files
+
+- `path/to/file1.tsx` — [why relevant]
+- `path/to/file2.ts` — [why relevant]
+(max 7 files)
+
+## Context Notes
+
+Things git commits don't capture:
+- [Decision made and why]
+- [Gotcha discovered]
+- [Thing tried that didn't work]
+
+## Quick Start
 
 ```bash
-git add -A && git status
-git commit -m "fix: [main fix description]
-
-Retro improvements:
-- [list improvements implemented]"
+cd ~/dev/sdd-bundle-editor && pnpm dev
+# MCP server on :3003, web on :5174
+# Then: [what to test/verify]
+```
 ```
 
-**Checklist before reporting done:**
-- [ ] All tests pass
-- [ ] All changes staged and committed
-- [ ] Commit message includes both the main fix AND retro improvements
+### 7c. Commit & Push All Session Work
+// turbo
+```bash
+git add -A && git status
+git commit -m "docs: session handover + retro improvements
+
+Retro:
+- [improvements implemented]
+
+Handover:
+- [next task or 'all tasks complete']" && git push
+```
+
+### 7d. Final Report to User
+
+```
+✅ Session closed.
+- IMPLEMENTATION_TRACKER.md updated
+- Retro improvements: [N implemented]
+- Pending task: [deleted ✅ / updated at .agent/session/pending-task.md]
+
+Next session: Run /init to resume.
+```
 
 ---
 
 ## Categories to Check
-
-When doing a retrospective, scan for issues in these categories:
 
 ### Build & Test
 - [ ] Tests running in wrong mode (watch vs run)
@@ -254,65 +274,52 @@ When doing a retrospective, scan for issues in these categories:
 - [ ] Flaky tests with timing issues
 - [ ] Hardcoded values that should be dynamic
 
-### Shell & Commands
-- [ ] Commands hanging without output
-- [ ] Missing output limiting (| tail -N)
-- [ ] Commands that need explicit flags
+### MCP & Schema
+- [ ] MCP tools returning unexpected shapes
+- [ ] Schema out of sync with bundle-type.json
+- [ ] Missing resource completions
+- [ ] Tool error messages helpful to AI clients?
 
 ### Code Patterns
 - [ ] Type mismatches caught late
 - [ ] Missing error handling
-- [ ] Implicit dependencies
 - [ ] Repeated code that could be extracted
 - [ ] Inconsistent patterns across similar components
 
 ### Architecture & Design
 - [ ] Missing abstractions (had to write boilerplate)
-- [ ] Tight coupling (change in one place requires changes elsewhere)
+- [ ] Tight coupling between packages
 - [ ] Inconsistent API response formats
-- [ ] Missing shared types or interfaces
 - [ ] Complex code that could be simplified
-- [ ] Features that would benefit from extraction to separate package
 
-### Code Health / Technical Debt
-- [ ] **File size growth**: Any file exceeding ~2000 lines? Consider splitting
-- [ ] **CSS sprawl**: Is styles.css getting unwieldy? Consider CSS Modules
-- [ ] **Cascade effects**: Did a small change break unrelated things?
-- [ ] **Copy-paste patterns**: Am I copying similar code between components?
-- [ ] **Naming conflicts**: Are class names or variables starting to collide?
-- [ ] **Dead code accumulation**: Are we keeping unused components/utilities?
-- [ ] **Dependency sprawl**: Are we adding packages for trivial functionality?
-- [ ] **Accumulating TODOs**: Are we adding tech debt without tracking?
+### Browser Testing
+- [ ] Chrome CDP connection issues → `systemctl --user restart chrome-cdp.service`
+- [ ] Tab accumulation → clean with Step 6
+- [ ] Wrong port usage
 
 ### Documentation
-- [ ] Missing "gotchas" in AGENTS.md
-- [ ] Outdated instructions
-- [ ] Missing workflow for common tasks
-- [ ] Undocumented patterns or conventions
-
-### Session Management
-- [ ] Context not preserved between sessions
-- [ ] Unclear handover information
-- [ ] Repeated work across sessions
+- [ ] Missing gotchas in AGENTS.md
+- [ ] Outdated port references
+- [ ] Missing workflow for newly repeatable tasks
+- [ ] IMPLEMENTATION_TRACKER.md stale?
 
 ### CSS Regressions
-- [ ] **Interaction-blocking CSS**: Did `pointer-events: none` or similar block hover/click?
-  - If yes → Add regression test that reads CSS file and verifies property values
-  - Example: `expect(cssContent).toMatch(/pointer-events\s*:\s*auto/)`
-- [ ] **Layout-breaking CSS**: Did CSS changes cause visual regressions?
-  - If yes → Consider adding CSS property verification tests
-- [ ] **Pattern**: When a CSS bug is fixed, add a test that will fail if it regresses:
+- [ ] `pointer-events: none` blocking hover/click?
+- [ ] Layout-breaking CSS changes?
+- [ ] When fixing a CSS bug → add regression test:
   ```typescript
-  // Example: packages/ui-shell/src/components/LabeledEdge.test.ts
+  // Example regression test
   import { readFileSync } from 'fs';
-  import { resolve } from 'path';
-  
-  describe('ComponentName.module.css', () => {
-      const cssPath = resolve(__dirname, './ComponentName.module.css');
-      const cssContent = readFileSync(cssPath, 'utf-8');
-      
-      it('should have pointer-events: auto to allow interactions', () => {
-          expect(cssContent).toMatch(/pointer-events\s*:\s*auto/);
-      });
+  const css = readFileSync(resolve(__dirname, './Component.module.css'), 'utf-8');
+  it('pointer-events should allow interactions', () => {
+      expect(css).toMatch(/pointer-events\s*:\s*auto/);
   });
   ```
+
+---
+
+**Verification Checklist**:
+- [ ] All completed tickets marked `[DONE]` in IMPLEMENTATION_TRACKER.md
+- [ ] `pending-task.md` updated or deleted
+- [ ] Stale Playwright processes killed, recordings cleared
+- [ ] All changes committed and pushed

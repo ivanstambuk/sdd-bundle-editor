@@ -80,14 +80,17 @@ Available via slash commands:
 | Workflow | Trigger | Description |
 |----------|---------|-------------|
 | `/init` | Start of session | Prime agent with project context |
-| `/handover` | End of session | Generate handover summary |
-| `/retro` | After milestones | Run structured retrospective |
+| `/retro` | End of session / milestones | Retrospective, improvements, and handover — combined |
 | `/browser-testing` | Visual validation | AI-driven browser testing |
 | `/debug-e2e` | Test failures | Debug E2E with verbose logging |
 | `/debug-react-state` | State issues | Systematic React debugging |
 | `/e2e-tests` | New tests | How to write E2E tests |
+| `/ui-validation` | UI changes | Validate UI before/after with browser agent |
+| `/phase-implementation` | Phase work | How to implement a vision roadmap phase |
 
 See `.agent/workflows/` for detailed instructions.
+
+> ⚠️ `/handover` is deprecated — it is now **Step 7 of `/retro`**. Just run `/retro`.
 
 ---
 
@@ -101,8 +104,7 @@ See `.agent/workflows/` for detailed instructions.
 | `.gemini/task.md` | Agent's internal task tracking |
 | `.gemini/walkthrough.md` | Step-by-step implementation notes |
 
-**At session end, ALWAYS:**
-1. Update `PENDING_IMPROVEMENTS.md` with completed/remaining items
+**At session end, ALWAYS run `/retro`** — it covers commits, improvements, Playwright cleanup, and handover in one flow.
 2. Commit all working changes
 3. Clean up any temp files or artifacts
 4. **Delete `.agent/session/pending-task.md` if the task was completed**

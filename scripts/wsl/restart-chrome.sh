@@ -94,6 +94,7 @@ else
             --disable-session-crashed-bubble \
             --disable-gpu \
             --no-sandbox \
+            --window-size=1440,900 \
             about:blank \
             > /tmp/chrome-cdp.log 2>&1 &
         sleep 5

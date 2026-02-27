@@ -23,6 +23,7 @@ The following major milestones have been completed:
 | 8.8 | MCP server with tools and resources |
 | 8.9 | Conformance testing (Profile rules, audit templates) |
 | Infra | External bundle repository migration |
+| Infra (2026-02-27) | Port remapping (5174/3003), Chrome CDP systemd service, PlantUML headless fix, crypto.subtle POST fallback, canonical restart-chrome.sh propagated to all sister projects |
 
 **Current state**: Full read-only UI with MCP-based AI integration. All modifications via `apply_changes` MCP tool.
 

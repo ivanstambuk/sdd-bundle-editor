@@ -76,22 +76,28 @@ else
     # Clear stale singleton lock (prevents "already running" errors after crash)
     rm -f /tmp/ag-cdp/SingletonLock 2>/dev/null || true
 
-    echo "🚀 Starting Chrome ($CHROME_BIN) with remote debugging on port $DEBUG_PORT..."
-    nohup "$CHROME_BIN" \
-        --headless=new \
-        --remote-debugging-port=$DEBUG_PORT \
-        --user-data-dir=/tmp/ag-cdp \
-        --no-first-run \
-        --no-default-browser-check \
-        --remote-allow-origins=* \
-        --disable-popup-blocking \
-        --disable-session-crashed-bubble \
-        --disable-gpu \
-        --no-sandbox \
-        about:blank \
-        > /tmp/chrome-cdp.log 2>&1 &
-
-    sleep 5
+    # Prefer systemd service if available (handles auto-restart on crash + boot)
+    if systemctl --user is-enabled chrome-cdp.service >/dev/null 2>&1; then
+        echo "🔄 Restarting via systemd (chrome-cdp.service)..."
+        systemctl --user restart chrome-cdp.service
+        sleep 3
+    else
+        echo "🚀 Starting Chrome ($CHROME_BIN) with remote debugging on port $DEBUG_PORT..."
+        nohup "$CHROME_BIN" \
+            --headless=new \
+            --remote-debugging-port=$DEBUG_PORT \
+            --user-data-dir=/tmp/ag-cdp \
+            --no-first-run \
+            --no-default-browser-check \
+            --remote-allow-origins=* \
+            --disable-popup-blocking \
+            --disable-session-crashed-bubble \
+            --disable-gpu \
+            --no-sandbox \
+            about:blank \
+            > /tmp/chrome-cdp.log 2>&1 &
+        sleep 5
+    fi
 fi
 
 # Verify Chrome is accessible

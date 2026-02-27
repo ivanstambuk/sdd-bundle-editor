@@ -220,8 +220,16 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       if (schema?.type === 'array' && displayHint !== 'chips') return 'rjsf-field-full';
       // Chips layout is compact
       if (displayHint === 'chips') return 'rjsf-field-medium';
-      // Enums are compact (1 column)
-      if (schema?.enum) return 'rjsf-field-small';
+      // Enums: size based on option count
+      // - ≤5 options  → strip (1 col), fits compactly inline
+      // - 6–12 options → full-width row so wrapping pill grid spreads naturally
+      // - >12 options  → small (dropdown fallback, compact)
+      if (schema?.enum) {
+        const count = (schema.enum as unknown[]).length;
+        if (count <= 5) return 'rjsf-field-small';
+        if (count <= 12) return 'rjsf-field-full';
+        return 'rjsf-field-small';
+      }
       // Date fields are compact
       if (schema?.format === 'date' || schema?.format === 'date-time') return 'rjsf-field-small';
       // Use maxLength to determine size:

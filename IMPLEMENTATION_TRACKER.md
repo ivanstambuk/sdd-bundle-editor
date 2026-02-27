@@ -24,6 +24,7 @@ The following major milestones have been completed:
 | 8.9 | Conformance testing (Profile rules, audit templates) |
 | Infra | External bundle repository migration |
 | Infra (2026-02-27) | Port remapping (5174/3003), Chrome CDP systemd service, PlantUML headless fix, crypto.subtle POST fallback, canonical restart-chrome.sh propagated to all sister projects |
+| UI (2026-02-27) | Boolean fields rendered as colored pill chips (`x-sdd-displayHint: booleanChips`); enum fields replaced with pill selector (strip ≤5, full-width grid 6–12, dropdown >12); Entity Types tab replaced with card grid (description + key field chips, click-to-navigate) |
 
 **Current state**: Full read-only UI with MCP-based AI integration. All modifications via `apply_changes` MCP tool.
 

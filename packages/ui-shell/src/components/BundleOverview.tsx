@@ -96,45 +96,68 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
         </div>
     );
 
-    // Render the Entity Types tab content
-    const renderEntityTypesTab = () => (
-        <div className={styles.tabContent}>
-            <div className={styles.entityTypes}>
-                <table className={styles.propertiesTable}>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Count</th>
-                            <th>Directory</th>
-                            <th>Pattern</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {entityTypes.map(entityType => {
-                            const config = entityConfigs.find(c => c.entityType === entityType);
-                            const count = bundle.entities[entityType]?.length || 0;
-                            return (
-                                <tr key={entityType}>
-                                    <td>
+    // Render the Entity Types tab content — card grid
+    const renderEntityTypesTab = () => {
+        const sortedTypes = [...entityTypes].sort((a, b) => a.localeCompare(b));
+        return (
+            <div className={styles.tabContent}>
+                <div className={styles.entityTypeGrid}>
+                    {sortedTypes.map(entityType => {
+                        const config = entityConfigs.find(c => c.entityType === entityType);
+                        const count = bundle.entities[entityType]?.length || 0;
+                        const schema = bundle.schemas?.[entityType] as Record<string, any> | undefined;
+                        const description = (schema?.description as string) || '';
+                        const icon = schema?.['x-sdd-icon'] as string | undefined;
+                        const properties = (schema?.properties as Record<string, any>) || {};
+                        const required: string[] = (schema?.required as string[]) || [];
+                        // Key fields: required first, then others, max 5
+                        const keyFields = [
+                            ...required.filter(f => properties[f]),
+                            ...Object.keys(properties).filter(f => !required.includes(f)),
+                        ].slice(0, 5);
+
+                        return (
+                            <div
+                                key={entityType}
+                                className={styles.entityTypeCard}
+                                onClick={() => onSelectType?.(entityType)}
+                                title={`View ${entityType} entities in sidebar`}
+                            >
+                                <div className={styles.entityTypeCardHeader}>
+                                    <div className={styles.entityTypeCardTitle}>
+                                        {icon && <span className={styles.entityTypeCardIcon}>{icon}</span>}
                                         <EntityTypeBadge
                                             entityType={entityType}
                                             entityConfigs={entityConfigs}
-                                            clickable
-                                            onClick={() => onSelectType?.(entityType)}
-                                            title={`View ${entityType} in sidebar`}
                                         />
-                                    </td>
-                                    <td>{count}</td>
-                                    <td><code>{config?.directory || '—'}</code></td>
-                                    <td><code>{config?.filePattern || '—'}</code></td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    </div>
+                                    <span className={styles.entityTypeCardCount}>
+                                        {count} {count === 1 ? 'entity' : 'entities'}
+                                    </span>
+                                </div>
+                                {description && (
+                                    <p className={styles.entityTypeCardDesc}>
+                                        {description.length > 120 ? description.slice(0, 117) + '…' : description}
+                                    </p>
+                                )}
+                                {keyFields.length > 0 && (
+                                    <div className={styles.entityTypeCardFields}>
+                                        {keyFields.map(f => (
+                                            <span key={f} className={styles.entityTypeCardField}>
+                                                {f}
+                                                {required.includes(f) && <span className={styles.entityTypeCardFieldRequired}>*</span>}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
+
 
     // Sort relationships by fromEntity (alphabetically), then by toEntity
     const sortedRelations = useMemo(() => {

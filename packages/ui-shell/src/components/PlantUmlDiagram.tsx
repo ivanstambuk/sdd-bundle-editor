@@ -85,12 +85,22 @@ export function PlantUmlDiagram({ code, alt }: PlantUmlDiagramProps) {
          */
         async function computeHash(code: string, theme: 'dark' | 'light'): Promise<string> {
             const content = `${theme}:${code.trim()}`;
-            const encoder = new TextEncoder();
-            const data = encoder.encode(content);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex.slice(0, 16); // Match server's truncation
+            // crypto.subtle is only available in secure contexts (HTTPS / localhost with some browsers).
+            // Fall back to a simple djb2 hash for non-secure HTTP origins.
+            if (typeof window !== 'undefined' && window.crypto?.subtle) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(content);
+                const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex.slice(0, 16);
+            }
+            // Fallback: djb2 hash (good enough for cache key, server re-validates)
+            let h = 5381;
+            for (let i = 0; i < content.length; i++) {
+                h = ((h << 5) + h) ^ content.charCodeAt(i);
+            }
+            return (h >>> 0).toString(16).padStart(8, '0').slice(0, 16);
         }
 
         async function render() {

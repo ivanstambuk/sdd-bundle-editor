@@ -50,6 +50,8 @@ Please keep the structure and internal dependencies consistent with what is alre
 
 ## MCP Server Quick Reference
 
+**Port 3001 is reserved for this project's MCP server** on the Alfred server. Do not assign port 3001 to any other service. See `~/.local/bin/port-registry.md` for the full server port map.
+
 **Starting the MCP Server:**
 ```bash
 # Stdio mode (for Claude Desktop, VS Code Copilot)

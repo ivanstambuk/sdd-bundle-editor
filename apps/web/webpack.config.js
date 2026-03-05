@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { MCP_HTTP_PORT, WEB_PORT } = require('../../dev.config');
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
@@ -58,12 +59,12 @@ module.exports = {
     },
     historyApiFallback: true,
     allowedHosts: 'all',
-    port: parseInt(process.env.WEB_PORT || '5174', 10),
+    port: WEB_PORT,
     proxy: [
       {
         // MCP server and API endpoints
         context: ['/mcp', '/api'],
-        target: `http://localhost:${process.env.MCP_HTTP_PORT || '3003'}`,
+        target: `http://localhost:${MCP_HTTP_PORT}`,
         changeOrigin: true,
       },
     ],

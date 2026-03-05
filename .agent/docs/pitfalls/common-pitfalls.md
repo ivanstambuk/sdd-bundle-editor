@@ -458,3 +458,19 @@ See `/ui-validation` workflow for detailed process.
 - **Prevention**: The `CssModules.test.ts` file now automatically checks all CSS modules for duplicate selectors
 - **See also**: Pitfall 27 for CSS module rebuild requirements
 
+### 33. Webpack proxy and MCP server port default mismatch
+- **Symptom**: "MCP initialization failed: 504 Gateway Timeout" on page load, bundle never loads
+- **Root cause**: The webpack proxy (`apps/web/webpack.config.js`) and MCP server (`packages/mcp-server/src/index.ts`) both read `MCP_HTTP_PORT` env var but previously had **different fallback defaults** (3003 vs 3001). Without the env var set, the proxy sent requests to a port nobody was listening on.
+- **Fix**: Both now read from `dev.config.js` (root) as the SSOT for default ports:
+  ```javascript
+  // dev.config.js — SINGLE SOURCE OF TRUTH
+  module.exports = {
+    MCP_HTTP_PORT: parseInt(process.env.MCP_HTTP_PORT || '3001', 10),
+    WEB_PORT: parseInt(process.env.WEB_PORT || '5174', 10),
+  };
+  ```
+- **Prevention**: When adding new port defaults, add them to `dev.config.js` and import from there. Never hardcode port defaults inline.
+- **Debug**: If 504 persists, verify both services are on the same port:
+  ```bash
+  ss -tlnp | grep -E '300[0-9]|5174'
+  ```

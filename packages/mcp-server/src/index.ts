@@ -39,7 +39,7 @@ function parseArgs(): ParsedArgs {
         args.splice(httpIndex, 1);
     }
 
-    // Check for port
+    // Default port — MUST match dev.config.js (SSOT for dev ports)
     let httpPort = parseInt(process.env.MCP_HTTP_PORT || "3001", 10);
     const portIndex = args.indexOf("--port");
     if (portIndex !== -1 && args[portIndex + 1]) {

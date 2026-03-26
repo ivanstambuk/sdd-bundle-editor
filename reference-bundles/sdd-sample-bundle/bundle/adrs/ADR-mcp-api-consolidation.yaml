@@ -5,7 +5,7 @@ createdDate: '2024-12-10T09:00:00Z'
 lastModifiedDate: '2024-12-19T14:30:00Z'
 deciderActorIds:
 - ACT-platform-team
-context: 'The SDD Bundle Editor originally had two API layers:
+context: 'The Spec Studio originally had two API layers:
 
   1. A legacy HTTP REST API (`apps/server`) for direct browser communication
 

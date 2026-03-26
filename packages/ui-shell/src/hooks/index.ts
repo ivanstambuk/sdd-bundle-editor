@@ -1,5 +1,5 @@
 /**
- * Hooks for SDD Bundle Editor.
+ * Hooks for Spec Studio.
  * Re-exports all custom hooks for convenient importing.
  */
 

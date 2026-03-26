@@ -1,4 +1,4 @@
-# SDD Bundle Editor – Implementation Tracker
+# Spec Studio – Implementation Tracker
 
 This file tracks **active and planned** implementation work only.
 

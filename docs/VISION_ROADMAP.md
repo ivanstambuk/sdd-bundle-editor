@@ -1,4 +1,4 @@
-# SDD Bundle Editor Vision Roadmap
+# Spec Studio Vision Roadmap
 
 ## User Decisions
 

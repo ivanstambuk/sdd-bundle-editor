@@ -121,7 +121,7 @@ function loadConfigFile(configPath: string): BundleConfig[] {
  */
 function printUsage() {
     console.error(`
-SDD Bundle Editor MCP Server
+Spec Studio MCP Server
 
 USAGE:
   sdd-mcp-server [options] [bundle-paths...]

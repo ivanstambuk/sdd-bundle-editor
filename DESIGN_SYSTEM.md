@@ -1,7 +1,7 @@
 # Design System
 
 ## Overview
-The SDD Bundle Editor uses a dark theme design system inspired by Antigravity and VS Code, optimized for professional IDE aesthetics with balanced information density.
+The Spec Studio uses a dark theme design system inspired by Antigravity and VS Code, optimized for professional IDE aesthetics with balanced information density.
 
 ---
 

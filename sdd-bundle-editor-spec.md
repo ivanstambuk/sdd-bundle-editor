@@ -1,4 +1,4 @@
-# SDD Bundle Editor – Architecture and Design Spec
+# Spec Studio – Architecture and Design Spec
 
 Version: 1.0  
 Status: Living Document  

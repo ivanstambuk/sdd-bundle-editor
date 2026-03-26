@@ -1,5 +1,5 @@
 /**
- * Domain-specific error classes for SDD Bundle Editor.
+ * Domain-specific error classes for Spec Studio.
  * Provides structured error handling with error codes and context.
  */
 
@@ -48,7 +48,7 @@ export const SddErrorCode = {
 export type SddErrorCodeType = typeof SddErrorCode[keyof typeof SddErrorCode];
 
 /**
- * Base error class for SDD Bundle Editor.
+ * Base error class for Spec Studio.
  * All domain-specific errors should extend this class.
  */
 export class SddError extends Error {

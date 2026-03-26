@@ -1,5 +1,5 @@
 /**
- * Structured logging utilities for SDD Bundle Editor.
+ * Structured logging utilities for Spec Studio.
  * Provides consistent log formatting across the application.
  */
 

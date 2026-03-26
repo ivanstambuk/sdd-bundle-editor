@@ -1,4 +1,4 @@
-# SDD Bundle Editor (MVP Skeleton)
+# Spec Studio (MVP Skeleton)
 
 This repo contains a TypeScript monorepo for an **SDD (Spec‑Driven Development) Bundle Editor**, implemented according to `sdd-bundle-editor-spec.md`.
 

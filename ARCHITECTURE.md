@@ -1,12 +1,12 @@
-# SDD Bundle Editor – Architecture & Design
+# Spec Studio – Architecture & Design
 
-This document captures the foundational architecture, domain concepts, and key design decisions for the SDD Bundle Editor. It serves as a reference for contributors and AI agents working in the codebase.
+This document captures the foundational architecture, domain concepts, and key design decisions for the Spec Studio. It serves as a reference for contributors and AI agents working in the codebase.
 
 ---
 
 ## Overview
 
-The SDD Bundle Editor is a **Schema-Driven Development** tool that manages bundles of related entities (features, requirements, tasks, etc.) defined in YAML files and validated against JSON Schemas. The system supports validation, linting, reference tracking, and AI-assisted editing.
+The Spec Studio is a **Schema-Driven Development** tool that manages bundles of related entities (features, requirements, tasks, etc.) defined in YAML files and validated against JSON Schemas. The system supports validation, linting, reference tracking, and AI-assisted editing.
 
 ---
 

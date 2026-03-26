@@ -21,7 +21,7 @@ export class SddMcpServer {
                 version: "0.1.0",
             },
             {
-                instructions: `SDD Bundle Editor MCP Server - Specification bundle access for AI agents.
+                instructions: `Spec Studio MCP Server - Specification bundle access for AI agents.
 
 IMPORTANT DEFAULTS:
 - apply_changes: dryRun=true by default (preview mode). Set dryRun=false to persist changes.

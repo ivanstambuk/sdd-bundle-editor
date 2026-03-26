@@ -1,8 +1,8 @@
-# SDD Bundle Editor – Terminology
+# Spec Studio – Terminology
 
 Status: Living Document | Last updated: 2025-12-21
 
-This document defines common terms used across the SDD Bundle Editor docs and specs to ensure consistent vocabulary. As new terms are introduced, this document should be updated.
+This document defines common terms used across the Spec Studio docs and specs to ensure consistent vocabulary. As new terms are introduced, this document should be updated.
 
 ---
 
@@ -36,7 +36,7 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 ### Schema Keywords
 
 - **`x-sdd-*` Keywords**
-  - Custom JSON Schema extension keywords used by the SDD Bundle Editor.
+  - Custom JSON Schema extension keywords used by the Spec Studio.
   - All use the `x-sdd-` prefix to avoid conflicts with standard JSON Schema.
   - Examples: `x-sdd-refTargets`, `x-sdd-displayHint`, `x-sdd-prominence`.
 
@@ -147,7 +147,7 @@ This document defines common terms used across the SDD Bundle Editor docs and sp
 
 ### ⚠️ Three Perspectives on "Dependency"
 
-The word "dependency" is overloaded. In SDD Bundle Editor, we use it specifically for **implementation context**:
+The word "dependency" is overloaded. In Spec Studio, we use it specifically for **implementation context**:
 
 | Perspective | Direction | Example | Description |
 |-------------|-----------|---------|-------------|

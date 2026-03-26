@@ -1,8 +1,8 @@
 # SDD Schema Authoring Guide
 
-> Reference documentation for creating schemas that work with the SDD Bundle Editor
+> Reference documentation for creating schemas that work with the Spec Studio
 
-This document defines all custom JSON Schema extension keywords (`x-sdd-*`) recognized by the SDD Bundle Editor. When creating new entity type schemas, use these properties to control how fields are displayed and validated.
+This document defines all custom JSON Schema extension keywords (`x-sdd-*`) recognized by the Spec Studio. When creating new entity type schemas, use these properties to control how fields are displayed and validated.
 
 ---
 

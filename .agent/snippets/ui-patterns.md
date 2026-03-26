@@ -1,6 +1,6 @@
 # UI Patterns
 
-Reusable UI patterns for the SDD Bundle Editor.
+Reusable UI patterns for the Spec Studio.
 
 ---
 

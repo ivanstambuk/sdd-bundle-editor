@@ -1,7 +1,7 @@
 id: VIEW-system-context
 name: System Context
 fromViewpointId: VP-c4-context
-description: 'C4 context diagram showing the SDD Bundle Editor system,
+description: 'C4 context diagram showing the Spec Studio system,
 
   its users, and external dependencies.
 
@@ -16,7 +16,7 @@ plantuml: '@startuml
   !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 
-  title System Context - SDD Bundle Editor
+  title System Context - Spec Studio
 
 
   Person(end_user, "End User", "Browses and edits spec bundles")
@@ -24,7 +24,7 @@ plantuml: '@startuml
   Person(admin, "Administrator", "Configures system and manages bundles")
 
 
-  System(sdd_editor, "SDD Bundle Editor", "Web-based tool for viewing and editing
+  System(sdd_editor, "Spec Studio", "Web-based tool for viewing and editing
   SDD specification bundles")
 
 

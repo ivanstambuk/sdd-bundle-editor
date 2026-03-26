@@ -1,7 +1,7 @@
 {
     "name": "@sdd-bundle-editor/mcp-server",
     "version": "0.1.0",
-    "description": "MCP Server for SDD Bundle Editor",
+    "description": "MCP Server for Spec Studio",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {

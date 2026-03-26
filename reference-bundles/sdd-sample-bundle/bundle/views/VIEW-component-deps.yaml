@@ -3,7 +3,7 @@ name: Component Dependencies
 fromViewpointId: VP-component-dependency
 description: 'Shows the dependency relationships between the main
 
-  components of the SDD Bundle Editor system.
+  components of the Spec Studio system.
 
   '
 scope:
@@ -12,7 +12,7 @@ scope:
   - COMP-api-gateway
   - COMP-data-store
 plantuml: "@startuml\n!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml\n\
-  \ntitle Component Dependencies - SDD Bundle Editor\n\nContainer(ui, \"Web UI\",\
+  \ntitle Component Dependencies - Spec Studio\n\nContainer(ui, \"Web UI\",\
   \ \"React/TypeScript\", \"Provides visual bundle navigation and agent chat\")\n\
   Container(server, \"Backend Server\", \"Node.js/Fastify\", \"REST API for bundle\
   \ operations and agent communication\")\nContainer(model, \"Core Model\", \"TypeScript\"\

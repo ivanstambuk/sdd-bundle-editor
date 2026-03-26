@@ -1,5 +1,5 @@
 /**
- * API layer for SDD Bundle Editor.
+ * API layer for Spec Studio.
  * Re-exports all API clients for convenient importing.
  * 
  * MCP-First Architecture: The UI uses MCP protocol directly.

@@ -1,6 +1,6 @@
 # Project Paths Reference
 
-Quick reference for important paths in the SDD Bundle Editor ecosystem.
+Quick reference for important paths in the Spec Studio ecosystem.
 
 ## Sample Bundle
 

@@ -6,7 +6,7 @@ import { BundleWatcher } from "./bundle-watcher.js";
 import path from "path";
 import fs from "fs";
 import yaml from "js-yaml";
-
+import { getDefaultBundlePath } from "@sdd-bundle-editor/core-model";
 /**
  * Command line argument parsing result
  */
@@ -79,7 +79,7 @@ function parseArgs(): ParsedArgs {
     }
 
     // Mode 4: Fallback to environment variable or default
-    const defaultPath = process.env.SDD_SAMPLE_BUNDLE_PATH || "/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle";
+    const defaultPath = getDefaultBundlePath();
     return {
         bundleConfigs: [{
             id: path.basename(defaultPath),

@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import { getSampleBundlePath } from './e2e/bundle-test-fixture';
 const useManagedWebServers = !process.env.PW_SKIP_WEB_SERVER;
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
       {
         // MCP server (primary for MCP-first UI)
         // Pre-build to ensure dist/ is up-to-date, pass bundle path as argument
-        command: `pnpm --filter @sdd-bundle-editor/mcp-server build && node packages/mcp-server/dist/index.js --http --port 3001 ${process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle'}`,
+        command: `pnpm --filter @sdd-bundle-editor/mcp-server build && node packages/mcp-server/dist/index.js --http --port 3001 ${getSampleBundlePath()}`,
         url: 'http://localhost:3001/health',
         reuseExistingServer: !process.env.CI,
         stdout: 'pipe',
@@ -37,7 +37,7 @@ export default defineConfig({
         timeout: 60_000,
         env: {
           ...process.env,
-          SDD_SAMPLE_BUNDLE_PATH: process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle',
+          SDD_SAMPLE_BUNDLE_PATH: getSampleBundlePath(),
         },
       },
       {

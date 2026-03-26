@@ -543,3 +543,4 @@ export { applyChangesToBundle, type ApplyChangesResult } from './services/Change
 
 // Test utilities (exported for use in tests in other packages)
 export * from './test-fixtures';
+export * from './env';

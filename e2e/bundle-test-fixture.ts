@@ -14,12 +14,14 @@ import * as path from 'path';
 import * as os from 'os';
 import { execSync } from 'child_process';
 
+import { getDefaultBundlePath } from '@sdd-bundle-editor/core-model';
+
 /**
  * Get the path to the sample bundle.
  * Uses SDD_SAMPLE_BUNDLE_PATH environment variable if set, otherwise defaults to the standard location.
  */
 export function getSampleBundlePath(): string {
-    return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle';
+    return getDefaultBundlePath();
 }
 
 /**

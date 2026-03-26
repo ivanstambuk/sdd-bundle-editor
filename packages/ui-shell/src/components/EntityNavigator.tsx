@@ -3,6 +3,7 @@ import type { UiBundleSnapshot, UiEntity } from '../types';
 import type { McpBundle } from '../api';
 import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import type { BundleTypeCategoryConfig } from '@sdd-bundle-editor/shared-types';
+import { SelectDropdown } from './common/SelectDropdown';
 import styles from './EntityNavigator.module.css';
 
 interface EntityNavigatorProps {
@@ -291,19 +292,16 @@ export function EntityNavigator({
     <div className={styles.navigator} data-testid="entity-navigator">
       {/* Bundle Selector Dropdown */}
       {availableBundles.length > 0 && (
-        <div className={styles.bundleSelectorWrapper}>
-          <label className={styles.bundleSelectorLabel} htmlFor="bundle-select">Workspace Bundle</label>
-          <select 
-            id="bundle-select"
-            className={styles.bundleSelect} 
-            value={activeBundleDir || ''} 
-            onChange={(e) => onSwitchBundle?.(e.target.value)}
-          >
-            {availableBundles.map(b => (
-              <option key={b.id} value={b.path}>{b.name || b.id}</option>
-            ))}
-          </select>
-        </div>
+        <SelectDropdown
+          id="bundle-select"
+          label="Workspace Bundle"
+          value={activeBundleDir || ''}
+          onChange={(val) => onSwitchBundle?.(val)}
+          options={availableBundles.map(b => ({
+            value: b.path,
+            label: b.name || b.id
+          }))}
+        />
       )}
 
       {/* Bundle header */}

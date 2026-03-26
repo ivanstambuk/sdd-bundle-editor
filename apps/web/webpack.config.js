@@ -49,15 +49,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
-    new (require('webpack').DefinePlugin)({
-      'process.env.SDD_SAMPLE_BUNDLE_PATH': JSON.stringify(process.env.SDD_SAMPLE_BUNDLE_PATH),
-    }),
   ],
   devServer: {
     static: {
       directory: path.join(__dirname, 'public'),
     },
     historyApiFallback: true,
+    host: '0.0.0.0',
     allowedHosts: 'all',
     port: WEB_PORT,
     proxy: [

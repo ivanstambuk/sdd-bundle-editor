@@ -1,0 +1,30 @@
+id: RSK-PERF-DEGRADATION-001
+title: Performance Degradation Under Load
+description: 'System performance could degrade significantly under high load,
+
+  leading to poor user experience and potential service unavailability.
+
+  '
+likelihood: medium
+impact: medium
+mitigation: 'Load testing, performance monitoring, auto-scaling, caching strategies,
+
+  and performance budgets enforced via CI.
+
+  '
+status: open
+owner: Platform Team
+relatedRequirements:
+- REQ-data-validation
+relatedComponents:
+- COMP-auth-service
+- COMP-api-gateway
+- COMP-data-store
+relatedScenarios:
+- SCN-password-reset
+tags:
+- performance
+- reliability
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

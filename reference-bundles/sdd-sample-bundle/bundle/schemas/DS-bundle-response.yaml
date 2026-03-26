@@ -1,0 +1,39 @@
+id: DS-bundle-response
+name: Bundle Response
+format: json-schema
+usage: response
+description: 'Response schema for GET /bundle endpoint. Contains the complete bundle
+
+  structure including entities, schemas, and metadata.
+
+  '
+summary: Full bundle data response
+content:
+  type: object
+  required:
+  - metadata
+  - entities
+  properties:
+    metadata:
+      type: object
+      properties:
+        name:
+          type: string
+        bundleType:
+          type: string
+        schemaVersion:
+          type: string
+    entities:
+      type: object
+      additionalProperties:
+        type: array
+    schemas:
+      type: object
+usedInProtocols:
+- PROTO-auth-flow
+tags:
+- api
+- bundle
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -79,7 +79,7 @@ function parseArgs(): ParsedArgs {
     }
 
     // Mode 4: Fallback to environment variable or default
-    const defaultPath = process.env.SDD_SAMPLE_BUNDLE_PATH || "/home/ivan/dev/sdd-sample-bundle";
+    const defaultPath = process.env.SDD_SAMPLE_BUNDLE_PATH || "/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle";
     return {
         bundleConfigs: [{
             id: path.basename(defaultPath),

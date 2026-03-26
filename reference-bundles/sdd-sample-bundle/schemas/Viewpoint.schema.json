@@ -1,0 +1,149 @@
+{
+  "$id": "https://example.com/sdd/Viewpoint.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Viewpoint",
+  "description": "Reusable diagram template with semantic rules for PlantUML generation",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "diagramKind",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "name"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^VP-[a-z][a-z0-9-]*$",
+      "x-sdd-idTemplate": "VP-{name}",
+      "x-sdd-entityType": "Viewpoint",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable name for the viewpoint",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "diagramKind": {
+      "type": "string",
+      "enum": [
+        "plantuml-component",
+        "plantuml-sequence",
+        "plantuml-class",
+        "plantuml-activity"
+      ],
+      "description": "Type of PlantUML diagram this viewpoint produces",
+      "x-sdd-enumTitles": {
+        "plantuml-component": "PlantUML Component",
+        "plantuml-sequence": "PlantUML Sequence",
+        "plantuml-class": "PlantUML Class",
+        "plantuml-activity": "PlantUML Activity"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "description": {
+      "type": "string",
+      "description": "Purpose and usage of this viewpoint",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "🔭",
+      "x-sdd-order": 30
+    },
+    "allowedEntityTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Entity types that can appear in views using this viewpoint",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 40
+    },
+    "selectionDefaults": {
+      "type": "object",
+      "description": "Default filters for selecting entities (e.g., tags, kinds)",
+      "additionalProperties": true,
+      "x-sdd-layoutGroup": "template",
+      "x-sdd-order": 10
+    },
+    "plantumlTemplate": {
+      "type": "string",
+      "description": "Optional Jinja-style template for generating PlantUML",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "template",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "PlantUML Template",
+      "x-sdd-prominenceIcon": "🎨",
+      "x-sdd-order": 20
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Viewpoint",
+    "icon": "👁️",
+    "displayNamePlural": "Viewpoints"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "template": {
+      "title": "Template",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

@@ -1,0 +1,23 @@
+id: OQ-scaling-approach
+question: Should we support federated authentication (OAuth2/OIDC) in the first release?
+context: 'Some enterprise customers have requested SSO integration. This would
+
+  add complexity but improve security posture and user experience for
+
+  organizations with existing identity providers.
+
+  '
+status: open
+touchesRequirements:
+- REQ-secure-auth
+- REQ-password-strength
+touchesScenarios:
+- SCN-login-success
+- SCN-login-failure
+tags:
+- authentication
+- enterprise
+- scope
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

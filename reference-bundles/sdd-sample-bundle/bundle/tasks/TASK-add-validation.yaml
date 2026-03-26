@@ -1,0 +1,20 @@
+id: TASK-add-validation
+title: Implement Git State Check Endpoint
+description: 'Create a /agent/health endpoint that returns:
+
+  - Git clean state (boolean)
+
+  - Current branch name
+
+  - Conversation active state
+
+  This endpoint is used by the UI to show warnings when Git is dirty.
+
+  '
+belongsToFeatureIds:
+- FEAT-agent-conversation
+fulfillsRequirementIds:
+- REQ-password-strength
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

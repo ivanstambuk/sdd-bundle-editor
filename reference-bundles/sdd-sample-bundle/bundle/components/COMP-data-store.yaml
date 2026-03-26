@@ -1,0 +1,34 @@
+id: COMP-data-store
+title: Web UI
+kind: ui
+description: "React-based web application providing visual bundle navigation, \nentity\
+  \ viewing, and agent chat interface. Consumes the backend API.\n"
+responsibilities: '- Render entity navigator tree
+
+  - Display entity details forms
+
+  - Provide agent chat interface
+
+  - Handle user interactions
+
+  '
+technology: React / TypeScript / Webpack
+repository: https://github.com/example/sdd-bundle-editor
+owner: Frontend Team
+tags:
+- frontend
+- ui
+dependsOn:
+- COMP-api-gateway
+consumesProtocols:
+- PROTO-auth-flow
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+affectedByThreatIds:
+- THR-SESSION-HIJACK-001
+governedByPolicyIds:
+- POL-OBSERVABILITY
+usedInScenarioIds:
+- SCN-login-success
+- SCN-password-reset

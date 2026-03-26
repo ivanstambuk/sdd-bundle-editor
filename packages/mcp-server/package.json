@@ -8,7 +8,7 @@
         "build": "tsc",
         "dev": "tsc -w",
         "start": "node dist/index.js",
-        "start:http": "node dist/index.js --http",
+        "start:http": "node dist/index.js --http --config ../../bundles.dev.yaml",
         "mcp-cli": "npx ts-node scripts/mcp-cli.ts",
         "test": "vitest run",
         "test:watch": "vitest"

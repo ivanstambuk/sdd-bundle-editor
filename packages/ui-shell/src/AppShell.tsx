@@ -40,8 +40,7 @@ function getInitialBundleDir(): string {
     const dir = params.get('bundleDir');
     if (dir) return dir;
   }
-  console.warn('No bundleDir specified in URL. Please provide bundleDir query parameter.');
-  return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+  return '';
 }
 
 export function AppShell() {
@@ -55,7 +54,9 @@ export function AppShell() {
     selectedEntity,
     loading: bundleLoading,
     error: bundleError,
-    loadBundle,
+    availableBundles,
+    activeBundleDir,
+    switchBundle,
     reloadBundle,
     selectEntity,
     navigateToEntity,
@@ -139,10 +140,7 @@ export function AppShell() {
     },
   ], []));
 
-  // Initial load
-  useEffect(() => {
-    loadBundle();
-  }, []);
+  // Removed manual initial load since useBundleState handles it on dependencies
 
   // Handler for navigation
   const handleNavigate = (entityType: string, entityId: string) => {
@@ -245,6 +243,9 @@ export function AppShell() {
         <div className="sidebar-section">
           <EntityNavigator
             bundle={bundle}
+            availableBundles={availableBundles}
+            activeBundleDir={activeBundleDir}
+            onSwitchBundle={switchBundle}
             selected={viewMode === 'entity' && selectedEntity ? { entityType: selectedEntity.entityType, id: selectedEntity.id } : null}
             selectedType={viewMode === 'entityType' ? selectedEntityType : null}
             selectedBundle={viewMode === 'bundle'}

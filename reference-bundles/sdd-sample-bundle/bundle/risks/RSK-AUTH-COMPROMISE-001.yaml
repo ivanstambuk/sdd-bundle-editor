@@ -1,0 +1,34 @@
+id: RSK-AUTH-COMPROMISE-001
+title: Authentication System Compromise
+description: 'The authentication system could be compromised through various attack
+
+  vectors, leading to unauthorized access to user accounts and data.
+
+  '
+likelihood: medium
+impact: catastrophic
+mitigation: 'Implement defense in depth: rate limiting, MFA, session management,
+
+  security monitoring, and regular security audits.
+
+  '
+status: mitigated
+owner: Security Team
+relatedRequirements:
+- REQ-password-strength
+- REQ-secure-auth
+relatedComponents:
+- COMP-api-gateway
+relatedScenarios:
+- SCN-login-success
+- SCN-login-failure
+relatedThreats:
+- THR-AUTH-BRUTE-FORCE-001
+- THR-SESSION-HIJACK-001
+tags:
+- security
+- authentication
+- critical
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

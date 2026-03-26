@@ -1,0 +1,24 @@
+id: THR-SESSION-HIJACK-001
+title: Session Token Hijacking
+description: 'An attacker intercepts or steals a valid session token to impersonate
+
+  an authenticated user without knowing their credentials.
+
+  '
+category: spoofing
+attackSurface: session-storage
+assetsAtRisk:
+- session-tokens
+- user-data
+- authenticated-actions
+likelihood: medium
+impact: high
+status: analyzed
+mitigatedByRequirements:
+- REQ-password-strength
+tags:
+- session-management
+- stride-spoofing
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

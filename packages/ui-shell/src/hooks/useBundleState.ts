@@ -9,7 +9,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import type { UiBundleSnapshot, UiDiagnostic, UiEntity } from '../types';
-import { mcpBundleApi, type BundleResponse } from '../api';
+import { mcpBundleApi, type BundleResponse, type McpBundle } from '../api';
 import { createLogger } from '../utils/logger';
 
 const log = createLogger('useBundleState');
@@ -21,8 +21,11 @@ export interface UseBundleStateReturn {
     selectedEntity: UiEntity | null;
     loading: boolean;
     error: string | null;
+    availableBundles: McpBundle[]; // New array
+    activeBundleDir: string;       // Current dir
 
     // Actions
+    switchBundle: (newDir: string) => void;
     loadBundle: () => Promise<void>;
     reloadBundle: () => Promise<void>;
     setBundle: (bundle: UiBundleSnapshot) => void;
@@ -39,21 +42,59 @@ export interface UseBundleStateReturn {
  * @param bundleDir Path to the bundle directory
  * @returns Bundle state and actions
  */
-export function useBundleState(bundleDir: string): UseBundleStateReturn {
+export function useBundleState(initialBundleDir: string): UseBundleStateReturn {
+    const [activeBundleDir, setActiveBundleDir] = useState(initialBundleDir);
+    const [availableBundles, setAvailableBundles] = useState<McpBundle[]>([]);
     const [bundle, setBundle] = useState<UiBundleSnapshot | null>(null);
     const [diagnostics, setDiagnostics] = useState<UiDiagnostic[]>([]);
     const [selectedEntity, setSelectedEntity] = useState<UiEntity | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Initial fetch of available bundles
+    useEffect(() => {
+        let mounted = true;
+        mcpBundleApi.listBundles().then(bundles => {
+            if (!mounted) return;
+            setAvailableBundles(bundles);
+            
+            // If no initial bundle dir is set and we found bundles, default to the first one
+            if (!activeBundleDir && bundles.length > 0) {
+                const defaultDir = bundles[0].path;
+                setActiveBundleDir(defaultDir);
+                // Optionally update URL
+                if (typeof window !== 'undefined') {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('bundleDir', defaultDir);
+                    window.history.replaceState({}, '', url.toString());
+                }
+            }
+        }).catch(err => {
+            log.error('Failed to list bundles', { error: String(err) });
+        });
+        return () => { mounted = false; };
+    }, [activeBundleDir]);
+
+    const switchBundle = useCallback((newDir: string) => {
+        setActiveBundleDir(newDir);
+        setBundle(null);
+        setDiagnostics([]);
+        setSelectedEntity(null);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('bundleDir', newDir);
+            window.history.replaceState({}, '', url.toString());
+        }
+    }, []);
+
     // Load bundle from MCP server
     const loadBundle = useCallback(async () => {
+        if (!activeBundleDir) return;
         setLoading(true);
-        setError(null);
 
         try {
-            log.info('Loading bundle via MCP API', { bundleDir });
-            const data = await mcpBundleApi.load(bundleDir);
+            log.info('Loading bundle via MCP API', { activeBundleDir });
+            const data = await mcpBundleApi.load(activeBundleDir);
             setBundle(data.bundle);
             setDiagnostics(data.diagnostics);
             log.info('Bundle loaded successfully', {
@@ -64,7 +105,7 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
             // Auto-validate after load
             log.info('Running auto-validation after bundle load');
             try {
-                const validationData = await mcpBundleApi.validate(bundleDir);
+                const validationData = await mcpBundleApi.validate(activeBundleDir);
                 setDiagnostics(validationData.diagnostics);
                 log.info('Auto-validation complete', { diagnosticsCount: validationData.diagnostics.length });
             } catch (validationErr) {
@@ -77,15 +118,23 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         } finally {
             setLoading(false);
         }
-    }, [bundleDir]);
+    }, [activeBundleDir]);
+
+    // Automatically load when activeBundleDir changes
+    useEffect(() => {
+        if (activeBundleDir) {
+            loadBundle();
+        }
+    }, [activeBundleDir, loadBundle]);
 
     // Reload bundle with cache-busting (after modifications)
     const reloadBundle = useCallback(async () => {
+        if (!activeBundleDir) return;
         setLoading(true);
 
         try {
             log.info('Reloading bundle via MCP API');
-            const data = await mcpBundleApi.loadFresh(bundleDir);
+            const data = await mcpBundleApi.loadFresh(activeBundleDir);
             log.info('Bundle reloaded', { entityTypes: Object.keys(data.bundle.entities) });
             setBundle(data.bundle);
             setDiagnostics(data.diagnostics);
@@ -96,17 +145,17 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         } finally {
             setLoading(false);
         }
-    }, [bundleDir]);
+    }, [activeBundleDir]);
 
     // Run validation
     const runValidation = useCallback(async () => {
-        if (!bundle) return;
+        if (!bundle || !activeBundleDir) return;
         setLoading(true);
         setError(null);
 
         try {
             log.info('Running validation via MCP API');
-            const data = await mcpBundleApi.validate(bundleDir);
+            const data = await mcpBundleApi.validate(activeBundleDir);
             setDiagnostics(data.diagnostics);
             log.info('Validation complete', { diagnosticsCount: data.diagnostics.length });
         } catch (err) {
@@ -116,7 +165,7 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         } finally {
             setLoading(false);
         }
-    }, [bundle, bundleDir]);
+    }, [bundle, activeBundleDir]);
 
     // Navigate to entity by type and ID
     const navigateToEntity = useCallback((entityType: string, entityId: string) => {
@@ -156,8 +205,11 @@ export function useBundleState(bundleDir: string): UseBundleStateReturn {
         selectedEntity,
         loading,
         error,
+        availableBundles,
+        activeBundleDir,
 
         // Actions
+        switchBundle,
         loadBundle,
         reloadBundle,
         setBundle,

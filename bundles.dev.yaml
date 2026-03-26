@@ -1,0 +1,5 @@
+bundles:
+  - id: sample
+    path: ./reference-bundles/sdd-sample-bundle
+    tags: [demo, sample]
+    description: "Sample SDD bundle for demonstration and testing"

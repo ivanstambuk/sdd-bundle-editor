@@ -1,0 +1,59 @@
+id: VIEW-system-context
+name: System Context
+fromViewpointId: VP-c4-context
+description: 'C4 context diagram showing the SDD Bundle Editor system,
+
+  its users, and external dependencies.
+
+  '
+scope:
+  componentIds:
+  - COMP-auth-service
+  - COMP-api-gateway
+  - COMP-data-store
+plantuml: '@startuml
+
+  !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+
+  title System Context - SDD Bundle Editor
+
+
+  Person(end_user, "End User", "Browses and edits spec bundles")
+
+  Person(admin, "Administrator", "Configures system and manages bundles")
+
+
+  System(sdd_editor, "SDD Bundle Editor", "Web-based tool for viewing and editing
+  SDD specification bundles")
+
+
+  System_Ext(git, "Git Repository", "Stores bundle files and tracks changes")
+
+  System_Ext(ai, "AI Provider", "Provides LLM capabilities for spec generation")
+
+
+  Rel(end_user, sdd_editor, "Uses", "HTTPS")
+
+  Rel(admin, sdd_editor, "Configures", "HTTPS")
+
+  Rel(sdd_editor, git, "Reads/Writes", "Git protocol")
+
+  Rel(sdd_editor, ai, "Generates content", "HTTPS/API")
+
+  @enduml
+
+  '
+outputPath: docs/diagrams/system-context.png
+referencedEntities:
+- ACT-end-user
+- ACT-admin
+- COMP-auth-service
+- COMP-api-gateway
+- COMP-data-store
+tags:
+- overview
+- c4
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

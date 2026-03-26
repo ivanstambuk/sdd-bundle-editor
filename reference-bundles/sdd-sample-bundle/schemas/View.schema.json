@@ -1,0 +1,188 @@
+{
+  "$id": "https://example.com/sdd/View.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "View",
+  "description": "Concrete diagram definition with embedded PlantUML, bound to a viewpoint",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "fromViewpointId",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "name",
+    "plantuml"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^VIEW-[a-z][a-z0-9-]*$",
+      "x-sdd-idTemplate": "VIEW-{name}",
+      "x-sdd-entityType": "View",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable name for the view",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "fromViewpointId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Viewpoint"
+      ],
+      "description": "The viewpoint template this view uses",
+      "title": "from",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "description": {
+      "type": "string",
+      "description": "Purpose and context of this view",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "🗺️",
+      "x-sdd-order": 30
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "scenarioIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Scenario"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "componentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Component"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "description": "Filters defining what entities are included in this view",
+      "x-sdd-layoutGroup": "diagram",
+      "x-sdd-order": 10
+    },
+    "plantuml": {
+      "type": "string",
+      "description": "The PlantUML source code for this diagram",
+      "x-sdd-widget": "textarea",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "diagram",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "PlantUML Source",
+      "x-sdd-prominenceIcon": "🎨",
+      "x-sdd-order": 20
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "Optional path for generated image (e.g., docs/diagrams/login-seq.png)",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "referencedEntities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "List of entity IDs referenced in the PlantUML diagram",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "viewpointId": {
+      "title": "from",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 21
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "View",
+    "icon": "🖼️",
+    "displayNamePlural": "Views"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "diagram": {
+      "title": "Diagram",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

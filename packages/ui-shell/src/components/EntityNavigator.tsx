@@ -1,11 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
+import type { McpBundle } from '../api';
 import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
 import type { BundleTypeCategoryConfig } from '@sdd-bundle-editor/shared-types';
 import styles from './EntityNavigator.module.css';
 
 interface EntityNavigatorProps {
   bundle: UiBundleSnapshot | null;
+  availableBundles?: McpBundle[];
+  activeBundleDir?: string;
+  onSwitchBundle?: (dir: string) => void;
   selected?: { entityType: string; id: string } | null;
   selectedType?: string | null;
   selectedBundle?: boolean;
@@ -21,6 +25,9 @@ interface CategoryGroup {
 
 export function EntityNavigator({
   bundle,
+  availableBundles = [],
+  activeBundleDir,
+  onSwitchBundle,
   selected,
   selectedType,
   selectedBundle,
@@ -282,6 +289,23 @@ export function EntityNavigator({
 
   return (
     <div className={styles.navigator} data-testid="entity-navigator">
+      {/* Bundle Selector Dropdown */}
+      {availableBundles.length > 0 && (
+        <div className={styles.bundleSelectorWrapper}>
+          <label className={styles.bundleSelectorLabel} htmlFor="bundle-select">Workspace Bundle</label>
+          <select 
+            id="bundle-select"
+            className={styles.bundleSelect} 
+            value={activeBundleDir || ''} 
+            onChange={(e) => onSwitchBundle?.(e.target.value)}
+          >
+            {availableBundles.map(b => (
+              <option key={b.id} value={b.path}>{b.name || b.id}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* Bundle header */}
       <button
         type="button"

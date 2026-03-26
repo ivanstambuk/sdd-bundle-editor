@@ -1,0 +1,845 @@
+{
+  "bundleType": "sdd-core",
+  "version": "1.0.0",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01",
+    "lastModifiedDate": "2024-12-20",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "entities": [
+    {
+      "entityType": "Feature",
+      "idField": "id",
+      "schemaPath": "schemas/Feature.schema.json",
+      "directory": "bundle/features",
+      "filePattern": "{id}.yaml",
+      "role": "feature",
+      "color": "#bb9af7",
+      "category": "architecture",
+      "order": 5
+    },
+    {
+      "entityType": "Requirement",
+      "idField": "id",
+      "schemaPath": "schemas/Requirement.schema.json",
+      "directory": "bundle/requirements",
+      "filePattern": "{id}.yaml",
+      "color": "#7dcfff",
+      "category": "architecture",
+      "order": 2
+    },
+    {
+      "entityType": "Task",
+      "idField": "id",
+      "schemaPath": "schemas/Task.schema.json",
+      "directory": "bundle/tasks",
+      "filePattern": "{id}.yaml",
+      "color": "#ff9e64",
+      "category": "delivery",
+      "order": 1
+    },
+    {
+      "entityType": "ADR",
+      "idField": "id",
+      "schemaPath": "schemas/ADR.schema.json",
+      "directory": "bundle/adrs",
+      "filePattern": "{id}.yaml",
+      "color": "#9ece6a",
+      "category": "architecture",
+      "order": 1
+    },
+    {
+      "entityType": "Profile",
+      "idField": "id",
+      "schemaPath": "schemas/Profile.schema.json",
+      "directory": "bundle/profiles",
+      "filePattern": "{id}.yaml",
+      "color": "#f7768e",
+      "category": "delivery",
+      "order": 4
+    },
+    {
+      "entityType": "Fixture",
+      "idField": "id",
+      "schemaPath": "schemas/Fixture.schema.json",
+      "directory": "bundle/fixtures",
+      "filePattern": "{id}.yaml",
+      "color": "#e0af68",
+      "category": "delivery",
+      "order": 5
+    },
+    {
+      "entityType": "Protocol",
+      "idField": "id",
+      "schemaPath": "schemas/Protocol.schema.json",
+      "directory": "bundle/protocols",
+      "filePattern": "{id}.yaml",
+      "category": "system",
+      "order": 2
+    },
+    {
+      "entityType": "Decision",
+      "idField": "id",
+      "schemaPath": "schemas/Decision.schema.json",
+      "directory": "bundle/decisions",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "order": 3
+    },
+    {
+      "entityType": "Component",
+      "idField": "id",
+      "schemaPath": "schemas/Component.schema.json",
+      "directory": "bundle/components",
+      "filePattern": "{id}.yaml",
+      "color": "#73daca",
+      "category": "system",
+      "order": 1
+    },
+    {
+      "entityType": "Actor",
+      "idField": "id",
+      "schemaPath": "schemas/Actor.schema.json",
+      "directory": "bundle/actors",
+      "filePattern": "{id}.yaml",
+      "role": "stakeholder",
+      "color": "#ff7c6a",
+      "category": "delivery",
+      "order": 3
+    },
+    {
+      "entityType": "DataSchema",
+      "idField": "id",
+      "schemaPath": "schemas/DataSchema.schema.json",
+      "directory": "bundle/schemas",
+      "filePattern": "{id}.yaml",
+      "category": "system",
+      "order": 3
+    },
+    {
+      "entityType": "Scenario",
+      "idField": "id",
+      "schemaPath": "schemas/Scenario.schema.json",
+      "directory": "bundle/scenarios",
+      "filePattern": "{id}.yaml",
+      "color": "#7aa2f7",
+      "category": "delivery",
+      "order": 2
+    },
+    {
+      "entityType": "Viewpoint",
+      "idField": "id",
+      "schemaPath": "schemas/Viewpoint.schema.json",
+      "directory": "bundle/viewpoints",
+      "filePattern": "{id}.yaml",
+      "category": "system",
+      "order": 5
+    },
+    {
+      "entityType": "View",
+      "idField": "id",
+      "schemaPath": "schemas/View.schema.json",
+      "directory": "bundle/views",
+      "filePattern": "{id}.yaml",
+      "category": "system",
+      "order": 4
+    },
+    {
+      "entityType": "Principle",
+      "idField": "id",
+      "schemaPath": "schemas/Principle.schema.json",
+      "directory": "bundle/principles",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "order": 4
+    },
+    {
+      "entityType": "Policy",
+      "idField": "id",
+      "schemaPath": "schemas/Policy.schema.json",
+      "directory": "bundle/policies",
+      "filePattern": "{id}.yaml",
+      "category": "governance",
+      "order": 1
+    },
+    {
+      "entityType": "Constraint",
+      "idField": "id",
+      "schemaPath": "schemas/Constraint.schema.json",
+      "directory": "bundle/constraints",
+      "filePattern": "{id}.yaml",
+      "category": "governance",
+      "order": 2
+    },
+    {
+      "entityType": "Risk",
+      "idField": "id",
+      "schemaPath": "schemas/Risk.schema.json",
+      "directory": "bundle/risks",
+      "filePattern": "{id}.yaml",
+      "category": "risk",
+      "order": 1
+    },
+    {
+      "entityType": "Threat",
+      "idField": "id",
+      "schemaPath": "schemas/Threat.schema.json",
+      "directory": "bundle/threats",
+      "filePattern": "{id}.yaml",
+      "category": "risk",
+      "order": 2
+    },
+    {
+      "entityType": "OpenQuestion",
+      "idField": "id",
+      "schemaPath": "schemas/OpenQuestion.schema.json",
+      "directory": "bundle/questions",
+      "filePattern": "{id}.yaml",
+      "category": "risk",
+      "order": 3
+    },
+    {
+      "entityType": "TelemetrySchema",
+      "idField": "id",
+      "schemaPath": "schemas/TelemetrySchema.schema.json",
+      "directory": "bundle/telemetry-schemas",
+      "filePattern": "{id}.yaml",
+      "category": "observability",
+      "order": 1
+    },
+    {
+      "entityType": "TelemetryContract",
+      "idField": "id",
+      "schemaPath": "schemas/TelemetryContract.schema.json",
+      "directory": "bundle/telemetry-contracts",
+      "filePattern": "{id}.yaml",
+      "category": "observability",
+      "order": 2
+    },
+    {
+      "entityType": "ErrorCode",
+      "idField": "id",
+      "schemaPath": "schemas/ErrorCode.schema.json",
+      "directory": "bundle/error-codes",
+      "filePattern": "{id}.yaml",
+      "category": "observability",
+      "order": 3
+    },
+    {
+      "entityType": "HealthCheckSpec",
+      "idField": "id",
+      "schemaPath": "schemas/HealthCheckSpec.schema.json",
+      "directory": "bundle/health-checks",
+      "filePattern": "{id}.yaml",
+      "category": "observability",
+      "order": 4
+    }
+  ],
+  "relations": [
+    {
+      "name": "RequirementBelongsToFeature",
+      "fromEntity": "Requirement",
+      "fromField": "realizesFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TaskImplementsRequirement",
+      "fromEntity": "Task",
+      "fromField": "fulfillsRequirementIds",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TaskBelongsToFeature",
+      "fromEntity": "Task",
+      "fromField": "belongsToFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FeatureGovernedByADR",
+      "fromEntity": "Feature",
+      "fromField": "governedByAdrIds",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRSupersedes",
+      "fromEntity": "ADR",
+      "fromField": "supersedesAdrIds",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProfileRequiresFeature",
+      "fromEntity": "Profile",
+      "fromField": "requiresFeatures",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProfileOptionalFeature",
+      "fromEntity": "Profile",
+      "fromField": "optionalFeatures",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FixtureBelongsToFeature",
+      "fromEntity": "Fixture",
+      "fromField": "belongsToFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FixtureValidatesRequirement",
+      "fromEntity": "Fixture",
+      "fromField": "validatesRequirementIds",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "FixtureUsedInScenario",
+      "fromEntity": "Fixture",
+      "fromField": "usedInScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RequirementGovernedByADR",
+      "fromEntity": "Requirement",
+      "fromField": "governedByAdrIds",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProtocolSupportsFeature",
+      "fromEntity": "Protocol",
+      "fromField": "supportsFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProtocolGovernedByADR",
+      "fromEntity": "Protocol",
+      "fromField": "governedByAdrIds",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DecisionAffectsFeature",
+      "fromEntity": "Decision",
+      "fromField": "affectsFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ComponentImplementsFeature",
+      "fromEntity": "Component",
+      "fromField": "implementsFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ComponentImplementsRequirement",
+      "fromEntity": "Component",
+      "fromField": "implementsRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ComponentProvidesProtocol",
+      "fromEntity": "Component",
+      "fromField": "providesProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ComponentConsumesProtocol",
+      "fromEntity": "Component",
+      "fromField": "consumesProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DataSchemaUsedInProtocol",
+      "fromEntity": "DataSchema",
+      "fromField": "usedInProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ScenarioCoversRequirement",
+      "fromEntity": "Scenario",
+      "fromField": "coversRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ScenarioUsesComponent",
+      "fromEntity": "Scenario",
+      "fromField": "usesComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ScenarioUsesProtocol",
+      "fromEntity": "Scenario",
+      "fromField": "usesProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ScenarioUsesFixture",
+      "fromEntity": "Scenario",
+      "fromField": "usesFixtures",
+      "toEntity": "Fixture",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ViewUsesViewpoint",
+      "fromEntity": "View",
+      "fromField": "fromViewpointId",
+      "toEntity": "Viewpoint",
+      "multiplicity": "one"
+    },
+    {
+      "name": "PrincipleGuidesADR",
+      "fromEntity": "Principle",
+      "fromField": "guidesAdrs",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrincipleGuidesRequirement",
+      "fromEntity": "Principle",
+      "fromField": "guidesRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PolicyEnforcedByConstraint",
+      "fromEntity": "Policy",
+      "fromField": "enforcedByConstraints",
+      "toEntity": "Constraint",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PolicyAppliesToProtocol",
+      "fromEntity": "Policy",
+      "fromField": "appliesToProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PolicyAppliesToComponent",
+      "fromEntity": "Policy",
+      "fromField": "appliesToComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PolicyAppliesToRequirement",
+      "fromEntity": "Policy",
+      "fromField": "appliesToRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintDerivedFromPolicy",
+      "fromEntity": "Constraint",
+      "fromField": "derivedFromPolicyId",
+      "toEntity": "Policy",
+      "multiplicity": "one"
+    },
+    {
+      "name": "RiskRelatedToRequirement",
+      "fromEntity": "Risk",
+      "fromField": "relatedRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RiskRelatedToADR",
+      "fromEntity": "Risk",
+      "fromField": "relatedAdrs",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RiskRelatedToComponent",
+      "fromEntity": "Risk",
+      "fromField": "relatedComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RiskRelatedToScenario",
+      "fromEntity": "Risk",
+      "fromField": "relatedScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RiskRelatedToThreat",
+      "fromEntity": "Risk",
+      "fromField": "relatedThreats",
+      "toEntity": "Threat",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ThreatAffectsComponent",
+      "fromEntity": "Threat",
+      "fromField": "affectsComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ThreatAffectsProtocol",
+      "fromEntity": "Threat",
+      "fromField": "affectsProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ThreatMitigatedByRequirement",
+      "fromEntity": "Threat",
+      "fromField": "mitigatedByRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ThreatRelatedToRisk",
+      "fromEntity": "Threat",
+      "fromField": "relatedToRisks",
+      "toEntity": "Risk",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ThreatDocumentedInADR",
+      "fromEntity": "Threat",
+      "fromField": "documentedInAdrs",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OpenQuestionTouchesRequirement",
+      "fromEntity": "OpenQuestion",
+      "fromField": "touchesRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OpenQuestionTouchesADR",
+      "fromEntity": "OpenQuestion",
+      "fromField": "touchesAdrs",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OpenQuestionTouchesScenario",
+      "fromEntity": "OpenQuestion",
+      "fromField": "touchesScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetrySchemaAppliesToComponent",
+      "fromEntity": "TelemetrySchema",
+      "fromField": "appliesToComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetrySchemaAppliesToProtocol",
+      "fromEntity": "TelemetrySchema",
+      "fromField": "appliesToProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetrySchemaAppliesToScenario",
+      "fromEntity": "TelemetrySchema",
+      "fromField": "appliesToScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetryContractUsesScenario",
+      "fromEntity": "TelemetryContract",
+      "fromField": "forScenarioId",
+      "toEntity": "Scenario",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TelemetryContractUsesTelemetrySchema",
+      "fromEntity": "TelemetryContract",
+      "fromField": "telemetrySchemaIds",
+      "toEntity": "TelemetrySchema",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetryContractBoundByConstraint",
+      "fromEntity": "TelemetryContract",
+      "fromField": "boundByConstraints",
+      "toEntity": "Constraint",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TelemetryContractLinksErrorCode",
+      "fromEntity": "TelemetryContract",
+      "fromField": "linkedErrorCodes",
+      "toEntity": "ErrorCode",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ErrorCodeRaisedInScenario",
+      "fromEntity": "ErrorCode",
+      "fromField": "raisedInScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ErrorCodeDocumentedInProtocol",
+      "fromEntity": "ErrorCode",
+      "fromField": "documentedInProtocols",
+      "toEntity": "Protocol",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ErrorCodeReferencedInTelemetrySchema",
+      "fromEntity": "ErrorCode",
+      "fromField": "referencedInTelemetrySchemas",
+      "toEntity": "TelemetrySchema",
+      "multiplicity": "many"
+    },
+    {
+      "name": "HealthCheckSpecUsesProtocol",
+      "fromEntity": "HealthCheckSpec",
+      "fromField": "exposedByProtocolId",
+      "toEntity": "Protocol",
+      "multiplicity": "one"
+    },
+    {
+      "name": "HealthCheckSpecRelatedToComponent",
+      "fromEntity": "HealthCheckSpec",
+      "fromField": "relatedComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "HealthCheckSpecCoveredByScenario",
+      "fromEntity": "HealthCheckSpec",
+      "fromField": "coveredByScenarios",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProtocolProvidedByComponents",
+      "fromEntity": "Protocol",
+      "fromField": "providedByComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProtocolConsumedByComponents",
+      "fromEntity": "Protocol",
+      "fromField": "consumedByComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProtocolNfrBindings",
+      "fromEntity": "Protocol",
+      "fromField": "nfrBindings",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ErrorCodeProblemDetailsSchema",
+      "fromEntity": "ErrorCode",
+      "fromField": "problemDetailsSchemaId",
+      "toEntity": "DataSchema",
+      "multiplicity": "one"
+    },
+    {
+      "name": "DecisionRelatedDecision",
+      "fromEntity": "Decision",
+      "fromField": "relatedDecisionIds",
+      "toEntity": "Decision",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DecisionOriginatingAdr",
+      "fromEntity": "Decision",
+      "fromField": "originatingAdrIds",
+      "toEntity": "ADR",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ComponentDependsOn",
+      "fromEntity": "Component",
+      "fromField": "dependsOn",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintConstrainsRequirement",
+      "fromEntity": "Constraint",
+      "fromField": "constrainsRequirementIds",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintConstrainsScenario",
+      "fromEntity": "Constraint",
+      "fromField": "constrainsScenarioIds",
+      "toEntity": "Scenario",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintConstrainsComponent",
+      "fromEntity": "Constraint",
+      "fromField": "constrainsComponentIds",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRDeciderActor",
+      "fromEntity": "ADR",
+      "fromField": "deciderActorIds",
+      "toEntity": "Actor",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRRelatedFeature",
+      "fromEntity": "ADR",
+      "fromField": "relatedFeatureIds",
+      "toEntity": "Feature",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRRelatedRequirement",
+      "fromEntity": "ADR",
+      "fromField": "relatedRequirementIds",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRRelatedConstraint",
+      "fromEntity": "ADR",
+      "fromField": "relatedConstraintIds",
+      "toEntity": "Constraint",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRRelatedDecision",
+      "fromEntity": "ADR",
+      "fromField": "relatedDecisionIds",
+      "toEntity": "Decision",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRRelatedOpenQuestion",
+      "fromEntity": "ADR",
+      "fromField": "relatedOpenQuestionIds",
+      "toEntity": "OpenQuestion",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ActorOwnsRequirements",
+      "fromEntity": "Actor",
+      "fromField": "ownsRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ActorUsesComponents",
+      "fromEntity": "Actor",
+      "fromField": "usesComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RequirementOwner",
+      "fromEntity": "Requirement",
+      "fromField": "ownerId",
+      "toEntity": "Actor",
+      "multiplicity": "one"
+    },
+    {
+      "name": "RequirementParent",
+      "fromEntity": "Requirement",
+      "fromField": "parentId",
+      "toEntity": "Requirement",
+      "multiplicity": "one"
+    },
+    {
+      "name": "RequirementRealizedByComponents",
+      "fromEntity": "Requirement",
+      "fromField": "realizedByComponents",
+      "toEntity": "Component",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RequirementRefinesRequirements",
+      "fromEntity": "Requirement",
+      "fromField": "refinesRequirements",
+      "toEntity": "Requirement",
+      "multiplicity": "many"
+    },
+    {
+      "name": "RequirementRequestedBy",
+      "fromEntity": "Requirement",
+      "fromField": "requestedById",
+      "toEntity": "Actor",
+      "multiplicity": "one"
+    }
+  ],
+  "x-sdd-displayHint": "markdown",
+  "categories": [
+    {
+      "name": "architecture",
+      "displayName": "Architecture & Design",
+      "icon": "🏛️",
+      "color": "#7dcfff40",
+      "order": 1
+    },
+    {
+      "name": "delivery",
+      "displayName": "Delivery & Execution",
+      "icon": "🚀",
+      "color": "#ff9e6440",
+      "order": 2
+    },
+    {
+      "name": "system",
+      "displayName": "System & Interfaces",
+      "icon": "⚙️",
+      "color": "#73daca40",
+      "order": 3
+    },
+    {
+      "name": "governance",
+      "displayName": "Governance & Policy",
+      "icon": "⚖️",
+      "color": "#9ece6a40",
+      "order": 4
+    },
+    {
+      "name": "risk",
+      "displayName": "Risk & Questions",
+      "icon": "⚠️",
+      "color": "#f7768e40",
+      "order": 5
+    },
+    {
+      "name": "observability",
+      "displayName": "Observability & Ops",
+      "icon": "📊",
+      "color": "#bb9af740",
+      "order": 6
+    }
+  ]
+}

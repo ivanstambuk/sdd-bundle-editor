@@ -1,0 +1,34 @@
+id: VIEW-login-sequence
+name: Login Flow Sequence
+fromViewpointId: VP-api-sequence
+description: 'Sequence diagram showing the user login flow through the
+
+  web UI to the backend server.
+
+  '
+scope:
+  scenarioIds:
+  - SCN-login-success
+plantuml: "@startuml\n!include ../../../tools/plantuml/sequence-theme.iuml\n\ntitle\
+  \ User Login Flow (SCN-login-success)\n\nactor \"End User\" as user\nparticipant\
+  \ \"Web UI\\n(COMP-data-store)\" as ui\nparticipant \"Backend Server\\n(COMP-api-gateway)\"\
+  \ as server\nparticipant \"Core Model\\n(COMP-auth-service)\" as model\n\nuser ->\
+  \ ui: Navigate to login page\nuser -> ui: Enter credentials\nuser -> ui: Click login\
+  \ button\n\nui -> server: POST /auth/login\nactivate server\n\nserver -> model:\
+  \ Validate credentials\nactivate model\nmodel --> server: User authenticated\ndeactivate\
+  \ model\n\nserver --> ui: 200 OK + session token\ndeactivate server\n\nui --> user:\
+  \ Display dashboard\n\nnote right of server\n  Session stored in memory\n  for subsequent\
+  \ requests\nend note\n@enduml\n"
+outputPath: docs/diagrams/login-sequence.png
+referencedEntities:
+- ACT-end-user
+- COMP-auth-service
+- COMP-api-gateway
+- COMP-data-store
+- SCN-login-success
+tags:
+- authentication
+- sequence
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

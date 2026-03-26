@@ -1,0 +1,251 @@
+{
+  "$id": "https://example.com/sdd/Risk.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Risk",
+  "description": "Risk register entry for tracking project and technical risks",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "description",
+    "id",
+    "impact",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "likelihood",
+    "status",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^RSK-[A-Z][A-Z0-9-]*[0-9]{3}$",
+      "x-sdd-idTemplate": "RSK-{name}-{seq}",
+      "x-sdd-entityType": "Risk",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Concise name of the risk",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the risk",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Risk",
+      "x-sdd-prominenceIcon": "⚠️",
+      "x-sdd-order": 30
+    },
+    "likelihood": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Probability of the risk occurring",
+      "x-sdd-enumTitles": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "impact": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "catastrophic"
+      ],
+      "description": "Severity if the risk occurs",
+      "x-sdd-enumTitles": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "catastrophic": "Catastrophic"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "mitigation": {
+      "type": "string",
+      "description": "Strategy to reduce likelihood or impact",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "mitigation",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "Mitigation Strategy",
+      "x-sdd-prominenceIcon": "🛡️",
+      "x-sdd-order": 10
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "mitigated",
+        "accepted"
+      ],
+      "description": "Current status of the risk",
+      "x-sdd-enumTitles": {
+        "open": "Open",
+        "mitigated": "Mitigated",
+        "accepted": "Accepted"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 15
+    },
+    "owner": {
+      "type": "string",
+      "description": "Person or team responsible for managing this risk",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 18
+    },
+    "relatedRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Requirements affected by or addressing this risk",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "relatedAdrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "ADRs that address this risk",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "relatedComponents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Components affected by this risk",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "relatedScenarios": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios that test for this risk",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    },
+    "relatedThreats": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Threat"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Threats that contribute to this risk",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 50
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Risk",
+    "icon": "⚠️",
+    "displayNamePlural": "Risks"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "mitigation": {
+      "title": "Mitigation",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

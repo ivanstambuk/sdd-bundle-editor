@@ -1,0 +1,22 @@
+id: DS-validate-request
+name: Validate Request
+format: json-schema
+usage: request
+description: Request schema for POST /bundle/validate endpoint
+summary: Bundle validation request
+content:
+  type: object
+  required:
+  - bundleDir
+  properties:
+    bundleDir:
+      type: string
+      description: Path to the bundle directory
+usedInProtocols:
+- PROTO-auth-flow
+tags:
+- api
+- validation
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

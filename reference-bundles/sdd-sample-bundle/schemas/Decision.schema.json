@@ -1,0 +1,158 @@
+{
+  "$id": "https://example.com/sdd/Decision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Decision",
+  "description": "Lightweight decision record (simpler than ADR)",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "outcome",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DEC-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "DEC-{000}",
+      "x-sdd-entityType": "Decision",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "rejected",
+        "deferred",
+        "pending"
+      ],
+      "description": "Decision outcome",
+      "x-sdd-enumTitles": {
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "deferred": "Deferred",
+        "pending": "Pending"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Brief explanation of why this decision was made",
+      "x-sdd-widget": "textarea",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "💡",
+      "x-sdd-order": 30
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the decision was made",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "People involved in making the decision",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 40
+    },
+    "relatedDecisionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Decision"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Related decisions",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "originatingAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "ADR(s) that led to this decision being created",
+      "title": "originates from",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Decision",
+    "icon": "⚖️",
+    "displayNamePlural": "Decisions"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

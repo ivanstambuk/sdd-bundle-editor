@@ -1,0 +1,30 @@
+id: COMP-auth-service
+title: Core Model
+kind: library
+description: "TypeScript library providing bundle loading, entity management, and\
+  \ \npersistence operations. This is the foundational data layer used by \nall other\
+  \ components.\n"
+responsibilities: '- Bundle loading and parsing
+
+  - Entity CRUD operations
+
+  - Schema validation
+
+  - Reference graph management
+
+  '
+technology: TypeScript / Node.js
+repository: https://github.com/example/sdd-bundle-editor
+owner: Platform Team
+tags:
+- core
+- data-layer
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+governedByPolicyIds:
+- POL-OBSERVABILITY
+usedInScenarioIds:
+- SCN-password-reset
+telemetrySchemaIds:
+- TELSC-server-logs

@@ -1,0 +1,38 @@
+id: VIEW-component-deps
+name: Component Dependencies
+fromViewpointId: VP-component-dependency
+description: 'Shows the dependency relationships between the main
+
+  components of the SDD Bundle Editor system.
+
+  '
+scope:
+  componentIds:
+  - COMP-auth-service
+  - COMP-api-gateway
+  - COMP-data-store
+plantuml: "@startuml\n!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml\n\
+  \ntitle Component Dependencies - SDD Bundle Editor\n\nContainer(ui, \"Web UI\",\
+  \ \"React/TypeScript\", \"Provides visual bundle navigation and agent chat\")\n\
+  Container(server, \"Backend Server\", \"Node.js/Fastify\", \"REST API for bundle\
+  \ operations and agent communication\")\nContainer(model, \"Core Model\", \"TypeScript\"\
+  , \"Bundle loading, entity management, and validation\")\n\nContainerDb(bundle,\
+  \ \"Bundle Files\", \"YAML/JSON\", \"SDD specification files stored on disk\")\n\
+  \nRel(ui, server, \"Uses\", \"HTTP/REST\")\nRel(server, model, \"Uses\", \"TypeScript\
+  \ import\")\nRel(model, bundle, \"Reads/Writes\", \"File I/O\")\n\nnote right of\
+  \ ui\n  COMP-data-store: Web UI\n  Consumes PROTO-auth-flow\nend note\n\nnote right\
+  \ of server\n  COMP-api-gateway: Backend Server\n  Provides PROTO-auth-flow\nend\
+  \ note\n\nnote right of model\n  COMP-auth-service: Core Model\n  Library used by\
+  \ Server\nend note\n@enduml\n"
+outputPath: docs/diagrams/component-deps.png
+referencedEntities:
+- COMP-auth-service
+- COMP-api-gateway
+- COMP-data-store
+- PROTO-auth-flow
+tags:
+- architecture
+- dependencies
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,185 @@
+{
+  "$id": "https://example.com/sdd/ErrorCode.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ErrorCode",
+  "description": "Enumerated error codes for consistent API responses and telemetry",
+  "type": "object",
+  "required": [
+    "category",
+    "createdDate",
+    "httpStatus",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ERR-[A-Z][A-Z0-9-]+$",
+      "x-sdd-idTemplate": "ERR-{name}",
+      "x-sdd-entityType": "ErrorCode",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "httpStatus": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599,
+      "description": "HTTP status code",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "humanMessage": {
+      "type": "string",
+      "description": "User-facing error message",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 35
+    },
+    "machineCode": {
+      "type": "string",
+      "description": "Machine-readable code if different from id",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "client",
+        "server",
+        "business",
+        "security"
+      ],
+      "description": "Error category",
+      "x-sdd-enumTitles": {
+        "client": "Client",
+        "server": "Server",
+        "business": "Business",
+        "security": "Security"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 30
+    },
+    "problemDetailsSchemaId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "DataSchema"
+      ],
+      "description": "RFC 7807 problem details schema if applicable",
+      "title": "uses",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 40
+    },
+    "raisedInScenarios": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "description": "Scenarios where this error is expected",
+      "title": "raised in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "documentedInProtocols": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Protocol"
+        ]
+      },
+      "description": "Protocols that document this error",
+      "title": "documented in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "referencedInTelemetrySchemas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TelemetrySchema"
+        ]
+      },
+      "description": "Telemetry schemas that track this error",
+      "title": "referenced in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Error Code",
+    "icon": "🚨",
+    "displayNamePlural": "Error Codes"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

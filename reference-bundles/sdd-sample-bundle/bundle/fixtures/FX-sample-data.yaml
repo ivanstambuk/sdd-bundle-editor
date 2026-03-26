@@ -1,0 +1,27 @@
+id: FX-sample-data
+title: API Test User Credentials
+kind: secrets
+description: 'Test user credentials for API authentication testing.
+
+  Contains valid username/password pairs for integration tests.
+
+  '
+usedInScenarios:
+- SCN-login-failure
+- SCN-password-reset
+spec:
+  provisioning: inject-from-vault
+  vaultPath: secret/test-users
+data:
+  testUser:
+    username: test@example.com
+    password: test-password-hash
+  adminUser:
+    username: admin@example.com
+    password: admin-password-hash
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+usedInScenarioIds:
+- SCN-login-failure
+- SCN-password-reset

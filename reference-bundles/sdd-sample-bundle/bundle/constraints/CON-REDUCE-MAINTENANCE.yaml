@@ -1,0 +1,23 @@
+id: CON-REDUCE-MAINTENANCE
+title: Minimize Long-Term Maintenance Burden
+text: 'Architectural decisions should prioritize reducing long-term maintenance
+
+  overhead. Prefer consolidation over duplication, standards over custom
+
+  solutions, and automation over manual processes.
+
+  '
+kind: organisational
+severity: should
+rationale: 'The team has limited capacity for ongoing maintenance. Reducing the
+
+  maintenance burden allows more focus on new features and improvements.
+
+  '
+tags:
+- maintenance
+- technical-debt
+- sustainability
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -19,7 +19,7 @@ import { execSync } from 'child_process';
  * Uses SDD_SAMPLE_BUNDLE_PATH environment variable if set, otherwise defaults to the standard location.
  */
 export function getSampleBundlePath(): string {
-    return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-sample-bundle';
+    return process.env.SDD_SAMPLE_BUNDLE_PATH || '/home/ivan/dev/sdd-bundle-editor/reference-bundles/sdd-sample-bundle';
 }
 
 /**

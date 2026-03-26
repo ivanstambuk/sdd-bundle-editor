@@ -1,0 +1,50 @@
+id: PROTO-auth-flow
+title: Bundle API Protocol
+version: 1.0.0
+kind: http-rest
+role: provider
+description: "RESTful API for managing SDD bundles. Provides endpoints for reading\
+  \ bundle \nstructure, validating entities, and applying agent-proposed changes.\n\
+  \nThis protocol is used by the web UI and MCP clients to interact with the\nbundle\
+  \ editor backend.\n"
+summary: REST API for SDD bundle operations
+transport: http
+authentication: none
+securityModel: none
+endpoints:
+- path: /bundle
+  method: GET
+  description: Get the current bundle structure and all entities
+  responseSchemaId: DS-bundle-response
+- path: /bundle/validate
+  method: POST
+  description: Validate the bundle and return diagnostics
+  requestSchemaId: DS-validate-request
+  responseSchemaId: DS-validate-response
+- path: /agent/start
+  method: POST
+  description: Start a new agent conversation
+  requestSchemaId: DS-agent-start-request
+  responseSchemaId: DS-agent-response
+- path: /agent/accept
+  method: POST
+  description: Accept and apply proposed changes
+  requestSchemaId: DS-agent-accept-request
+  responseSchemaId: DS-agent-accept-response
+providedByComponents:
+- COMP-api-gateway
+consumedByComponents:
+- COMP-data-store
+supportsFeatureIds:
+- FEAT-demo-basic
+governedByAdrIds:
+- ADR-auth-strategy
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+affectedByThreatIds:
+- THR-AUTH-BRUTE-FORCE-001
+governedByPolicyIds:
+- POL-ERROR-RESPONSES
+telemetrySchemaIds:
+- TELSC-http-login-trace

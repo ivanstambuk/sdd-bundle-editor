@@ -1,0 +1,302 @@
+{
+  "$id": "https://example.com/sdd/Component.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Component",
+  "description": "Coarse-grained domain-level component (service, UI, worker, adapter, external system)",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^COMP-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "COMP-{000}",
+      "x-sdd-entityType": "Component",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "service",
+        "ui",
+        "worker",
+        "external_system",
+        "adapter",
+        "library",
+        "database",
+        "queue",
+        "cache",
+        "gateway"
+      ],
+      "description": "Type of component (aligned with vision.md meta-model)",
+      "x-sdd-enumTitles": {
+        "service": "Service",
+        "ui": "UI",
+        "worker": "Worker",
+        "external_system": "External System",
+        "adapter": "Adapter",
+        "library": "Library",
+        "database": "Database",
+        "queue": "Queue",
+        "cache": "Cache",
+        "gateway": "Gateway"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-widget": "textarea",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "What it does",
+      "x-sdd-prominenceIcon": "📦",
+      "x-sdd-order": 30
+    },
+    "responsibilities": {
+      "type": "string",
+      "x-sdd-widget": "textarea",
+      "description": "What this component is responsible for",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Responsibilities",
+      "x-sdd-prominenceIcon": "📋",
+      "x-sdd-order": 40
+    },
+    "technology": {
+      "type": "string",
+      "description": "Technology stack (e.g., Node.js, PostgreSQL, Redis)",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 10
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "description": "Source code repository URL",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 20
+    },
+    "owner": {
+      "type": "string",
+      "description": "Team or person responsible for this component",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Classification tags (e.g., 'auth', 'critical')",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Components this component depends on",
+      "title": "depends on",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 40
+    },
+    "providesProtocols": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Protocol"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Protocols provided/exposed by this component",
+      "title": "provides",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 50
+    },
+    "consumesProtocols": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Protocol"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Protocols consumed by this component",
+      "title": "consumes",
+      "x-sdd-layoutGroup": "technical",
+      "x-sdd-order": 60
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "constrainedByConstraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Constraints that affect/apply to this entity",
+      "title": "constrained by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "affectedByThreatIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Threat"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Threats that affect/apply to this entity",
+      "title": "affected by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "governedByPolicyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Policy"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Policys that affect/apply to this entity",
+      "title": "governed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "usedByActorIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Actor"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Actors that affect/apply to this entity",
+      "title": "used by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    },
+    "usedInScenarioIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios that affect/apply to this entity",
+      "title": "used in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 50
+    },
+    "telemetrySchemaIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TelemetrySchema"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "TelemetrySchemas that affect/apply to this entity",
+      "title": "observed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 60
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Component",
+    "icon": "🧩",
+    "displayNamePlural": "Components"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "technical": {
+      "title": "Technical",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

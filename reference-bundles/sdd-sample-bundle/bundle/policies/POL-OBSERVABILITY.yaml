@@ -1,0 +1,26 @@
+id: POL-OBSERVABILITY
+title: Full Observability Required
+text: 'All services MUST emit structured logs, metrics, and distributed traces
+
+  following OpenTelemetry semantic conventions. Health check endpoints
+
+  are mandatory.
+
+  '
+category: observability
+status: accepted
+rationale: 'Production systems require visibility for debugging, monitoring, and
+
+  performance analysis. Standardized observability enables correlation
+
+  across services.
+
+  '
+enforcedByConstraints:
+- CON-HEALTH-CHECK
+tags:
+- observability
+- otel
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

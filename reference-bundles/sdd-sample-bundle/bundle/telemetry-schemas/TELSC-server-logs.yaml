@@ -1,0 +1,53 @@
+id: TELSC-server-logs
+title: Server Structured Logs Schema
+description: 'Structured logging schema for server-side events, following
+
+  OTel log data model.
+
+  '
+kind: log
+signalConvention: otel-general
+logCategories:
+- auth
+- request
+- error
+- audit
+attributes:
+- name: log.level
+  type: string
+  required: true
+  description: Log severity level
+  examples:
+  - DEBUG
+  - INFO
+  - WARN
+  - ERROR
+- name: log.message
+  type: string
+  required: true
+  description: Human-readable log message
+- name: trace_id
+  type: string
+  required: false
+  description: Correlation to distributed trace
+- name: span_id
+  type: string
+  required: false
+  description: Correlation to specific span
+- name: user.id
+  type: string
+  required: false
+  description: User context if authenticated
+- name: error.type
+  type: string
+  required: false
+  semanticConventionRef: error.type
+exportDestinations:
+- otel-collector
+- elasticsearch
+tags:
+- logs
+- observability
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

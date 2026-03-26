@@ -37,6 +37,23 @@ export class McpBundleApi {
     }
 
     /**
+     * List all available bundles from the MCP server.
+     */
+    async listBundles(): Promise<McpBundle[]> {
+        const bundlesResult = await this.client.callTool<{
+            ok: boolean;
+            tool: string;
+            data: { bundles: McpBundle[] };
+        }>('list_bundles', {});
+
+        const bundlesData = bundlesResult.data?.data?.bundles;
+        if (bundlesResult.isError || !bundlesData) {
+            throw new Error('Failed to list bundles from MCP server');
+        }
+        return bundlesData;
+    }
+
+    /**
      * Load a bundle using MCP tools.
      * Uses get_bundle_snapshot for efficient single-call loading.
      */
@@ -213,6 +230,14 @@ export function getMcpBundleApi(serverUrl?: string): McpBundleApi {
  * This is a drop-in replacement that uses MCP tools.
  */
 export const mcpBundleApi = {
+    /**
+     * List all available bundles from the MCP server.
+     */
+    async listBundles(): Promise<McpBundle[]> {
+        const api = getMcpBundleApi();
+        return api.listBundles();
+    },
+
     /**
      * Load a bundle from the MCP server.
      */

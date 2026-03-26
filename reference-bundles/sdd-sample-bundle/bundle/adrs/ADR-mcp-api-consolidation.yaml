@@ -1,0 +1,113 @@
+id: ADR-mcp-api-consolidation
+title: Consolidate to MCP-Only API Architecture
+status: draft
+createdDate: '2024-12-10T09:00:00Z'
+lastModifiedDate: '2024-12-19T14:30:00Z'
+deciderActorIds:
+- ACT-platform-team
+context: 'The SDD Bundle Editor originally had two API layers:
+
+  1. A legacy HTTP REST API (`apps/server`) for direct browser communication
+
+  2. An MCP (Model Context Protocol) server for AI agent integration
+
+
+  This dual architecture created maintenance overhead, duplicated logic,
+
+  and made it harder to ensure consistent behavior across both APIs.
+
+  '
+problem: 'How do we reduce API surface area and maintenance burden while
+
+  improving the AI-first editing experience?
+
+  '
+assumptions:
+- MCP SDK will remain stable and well-maintained
+- All target AI clients (Claude Desktop, VS Code Copilot) support MCP HTTP transport
+- Browser clients can communicate with MCP via HTTP/SSE
+alternativesConsidered:
+- name: MCP-only architecture
+  description: 'Single MCP server handles all bundle operations. Browser communicates
+
+    via HTTP transport, AI clients via STDIO.
+
+    '
+  pros:
+  - Single source of truth for all API logic
+  - Reduced maintenance overhead
+  - Native AI client support via STDIO
+  - Future-proof for evolving MCP ecosystem
+  cons:
+  - Browser requires HTTP transport adapter
+  - MCP protocol has learning curve
+- name: Maintain dual APIs
+  description: Keep both REST and MCP APIs, sharing core logic
+  pros:
+  - REST API is simpler for browser integration
+  - Gradual migration path
+  cons:
+  - Double the maintenance burden
+  - Risk of behavior divergence
+  - Duplicated error handling
+  reasonRejected: 'The overhead of maintaining two API layers outweighed the simplicity
+
+    benefits of REST for browser clients.
+
+    '
+- name: GraphQL layer
+  description: Add GraphQL as a unified API layer
+  pros:
+  - Flexible querying
+  - Strong typing
+  cons:
+  - Third API to maintain
+  - Doesn't solve AI client integration
+  - Overkill for our read patterns
+  reasonRejected: 'GraphQL would add complexity without solving the core problem of
+
+    AI client integration.
+
+    '
+positiveConsequences:
+- Single codebase for all API logic
+- Native MCP support for AI agents (Claude, Copilot, etc.)
+- Reduced testing surface area
+- Clear separation between read (resources) and write (tools)
+neutralConsequences:
+- Browser uses MCP HTTP transport instead of REST
+- Error responses follow MCP envelope format
+negativeConsequences:
+- Breaking change for any existing REST API consumers
+- HTTP transport adds latency vs direct REST calls
+- MCP SDK updates may require migration effort
+nonfunctionalImpact:
+- '**Performance**: HTTP transport adds ~5-10ms overhead per request compared to direct
+  REST. Acceptable for our use case.'
+- '**Security**: Same authentication model applies. MCP tools validate permissions
+  before mutations.'
+- '**Operations**: Single server process to monitor instead of two.'
+followUps:
+- description: Update client SDKs to use MCP transport
+  assigneeActorIds:
+  - ACT-platform-team
+- description: Write migration guide for REST API consumers
+  assigneeName: Documentation team
+- description: Add MCP transport performance monitoring
+  assigneeActorIds:
+  - ACT-platform-team
+relatedConstraintIds:
+- CON-LATENCY-P99
+tags:
+- api
+- mcp
+- architecture
+- consolidation
+lastModifiedBy: ACT-platform-team
+externalReferences:
+- label: MCP Specification
+  url: https://modelcontextprotocol.io/spec
+  type: specification
+- label: MCP SDK Documentation
+  url: https://github.com/modelcontextprotocol/sdk
+  type: specification

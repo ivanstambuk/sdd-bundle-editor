@@ -1,0 +1,117 @@
+apiVersion: sdd.v1
+kind: Bundle
+metadata:
+  name: basic-sample-bundle
+  bundleType: sdd-core
+  schemaVersion: 1.0.0
+
+spec:
+  bundleTypeDefinition: schemas/bundle-type.sdd-core.json
+
+  schemas:
+    documents:
+      Feature: schemas/Feature.schema.json
+      Requirement: schemas/Requirement.schema.json
+      Task: schemas/Task.schema.json
+      ADR: schemas/ADR.schema.json
+      Profile: schemas/Profile.schema.json
+      Fixture: schemas/Fixture.schema.json
+      Protocol: schemas/Protocol.schema.json
+      Decision: schemas/Decision.schema.json
+      Component: schemas/Component.schema.json
+      Actor: schemas/Actor.schema.json
+      DataSchema: schemas/DataSchema.schema.json
+      Scenario: schemas/Scenario.schema.json
+      Viewpoint: schemas/Viewpoint.schema.json
+      View: schemas/View.schema.json
+      Principle: schemas/Principle.schema.json
+      Policy: schemas/Policy.schema.json
+      Constraint: schemas/Constraint.schema.json
+      Risk: schemas/Risk.schema.json
+      Threat: schemas/Threat.schema.json
+      OpenQuestion: schemas/OpenQuestion.schema.json
+      TelemetrySchema: schemas/TelemetrySchema.schema.json
+      TelemetryContract: schemas/TelemetryContract.schema.json
+      ErrorCode: schemas/ErrorCode.schema.json
+      HealthCheckSpec: schemas/HealthCheckSpec.schema.json
+
+  layout:
+    documents:
+      Feature:
+        dir: bundle/features
+        filePattern: "{id}.yaml"
+      Requirement:
+        dir: bundle/requirements
+        filePattern: "{id}.yaml"
+      Task:
+        dir: bundle/tasks
+        filePattern: "{id}.yaml"
+      ADR:
+        dir: bundle/adrs
+        filePattern: "{id}.yaml"
+      Profile:
+        dir: bundle/profiles
+        filePattern: "{id}.yaml"
+      Fixture:
+        dir: bundle/fixtures
+        filePattern: "{id}.yaml"
+      Protocol:
+        dir: bundle/protocols
+        filePattern: "{id}.yaml"
+      Decision:
+        dir: bundle/decisions
+        filePattern: "{id}.yaml"
+      Component:
+        dir: bundle/components
+        filePattern: "{id}.yaml"
+      Actor:
+        dir: bundle/actors
+        filePattern: "{id}.yaml"
+      DataSchema:
+        dir: bundle/schemas
+        filePattern: "{id}.yaml"
+      Scenario:
+        dir: bundle/scenarios
+        filePattern: "{id}.yaml"
+      Viewpoint:
+        dir: bundle/viewpoints
+        filePattern: "{id}.yaml"
+      View:
+        dir: bundle/views
+        filePattern: "{id}.yaml"
+      Principle:
+        dir: bundle/principles
+        filePattern: "{id}.yaml"
+      Policy:
+        dir: bundle/policies
+        filePattern: "{id}.yaml"
+      Constraint:
+        dir: bundle/constraints
+        filePattern: "{id}.yaml"
+      Risk:
+        dir: bundle/risks
+        filePattern: "{id}.yaml"
+      Threat:
+        dir: bundle/threats
+        filePattern: "{id}.yaml"
+      OpenQuestion:
+        dir: bundle/questions
+        filePattern: "{id}.yaml"
+      TelemetrySchema:
+        dir: bundle/telemetry-schemas
+        filePattern: "{id}.yaml"
+      TelemetryContract:
+        dir: bundle/telemetry-contracts
+        filePattern: "{id}.yaml"
+      ErrorCode:
+        dir: bundle/error-codes
+        filePattern: "{id}.yaml"
+      HealthCheckSpec:
+        dir: bundle/health-checks
+        filePattern: "{id}.yaml"
+
+  domainKnowledge:
+    path: domain/domain-knowledge.md
+
+  lintConfig:
+    path: config/sdd-lint.yaml

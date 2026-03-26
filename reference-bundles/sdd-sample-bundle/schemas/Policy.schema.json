@@ -1,0 +1,170 @@
+{
+  "$id": "https://example.com/sdd/Policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Policy",
+  "description": "Normative rule that must be followed (e.g., 'all APIs MUST use RFC7807 Problem Details')",
+  "type": "object",
+  "required": [
+    "category",
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "status",
+    "text",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^POL-[A-Z][A-Z0-9-]*$",
+      "x-sdd-idTemplate": "POL-{name}",
+      "x-sdd-entityType": "Policy",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Concise name of the policy",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "text": {
+      "type": "string",
+      "description": "The normative statement (use MUST/SHOULD/MAY per RFC 2119)",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Policy",
+      "x-sdd-prominenceIcon": "📜",
+      "x-sdd-order": 30
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "security",
+        "privacy",
+        "observability",
+        "compliance",
+        "data-retention",
+        "api-design",
+        "other"
+      ],
+      "description": "Classification of the policy",
+      "x-sdd-enumTitles": {
+        "security": "Security",
+        "privacy": "Privacy",
+        "observability": "Observability",
+        "compliance": "Compliance",
+        "data-retention": "Data Retention",
+        "api-design": "API Design",
+        "other": "Other"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "accepted",
+        "deprecated"
+      ],
+      "description": "Current status of the policy",
+      "x-sdd-enumTitles": {
+        "proposed": "Proposed",
+        "accepted": "Accepted",
+        "deprecated": "Deprecated"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this policy exists",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "💡",
+      "x-sdd-order": 40
+    },
+    "enforcedByConstraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Constraints that enforce this policy",
+      "title": "enforced by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Policy",
+    "icon": "📑",
+    "displayNamePlural": "Policies"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

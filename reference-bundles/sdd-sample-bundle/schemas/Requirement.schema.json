@@ -1,0 +1,517 @@
+{
+  "$id": "https://example.com/sdd/Requirement.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Requirement",
+  "type": "object",
+  "required": [
+    "category",
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "ownerId",
+    "requestedById",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^REQ-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "REQ-{000}",
+      "x-sdd-entityType": "Requirement",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "functional",
+        "non-functional",
+        "constraint"
+      ],
+      "description": "Classification or type category",
+      "x-sdd-enumDescriptions": {
+        "functional": "Core business functionality and features the system must provide",
+        "non-functional": "Quality attributes like performance, reliability, and usability",
+        "constraint": "Technical or business constraints that limit design choices"
+      },
+      "maxLength": 20,
+      "x-sdd-enumTitles": {
+        "functional": "Functional",
+        "non-functional": "Non-Functional",
+        "constraint": "Constraint"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "functional",
+        "non-functional",
+        "security",
+        "observability",
+        "privacy",
+        "compliance",
+        "data",
+        "user-experience",
+        "operations",
+        "future"
+      ],
+      "description": "High-level grouping or classification",
+      "x-sdd-enumDescriptions": {
+        "functional": "Core business functionality requirements",
+        "non-functional": "Quality and performance requirements",
+        "security": "Security and access control requirements",
+        "observability": "Logging, monitoring, and tracing requirements",
+        "privacy": "Data privacy and GDPR compliance requirements",
+        "compliance": "Regulatory and legal compliance requirements",
+        "data": "Data integrity, storage, and management requirements",
+        "user-experience": "Usability and accessibility requirements",
+        "operations": "Deployment, maintenance, and operational requirements",
+        "future": "Future capabilities and roadmap items"
+      },
+      "maxLength": 20,
+      "x-sdd-enumTitles": {
+        "functional": "Functional",
+        "non-functional": "Non-Functional",
+        "security": "Security",
+        "observability": "Observability",
+        "privacy": "Privacy",
+        "compliance": "Compliance",
+        "data": "Data",
+        "user-experience": "User Experience",
+        "operations": "Operations",
+        "future": "Future"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "subtype": {
+      "type": "string",
+      "enum": [
+        "interface",
+        "performance",
+        "latency",
+        "physical",
+        "design-constraint"
+      ],
+      "description": "Specific requirement subtype",
+      "x-sdd-enumDescriptions": {
+        "interface": "User interface and interaction requirements",
+        "performance": "System performance and throughput requirements",
+        "latency": "Response time and latency requirements",
+        "physical": "Physical environment and hardware constraints",
+        "design-constraint": "Architectural and design constraints"
+      },
+      "maxLength": 20,
+      "x-sdd-enumTitles": {
+        "interface": "Interface",
+        "performance": "Performance",
+        "latency": "Latency",
+        "physical": "Physical",
+        "design-constraint": "Design Constraint"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 27
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "proposed",
+        "accepted",
+        "deprecated",
+        "rejected"
+      ],
+      "default": "draft",
+      "description": "Requirement lifecycle state",
+      "x-sdd-enumDescriptions": {
+        "draft": "Initial state, not yet reviewed or submitted",
+        "proposed": "Submitted for review and approval",
+        "accepted": "Approved and ready for implementation",
+        "deprecated": "No longer applicable, superseded by another requirement",
+        "rejected": "Reviewed and declined"
+      },
+      "x-sdd-enumStyles": {
+        "draft": {
+          "color": "neutral"
+        },
+        "proposed": {
+          "color": "info"
+        },
+        "accepted": {
+          "color": "success"
+        },
+        "deprecated": {
+          "color": "warning"
+        },
+        "rejected": {
+          "color": "error"
+        }
+      },
+      "x-sdd-displayLocation": "header",
+      "maxLength": 20,
+      "x-sdd-enumTitles": {
+        "draft": "Draft",
+        "proposed": "Proposed",
+        "accepted": "Accepted",
+        "deprecated": "Deprecated",
+        "rejected": "Rejected"
+      }
+    },
+    "ownerId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Actor"
+      ],
+      "description": "Accountable individual responsible for this requirement",
+      "title": "owned by",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 10
+    },
+    "requestedById": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Actor"
+      ],
+      "description": "Party who originally requested or raised this requirement",
+      "title": "requested by",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 20
+    },
+    "implementedById": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Actor"
+      ],
+      "description": "Party responsible for implementing/executing this requirement",
+      "title": "implemented by",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 30
+    },
+    "parentId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Requirement"
+      ],
+      "description": "Parent requirement for hierarchy",
+      "title": "child of",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 40
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Requirement",
+      "x-sdd-prominenceIcon": "📋",
+      "x-sdd-order": 30
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Reasoning behind this decision or choice",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "The Rationale",
+      "x-sdd-prominenceIcon": "💡",
+      "x-sdd-order": 40
+    },
+    "source": {
+      "type": "string",
+      "description": "Origin of this requirement",
+      "maxLength": 50,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 28
+    },
+    "qualityAttributes": {
+      "type": "object",
+      "description": "Quality aspects of the requirement (INVEST criteria)",
+      "properties": {
+        "atomic": {
+          "type": "boolean",
+          "description": "Requirement addresses a single, indivisible concern that cannot be broken down further"
+        },
+        "cohesive": {
+          "type": "boolean",
+          "description": "All parts of the requirement relate to a single well-defined functionality"
+        },
+        "complete": {
+          "type": "boolean",
+          "description": "Requirement contains all necessary information without external dependencies"
+        },
+        "traceable": {
+          "type": "boolean",
+          "description": "Can be traced to source (feature, stakeholder) and implementation (component, test)"
+        },
+        "verifiable": {
+          "type": "boolean",
+          "description": "Has objective criteria to determine if it has been satisfied"
+        },
+        "unambiguous": {
+          "type": "boolean",
+          "description": "Has only one possible interpretation, no room for misunderstanding"
+        }
+      },
+      "x-sdd-layoutGroup": "verification",
+      "x-sdd-order": 10,
+      "x-sdd-displayHint": "booleanChips"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Criteria for requirement satisfaction",
+      "x-sdd-layoutGroup": "verification",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 20
+    },
+    "governedByAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Architecture decisions that govern this requirement",
+      "title": "governed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "realizedByComponents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Components implementing this requirement",
+      "title": "realized by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "refinesRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Requirements this one refines",
+      "title": "refines",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "constrainedByConstraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Constraints that affect/apply to this entity",
+      "title": "constrained by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    },
+    "governedByPolicyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Policy"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Policys that affect/apply to this entity",
+      "title": "governed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 50
+    },
+    "guidedByPrincipleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Principle"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Principles that affect/apply to this entity",
+      "title": "guided by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 60
+    },
+    "implementedByComponentIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Components that affect/apply to this entity",
+      "title": "implemented by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 70
+    },
+    "coveredByScenarioIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios that affect/apply to this entity",
+      "title": "covered by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 80
+    },
+    "validatedByFixtureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Fixture"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Fixtures that affect/apply to this entity",
+      "title": "validated by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 90
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Requirement",
+    "icon": "📋",
+    "displayNamePlural": "Requirements"
+  },
+  "description": "Functional or non-functional requirement that defines what the system must do or how it must perform",
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-22T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan",
+    "references": [
+      {
+        "label": "Elon Musk's 5-Step Engineering Process",
+        "url": "https://modelthinkers.com/mental-model/musks-5-step-design-process",
+        "type": "methodology"
+      },
+      {
+        "label": "SpaceX 5 Engineering Rules",
+        "url": "https://superengineer.net/spacex-5-rules-engineering-process/",
+        "type": "methodology"
+      },
+      {
+        "label": "TOGAF Requirements Management",
+        "url": "https://www.visual-paradigm.com/guide/togaf/togaf-adm-requirements-management/",
+        "type": "framework"
+      },
+      {
+        "label": "TOGAF Stakeholder Analysis",
+        "url": "https://www.visual-paradigm.com/guide/togaf/togaf-stakeholder-management/",
+        "type": "framework"
+      },
+      {
+        "label": "Architecture Decision Records (ADR)",
+        "url": "https://adr.github.io/",
+        "type": "standard"
+      },
+      {
+        "label": "MADR Template",
+        "url": "https://adr.github.io/madr/",
+        "type": "specification"
+      },
+      {
+        "label": "Amazon ADR Best Practices",
+        "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/adr-process.html",
+        "type": "documentation"
+      }
+    ]
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "verification": {
+      "title": "Verification",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

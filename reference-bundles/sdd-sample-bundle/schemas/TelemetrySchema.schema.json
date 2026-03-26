@@ -1,0 +1,280 @@
+{
+  "$id": "https://example.com/sdd/TelemetrySchema.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TelemetrySchema",
+  "description": "Unified schema for traces, metrics, logs, and events with OTel semantics",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^TELSC-[a-z][a-z0-9-]*$",
+      "x-sdd-idTemplate": "TELSC-{name}",
+      "x-sdd-entityType": "TelemetrySchema",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Purpose and usage of this telemetry schema",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "📊",
+      "x-sdd-order": 30
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "trace",
+        "metric",
+        "log",
+        "event"
+      ],
+      "description": "Type of telemetry signal",
+      "x-sdd-enumTitles": {
+        "trace": "Trace",
+        "metric": "Metric",
+        "log": "Log",
+        "event": "Event"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "signalConvention": {
+      "type": "string",
+      "enum": [
+        "otel-http",
+        "otel-db",
+        "otel-messaging",
+        "otel-rpc",
+        "otel-general",
+        "custom"
+      ],
+      "description": "OpenTelemetry semantic convention used",
+      "x-sdd-enumTitles": {
+        "otel-http": "OTEL HTTP",
+        "otel-db": "OTEL DB",
+        "otel-messaging": "OTEL Messaging",
+        "otel-rpc": "OTEL RPC",
+        "otel-general": "OTEL General",
+        "custom": "Custom"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "spanNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Span names for trace kind",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 10
+    },
+    "metricNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Metric names for metric kind",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 20
+    },
+    "logCategories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Log categories for log kind",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 30
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "int",
+              "double",
+              "bool",
+              "string_array",
+              "int_array",
+              "double_array",
+              "bool_array"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "semanticConventionRef": {
+            "type": "string",
+            "description": "Reference to OTel semantic convention (e.g., http.request.method)"
+          },
+          "examples": {
+            "type": "array",
+            "items": {}
+          }
+        }
+      },
+      "description": "Telemetry attributes with OTel semantic convention refs",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-order": 40
+    },
+    "w3cHeaders": {
+      "type": "object",
+      "properties": {
+        "traceparent": {
+          "type": "object",
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "propagation": {
+              "type": "string",
+              "enum": [
+                "inject",
+                "extract",
+                "both"
+              ]
+            }
+          }
+        },
+        "tracestate": {
+          "type": "object",
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "vendorKeys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "baggage": {
+          "type": "object",
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "W3C Trace Context header configuration",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-order": 50
+    },
+    "exportDestinations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Conceptual export targets (e.g., otel-collector, jaeger, prometheus)",
+      "x-sdd-layoutGroup": "signals",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 60
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Telemetry Schema",
+    "icon": "📈",
+    "displayNamePlural": "Telemetry Schemas"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "signals": {
+      "title": "Signals",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

@@ -1,0 +1,17 @@
+id: ERR-AUTH-ACCOUNT-LOCKED
+title: Account Locked
+httpStatus: 403
+humanMessage: Your account has been locked due to too many failed login attempts.
+machineCode: ACCOUNT_LOCKED
+category: security
+raisedInScenarios:
+- SCN-login-success
+documentedInProtocols:
+- PROTO-auth-flow
+tags:
+- authentication
+- security
+- rate-limiting
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

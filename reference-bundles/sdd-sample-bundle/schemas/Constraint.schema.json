@@ -1,0 +1,193 @@
+{
+  "$id": "https://example.com/sdd/Constraint.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Constraint",
+  "description": "Concrete constraint derived from policies, requirements, or ADRs",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "severity",
+    "text",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CON-[A-Z][A-Z0-9-]*$",
+      "x-sdd-idTemplate": "CON-{name}",
+      "x-sdd-entityType": "Constraint",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Concise name of the constraint",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "text": {
+      "type": "string",
+      "description": "The constraint statement",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Constraint",
+      "x-sdd-prominenceIcon": "🚧",
+      "x-sdd-order": 30
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "performance",
+        "security",
+        "cost",
+        "organisational",
+        "observability",
+        "reliability",
+        "regulatory",
+        "strategic",
+        "technical",
+        "other"
+      ],
+      "description": "Type of constraint",
+      "x-sdd-enumTitles": {
+        "performance": "Performance",
+        "security": "Security",
+        "cost": "Cost",
+        "organisational": "Organisational",
+        "observability": "Observability",
+        "reliability": "Reliability",
+        "regulatory": "Regulatory",
+        "strategic": "Strategic",
+        "technical": "Technical",
+        "other": "Other"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "must",
+        "should",
+        "may"
+      ],
+      "description": "RFC 2119 requirement level",
+      "x-sdd-enumTitles": {
+        "must": "Must",
+        "should": "Should",
+        "may": "May"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this constraint exists",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "💡",
+      "x-sdd-order": 40
+    },
+    "measurable": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "type": "string"
+        },
+        "threshold": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        }
+      },
+      "description": "Quantifiable measurement criteria",
+      "x-sdd-layoutGroup": "measurement",
+      "x-sdd-order": 10
+    },
+    "derivedFromPolicyId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Policy"
+      ],
+      "description": "Policy this constraint enforces",
+      "title": "derived from",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Constraint",
+    "icon": "🚧",
+    "displayNamePlural": "Constraints"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "measurement": {
+      "title": "Measurement",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

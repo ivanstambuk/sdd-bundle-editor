@@ -1,0 +1,28 @@
+id: DS-agent-accept-response
+name: Agent Accept Response
+format: json-schema
+usage: response
+description: Response schema for POST /agent/accept endpoint
+summary: Accept changes result
+content:
+  type: object
+  required:
+  - success
+  properties:
+    success:
+      type: boolean
+      description: Whether the changes were applied successfully
+    commitHash:
+      type: string
+      description: Git commit hash of the applied changes
+    error:
+      type: string
+      description: Error message if success is false
+usedInProtocols:
+- PROTO-auth-flow
+tags:
+- api
+- agent
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

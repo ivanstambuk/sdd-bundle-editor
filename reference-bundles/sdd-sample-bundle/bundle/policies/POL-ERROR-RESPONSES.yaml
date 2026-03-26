@@ -1,0 +1,22 @@
+id: POL-ERROR-RESPONSES
+title: RFC 7807 Problem Details
+text: 'All API error responses MUST use RFC 7807 Problem Details format.
+
+  This ensures consistent error handling across all clients.
+
+  '
+category: api-design
+status: accepted
+rationale: 'Consistent error responses improve developer experience and enable
+
+  standardized error handling in client applications.
+
+  '
+enforcedByConstraints:
+- CON-ERROR-FORMAT
+tags:
+- api
+- errors
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,45 @@
+id: COMP-api-gateway
+title: Backend Server
+kind: service
+description: "Fastify-based HTTP server providing REST API endpoints for bundle \n\
+  operations and agent communication. Serves the web UI and handles\nall bundle mutations.\n"
+responsibilities: '- Expose REST API endpoints
+
+  - Handle agent conversations
+
+  - Manage Git operations
+
+  - Serve static web assets
+
+  '
+technology: Node.js / Fastify
+repository: https://github.com/example/sdd-bundle-editor
+owner: Platform Team
+tags:
+- backend
+- api
+dependsOn:
+- COMP-auth-service
+providesProtocols:
+- PROTO-auth-flow
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+constrainedByConstraintIds:
+- CON-HEALTH-CHECK
+- CON-LATENCY-P99
+- CON-ERROR-FORMAT
+affectedByThreatIds:
+- THR-SESSION-HIJACK-001
+- THR-AUTH-BRUTE-FORCE-001
+governedByPolicyIds:
+- POL-ERROR-RESPONSES
+- POL-OBSERVABILITY
+usedInScenarioIds:
+- SCN-login-success
+- SCN-login-failure
+- SCN-password-reset
+telemetrySchemaIds:
+- TELSC-http-login-trace
+- TELSC-server-logs
+- TELSC-login-metrics

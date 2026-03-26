@@ -1,0 +1,26 @@
+id: DS-agent-start-request
+name: Agent Start Request
+format: json-schema
+usage: request
+description: Request schema for POST /agent/start endpoint
+summary: Start agent conversation request
+content:
+  type: object
+  required:
+  - bundleDir
+  - message
+  properties:
+    bundleDir:
+      type: string
+      description: Path to the bundle directory
+    message:
+      type: string
+      description: User message to the agent
+usedInProtocols:
+- PROTO-auth-flow
+tags:
+- api
+- agent
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,238 @@
+{
+  "$id": "https://example.com/sdd/TelemetryContract.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TelemetryContract",
+  "description": "Scenario-level telemetry expectations for CI semantic gates",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "forScenarioId",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "telemetrySchemaIds",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^TELC-[a-z][a-z0-9-]*[0-9]{3}$",
+      "x-sdd-idTemplate": "TELC-{name}-{seq}",
+      "x-sdd-entityType": "TelemetryContract",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "📡",
+      "x-sdd-order": 30
+    },
+    "forScenarioId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Scenario"
+      ],
+      "description": "Scenario this contract validates",
+      "title": "for",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "telemetrySchemaIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TelemetrySchema"
+        ]
+      },
+      "minItems": 1,
+      "description": "Telemetry schemas that must be emitted",
+      "title": "uses",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "expectations": {
+      "type": "object",
+      "properties": {
+        "spans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "requiredAttributes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "serviceName": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "counter",
+                  "gauge",
+                  "histogram"
+                ]
+              },
+              "threshold": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "level": {
+                "type": "string"
+              },
+              "mustContain": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Expected telemetry signals",
+      "x-sdd-layoutGroup": "expectations",
+      "x-sdd-order": 10
+    },
+    "ciEnforcement": {
+      "type": "string",
+      "description": "How tests verify this contract (e.g., 'assert on recorded span attributes')",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "boundByConstraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "description": "Constraints that apply (e.g., latency budgets)",
+      "title": "bound by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "linkedErrorCodes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ErrorCode"
+        ]
+      },
+      "description": "Error codes expected/observable in this scenario",
+      "title": "linked to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Telemetry Contract",
+    "icon": "📉",
+    "displayNamePlural": "Telemetry Contracts"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "expectations": {
+      "title": "Expectations",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

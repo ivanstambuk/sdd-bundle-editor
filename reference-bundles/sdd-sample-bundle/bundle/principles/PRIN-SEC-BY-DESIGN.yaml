@@ -1,0 +1,27 @@
+id: PRIN-SEC-BY-DESIGN
+title: Security by Design
+description: 'Security must be considered from the earliest stages of system design,
+
+  not added as an afterthought. All components must have security reviews
+
+  before implementation.
+
+  '
+status: accepted
+category: security
+rationale: 'Retrofitting security is expensive and often incomplete. Building security
+
+  in from the start reduces risk and total cost of ownership.
+
+  '
+implications:
+- All new components require threat modeling
+- Authentication and authorization must be explicit
+- Data encryption at rest and in transit is mandatory
+- Security reviews are part of the definition of done
+tags:
+- security
+- core-principle
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,21 @@
+id: VP-component-dependency
+name: Component Dependency Diagram
+diagramKind: plantuml-component
+description: 'Shows components and their dependencies, including which protocols
+
+  they provide and consume. Based on C4 model level 2 (container).
+
+  '
+allowedEntityTypes:
+- component
+- protocol
+selectionDefaults:
+  includeProtocols: true
+  includeDependencies: true
+tags:
+- c4
+- container
+- dependencies
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

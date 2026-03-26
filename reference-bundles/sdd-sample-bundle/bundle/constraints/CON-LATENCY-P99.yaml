@@ -1,0 +1,24 @@
+id: CON-LATENCY-P99
+title: API Latency P99 Limit
+text: 'All API endpoints must respond within 250ms at the 99th percentile
+
+  under normal load conditions.
+
+  '
+kind: performance
+severity: should
+rationale: 'User experience degrades significantly with high latency. P99 targets
+
+  ensure consistent performance for the vast majority of requests.
+
+  '
+measurable:
+  metric: response_time_p99
+  threshold: '250'
+  unit: milliseconds
+tags:
+- performance
+- latency
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

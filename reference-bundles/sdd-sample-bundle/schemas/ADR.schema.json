@@ -1,0 +1,573 @@
+{
+  "$id": "https://example.com/sdd/ADR.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ADR",
+  "description": "Architecture Decision Record - documents significant architectural decisions, their context, alternatives considered, and outcomes.\n\nValidation rules:\n- Non-draft ADRs require: `decidedDate`, `context`, `problem`, `decision`, `alternativesConsidered`\n- Accepted ADRs additionally require: `deciderActorIds`\n- Exactly one alternative must have `isChosen: true`\n- Chosen alternative must not have `reasonRejected`",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "status",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ADR-[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "x-sdd-idTemplate": "ADR-{slug}",
+      "x-sdd-entityType": "ADR",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier using kebab-case slug (e.g., ADR-auth-strategy)",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 15,
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 120,
+      "description": "Short, descriptive name of the decision",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 12
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "proposed",
+        "accepted",
+        "rejected",
+        "deprecated",
+        "superseded"
+      ],
+      "description": "Current lifecycle state of the ADR",
+      "x-sdd-order": 5,
+      "x-sdd-enumStyles": {
+        "draft": {
+          "color": "neutral"
+        },
+        "proposed": {
+          "color": "info"
+        },
+        "accepted": {
+          "color": "success"
+        },
+        "deprecated": {
+          "color": "warning"
+        },
+        "superseded": {
+          "color": "error"
+        }
+      },
+      "x-sdd-displayLocation": "header",
+      "x-sdd-enumTitles": {
+        "draft": "Draft",
+        "proposed": "Proposed",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "deprecated": "Deprecated",
+        "superseded": "Superseded"
+      }
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date when the ADR was first drafted (ISO 8601)",
+      "x-sdd-displayLocation": "header"
+    },
+    "decidedDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date when the decision was finalized (ISO 8601). Required for non-draft ADRs.",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "tertiary",
+      "x-sdd-order": 21
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date of last metadata update (ISO 8601)",
+      "x-sdd-displayLocation": "header"
+    },
+    "deciderActorIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Actor"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "description": "Actors who made or approved this decision. Required for accepted ADRs.",
+      "title": "decided by",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "context": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Background, constraints, and forces that led to this decision. Required for non-draft ADRs.",
+      "x-sdd-widget": "textarea",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 35,
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "The Context",
+      "x-sdd-prominenceIcon": "🧭"
+    },
+    "problem": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "The specific problem or question this decision addresses. Required for non-draft ADRs.",
+      "x-sdd-widget": "textarea",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "The Problem",
+      "x-sdd-prominenceIcon": "❓",
+      "x-sdd-order": 30
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      },
+      "description": "Implicit beliefs that could invalidate this decision if wrong",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 1
+    },
+    "decision": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "The decision that was made, including key rationale. Required for non-draft ADRs.",
+      "x-sdd-widget": "textarea",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Decision",
+      "x-sdd-prominenceIcon": "✅",
+      "x-sdd-order": 50
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Team's confidence level in this decision",
+      "x-sdd-order": 8,
+      "x-sdd-enumStyles": {
+        "low": {
+          "color": "warning"
+        },
+        "medium": {
+          "color": "info"
+        },
+        "high": {
+          "color": "success"
+        }
+      },
+      "x-sdd-displayLocation": "header",
+      "x-sdd-showLabelInBadge": true,
+      "x-sdd-enumTitles": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      }
+    },
+    "alternativesConsidered": {
+      "type": "array",
+      "description": "Options that were evaluated before making the decision. Required for non-draft ADRs. Exactly one must have isChosen: true.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Name of the alternative"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Description of this alternative",
+            "x-sdd-displayHint": "markdown"
+          },
+          "pros": {
+            "title": "Pros",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200,
+              "x-sdd-indicator": "✅"
+            },
+            "description": "Advantages of this alternative",
+            "x-sdd-layout": "bulletList"
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200,
+              "x-sdd-indicator": "❌"
+            },
+            "description": "Disadvantages of this alternative",
+            "x-sdd-layout": "bulletList"
+          },
+          "isChosen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this alternative was selected",
+            "x-sdd-displayHint": "hidden"
+          },
+          "reasonRejected": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Why this alternative was not chosen (only for non-chosen)",
+            "x-sdd-displayHint": "markdown"
+          }
+        },
+        "additionalProperties": false
+      },
+      "x-sdd-layout": "tabbedArray",
+      "x-sdd-choiceField": "isChosen",
+      "x-sdd-chosenLabel": "✓ CHOSEN",
+      "x-sdd-rejectedLabel": "REJECTED",
+      "x-sdd-layoutGroup": "alternatives",
+      "x-sdd-tabLabelField": "name"
+    },
+    "positiveConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200,
+        "x-sdd-indicator": "✅"
+      },
+      "description": "Benefits and positive outcomes of this decision",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-layoutGroup": "consequences"
+    },
+    "neutralConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200,
+        "x-sdd-indicator": "◐"
+      },
+      "description": "Neutral outcomes (neither positive nor negative)",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-layoutGroup": "consequences"
+    },
+    "negativeConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200,
+        "x-sdd-indicator": "❌"
+      },
+      "description": "Drawbacks, risks, and negative outcomes of this decision",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-layoutGroup": "consequences"
+    },
+    "nonfunctionalImpact": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      },
+      "description": "Impact on security, operations, performance, and other NFRs",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 2
+    },
+    "followUps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "What needs to be done"
+          },
+          "assigneeActorIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "sdd-ref",
+              "x-sdd-refTargets": [
+                "Actor"
+              ]
+            },
+            "description": "Actors assigned to this follow-up"
+          },
+          "assigneeName": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Free-form assignee name (if Actor not in bundle)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Actions required after this decision",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 3
+    },
+    "relatedFeatureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Feature"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Features this decision relates to",
+      "title": "relates to",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "relatedRequirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Requirements this decision relates to",
+      "title": "relates to",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "relatedConstraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Constraints that drove or are affected by this decision",
+      "title": "relates to",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "relatedDecisionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Decision"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Related design decisions",
+      "title": "relates to",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "relatedOpenQuestionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "OpenQuestion"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Open questions this ADR addresses or creates",
+      "title": "relates to",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "supersedesAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Previous ADRs this one replaces",
+      "title": "supersedes",
+      "x-sdd-layoutGroup": "meta"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "guidedByPrincipleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Principle"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Principles that affect/apply to this entity",
+      "title": "guided by"
+    },
+    "externalReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "label",
+          "url"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Link text"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "External URL"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "specification",
+              "documentation",
+              "blog",
+              "video",
+              "tool",
+              "other"
+            ],
+            "description": "Category of reference"
+          }
+        },
+        "additionalProperties": false
+      },
+      "title": "External References",
+      "description": "External references, standards, and documentation",
+      "x-sdd-displayHint": "referenceList",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 4
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Architecture Decision Record",
+    "icon": "📝",
+    "displayNamePlural": "Architecture Decision Records"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "alternatives": {
+      "title": "Alternatives",
+      "order": 2
+    },
+    "consequences": {
+      "title": "Consequences",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  },
+  "if": {
+    "properties": {
+      "status": {
+        "enum": [
+          "accepted",
+          "rejected",
+          "deprecated",
+          "superseded"
+        ]
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "confidence": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "description": "Team's confidence level in this decision",
+        "x-sdd-order": 8,
+        "x-sdd-enumStyles": {
+          "low": {
+            "color": "warning"
+          },
+          "medium": {
+            "color": "info"
+          },
+          "high": {
+            "color": "success"
+          }
+        },
+        "x-sdd-displayLocation": "header",
+        "x-sdd-showLabelInBadge": true
+      }
+    },
+    "required": [
+      "confidence"
+    ]
+  },
+  "x-sdd-meta": {
+    "createdDate": "2024-01-15T10:00:00Z",
+    "lastModifiedDate": "2024-12-20T16:20:00Z",
+    "lastModifiedBy": "ACT-ivan",
+    "references": [
+      {
+        "label": "ADR GitHub Organization",
+        "url": "https://adr.github.io/",
+        "type": "standard"
+      },
+      {
+        "label": "MADR Template",
+        "url": "https://adr.github.io/madr/",
+        "type": "specification"
+      },
+      {
+        "label": "Documenting Architecture Decisions (Nygard)",
+        "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+        "type": "documentation"
+      }
+    ]
+  }
+}

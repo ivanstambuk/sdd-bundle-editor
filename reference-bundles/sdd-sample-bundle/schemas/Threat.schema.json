@@ -1,0 +1,247 @@
+{
+  "$id": "https://example.com/sdd/Threat.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Threat",
+  "description": "Structured threat modeling entity (STRIDE-style) for security analysis",
+  "type": "object",
+  "required": [
+    "category",
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "status",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^THR-[A-Z][A-Z0-9-]*[0-9]{3}$",
+      "x-sdd-idTemplate": "THR-{name}-{seq}",
+      "x-sdd-entityType": "Threat",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Concise name of the threat",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the threat scenario",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Threat",
+      "x-sdd-prominenceIcon": "🔴",
+      "x-sdd-order": 30
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "spoofing",
+        "tampering",
+        "repudiation",
+        "information_disclosure",
+        "denial_of_service",
+        "elevation_of_privilege",
+        "custom"
+      ],
+      "description": "STRIDE category or custom",
+      "x-sdd-enumTitles": {
+        "spoofing": "Spoofing",
+        "tampering": "Tampering",
+        "repudiation": "Repudiation",
+        "information_disclosure": "Information Disclosure",
+        "denial_of_service": "Denial of Service",
+        "elevation_of_privilege": "Elevation of Privilege",
+        "custom": "Custom"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "attackSurface": {
+      "type": "string",
+      "description": "Where the threat manifests (e.g., login-api, session-storage)",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "assetsAtRisk": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What is being protected (e.g., user-credentials, pii)",
+      "x-sdd-layoutGroup": "assessment",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 30
+    },
+    "likelihood": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Probability of exploit",
+      "x-sdd-enumTitles": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "x-sdd-layoutGroup": "assessment",
+      "x-sdd-order": 10
+    },
+    "impact": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "catastrophic"
+      ],
+      "description": "Severity if exploited",
+      "x-sdd-enumTitles": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "catastrophic": "Catastrophic"
+      },
+      "x-sdd-layoutGroup": "assessment",
+      "x-sdd-order": 20
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "analyzed",
+        "mitigated",
+        "accepted",
+        "rejected"
+      ],
+      "description": "Current status in threat lifecycle",
+      "x-sdd-enumTitles": {
+        "identified": "Identified",
+        "analyzed": "Analyzed",
+        "mitigated": "Mitigated",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "x-sdd-layoutGroup": "assessment",
+      "x-sdd-order": 25
+    },
+    "mitigatedByRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Security requirements that address this threat",
+      "title": "mitigated by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "relatedToRisks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Risk"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Risks related to this threat",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "documentedInAdrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "ADRs documenting threat analysis",
+      "title": "documented in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Threat",
+    "icon": "🛡️",
+    "displayNamePlural": "Threats"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "assessment": {
+      "title": "Assessment",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

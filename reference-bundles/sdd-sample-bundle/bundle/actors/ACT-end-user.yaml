@@ -1,0 +1,14 @@
+id: ACT-end-user
+name: End User
+kind: human
+description: Primary user of the system who interacts via the web interface
+responsibilities:
+- Browse and view entities
+- Request changes via AI agent
+- Review and approve proposed changes
+tags:
+- external
+- authenticated
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

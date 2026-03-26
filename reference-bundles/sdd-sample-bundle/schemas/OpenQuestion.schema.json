@@ -1,0 +1,194 @@
+{
+  "$id": "https://example.com/sdd/OpenQuestion.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenQuestion",
+  "description": "Open design question requiring resolution",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "question",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^OQ-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "OQ-{seq}",
+      "x-sdd-entityType": "OpenQuestion",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 10,
+      "description": "The question to be answered",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Question",
+      "x-sdd-prominenceIcon": "❓",
+      "x-sdd-order": 10
+    },
+    "context": {
+      "type": "string",
+      "description": "Background and context for the question",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "The Context",
+      "x-sdd-prominenceIcon": "🧭",
+      "x-sdd-order": 20
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "answered",
+        "abandoned"
+      ],
+      "description": "Current status of the question",
+      "x-sdd-enumTitles": {
+        "open": "Open",
+        "answered": "Answered",
+        "abandoned": "Abandoned"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 5
+    },
+    "answer": {
+      "type": "string",
+      "description": "The answer when status is 'answered'",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "resolution",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Answer",
+      "x-sdd-prominenceIcon": "✅",
+      "x-sdd-order": 10
+    },
+    "decidedBy": {
+      "type": "string",
+      "description": "Person or group who answered the question",
+      "x-sdd-layoutGroup": "resolution",
+      "x-sdd-order": 20
+    },
+    "decidedDate": {
+      "type": "string",
+      "format": "date",
+      "description": "When the question was answered",
+      "x-sdd-layoutGroup": "resolution",
+      "x-sdd-order": 30
+    },
+    "touchesRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Requirements affected by this question",
+      "title": "touches",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "touchesAdrs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "ADRs related to this question",
+      "title": "touches",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "touchesScenarios": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios affected by this question",
+      "title": "touches",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Open Question",
+    "icon": "❓",
+    "displayNamePlural": "Open Questions"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "resolution": {
+      "title": "Resolution",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

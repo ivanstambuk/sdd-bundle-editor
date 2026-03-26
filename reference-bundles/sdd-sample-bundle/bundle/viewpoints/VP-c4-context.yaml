@@ -1,0 +1,24 @@
+id: VP-c4-context
+name: C4 Context Diagram
+diagramKind: plantuml-component
+description: 'System context diagram showing the system boundary, external actors,
+
+  and external systems. Based on C4 model level 1.
+
+  '
+allowedEntityTypes:
+- actor
+- component
+selectionDefaults:
+  componentKinds:
+  - external_system
+  actorKinds:
+  - human
+  - external
+tags:
+- c4
+- context
+- overview
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

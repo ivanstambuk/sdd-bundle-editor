@@ -1,0 +1,26 @@
+id: FX-test-user
+title: Sample requirement fixture
+kind: data
+description: 'Example fixture demonstrating a valid requirement structure.
+
+  Used for testing the validation pipeline.
+
+  '
+belongsToFeatureIds:
+- FEAT-demo-basic
+usedInScenarios:
+- SCN-login-success
+- SCN-password-reset
+data:
+  exampleInput:
+    title: Test Requirement
+    description: This is a sample requirement for testing
+  expectedOutput:
+    valid: true
+    diagnostics: []
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+usedInScenarioIds:
+- SCN-login-success
+- SCN-password-reset

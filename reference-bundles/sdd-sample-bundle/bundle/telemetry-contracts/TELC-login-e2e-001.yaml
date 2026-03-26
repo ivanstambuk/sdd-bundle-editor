@@ -1,0 +1,51 @@
+id: TELC-login-e2e-001
+title: Login E2E Telemetry Contract
+description: 'Validates that login scenarios emit the expected traces, metrics, and
+  logs
+
+  with OTel semantic attributes.
+
+  '
+forScenarioId: SCN-login-success
+telemetrySchemaIds:
+- TELSC-http-login-trace
+- TELSC-login-metrics
+expectations:
+  spans:
+  - name: HTTP POST /auth/login
+    serviceName: auth-service
+    requiredAttributes:
+    - http.request.method
+    - http.route
+    - http.response.status_code
+  - name: auth.validateCredentials
+    serviceName: auth-service
+    requiredAttributes:
+    - enduser.id
+  metrics:
+  - name: http.server.request.duration
+    type: histogram
+    threshold:
+      p99_ms: 250
+  - name: auth.login.attempts
+    type: counter
+ciEnforcement: 'E2E test harness records spans to in-memory exporter, then asserts:
+
+  - Root span name matches HTTP POST /auth/login
+
+  - Required attributes are present
+
+  - P99 latency from histogram is under 250ms
+
+  '
+boundByConstraints:
+- CON-LATENCY-P99
+linkedErrorCodes:
+- ERR-AUTH-INVALID-CREDENTIALS
+tags:
+- e2e
+- login
+- observability
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

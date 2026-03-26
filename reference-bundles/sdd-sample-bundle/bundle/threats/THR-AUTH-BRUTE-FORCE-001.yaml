@@ -1,0 +1,28 @@
+id: THR-AUTH-BRUTE-FORCE-001
+title: Brute Force Login Attack
+description: 'An attacker attempts to gain unauthorized access by systematically
+
+  trying different username/password combinations against the login
+
+  endpoint.
+
+  '
+category: spoofing
+attackSurface: login-api
+assetsAtRisk:
+- user-credentials
+- user-accounts
+- session-tokens
+likelihood: high
+impact: high
+status: mitigated
+mitigatedByRequirements:
+- REQ-password-strength
+relatedToRisks:
+- RSK-AUTH-COMPROMISE-001
+tags:
+- authentication
+- stride-spoofing
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

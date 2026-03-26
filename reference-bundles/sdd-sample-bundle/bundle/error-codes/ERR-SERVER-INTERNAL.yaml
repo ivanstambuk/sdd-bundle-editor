@@ -1,0 +1,16 @@
+id: ERR-SERVER-INTERNAL
+title: Internal Server Error
+httpStatus: 500
+humanMessage: An unexpected error occurred. Please try again later.
+machineCode: INTERNAL_ERROR
+category: server
+documentedInProtocols:
+- PROTO-auth-flow
+referencedInTelemetrySchemas:
+- TELSC-server-logs
+tags:
+- server
+- error
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,42 @@
+id: HLTH-auth-service
+title: Auth Service Health Check
+description: 'Health endpoint for the authentication service, checking database
+
+  connectivity and session store availability.
+
+  '
+exposedByProtocolId: PROTO-auth-flow
+path: /health
+checks:
+- name: database
+  type: database
+  critical: true
+  timeout: 5s
+- name: session-store
+  type: cache
+  critical: true
+  timeout: 2s
+- name: rate-limiter
+  type: dependency
+  critical: false
+  timeout: 1s
+semantics:
+  readyConditions:
+  - Database connection pool initialized
+  - Session store connected
+  liveConditions:
+  - Process running
+  - Memory under threshold
+  infraMapping: 'Maps to K8s readinessProbe (path: /health, periodSeconds: 10)
+
+    and livenessProbe (path: /health/live, periodSeconds: 30)
+
+    '
+relatedComponents:
+- COMP-api-gateway
+tags:
+- health
+- observability
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

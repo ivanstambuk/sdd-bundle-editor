@@ -1,0 +1,10 @@
+id: TASK-impl-auth
+title: Implement basic requirement
+status: planned
+fulfillsRequirementIds:
+- REQ-secure-auth
+belongsToFeatureIds:
+- FEAT-demo-basic
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

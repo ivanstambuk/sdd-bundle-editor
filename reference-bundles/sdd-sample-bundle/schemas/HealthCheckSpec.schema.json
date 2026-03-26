@@ -1,0 +1,214 @@
+{
+  "$id": "https://example.com/sdd/HealthCheckSpec.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HealthCheckSpec",
+  "description": "Specification of health endpoints (/health, /ready, /live)",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "path",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^HLTH-[a-z][a-z0-9-]+$",
+      "x-sdd-idTemplate": "HLTH-{name}",
+      "x-sdd-entityType": "HealthCheckSpec",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "🏥",
+      "x-sdd-order": 30
+    },
+    "exposedByProtocolId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "Protocol"
+      ],
+      "description": "API providing this health endpoint",
+      "title": "exposed by",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "path": {
+      "type": "string",
+      "description": "Endpoint path (e.g., /health, /ready, /live)",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "database",
+              "cache",
+              "queue",
+              "dependency",
+              "custom"
+            ]
+          },
+          "critical": {
+            "type": "boolean",
+            "description": "If true, failure makes service unhealthy"
+          },
+          "timeout": {
+            "type": "string",
+            "description": "Timeout duration (e.g., 5s)"
+          }
+        }
+      },
+      "description": "Individual health checks",
+      "x-sdd-layoutGroup": "checks",
+      "x-sdd-order": 10
+    },
+    "semantics": {
+      "type": "object",
+      "properties": {
+        "readyConditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Conditions for readiness"
+        },
+        "liveConditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Conditions for liveness"
+        },
+        "infraMapping": {
+          "type": "string",
+          "description": "How this maps to K8s probes or similar"
+        }
+      },
+      "description": "Health check behavior (live, ready, startup)",
+      "x-sdd-layoutGroup": "checks",
+      "x-sdd-order": 20
+    },
+    "relatedComponents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "description": "Components this health check covers",
+      "title": "related to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "coveredByScenarios": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "description": "Scenarios that test this health check",
+      "title": "covered by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Health Check Spec",
+    "icon": "💓",
+    "displayNamePlural": "Health Check Specs"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "checks": {
+      "title": "Checks",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

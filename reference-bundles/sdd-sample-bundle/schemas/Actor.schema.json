@@ -1,0 +1,124 @@
+{
+  "$id": "https://example.com/sdd/Actor.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Actor",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "name"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ACT-[A-Za-z0-9-]+$",
+      "x-sdd-idTemplate": "ACT-{name}",
+      "x-sdd-entityType": "Actor",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "human",
+        "system",
+        "external"
+      ],
+      "description": "Classification or type category",
+      "x-sdd-enumTitles": {
+        "human": "Human",
+        "system": "System",
+        "external": "External"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "About this Actor",
+      "x-sdd-prominenceIcon": "👤",
+      "x-sdd-order": 30
+    },
+    "responsibilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Key duties and roles of this actor",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 40
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Actor",
+    "icon": "🎭",
+    "displayNamePlural": "Actors"
+  },
+  "description": "Person, system, or role that interacts with the system being designed",
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 2
+    }
+  }
+}

@@ -1,0 +1,34 @@
+# SDD Bundle Lint Configuration
+# Enforces best practices for specification-driven development
+
+rules:
+  # Enforce descriptive entity IDs instead of pure numeric ones
+  descriptive-ids:
+    type: descriptive-id
+    severity: warning
+    # Applied to all entity types by default
+
+  # Ensure requirements have traceability
+  requirement-traceable:
+    type: quality-check
+    targetEntities: [Requirement]
+    severity: warning
+    checks:
+      traceable: true
+
+  # Requirements should be linked to features
+  requirement-has-feature:
+    type: has-link
+    fromEntity: Requirement
+    viaField: realizesFeatureIds
+    minLinks: 1
+    severity: warning
+
+  # Features should have requirements
+  feature-has-requirements:
+    type: coverage
+    fromEntity: Requirement
+    toEntity: Feature
+    viaField: realizesFeatureIds
+    minLinks: 1
+    severity: warning

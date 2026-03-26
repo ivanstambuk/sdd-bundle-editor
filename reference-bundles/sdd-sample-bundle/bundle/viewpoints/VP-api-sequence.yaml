@@ -1,0 +1,24 @@
+id: VP-api-sequence
+name: API Sequence Diagram
+diagramKind: plantuml-sequence
+description: 'Sequence diagram showing the flow of API calls between actors,
+
+  components, and services for a specific scenario.
+
+  '
+allowedEntityTypes:
+- actor
+- component
+- protocol
+- scenario
+selectionDefaults:
+  scenarioViewpoints:
+  - api
+  - e2e-test
+tags:
+- sequence
+- api
+- flow
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

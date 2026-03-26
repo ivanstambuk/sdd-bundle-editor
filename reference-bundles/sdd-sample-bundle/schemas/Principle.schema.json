@@ -1,0 +1,163 @@
+{
+  "$id": "https://example.com/sdd/Principle.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Principle",
+  "description": "High-level architectural principle that guides design decisions",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "status",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^PRIN-[A-Z][A-Z0-9-]*$",
+      "x-sdd-idTemplate": "PRIN-{name}",
+      "x-sdd-entityType": "Principle",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Concise name of the principle",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Full explanation of the principle and its rationale",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Principle",
+      "x-sdd-prominenceIcon": "⭐",
+      "x-sdd-order": 30
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "accepted",
+        "deprecated"
+      ],
+      "description": "Current status of the principle",
+      "x-sdd-enumTitles": {
+        "proposed": "Proposed",
+        "accepted": "Accepted",
+        "deprecated": "Deprecated"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "security",
+        "reliability",
+        "evolvability",
+        "performance",
+        "maintainability",
+        "usability",
+        "other"
+      ],
+      "description": "Classification of the principle",
+      "x-sdd-enumTitles": {
+        "security": "Security",
+        "reliability": "Reliability",
+        "evolvability": "Evolvability",
+        "performance": "Performance",
+        "maintainability": "Maintainability",
+        "usability": "Usability",
+        "other": "Other"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this principle exists",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "💡",
+      "x-sdd-order": 40
+    },
+    "implications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Consequences of adopting this principle",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 50
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Principle",
+    "icon": "📜",
+    "displayNamePlural": "Principles"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

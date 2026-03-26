@@ -1,0 +1,104 @@
+id: ADR-auth-strategy
+title: Use JSON Schema for Entity Validation
+status: accepted
+createdDate: '2024-10-15T09:00:00Z'
+decidedDate: '2024-10-20T11:00:00Z'
+lastModifiedDate: '2024-10-20T14:30:00Z'
+lastModifiedBy: ACT-platform-team
+confidence: high
+deciderActorIds:
+- ACT-platform-team
+context: "We need a standardized way to validate entity YAML files against their \n\
+  expected structure. The validation system must support custom extensions\nfor SDD-specific\
+  \ features like entity references and ID templates.\n\n\n## Authentication Flow\n\
+  \n```plantuml\n@startuml\nactor User\nparticipant \"Frontend\" as FE\nparticipant\
+  \ \"Auth Service\" as Auth\nparticipant \"User DB\" as DB\n\nUser -> FE: Login Request\n\
+  FE -> Auth: POST /auth/login\nAuth -> DB: Verify Credentials\nDB --> Auth: User\
+  \ Data\nAuth --> FE: JWT Token\nFE --> User: Login Success\n@enduml\n```\n"
+problem: 'How do we validate bundle entities in a way that is both standards-based
+
+  and extensible for SDD-specific semantics?
+
+  '
+assumptions:
+- JSON Schema Draft 2020-12 has sufficient adoption for long-term support
+- Ajv will continue to be maintained and support custom formats
+decision: 'Use JSON Schema (Draft 2020-12) with Ajv for validation. This provides:
+
+  - Industry-standard schema format with wide tooling support
+
+  - Schema-driven UI form generation via RJSF
+
+  - Custom format extensions (sdd-ref) for reference validation
+
+  - Clear separation between structure validation and business rules
+
+  '
+alternativesConsidered:
+- name: JSON Schema with Ajv
+  description: Industry-standard schema format with battle-tested validator
+  pros:
+  - Wide ecosystem support
+  - Schema-driven UI generation possible
+  - Custom format extensions
+  - Declarative and portable
+  cons:
+  - Limited conditional validation support
+  - Verbose for complex rules
+  isChosen: true
+- name: Custom validation code
+  description: Hand-written TypeScript validation functions
+  pros:
+  - Maximum flexibility
+  - Easy to start
+  cons:
+  - No schema portability
+  - Harder to generate UI
+  - Maintenance burden grows with entity types
+  reasonRejected: 'Doesn''t scale as entity types grow, and lacks the ecosystem benefits
+
+    of a standards-based approach.
+
+    '
+- name: Zod schemas
+  description: TypeScript-first schema validation
+  pros:
+  - Great TypeScript integration
+  - Type inference
+  cons:
+  - Not portable to other languages
+  - No UI generation support
+  reasonRejected: 'While Zod is excellent for pure TS projects, we need schema portability
+
+    for potential future tooling in other languages.
+
+    '
+- name: TypeBox
+  description: JSON Schema builder with TypeScript types
+  pros:
+  - Type-safe schema building
+  - JSON Schema output
+  cons:
+  - Added abstraction layer
+  - Smaller community
+  reasonRejected: 'Adds complexity without significant benefit over direct JSON Schema
+    authoring.
+
+    '
+positiveConsequences:
+- Industry-standard schema format with wide tooling support
+- Schema-driven UI forms possible via RJSF
+- Custom extensions work well for SDD-specific validation
+negativeConsequences:
+- All entity types require a JSON Schema definition
+- Custom extensions (x-sdd-refTargets, x-sdd-idTemplate) must be registered with Ajv
+- Schema changes require bundle-type version updates
+neutralConsequences:
+- Validation errors are returned in Ajv's format
+nonfunctionalImpact:
+- Ajv is highly performant and will not impact bundle load times significantly.
+- Schema validation adds ~10-50ms per entity.
+tags:
+- validation
+- schema
+- foundation

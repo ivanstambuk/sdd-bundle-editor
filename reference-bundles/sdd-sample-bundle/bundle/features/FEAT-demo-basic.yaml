@@ -1,0 +1,30 @@
+id: FEAT-demo-basic
+title: Core Bundle Visualization
+description: "This feature enables users to **browse and visualize** SDD bundles with\
+  \ full entity navigation support.\n\n## Capabilities\n\n- **Entity Navigator**:\
+  \ Tree view of all entity types\n- **Details Panel**: Shows entity properties and\
+  \ relationships\n- **Dependency Graph**: Visual representation of entity connections\n\
+  \n### Supported Entity Types\n\n| Type | Description |\n|------|-------------|\n\
+  | Feature | High-level capabilities |\n| Requirement | Testable specifications |\n\
+  | Component | System building blocks |\n\n```yaml\n# Example entity reference\n\
+  realizesFeatureIds:\n  - FEAT-demo-basic\n```\n\n> **Pro tip**: Use the keyboard\
+  \ shortcut `Cmd+K` to search entities.\n"
+tags:
+- core
+- demo
+governedByAdrIds:
+- ADR-auth-strategy
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+realizedByRequirementIds:
+- REQ-secure-auth
+affectedByDecisionIds:
+- DEC-use-jwt
+- DEC-rest-over-grpc
+implementedByComponentIds:
+- COMP-api-gateway
+- COMP-auth-service
+- COMP-data-store
+requiredByProfileIds:
+- PROF-BASIC

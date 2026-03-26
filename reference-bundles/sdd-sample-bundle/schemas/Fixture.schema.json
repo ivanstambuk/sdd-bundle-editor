@@ -1,0 +1,172 @@
+{
+  "$id": "https://example.com/sdd/Fixture.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fixture",
+  "description": "Deterministic test/interaction fixtures for scenarios: data, environment, mocks, service doubles, etc.",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "kind",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^FX-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "FX-{000}",
+      "x-sdd-entityType": "Fixture",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "data",
+        "environment",
+        "mock-service",
+        "secrets",
+        "clock",
+        "external-system-harness"
+      ],
+      "description": "Type of fixture",
+      "x-sdd-enumTitles": {
+        "data": "Data",
+        "environment": "Environment",
+        "mock-service": "Mock Service",
+        "secrets": "Secrets",
+        "clock": "Clock",
+        "external-system-harness": "External System Harness"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "🧪",
+      "x-sdd-order": 30
+    },
+    "belongsToFeatureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Feature"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Features this fixture belongs to",
+      "title": "belongs to",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "usedInScenarios": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios that use this fixture",
+      "title": "used in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "spec": {
+      "type": "object",
+      "description": "Arbitrary YAML/JSON describing how to provision the fixture",
+      "additionalProperties": true,
+      "x-sdd-layoutGroup": "spec",
+      "x-sdd-order": 10
+    },
+    "data": {
+      "type": "object",
+      "description": "The actual fixture data (schema-free)",
+      "x-sdd-layoutGroup": "spec",
+      "x-sdd-order": 20
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "usedInScenarioIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Scenario"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Scenarios that affect/apply to this entity",
+      "title": "used in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Fixture",
+    "icon": "⚙️",
+    "displayNamePlural": "Fixtures"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "spec": {
+      "title": "Spec & Data",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    }
+  }
+}

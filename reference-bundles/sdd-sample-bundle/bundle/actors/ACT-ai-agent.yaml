@@ -1,0 +1,14 @@
+id: ACT-ai-agent
+name: AI Agent
+kind: system
+description: Automated system that proposes changes based on user intent
+responsibilities:
+- Parse user requests
+- Generate structured change proposals
+- Validate changes against schema and lint rules
+tags:
+- internal
+- automated
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,44 @@
+id: SCN-login-success
+title: User Login via Web Portal
+viewpoint: ui
+intent: Verify the complete user login flow through the web portal UI
+preconditions:
+- User has valid credentials in the system
+- Web portal is accessible
+- Session store is available
+postconditions:
+- User is authenticated and has a valid session
+- Dashboard page is displayed
+steps:
+- order: 1
+  actorId: ACT-end-user
+  action: Navigate to login page
+  componentId: COMP-data-store
+- order: 2
+  actorId: ACT-end-user
+  action: Enter username and password
+  componentId: COMP-data-store
+- order: 3
+  actorId: ACT-end-user
+  action: Click login button
+  componentId: COMP-data-store
+- order: 4
+  componentId: COMP-api-gateway
+  action: Validate credentials and create session
+  expectedResponse:
+    status: 200
+- order: 5
+  action: Display dashboard with user profile
+  componentId: COMP-data-store
+tags:
+- authentication
+- ui
+- critical-path
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+constrainedByConstraintIds:
+- CON-LATENCY-P99
+telemetrySchemaIds:
+- TELSC-http-login-trace
+- TELSC-login-metrics

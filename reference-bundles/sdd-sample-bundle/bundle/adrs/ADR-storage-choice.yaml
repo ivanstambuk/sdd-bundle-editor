@@ -1,0 +1,98 @@
+id: ADR-storage-choice
+title: Use Agent-First Editing Instead of Direct YAML Modification
+status: accepted
+createdDate: '2024-11-01T09:00:00Z'
+decidedDate: '2024-11-10T11:00:00Z'
+deciderActorIds:
+- ACT-platform-team
+context: 'The original implementation allowed users to directly edit entity YAML in
+
+  the browser. This led to several issues and frequently frustrated users
+
+  who were not familiar with YAML syntax nuances.
+
+  '
+problem: 'How do we enable users to modify bundle entities without requiring them
+
+  to learn YAML syntax or deal with validation errors?
+
+  '
+assumptions:
+- AI agents are reliable enough for production use
+- Users prefer describing intent over manual editing
+- Git provides sufficient audit trail when combined with AI-generated commit messages
+decision: 'Transition to agent-first editing where:
+
+  - All modifications are proposed by an AI agent
+
+  - Users describe intent in natural language
+
+  - Agent generates valid YAML that passes validation
+
+  - Changes are reviewed, approved, and committed atomically
+
+  '
+alternativesConsidered:
+- name: Agent-first editing
+  description: 'AI agents propose all changes based on natural language descriptions.
+
+    Users review and approve changes before they are committed.
+
+    '
+  pros:
+  - No YAML syntax errors
+  - Validation before submission
+  - Complete audit trail via Git
+  - Consistent change patterns
+  cons:
+  - Requires agent configuration
+  - Initial learning curve for natural language interface
+  isChosen: true
+- name: Direct YAML editing
+  description: Users edit entity YAML directly in a browser-based editor
+  pros:
+  - Full control over content
+  - No AI dependency
+  cons:
+  - Frequent syntax errors
+  - Validation only after submission
+  - No audit trail of intent
+  reasonRejected: 'User experience was poor due to syntax errors and late validation.
+
+    The cognitive load of YAML editing outweighed the control benefits.
+
+    '
+- name: Form-based editing
+  description: Generate forms from JSON Schema for GUI-based editing
+  pros:
+  - No syntax errors possible
+  - Familiar UI pattern
+  cons:
+  - Forms don't scale to complex schemas
+  - Markdown editing in forms is awkward
+  reasonRejected: 'Forms work for simple entities but become unwieldy for complex
+    ones
+
+    like Scenarios with nested steps and conditions.
+
+    '
+positiveConsequences:
+- Users don't need to learn YAML syntax
+- All changes are validated before commit
+- Complete audit trail via Git commits with AI-generated messages
+- Consistent change patterns across all users
+negativeConsequences:
+- Direct editing is disabled in the UI (read-only mode)
+- Agent configuration required before any edits
+- Dependency on AI service availability
+neutralConsequences:
+- Users interact with a chat-like interface instead of an editor
+supersedesAdrIds:
+- ADR-auth-strategy
+tags:
+- editing
+- agent
+- ux
+confidence: medium
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

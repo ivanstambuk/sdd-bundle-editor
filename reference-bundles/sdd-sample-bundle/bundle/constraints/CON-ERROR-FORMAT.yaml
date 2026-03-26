@@ -1,0 +1,17 @@
+id: CON-ERROR-FORMAT
+title: RFC 7807 Error Format Required
+text: 'Error responses must include: type, title, status, detail, and instance
+
+  fields as defined in RFC 7807.
+
+  '
+kind: other
+severity: must
+rationale: Derived from POL-ERROR-RESPONSES policy.
+derivedFromPolicyId: POL-ERROR-RESPONSES
+tags:
+- api
+- errors
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

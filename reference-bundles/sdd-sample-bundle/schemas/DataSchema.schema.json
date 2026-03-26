@@ -1,0 +1,189 @@
+{
+  "$id": "https://example.com/sdd/DataSchema.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataSchema",
+  "description": "Logical data contract / schema (JSON Schema, Avro, Protobuf, etc.)",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "format",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "name",
+    "usage"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DS-[a-z][a-z0-9-]*$",
+      "x-sdd-idTemplate": "DS-{name}",
+      "x-sdd-entityType": "DataSchema",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable name for the schema",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "json-schema",
+        "avro",
+        "protobuf",
+        "xsd",
+        "custom"
+      ],
+      "description": "Schema format/language",
+      "x-sdd-enumTitles": {
+        "json-schema": "JSON Schema",
+        "avro": "Avro",
+        "protobuf": "Protobuf",
+        "xsd": "XSD",
+        "custom": "Custom"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "usage": {
+      "type": "string",
+      "enum": [
+        "request",
+        "response",
+        "event",
+        "problem_details",
+        "telemetry_payload",
+        "config"
+      ],
+      "description": "How this schema is typically used",
+      "x-sdd-enumTitles": {
+        "request": "Request",
+        "response": "Response",
+        "event": "Event",
+        "problem_details": "Problem Details",
+        "telemetry_payload": "Telemetry Payload",
+        "config": "Config"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 25
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-widget": "textarea",
+      "description": "Description of what this schema represents",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "📄",
+      "x-sdd-order": 30
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of the schema purpose",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Summary",
+      "x-sdd-prominenceIcon": "📝",
+      "x-sdd-order": 35
+    },
+    "content": {
+      "type": "object",
+      "description": "Inline schema definition (e.g., JSON Schema object)",
+      "additionalProperties": true,
+      "x-sdd-layoutGroup": "content",
+      "x-sdd-order": 10
+    },
+    "location": {
+      "type": "string",
+      "description": "Path to external schema file (alternative to inline content)",
+      "x-sdd-layoutGroup": "content",
+      "x-sdd-order": 20
+    },
+    "usedInProtocols": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Protocol"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Protocols that use this schema",
+      "title": "used in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Classification tags",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Data Schema",
+    "icon": "📊",
+    "displayNamePlural": "Data Schemas"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "content": {
+      "title": "Content",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

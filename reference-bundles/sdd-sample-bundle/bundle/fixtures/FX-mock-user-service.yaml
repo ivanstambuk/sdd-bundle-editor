@@ -1,0 +1,33 @@
+id: FX-mock-user-service
+title: Mock User Service Responses
+kind: mock-service
+description: 'Predefined mock responses for the user service.
+
+  Used in E2E tests when real user service is unavailable.
+
+  '
+usedInScenarios:
+- SCN-password-reset
+spec:
+  mockType: wiremock
+  stubFile: stubs/user-service.json
+data:
+  getUser:
+    endpoint: GET /users/{id}
+    response:
+      status: 200
+      body:
+        id: user-123
+        email: test@example.com
+        displayName: Test User
+  getUserNotFound:
+    endpoint: GET /users/unknown
+    response:
+      status: 404
+      body:
+        error: User not found
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+usedInScenarioIds:
+- SCN-password-reset

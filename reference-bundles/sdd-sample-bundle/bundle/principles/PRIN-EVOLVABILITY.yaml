@@ -1,0 +1,27 @@
+id: PRIN-EVOLVABILITY
+title: Design for Evolvability
+description: 'Systems should be designed to evolve over time without requiring
+
+  major rewrites. Use loose coupling, clear interfaces, and modular
+
+  architecture.
+
+  '
+status: accepted
+category: evolvability
+rationale: 'Requirements change over time. Systems that cannot evolve become
+
+  legacy liabilities. Modular design enables incremental improvement.
+
+  '
+implications:
+- Clear API contracts between components
+- Version all interfaces
+- Avoid tight coupling between modules
+- Use dependency injection and interfaces
+tags:
+- architecture
+- core-principle
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

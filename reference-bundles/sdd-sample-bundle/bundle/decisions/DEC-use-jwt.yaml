@@ -1,0 +1,21 @@
+id: DEC-use-jwt
+title: Use External Sample Bundle Repository
+outcome: approved
+rationale: 'Decoupling the sample bundle from the editor codebase provides:
+
+  - Clearer separation of concerns
+
+  - Ability to version bundles independently
+
+  - Easier testing with real-world bundle examples
+
+  - Multiple bundle repos can be tested against the same editor
+
+  '
+date: '2025-12-08'
+participants:
+- Ivan
+- AI Agent
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

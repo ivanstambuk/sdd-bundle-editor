@@ -1,0 +1,14 @@
+id: ACT-admin
+name: System Administrator
+kind: human
+description: Privileged user who manages system configuration and user access
+responsibilities:
+- Configure agent backends
+- Manage bundle schemas
+- Review audit logs
+tags:
+- internal
+- privileged
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

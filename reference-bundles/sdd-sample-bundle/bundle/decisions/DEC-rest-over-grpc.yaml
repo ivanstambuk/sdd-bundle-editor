@@ -1,0 +1,22 @@
+id: DEC-rest-over-grpc
+title: Agent-First Editing Paradigm
+outcome: approved
+rationale: 'Moving to agent-first editing improves consistency and safety:
+
+  - All changes go through validation before commit
+
+  - Natural language interface is more intuitive
+
+  - Reduces manual YAML editing errors
+
+  - Enables AI-assisted spec refinement
+
+  '
+date: '2025-12-07'
+participants:
+- Ivan
+relatedDecisionIds:
+- DEC-use-jwt
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

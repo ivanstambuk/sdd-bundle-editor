@@ -1,0 +1,256 @@
+{
+  "$id": "https://example.com/sdd/Scenario.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scenario",
+  "description": "Unified behavioral specification for UI flows, API usage, E2E tests, and performance tests",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "steps",
+    "title",
+    "viewpoint"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SCN-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "SCN-{000}",
+      "x-sdd-entityType": "Scenario",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable title for the scenario",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "viewpoint": {
+      "type": "string",
+      "enum": [
+        "ui",
+        "api",
+        "e2e-test",
+        "perf-test"
+      ],
+      "description": "The perspective from which this scenario is specified",
+      "x-sdd-enumTitles": {
+        "ui": "UI",
+        "api": "Api",
+        "e2e-test": "E2E Test",
+        "perf-test": "Performance Test"
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "intent": {
+      "type": "string",
+      "description": "What this scenario aims to demonstrate or verify",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "The Intent",
+      "x-sdd-prominenceIcon": "🎯",
+      "x-sdd-order": 30
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Conditions that must be true before the scenario starts",
+      "x-sdd-layoutGroup": "flow",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 10
+    },
+    "postconditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Expected system state after the scenario completes",
+      "x-sdd-layoutGroup": "flow",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 30
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "order",
+          "action"
+        ],
+        "properties": {
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Step sequence number"
+          },
+          "actorId": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Actor"
+            ],
+            "description": "Who performs this step"
+          },
+          "action": {
+            "type": "string",
+            "description": "Description of what happens in this step"
+          },
+          "componentId": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Component"
+            ],
+            "description": "Which component is involved"
+          },
+          "protocolId": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Protocol"
+            ],
+            "description": "Which protocol/API is used"
+          },
+          "requestSchemaId": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "DataSchema"
+            ],
+            "description": "Schema for the request payload"
+          },
+          "responseSchemaId": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "DataSchema"
+            ],
+            "description": "Schema for the response payload"
+          },
+          "expectedResponse": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "integer",
+                "description": "Expected HTTP status code"
+              },
+              "body": {
+                "type": "object",
+                "description": "Expected response body pattern"
+              }
+            },
+            "description": "Expected outcome of this step"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Ordered steps of the scenario",
+      "x-sdd-layoutGroup": "flow",
+      "x-sdd-order": 20
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Classification tags",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "constrainedByConstraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Constraint"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Constraints that affect/apply to this entity",
+      "title": "constrained by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "telemetrySchemaIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TelemetrySchema"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "TelemetrySchemas that affect/apply to this entity",
+      "title": "observed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Scenario",
+    "icon": "🎬",
+    "displayNamePlural": "Scenarios"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "flow": {
+      "title": "Flow",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 3
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 4
+    }
+  }
+}

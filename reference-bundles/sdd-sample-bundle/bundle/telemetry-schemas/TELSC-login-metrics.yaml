@@ -1,0 +1,45 @@
+id: TELSC-login-metrics
+title: Login Metrics Schema
+description: 'Metrics schema for login endpoint monitoring, including latency
+
+  histograms and error counters.
+
+  '
+kind: metric
+signalConvention: otel-http
+metricNames:
+- http.server.request.duration
+- http.server.active_requests
+- auth.login.attempts
+- auth.login.failures
+attributes:
+- name: http.request.method
+  type: string
+  required: true
+  semanticConventionRef: http.request.method
+- name: http.route
+  type: string
+  required: true
+  semanticConventionRef: http.route
+- name: http.response.status_code
+  type: int
+  required: true
+  semanticConventionRef: http.response.status_code
+- name: auth.failure_reason
+  type: string
+  required: false
+  description: Reason for auth failure
+  examples:
+  - invalid_credentials
+  - account_locked
+  - rate_limited
+exportDestinations:
+- prometheus
+- otel-collector
+tags:
+- metrics
+- authentication
+- monitoring
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

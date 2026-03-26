@@ -1,0 +1,17 @@
+id: FEAT-agent-conversation
+title: Agent Conversation Interface
+description: "Enables users to interact with an AI agent through a conversational\
+  \ \ninterface. The agent can propose changes to the bundle, which the \nuser can\
+  \ accept or reject.\n"
+tags:
+- agent
+- ui
+- chat
+governedByAdrIds:
+- ADR-auth-strategy
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+realizedByRequirementIds:
+- REQ-password-strength
+- REQ-data-validation

@@ -1,0 +1,11 @@
+id: ACT-platform-team
+name: Platform Team
+description: The core platform engineering team responsible for architectural decisions and system design.
+kind: human
+responsibilities:
+  - Making architectural decisions
+  - Maintaining platform infrastructure
+  - Reviewing and approving technical designs
+createdDate: '2024-10-01T09:00:00Z'
+lastModifiedDate: '2024-10-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

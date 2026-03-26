@@ -1,0 +1,136 @@
+{
+  "$id": "https://example.com/sdd/Profile.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Profile",
+  "description": "Protocol or capability profile definition",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^PROF-[A-Z0-9-]+$",
+      "x-sdd-idTemplate": "PROF-{ID}",
+      "x-sdd-entityType": "Profile",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this entity",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short, descriptive name",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of purpose and behavior",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "🗂️",
+      "x-sdd-order": 30
+    },
+    "conformanceRules": {
+      "type": "array",
+      "description": "Normative rules for conformance testing against this profile",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "severity"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "linkedRequirement": {
+            "type": "string",
+            "format": "sdd-ref",
+            "x-sdd-refTargets": [
+              "Requirement"
+            ]
+          }
+        }
+      },
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-layout": "bulletList",
+      "x-sdd-order": 40
+    },
+    "auditTemplate": {
+      "type": "string",
+      "description": "Markdown template for reporting audit findings",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "template",
+      "x-sdd-prominence": "hero",
+      "x-sdd-prominenceLabel": "Audit Template",
+      "x-sdd-prominenceIcon": "📋",
+      "x-sdd-order": 10
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Profile",
+    "icon": "👤",
+    "displayNamePlural": "Profiles"
+  },
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "template": {
+      "title": "Template",
+      "order": 2
+    }
+  }
+}

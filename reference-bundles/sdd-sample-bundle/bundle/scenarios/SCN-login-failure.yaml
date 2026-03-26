@@ -1,0 +1,40 @@
+id: SCN-login-failure
+title: API Login with Token Response
+viewpoint: api
+intent: Verify the API authentication endpoint returns valid JWT tokens
+preconditions:
+- Backend server is running
+- User credentials exist in database
+postconditions:
+- JWT access token is returned
+- Refresh token is issued
+steps:
+- order: 1
+  actorId: ACT-external-system
+  action: POST /auth/login with credentials
+  componentId: COMP-api-gateway
+  expectedResponse:
+    status: 200
+- order: 2
+  componentId: COMP-api-gateway
+  action: Validate credentials against user store
+- order: 3
+  componentId: COMP-api-gateway
+  action: Generate JWT tokens
+  expectedResponse:
+    status: 200
+    body:
+      accessToken: eyJ...
+      refreshToken: eyJ...
+tags:
+- authentication
+- api
+- security
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team
+constrainedByConstraintIds:
+- CON-LATENCY-P99
+telemetrySchemaIds:
+- TELSC-http-login-trace
+- TELSC-login-metrics

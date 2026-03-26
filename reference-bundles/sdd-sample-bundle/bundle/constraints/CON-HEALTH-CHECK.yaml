@@ -1,0 +1,17 @@
+id: CON-HEALTH-CHECK
+title: Health Check Endpoint Required
+text: 'All services must expose a /health endpoint returning component status
+
+  and dependency health.
+
+  '
+kind: observability
+severity: must
+rationale: Derived from POL-OBSERVABILITY policy.
+derivedFromPolicyId: POL-OBSERVABILITY
+tags:
+- observability
+- health
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -1,0 +1,192 @@
+{
+  "$id": "https://example.com/sdd/Feature.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature",
+  "type": "object",
+  "required": [
+    "createdDate",
+    "id",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "title"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^FEAT-[a-z0-9-]+$",
+      "x-sdd-idTemplate": "FEAT-{000}",
+      "x-sdd-entityType": "Feature",
+      "x-sdd-idScope": "bundle",
+      "description": "Unique identifier for this feature (e.g., FEAT-001)",
+      "maxLength": 30,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-displayHint": "hidden"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Short, descriptive name of the feature",
+      "maxLength": 80,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation of what the feature does",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Feature Description",
+      "x-sdd-prominenceIcon": "✨",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Categorization labels for filtering and grouping",
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "meta",
+      "x-sdd-order": 99
+    },
+    "governedByAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Architecture decisions that govern this feature",
+      "title": "governed by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created Date",
+      "description": "Date when this entity was first created",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last Modified Date",
+      "description": "Date of last modification",
+      "x-sdd-displayLocation": "header"
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "title": "Modified By",
+      "description": "User or team who last modified this entity",
+      "x-sdd-displayLocation": "header"
+    },
+    "realizedByRequirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Requirement"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Requirements that affect/apply to this entity",
+      "title": "realized by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "affectedByDecisionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Decision"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Decisions that affect/apply to this entity",
+      "title": "affected by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "implementedByComponentIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Component"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Components that affect/apply to this entity",
+      "title": "implemented by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    },
+    "requiredByProfileIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Profile"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Profiles that affect/apply to this entity",
+      "title": "required by",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 50
+    },
+    "optionalInProfileIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Profile"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Profiles that affect/apply to this entity",
+      "title": "optional in",
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 60
+    }
+  },
+  "additionalProperties": false,
+  "x-sdd-ui": {
+    "title": "Feature",
+    "icon": "⭐",
+    "displayNamePlural": "Features"
+  },
+  "description": "High-level system capability or user story that delivers value to stakeholders and drives requirements",
+  "x-sdd-displayHint": "markdown",
+  "x-sdd-meta": {
+    "createdDate": "2024-01-01T00:00:00Z",
+    "lastModifiedDate": "2024-12-19T00:00:00Z",
+    "lastModifiedBy": "ACT-ivan"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 2
+    },
+    "meta": {
+      "title": "Meta",
+      "order": 3
+    }
+  }
+}

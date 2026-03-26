@@ -1,0 +1,36 @@
+id: DS-validate-response
+name: Validate Response
+format: json-schema
+usage: response
+description: Response schema for POST /bundle/validate endpoint with diagnostics
+summary: Bundle validation diagnostics response
+content:
+  type: object
+  required:
+  - diagnostics
+  properties:
+    diagnostics:
+      type: array
+      items:
+        type: object
+        properties:
+          severity:
+            type: string
+            enum:
+            - error
+            - warning
+            - info
+          message:
+            type: string
+          entityId:
+            type: string
+          path:
+            type: string
+usedInProtocols:
+- PROTO-auth-flow
+tags:
+- api
+- validation
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

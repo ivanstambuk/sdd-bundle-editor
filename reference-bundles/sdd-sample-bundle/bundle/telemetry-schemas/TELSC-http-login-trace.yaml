@@ -1,0 +1,61 @@
+id: TELSC-http-login-trace
+title: HTTP Login Trace Schema
+description: 'OpenTelemetry trace schema for the login HTTP endpoint, following
+
+  OTel HTTP semantic conventions.
+
+  '
+kind: trace
+signalConvention: otel-http
+spanNames:
+- HTTP POST /auth/login
+- auth.validateCredentials
+- session.create
+attributes:
+- name: http.request.method
+  type: string
+  required: true
+  semanticConventionRef: http.request.method
+  description: HTTP method (POST)
+- name: http.route
+  type: string
+  required: true
+  semanticConventionRef: http.route
+  description: Route template (/auth/login)
+- name: http.response.status_code
+  type: int
+  required: true
+  semanticConventionRef: http.response.status_code
+- name: enduser.id
+  type: string
+  required: false
+  semanticConventionRef: enduser.id
+  description: User ID after successful auth
+- name: auth.result
+  type: string
+  required: true
+  description: Authentication result (success|failure|error)
+  examples:
+  - success
+  - failure
+  - error
+w3cHeaders:
+  traceparent:
+    required: true
+    propagation: both
+  tracestate:
+    required: false
+  baggage:
+    required: false
+    keys:
+    - user.tenant
+exportDestinations:
+- otel-collector
+- jaeger
+tags:
+- http
+- authentication
+- trace
+createdDate: '2024-11-01T09:00:00Z'
+lastModifiedDate: '2024-11-01T09:00:00Z'
+lastModifiedBy: ACT-platform-team

@@ -27,24 +27,6 @@ import { ReferenceList } from './ReferenceList';
 import styles from './EntityDetails.module.css';
 import rjsfStyles from './RjsfStyles.module.css';
 
-// Create a custom validator that allows our schema extension keywords
-// Without this, AJV strict mode throws "unknown keyword" errors
-const validator = customizeValidator({
-  ajvOptionsOverrides: {
-    // Allow custom keywords used in SDD schemas for UI hints (x-sdd-* namespace)
-    keywords: [
-      'x-sdd-displayHint', 'x-sdd-enumDescriptions',
-      'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
-      'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
-      'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
-      // Visual hierarchy keywords
-      'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
-      'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-showLabelInBadge', 'x-sdd-enumTitles',
-      // Schema metadata keyword
-      'x-sdd-meta'
-    ],
-  },
-});
 
 interface EntityDetailsProps {
   bundle: UiBundleSnapshot | null;
@@ -77,11 +59,28 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   }
 
+  const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
+
+  // Create a custom validator scoped to the current schema object identity
+  // This physically bypasses RJSF's internal AJV schema catching if a dev modifies the schema JSON
+  const validator = useMemo(() => customizeValidator({
+    ajvOptionsOverrides: {
+      keywords: [
+        'x-sdd-displayHint', 'x-sdd-enumDescriptions',
+        'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
+        'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
+        'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
+        'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
+        'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-valueStyle', 'x-sdd-labelStyle',
+        'x-sdd-showLabelInBadge', 'x-sdd-enumTitles',
+        'x-sdd-meta'
+      ],
+    },
+  }), [schema]);
+
   const hasDiagnostics = diagnostics.length > 0;
   const errorCount = diagnostics.filter(d => d.severity === 'error').length;
   const warningCount = diagnostics.filter(d => d.severity === 'warning').length;
-
-  const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
 
   // Extract layout groups from schema (for sub-tabs within Details)
   const layoutGroupsConfig = schema?.['x-sdd-layoutGroups'] as Record<string, { title: string; order: number }> | undefined;

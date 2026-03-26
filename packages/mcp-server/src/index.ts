@@ -6,6 +6,7 @@ import { BundleWatcher } from "./bundle-watcher.js";
 import path from "path";
 import fs from "fs";
 import yaml from "js-yaml";
+import { EventEmitter } from 'events';
 import { getDefaultBundlePath } from "@sdd-bundle-editor/core-model";
 /**
  * Command line argument parsing result
@@ -177,6 +178,9 @@ async function main() {
             bundleWatcher.watchBundle(config.id, config.path);
         }
 
+        // Event emitter to securely broadcast cleanly loaded bundles to clients
+        const uiEventEmitter = new EventEmitter();
+
         // Handle bundle reload events
         bundleWatcher.on('reload', async (event) => {
             console.error(`[Main] Bundle ${event.bundleId} changed, reloading...`);
@@ -184,6 +188,8 @@ async function main() {
                 // Reload the bundle in the primary server
                 await primaryServer.loadBundles();
                 console.error(`[Main] Bundle ${event.bundleId} reloaded successfully`);
+                // Safely emit to UI only after compilation is complete
+                uiEventEmitter.emit('reload', event);
             } catch (err) {
                 console.error(`[Main] Failed to reload bundle ${event.bundleId}:`, err);
             }
@@ -193,7 +199,7 @@ async function main() {
         // Each session needs its own McpServer instance to avoid state conflicts
         const httpServer = createMcpHttpServer({
             port: httpPort,
-            bundleEventEmitter: bundleWatcher, // Pass watcher for SSE events
+            bundleEventEmitter: uiEventEmitter, // Pass post-compilation emitter for SSE events
             getServer: () => {
                 // Create a new SddMcpServer for each HTTP session
                 // Important: We share the loaded bundles to avoid re-loading from disk

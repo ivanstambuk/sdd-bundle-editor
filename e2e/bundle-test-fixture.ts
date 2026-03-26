@@ -100,7 +100,7 @@ export async function copyDir(src: string, dest: string): Promise<void> {
  * @returns Path to the temporary bundle directory
  */
 export async function createTempBundle(prefix: string = 'sdd-test-'): Promise<string> {
-    const sourceDir = getSampleBundlePath();
+    const sourceDir = process.env.SDD_SAMPLE_BUNDLE_PATH || path.resolve(__dirname, '../reference-bundles/sdd-sample-bundle');
 
     // Verify source exists
     try {

@@ -159,6 +159,7 @@
       },
       "description": "Ordered steps of the scenario",
       "x-sdd-layoutGroup": "flow",
+      "x-sdd-layout": "timeline",
       "x-sdd-order": 20
     },
     "tags": {

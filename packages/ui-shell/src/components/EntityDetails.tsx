@@ -400,15 +400,57 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     );
   };
 
+  // Timeline layout - connected vertical timeline for array of objects (Scenarios)
+  const renderTimelineLayout = (
+    items: any[],
+    formData: any[],
+    showAddButton: boolean,
+    onAddClick: () => void
+  ) => {
+    return (
+      <div className={rjsfStyles.timeline}>
+        {items.map((item: any, index: number) => {
+           const stepName = formData?.[index]?.order ? `Step ${formData[index].order}` : `Step ${index + 1}`;
+           return (
+              <div key={item.key || index} className={rjsfStyles.timelineItem}>
+                 <div className={rjsfStyles.timelineLeft}>
+                    <div className={rjsfStyles.timelineDot} />
+                    {index < items.length - 1 && <div className={rjsfStyles.timelineLine} />}
+                 </div>
+                 <div className={rjsfStyles.timelineRight}>
+                    <div className={rjsfStyles.timelineStepBadge}>{stepName}</div>
+                    <div className={rjsfStyles.timelineCard}>
+                       {item.children}
+                    </div>
+                 </div>
+              </div>
+           );
+        })}
+        {showAddButton && (
+          <div style={{ marginLeft: 'var(--spacing-xl)', paddingLeft: 'var(--spacing-md)' }}>
+            <button
+              type="button"
+              className={rjsfStyles.arrayAddBtn}
+              onClick={onAddClick}
+            >
+              + Add Step
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // ========================================
   // Custom Array Field Template
   // Dispatches to appropriate layout renderer based on schema hints
   // ========================================
   const CustomArrayFieldTemplate = (props: any) => {
-    const { items, canAdd, onAddClick, readonly, disabled, schema, formData } = props;
+    const { items, canAdd, onAddClick, readonly, disabled, schema, formData, uiSchema } = props;
     const showAddButton = canAdd && !readonly && !disabled;
-    const displayHint = schema?.['x-sdd-displayHint'];
-    const layout = schema?.['x-sdd-layout'];
+    const displayHint = schema?.['x-sdd-displayHint'] || uiSchema?.['ui:options']?.displayHint;
+    const isSteps = props.idSchema?.$id?.includes('steps') || props.title === 'Steps' || schema?.title === 'Steps';
+    const layout = schema?.['x-sdd-layout'] || uiSchema?.['ui:options']?.layout || (isSteps ? 'timeline' : null);
     const indicator = schema?.items?.['x-sdd-indicator'] || null;
 
     // Chips layout for tags and short label arrays
@@ -424,6 +466,11 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // Bullet list layout for compact string arrays
     if (layout === 'bulletList' && schema?.items?.type === 'string') {
       return renderBulletListLayout(items, indicator, showAddButton, onAddClick);
+    }
+
+    // Timeline layout
+    if (layout === 'timeline') {
+      return renderTimelineLayout(items, formData, showAddButton, onAddClick);
     }
 
     // Tabbed array layout - render each item as a sub-tab (e.g., ADR alternatives)
@@ -697,6 +744,16 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           targetUiSchema[propName] = { 'ui:field': 'hiddenField' };
         } else if (ps && ps['x-sdd-widget']) {
           targetUiSchema[propName] = { 'ui:widget': ps['x-sdd-widget'] };
+        }
+
+        // Pass layout hints to ui:options so templates can access them even if RJSF strips schema extensions
+        if (ps && (ps['x-sdd-layout'] || ps['x-sdd-displayHint'])) {
+          targetUiSchema[propName] = targetUiSchema[propName] || {};
+          targetUiSchema[propName]['ui:options'] = { 
+            ...targetUiSchema[propName]['ui:options'],
+            ...(ps['x-sdd-layout'] && { layout: ps['x-sdd-layout'] }),
+            ...(ps['x-sdd-displayHint'] && { displayHint: ps['x-sdd-displayHint'] })
+          };
         }
 
         // x-sdd-displayHint: "multiline" renders as textarea

@@ -11,16 +11,18 @@ import styles from './EntityTypeDetails.module.css';
 interface EntityTypeDetailsProps {
     bundle: UiBundleSnapshot | null;
     entityType: string | null;
+    onNavigate?: (entityType: string, entityId: string) => void;
 }
 
-type EntityTypeTab = 'overview' | 'properties' | 'json';
+type EntityTypeTab = 'entities' | 'overview' | 'properties' | 'json';
 
 /**
  * EntityTypeDetails - Shows the schema for an entity type (not an individual entity).
  * Displayed when clicking on an entity type header in the navigator.
  */
-export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps) {
-    const [activeTab, setActiveTab] = useState<EntityTypeTab>('overview');
+export function EntityTypeDetails({ bundle, entityType, onNavigate }: EntityTypeDetailsProps) {
+    const [activeTab, setActiveTab] = useState<EntityTypeTab>('entities');
+    const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
     if (!bundle || !entityType) {
@@ -84,6 +86,81 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
             setCopyFeedback('Failed to copy');
             setTimeout(() => setCopyFeedback(null), 2000);
         }
+    };
+
+    // Render the Entities tab content (table or grid view)
+    const renderEntitiesTab = () => {
+        const entitiesMap = bundle?.entities[entityType] || {};
+        const entitiesList = Object.values(entitiesMap);
+        
+        if (entitiesList.length === 0) {
+            return (
+                <div className={styles.placeholder}>
+                    <div className={styles.placeholderIcon}>📭</div>
+                    <div>No entities of this type exist yet.</div>
+                </div>
+            );
+        }
+
+        if (viewMode === 'table') {
+            return (
+                <div className={styles.entitiesTabContent}>
+                    <div className={styles.viewToggleContainer}>
+                        <button className={`${styles.viewToggleBtn} ${styles.viewToggleBtnActive}`}>Table List</button>
+                        <button className={styles.viewToggleBtn} onClick={() => setViewMode('cards')}>Card Grid</button>
+                    </div>
+                    <div className={styles.entitiesTableWrapper}>
+                        <table className={styles.entitiesTable}>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {entitiesList.map((e: any) => (
+                                    <tr key={e.id} onClick={() => onNavigate && onNavigate(entityType, e.id)} className={styles.entityRow}>
+                                        <td><code>{e.id}</code></td>
+                                        <td className={styles.entityTitleCell}>{e.data?.title || '-'}</td>
+                                        <td>{e.data?.category || '-'}</td>
+                                        <td>{e.data?.status ? <span className={styles.entityStatusBadge}>{e.data.status}</span> : '-'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className={styles.entitiesTabContent}>
+                <div className={styles.viewToggleContainer}>
+                    <button className={styles.viewToggleBtn} onClick={() => setViewMode('table')}>Table List</button>
+                    <button className={`${styles.viewToggleBtn} ${styles.viewToggleBtnActive}`}>Card Grid</button>
+                </div>
+                <div className={styles.entitiesCardGrid}>
+                    {entitiesList.map((e: any) => (
+                        <div key={e.id} className={styles.entityCard} onClick={() => onNavigate && onNavigate(entityType, e.id)}>
+                            <div className={styles.entityCardHeader}>
+                                <code>{e.id}</code>
+                                {e.data?.status && <span className={styles.entityStatusBadge}>{e.data.status}</span>}
+                            </div>
+                            <div className={styles.entityCardTitle}>{e.data?.title || '-'}</div>
+                            {e.data?.description && (
+                                <div className={styles.entityCardDesc}>
+                                    {typeof e.data.description === 'string' && e.data.description.length > 100 
+                                      ? e.data.description.substring(0, 100) + '...' 
+                                      : String(e.data.description)}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     };
 
     // Render the Overview tab content (schema info, tags, references)
@@ -218,6 +295,14 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
             <div className={styles.tabs}>
                 <button
                     type="button"
+                    className={`${styles.tab} ${activeTab === 'entities' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('entities')}
+                    data-testid="tab-entities"
+                >
+                    🗂️ Entities ({entityCount})
+                </button>
+                <button
+                    type="button"
                     className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
                     onClick={() => setActiveTab('overview')}
                     data-testid="tab-overview"
@@ -243,6 +328,7 @@ export function EntityTypeDetails({ bundle, entityType }: EntityTypeDetailsProps
             </div>
 
             <div className={styles.body}>
+                {activeTab === 'entities' && renderEntitiesTab()}
                 {activeTab === 'overview' && renderOverviewTab()}
                 {activeTab === 'properties' && renderPropertiesTab()}
                 {activeTab === 'json' && renderJsonTab()}

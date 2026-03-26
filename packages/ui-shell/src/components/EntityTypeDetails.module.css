@@ -185,6 +185,154 @@
     gap: var(--spacing-xs);
 }
 
+/* Entities View Toggle */
+.entitiesTabContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.viewToggleContainer {
+    display: flex;
+    gap: 4px;
+    background: var(--color-bg-tertiary);
+    padding: 3px;
+    border-radius: var(--radius-md);
+    width: fit-content;
+    margin-bottom: var(--spacing-md);
+}
+
+.viewToggleBtn {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+.viewToggleBtn:hover:not(.viewToggleBtnActive) {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+.viewToggleBtnActive {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Entities Table */
+.entitiesTableWrapper {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.entitiesTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    background: var(--color-bg-secondary);
+}
+
+.entitiesTable th,
+.entitiesTable td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.entitiesTable th {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-tertiary);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.entityRow {
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.entityRow:hover {
+    background: var(--color-bg-hover);
+}
+
+.entityRow:last-child td {
+    border-bottom: none;
+}
+
+.entityTitleCell {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.entityStatusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+}
+
+/* Entities Card Grid */
+.entitiesCardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.entityCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.entityCard:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.entityCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.85em;
+    color: var(--color-text-muted);
+}
+
+.entityCardTitle {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+}
+
+.entityCardDesc {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
 .reference {
     display: flex;
     align-items: center;

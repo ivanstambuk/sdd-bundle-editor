@@ -293,7 +293,7 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
           <div className={`rjsf-field-label ${labelStyleClass}`}>
             <label htmlFor={id}>
               {formattedLabel}
-              {required && <span className={rjsfStyles.requiredAsterisk}>*</span>}
+              {required && !readOnly && <span className={rjsfStyles.requiredAsterisk}>*</span>}
             </label>
             {hasDescription && (
               <span className={rjsfStyles.fieldHelpIcon} title={rawDescription}>

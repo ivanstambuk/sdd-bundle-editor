@@ -286,6 +286,7 @@ export function AppShell() {
             <EntityTypeDetails
               bundle={bundle}
               entityType={selectedEntityType}
+              onNavigate={handleNavigate}
             />
           ) : (
             <EntityDetails

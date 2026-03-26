@@ -677,11 +677,10 @@ form.rjsf {
 
 /* Muted (default): smaller, gray, uppercase */
 .rjsf-field-label.rjsf-label--muted label {
-  font-size: 11px;
+  font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
 }
 
 /* Prominent: normal size, primary color */
@@ -701,6 +700,7 @@ form.rjsf {
   padding: 0;
   color: var(--color-text-primary);
   font-weight: 500;
+  font-size: 1.1rem;
   height: auto;
   min-height: unset;
   width: 100%;
@@ -719,11 +719,10 @@ form.rjsf {
 
 /* Fallback for base label style */
 .rjsf-field-label label {
-  font-size: 11px;
+  font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
 }
 
 /* Field content inputs */

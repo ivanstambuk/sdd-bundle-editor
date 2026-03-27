@@ -13,6 +13,15 @@
     "title"
   ],
   "properties": {
+    "guidesAdrs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ADR"
+      ]
+    },
     "id": {
       "type": "string",
       "pattern": "^PRIN-[A-Z][A-Z0-9-]*$",

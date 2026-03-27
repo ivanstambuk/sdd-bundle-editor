@@ -6,12 +6,15 @@ subtype: interface
 state: accepted
 ownerId: ACT-platform-team
 requestedById: ACT-admin
-description: "This requirement intentionally contains very long text content to test\
-  \ \nhow the UI handles text that exceeds typical field lengths. The purpose\nis\
-  \ to verify that text wrapping, scrolling, and layout remain functional\nwhen dealing\
-  \ with extensive content.\n\nLorem ipsum dolor sit amet, consectetur adipiscing\
-  \ elit. Sed do eiusmod\ntempor incididunt ut labore et dolore magna aliqua. Ut enim\
-  \ ad minim \nveniam, quis nostrud exercitation ullamco laboris.\n"
+description: |
+  This requirement intentionally contains very long text content to test 
+  how the UI handles text that exceeds typical field lengths. The purpose
+  is to verify that text wrapping, scrolling, and layout remain functional
+  when dealing with extensive content.
+
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
+  veniam, quis nostrud exercitation ullamco laboris.
 rationale: UI robustness testing with long content
 qualityAttributes:
   atomic: false
@@ -21,9 +24,14 @@ qualityAttributes:
   verifiable: true
   unambiguous: true
 acceptanceCriteria:
-- Long text wraps correctly in entity details
-- Scrolling works for overflow content
-- Layout remains stable with large text blocks
-createdDate: '2024-11-01T09:00:00Z'
-lastModifiedDate: '2024-11-01T09:00:00Z'
+  - Long text wraps correctly in entity details
+  - Scrolling works for overflow content
+  - Layout remains stable with large text blocks
+createdDate: 2024-11-01T09:00:00Z
+lastModifiedDate: 2024-11-01T09:00:00Z
 lastModifiedBy: ACT-platform-team
+constrainedByConstraintIds:
+  - CON-Q4-DELIVERY
+  - CON-REDUCE-MAINTENANCE
+realizesFeatureIds:
+  - FEAT-agent-conversation

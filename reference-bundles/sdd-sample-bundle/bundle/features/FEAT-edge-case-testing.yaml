@@ -1,11 +1,11 @@
 id: FEAT-edge-case-testing
 title: Edge Case Testing Feature
-description: This feature exists to test edge cases in entity validation and display.
-  It has minimal content with missing optional fields.
+description: This feature exists to test edge cases in entity validation and
+  display. It has minimal content with missing optional fields.
 tags:
-- test
-createdDate: '2024-11-01T09:00:00Z'
-lastModifiedDate: '2024-11-01T09:00:00Z'
+  - test
+createdDate: 2024-11-01T09:00:00Z
+lastModifiedDate: 2024-11-01T09:00:00Z
 lastModifiedBy: ACT-platform-team
 realizedByRequirementIds:
-- REQ-audit-logging
+  - REQ-password-strength

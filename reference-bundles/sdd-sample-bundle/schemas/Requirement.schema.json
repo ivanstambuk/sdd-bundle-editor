@@ -15,6 +15,15 @@
     "title"
   ],
   "properties": {
+    "realizesFeatureIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "Feature"
+      ]
+    },
     "id": {
       "type": "string",
       "pattern": "^REQ-[a-z0-9-]+$",

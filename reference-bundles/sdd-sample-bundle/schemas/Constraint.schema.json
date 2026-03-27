@@ -15,6 +15,24 @@
     "title"
   ],
   "properties": {
+    "constrainsRequirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "Requirement"
+      ]
+    },
+    "constrainsComponentIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "Component"
+      ]
+    },
     "id": {
       "type": "string",
       "pattern": "^CON-[A-Z][A-Z0-9-]*$",

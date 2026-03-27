@@ -12,6 +12,15 @@
     "title"
   ],
   "properties": {
+    "requiresFeatures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "Feature"
+      ]
+    },
     "id": {
       "type": "string",
       "pattern": "^PROF-[A-Z0-9-]+$",

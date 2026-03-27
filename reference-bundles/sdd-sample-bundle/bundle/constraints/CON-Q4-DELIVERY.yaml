@@ -1,23 +1,20 @@
 id: CON-Q4-DELIVERY
 title: Q4 Delivery Deadline
-text: 'All Phase 3 features must be production-ready by Q4 end (December 31).
-
+text: |
+  All Phase 3 features must be production-ready by Q4 end (December 31).
   This constraint drives prioritization and scope decisions across
-
   all development efforts.
-
-  '
 kind: strategic
 severity: must
-rationale: 'Business commitments to stakeholders require Phase 3 completion by
-
+rationale: |
+  Business commitments to stakeholders require Phase 3 completion by
   year-end. This is a hard deadline that cannot be extended.
-
-  '
 tags:
-- deadline
-- strategic
-- q4
-createdDate: '2024-11-01T09:00:00Z'
-lastModifiedDate: '2024-11-01T09:00:00Z'
+  - deadline
+  - strategic
+  - q4
+createdDate: 2024-11-01T09:00:00Z
+lastModifiedDate: 2024-11-01T09:00:00Z
 lastModifiedBy: ACT-platform-team
+constrainsRequirementIds:
+  - REQ-audit-logging

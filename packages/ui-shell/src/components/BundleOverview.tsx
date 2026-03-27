@@ -112,13 +112,12 @@ function BundleOverviewContent({ bundle, onSelectType }: { bundle: UiBundleSnaps
                         const schema = bundle.schemas?.[entityType] as Record<string, any> | undefined;
                         const description = (schema?.description as string) || '';
                         const icon = getEntityIcon(schema);
-                        const properties = (schema?.properties as Record<string, any>) || {};
-                        const required: string[] = (schema?.required as string[]) || [];
-                        // Key fields: required first, then others, max 5
-                        const keyFields = [
-                            ...required.filter(f => properties[f]),
-                            ...Object.keys(properties).filter(f => !required.includes(f)),
-                        ].slice(0, 5);
+                        // Generate consistent color for the left stripe based on entityType name
+                        let hash = 0;
+                        for (let i = 0; i < entityType.length; i++) {
+                            hash = entityType.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                        const stripeColor = `hsl(${Math.abs(hash) % 360}, 70%, 55%)`;
 
                         return (
                             <div
@@ -126,6 +125,7 @@ function BundleOverviewContent({ bundle, onSelectType }: { bundle: UiBundleSnaps
                                 className={styles.entityTypeCard}
                                 onClick={() => onSelectType?.(entityType)}
                                 title={`View ${entityType} entities in sidebar`}
+                                style={{ '--card-stripe-color': stripeColor } as React.CSSProperties}
                             >
                                 <div className={styles.entityTypeCardHeader}>
                                     <div className={styles.entityTypeCardTitle}>
@@ -143,16 +143,6 @@ function BundleOverviewContent({ bundle, onSelectType }: { bundle: UiBundleSnaps
                                     <p className={styles.entityTypeCardDesc}>
                                         {description.length > 120 ? description.slice(0, 117) + '…' : description}
                                     </p>
-                                )}
-                                {keyFields.length > 0 && (
-                                    <div className={styles.entityTypeCardFields}>
-                                        {keyFields.map(f => (
-                                            <span key={f} className={styles.entityTypeCardField}>
-                                                {f}
-                                                {required.includes(f) && <span className={styles.entityTypeCardFieldRequired}>*</span>}
-                                            </span>
-                                        ))}
-                                    </div>
                                 )}
                             </div>
                         );

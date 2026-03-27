@@ -79,26 +79,44 @@
 /* Entity Types Card Grid */
 .entityTypeGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--spacing-md);
 }
 
 .entityTypeCard {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    padding-left: calc(var(--spacing-md) + 4px);
+}
+
+.entityTypeCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--card-stripe-color, var(--color-accent));
+    transition: width var(--transition-fast);
 }
 
 .entityTypeCard:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px var(--color-accent), 0 4px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-1px);
+    border-color: var(--card-stripe-color, var(--color-accent));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    background: var(--color-bg-primary);
+}
+
+.entityTypeCard:hover::before {
+    width: 6px;
 }
 
 .entityTypeCardHeader {
@@ -106,56 +124,40 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border-light);
 }
 
 .entityTypeCardTitle {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
 }
 
 .entityTypeCardIcon {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     flex-shrink: 0;
 }
 
 .entityTypeCardCount {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-tertiary);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
-    flex-shrink: 0;
+    border: 1px solid var(--color-border-light);
 }
 
 .entityTypeCardDesc {
     margin: 0;
+    padding: var(--spacing-sm) 0;
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
     line-height: 1.5;
     flex: 1;
-}
-
-.entityTypeCardFields {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: auto;
-    padding-top: var(--spacing-xs);
-    border-top: 1px solid var(--color-border-light);
-}
-
-.entityTypeCardField {
-    font-size: 11px;
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    color: var(--color-text-muted);
-    background: var(--color-bg-tertiary);
-    padding: 1px 6px;
-    border-radius: var(--radius-xs);
-    border: 1px solid var(--color-border-light);
-}
-
-.entityTypeCardFieldRequired {
-    color: var(--color-accent);
-    margin-left: 1px;
 }
 
 /* Entity Types Table (legacy, kept for reference) */

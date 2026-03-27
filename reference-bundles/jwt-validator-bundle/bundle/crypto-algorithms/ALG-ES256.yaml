@@ -1,0 +1,7 @@
+id: ALG-ES256
+kind: CryptoAlgorithm
+title: "ES256 (ECDSA P-256)"
+description: ECDSA using P-256 and SHA-256. Highly efficient and modern signature scheme.
+tags: [crypto, symmetric]
+strengthBits: 128
+isQuantumSafe: false

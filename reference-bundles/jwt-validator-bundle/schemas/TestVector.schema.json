@@ -1,0 +1,141 @@
+{
+  "$id": "sdd-bundle:jwt-validator:TestVector",
+  "type": "object",
+  "title": "TestVector",
+  "required": [
+    "id",
+    "kind",
+    "title"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^VEC-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "TestVector",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "📝",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "🤔",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "governedByAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ADR"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "rawJwtInput": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "environmentState": {
+      "type": "object",
+      "properties": {
+        "now_epoch_seconds": {
+          "type": "integer"
+        },
+        "leeway_seconds": {
+          "type": "integer"
+        }
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "validatesRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ValidationRule"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20
+    },
+    "expectsErrorCodeIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ErrorCode"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "usesMockKeyId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "MockKeySet"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    },
+    "payloadJson": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 15,
+      "x-sdd-displayHint": "multiline"
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Test Vector",
+    "displayNamePlural": "Test Vectors",
+    "icon": "🎯"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Relationships",
+      "order": 3
+    }
+  }
+}

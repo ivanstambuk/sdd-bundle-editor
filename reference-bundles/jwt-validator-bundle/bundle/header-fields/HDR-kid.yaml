@@ -1,0 +1,8 @@
+id: HDR-kid
+kind: HeaderField
+title: "kid (Key ID) Header Parameter"
+description: >
+  A hint indicating which specific key owned by the signer was used to secure the JWS.
+tags: [header, crypto]
+isRequired: false
+dataType: string

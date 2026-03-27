@@ -1,0 +1,91 @@
+apiVersion: sdd.v1
+kind: Bundle
+metadata:
+  name: jwt-validator-reference
+  bundleType: jwt-validator
+  schemaVersion: 1.0.0
+
+spec:
+  bundleTypeDefinition: bundle-type.jwt-validator.json
+
+  schemas:
+    documents:
+      TokenProfile: schemas/TokenProfile.schema.json
+      SerializationFormat: schemas/SerializationFormat.schema.json
+      HeaderField: schemas/HeaderField.schema.json
+      PayloadClaim: schemas/PayloadClaim.schema.json
+      DataStructure: schemas/DataStructure.schema.json
+      ValidationRule: schemas/ValidationRule.schema.json
+      ValidationStep: schemas/ValidationStep.schema.json
+      Operation: schemas/Operation.schema.json
+      ErrorCode: schemas/ErrorCode.schema.json
+      CryptoAlgorithm: schemas/CryptoAlgorithm.schema.json
+      KeyStrategy: schemas/KeyStrategy.schema.json
+      ConformanceClass: schemas/ConformanceClass.schema.json
+      ConformanceSuite: schemas/ConformanceSuite.schema.json
+      TestVector: schemas/TestVector.schema.json
+      MockKeySet: schemas/MockKeySet.schema.json
+      SecurityConstraint: schemas/SecurityConstraint.schema.json
+      NormativeReference: schemas/NormativeReference.schema.json
+      ADR: schemas/ADR.schema.json
+      Actor: schemas/Actor.schema.json
+
+  layout:
+    documents:
+      TokenProfile:
+        dir: bundle/token-profiles
+        filePattern: "{id}.yaml"
+      SerializationFormat:
+        dir: bundle/serialization-formats
+        filePattern: "{id}.yaml"
+      HeaderField:
+        dir: bundle/header-fields
+        filePattern: "{id}.yaml"
+      PayloadClaim:
+        dir: bundle/payload-claims
+        filePattern: "{id}.yaml"
+      DataStructure:
+        dir: bundle/data-structures
+        filePattern: "{id}.yaml"
+      ValidationRule:
+        dir: bundle/validation-rules
+        filePattern: "{id}.yaml"
+      ValidationStep:
+        dir: bundle/validation-steps
+        filePattern: "{id}.yaml"
+      Operation:
+        dir: bundle/operations
+        filePattern: "{id}.yaml"
+      ErrorCode:
+        dir: bundle/error-codes
+        filePattern: "{id}.yaml"
+      CryptoAlgorithm:
+        dir: bundle/crypto-algorithms
+        filePattern: "{id}.yaml"
+      KeyStrategy:
+        dir: bundle/key-strategies
+        filePattern: "{id}.yaml"
+      ConformanceClass:
+        dir: bundle/conformance-classes
+        filePattern: "{id}.yaml"
+      ConformanceSuite:
+        dir: bundle/conformance-suites
+        filePattern: "{id}.yaml"
+      TestVector:
+        dir: bundle/test-vectors
+        filePattern: "{id}.yaml"
+      MockKeySet:
+        dir: bundle/mock-key-sets
+        filePattern: "{id}.yaml"
+      SecurityConstraint:
+        dir: bundle/security-constraints
+        filePattern: "{id}.yaml"
+      NormativeReference:
+        dir: bundle/normative-references
+        filePattern: "{id}.yaml"
+      ADR:
+        dir: bundle/adrs
+        filePattern: "{id}.yaml"
+      Actor:
+        dir: bundle/actors
+        filePattern: "{id}.yaml"

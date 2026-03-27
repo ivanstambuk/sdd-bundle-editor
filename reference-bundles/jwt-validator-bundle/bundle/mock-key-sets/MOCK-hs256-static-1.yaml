@@ -1,0 +1,10 @@
+id: MOCK-hs256-static-1
+kind: MockKeySet
+title: Static HS256 Keyset 1
+description: Hardcoded HS256 key material for executing unit tests.
+jwks:
+  keys:
+    - kty: oct
+      kid: sim-key-1
+      alg: HS256
+      k: AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow

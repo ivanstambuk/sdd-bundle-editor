@@ -1,0 +1,8 @@
+id: VEC-jwt-wrong-aud
+kind: TestVector
+title: "Missing Expected Audience"
+description: JWT intended for a different backend microservice.
+tags: [test, security]
+payloadJson: '{"aud": "not-this-service"}'
+expectsErrorCodeIds: [ERR-invalid-audience]
+validatesRuleIds: [RULE-AUD-MATCH]

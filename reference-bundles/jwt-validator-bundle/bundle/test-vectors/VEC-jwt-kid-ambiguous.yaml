@@ -1,0 +1,8 @@
+id: VEC-jwt-kid-ambiguous
+kind: TestVector
+title: "Ambiguous Key Resolution"
+description: Providing a JWT signed by a kid "key-1", where the supplied JWKS holds two distinct keys sharing the identifier "key-1".
+tags: [test, crypto]
+payloadJson: '{"sub": "auth_test"}'
+expectsErrorCodeIds: [ERR-kid-ambiguous]
+validatesRuleIds: [RULE-KID-AMBIGUITY]

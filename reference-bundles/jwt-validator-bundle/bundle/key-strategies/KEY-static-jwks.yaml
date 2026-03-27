@@ -1,0 +1,12 @@
+id: KEY-static-jwks
+kind: KeyStrategy
+title: Static In-Memory JWKS
+description: A key resolution strategy that looks up keys (`kid`) from a hardcoded JSON Web Key Set provided at invocation time.
+rationale: Essential for unit testing and offline edge environments without network access.
+tags:
+  - resolution
+  - offline
+strategyType: STATIC
+cacheBehavior: NO-CACHE
+governedByAdrIds:
+  - ADR-0001

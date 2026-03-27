@@ -1,0 +1,8 @@
+id: RULE-NBF-CHECK
+kind: ValidationRule
+title: "Reject Premature Tokens"
+description: The validator MUST reject the token if the current system time is strictly earlier than the `nbf` claim (accounting for allowed clock skew).
+tags: [validation, time]
+severity: ERROR
+implementsConstraintIds: [CON-timing-attack]
+throwsErrorCodeId: ERR-premature

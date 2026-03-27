@@ -1,0 +1,9 @@
+id: HDR-typ
+kind: HeaderField
+title: "typ (Type) Header Parameter"
+description: >
+  Used by JWT applications to declare the media type of this complete JWT. 
+  Helps disambiguate when multiple kinds of tokens might be processed at the same endpoint.
+tags: [header]
+isRequired: false
+dataType: string

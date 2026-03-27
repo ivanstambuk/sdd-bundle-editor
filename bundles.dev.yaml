@@ -3,3 +3,8 @@ bundles:
     path: ./reference-bundles/sdd-sample-bundle
     tags: [demo, sample]
     description: "Sample SDD bundle for demonstration and testing"
+
+  - id: jwt
+    path: ./reference-bundles/jwt-validator-bundle
+    tags: [jwt, validator, real-data]
+    description: "Comprehensive metamodel and real-data specs for JWT Validation."

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import type { UiBundleSnapshot, UiEntity } from '../types';
 import type { McpBundle } from '../api';
 import { getEntityDisplayNamePlural, getEntityIcon } from '../utils/schemaMetadata';
@@ -40,6 +40,8 @@ export function EntityNavigator({
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   // Track which entity type groups are collapsed
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  // Track the last bundle directory we initialized (to reset state on bundle switch)
+  const lastInitializedBundleRef = useRef<string | null>(null);
 
   // Group entity types by category
   const { categoryGroups, uncategorizedTypes } = useMemo(() => {
@@ -92,23 +94,33 @@ export function EntityNavigator({
     return { categoryGroups: groups, uncategorizedTypes: uncategorized };
   }, [bundle?.bundleTypeDefinition, bundle?.entities]);
 
-  // Initialize all categories and entity groups as collapsed when bundle first loads
+  // Initialize all categories and entity groups as collapsed when switching to a new bundle
   useEffect(() => {
-    if (bundle) {
+    if (!bundle) return;
+    
+    // We want to initialize collapse state ONLY when switching to a new bundle, 
+    // not on every reload/re-render (which would ruin user's manual expansions).
+    // If activeBundleDir is provided, use it to track switches.
+    const isNewBundle = activeBundleDir ? (lastInitializedBundleRef.current !== activeBundleDir) : (lastInitializedBundleRef.current === null);
+    
+    if (isNewBundle) {
+      if (activeBundleDir) {
+        lastInitializedBundleRef.current = activeBundleDir;
+      } else {
+        lastInitializedBundleRef.current = 'initialized'; // Fallback for tests missing activeBundleDir
+      }
+      
       // Collapse all entity type groups
-      if (collapsedGroups.size === 0) {
-        setCollapsedGroups(new Set(Object.keys(bundle.entities)));
+      setCollapsedGroups(new Set(Object.keys(bundle.entities)));
+      
+      // Collapse all categories
+      const allCategoryNames = categoryGroups.map(cg => cg.category.name);
+      if (uncategorizedTypes.length > 0) {
+        allCategoryNames.push('__uncategorized');
       }
-      // Collapse all categories by default
-      if (collapsedCategories.size === 0 && categoryGroups.length > 0) {
-        const allCategoryNames = categoryGroups.map(cg => cg.category.name);
-        if (uncategorizedTypes.length > 0) {
-          allCategoryNames.push('__uncategorized');
-        }
-        setCollapsedCategories(new Set(allCategoryNames));
-      }
+      setCollapsedCategories(new Set(allCategoryNames));
     }
-  }, [bundle, categoryGroups, uncategorizedTypes]);
+  }, [bundle, activeBundleDir, categoryGroups, uncategorizedTypes]);
 
   // Auto-expand category and entity type group when selection changes externally
   // (e.g., navigation from diagnostics log, relationship graph, or bundle overview)

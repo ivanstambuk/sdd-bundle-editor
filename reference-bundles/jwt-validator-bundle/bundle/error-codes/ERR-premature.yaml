@@ -1,0 +1,7 @@
+id: ERR-premature
+kind: ErrorCode
+title: "Token Premature"
+description: The token `nbf` time is in the future.
+tags: [error, execution]
+isRetryable: true
+httpStatusCode: 401

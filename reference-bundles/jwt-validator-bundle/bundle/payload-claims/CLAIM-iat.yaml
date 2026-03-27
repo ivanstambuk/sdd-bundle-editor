@@ -1,0 +1,6 @@
+id: CLAIM-iat
+kind: PayloadClaim
+title: "iat (Issued At) Claim"
+description: Identifies the time at which the JWT was issued. Can be used to determine age.
+tags: [time, claim]
+dataType: number

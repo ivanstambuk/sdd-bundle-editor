@@ -1,0 +1,7 @@
+id: OP-extract-claims
+kind: Operation
+title: "Extract Claims Diagnostics"
+description: Conceptual operation that decodes a JWT and returns a tagged `claims_view`, regardless of whether full signature validation succeeds, explicitly marking fields as unvalidated for debugging.
+tags: [operation, diagnostic]
+systemComponent: DiagnosticCLI
+producesDataStructureIds: [STRUCT-claims-view]

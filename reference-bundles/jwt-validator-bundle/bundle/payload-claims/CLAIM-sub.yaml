@@ -1,0 +1,7 @@
+id: CLAIM-sub
+kind: PayloadClaim
+title: "sub (Subject) Claim"
+description: Identifies the principal that is the subject of the JWT.
+tags: [identity, claim]
+dataType: string
+

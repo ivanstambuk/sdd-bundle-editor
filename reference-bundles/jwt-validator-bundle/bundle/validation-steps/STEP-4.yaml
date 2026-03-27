@@ -1,0 +1,8 @@
+id: STEP-4
+kind: ValidationStep
+title: "Cryptographic Validation"
+description: Retrieve key from JWKS and halt execution if the RSA/ECDSA signature cannot be authenticated.
+tags: [step, crypto]
+executionOrder: 4
+executesRuleIds: [RULE-KID-RESOLVE, RULE-SIG-VERIFY]
+producesErrorCodeIds: [ERR-invalid-sig]

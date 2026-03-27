@@ -20,12 +20,8 @@ type EntityTypeTab = 'entities' | 'overview' | 'properties' | 'json';
  * EntityTypeDetails - Shows the schema for an entity type (not an individual entity).
  * Displayed when clicking on an entity type header in the navigator.
  */
-export function EntityTypeDetails({ bundle, entityType, onNavigate }: EntityTypeDetailsProps) {
-    const [activeTab, setActiveTab] = useState<EntityTypeTab>('entities');
-    const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
-    const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
-
-    if (!bundle || !entityType) {
+export function EntityTypeDetails(props: EntityTypeDetailsProps) {
+    if (!props.bundle || !props.entityType) {
         return (
             <div className={styles.container}>
                 <div className={styles.placeholder}>
@@ -36,6 +32,13 @@ export function EntityTypeDetails({ bundle, entityType, onNavigate }: EntityType
             </div>
         );
     }
+    return <EntityTypeDetailsContent bundle={props.bundle} entityType={props.entityType} onNavigate={props.onNavigate} />;
+}
+
+function EntityTypeDetailsContent({ bundle, entityType, onNavigate }: { bundle: UiBundleSnapshot; entityType: string; onNavigate?: (entityType: string, entityId: string) => void }) {
+    const [activeTab, setActiveTab] = useState<EntityTypeTab>('entities');
+    const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+    const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
     const schema = bundle.schemas?.[entityType] as Record<string, unknown> | undefined;
     const displayName = getEntityDisplayName(schema) ?? entityType;

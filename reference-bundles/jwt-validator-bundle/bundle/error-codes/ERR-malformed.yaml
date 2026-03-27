@@ -1,0 +1,7 @@
+id: ERR-malformed
+kind: ErrorCode
+title: "Malformed Token Structure"
+description: The token is not a syntactically valid compact JWS string (e.g., wrong number of segments, invalid Base64url characters).
+tags: [error, parse]
+isRetryable: false
+httpStatusCode: 400

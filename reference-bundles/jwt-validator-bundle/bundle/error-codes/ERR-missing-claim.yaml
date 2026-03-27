@@ -1,0 +1,7 @@
+id: ERR-missing-claim
+kind: ErrorCode
+title: "Missing Required Claim"
+description: The token is missing a claim that was mandated by the validation policy profile (e.g., missing `sub` or `aud`).
+tags: [error, validation]
+isRetryable: false
+httpStatusCode: 400

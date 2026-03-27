@@ -1,0 +1,9 @@
+id: STEP-1
+kind: ValidationStep
+title: Parse and Verify Signature
+description: Decode the base64url segments, verify the JSON structure, resolve the key, and compute the cryptographic signature.
+executionOrder: 1
+executesRuleIds:
+  - RULE-ALG-ALLOWLIST
+producesErrorCodeIds:
+  - ERR-invalid-sig

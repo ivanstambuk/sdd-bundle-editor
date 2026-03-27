@@ -1,0 +1,113 @@
+{
+  "$id": "sdd-bundle:jwt-validator:SecurityConstraint",
+  "type": "object",
+  "title": "SecurityConstraint",
+  "required": [
+    "id",
+    "kind",
+    "title"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CON-[a-zA-Z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "SecurityConstraint",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-prominenceIcon": "📝",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-prominenceIcon": "🤔",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "governedByAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ADR"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "mitigation": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+        "FATAL"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 5
+    },
+    "mitigatesRiskIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Security Constraint",
+    "displayNamePlural": "Security Constraints",
+    "icon": "🔒"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Relationships",
+      "order": 3
+    }
+  }
+}

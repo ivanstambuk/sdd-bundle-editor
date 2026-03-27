@@ -1,0 +1,8 @@
+id: VEC-jwt-premature
+kind: TestVector
+title: "NBF Claim in the Future"
+description: JWT signed perfectly but with an NBF set to next year.
+tags: [test, time]
+payloadJson: '{"nbf": 2500000000}'
+expectsErrorCodeIds: [ERR-premature]
+validatesRuleIds: [RULE-NBF-CHECK]

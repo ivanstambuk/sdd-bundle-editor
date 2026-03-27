@@ -1,0 +1,21 @@
+id: STRUCT-validation-result
+kind: DataStructure
+title: Validation Result Model
+description: The output object returned by the validate_jwt operation. Contains the boolean status and any explicitly identified error codes.
+rationale: Provides a structured interface for callers to handle token rejection safely.
+tags:
+  - output
+  - dto
+schemaDefinition:
+  type: object
+  properties:
+    isValid:
+      type: boolean
+    errorCodes:
+      type: array
+      items:
+        type: string
+  required:
+    - isValid
+governedByAdrIds:
+  - ADR-0001

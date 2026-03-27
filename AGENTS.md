@@ -136,7 +136,7 @@ See `.agent/workflows/` for detailed instructions.
 8. **Implement Now, Don't Defer**: When the user expresses interest in a feature or asks "what do you think about X?", **always offer to implement it now**. NEVER suggest "add to IMPLEMENTATION_TRACKER for later". The tracker is for the user's own backlog management, not for agent-suggested deferrals. If you think the feature is complex, break it into phases and offer to start with phase 1.
 9. **Sudo/Privileged Access**: The user has sudo access. If a task requires it (e.g., installing packages), **DO NOT FAIL**. Instead, pause and ask the user to run the specific command in a terminal code block.
    - Example: "I need `graphviz`. Please run: `sudo apt install graphviz`."
-
+10. **Validate Programmatic Bundle Changes**: Whenever you manually edit or directly hydrate model instances, schemas, or relationship JSON files on disk (rather than through formal UI/MCP channels), you **MUST** run the strict validator script (`npx ts-node packages/mcp-server/scripts/mcp-cli.ts validate_bundle --bundle <bundle-id> --json`) to verify node integrity before concluding your turn. Never leak orphaned entities or multiplicity failures into the frontend UI.
 
 ---
 

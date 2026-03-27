@@ -1,0 +1,7 @@
+id: STRUCT-audit-report
+kind: DataStructure
+title: "Conformance Audit Report"
+description: Summary of how an implementation behaved across a standardized conformance test run, classifying tests into `pass`, `fail`, `indeterminate`, or `drift`.
+tags: [data, output, conformance]
+formatType: json
+samplePayload: '{"summary": {"status": "pass", "vector_counts": {"total": 50, "passed": 50}}}'

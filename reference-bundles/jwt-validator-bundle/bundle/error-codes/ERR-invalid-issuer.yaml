@@ -1,0 +1,7 @@
+id: ERR-invalid-issuer
+kind: ErrorCode
+title: "Invalid Issuer"
+description: The token's `iss` claim does not match the `expected_issuer` defined in the validation policy.
+tags: [error, security]
+isRetryable: false
+httpStatusCode: 403

@@ -1,0 +1,7 @@
+id: CON-jwks-tls
+kind: SecurityConstraint
+title: "JWKS over TLS Only"
+description: JWKS endpoints must only be fetched over validated `https://` connections.
+tags: [security, network]
+severity: HIGH
+mitigatesRiskIds: []

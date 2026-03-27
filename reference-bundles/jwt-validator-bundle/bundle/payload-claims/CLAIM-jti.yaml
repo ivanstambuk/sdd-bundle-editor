@@ -1,0 +1,6 @@
+id: CLAIM-jti
+kind: PayloadClaim
+title: "jti (JWT ID) Claim"
+description: Provides a unique identifier for the JWT to prevent replay attacks.
+tags: [security, claim]
+dataType: string

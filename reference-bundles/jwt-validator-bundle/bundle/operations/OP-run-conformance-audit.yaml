@@ -1,0 +1,7 @@
+id: OP-run-conformance-audit
+kind: Operation
+title: "Execute Conformance Suite"
+description: Executes a set of validation and claim-extraction scenarios against a specific Validator implementation, returning a generated human-readable error or audit report.
+tags: [operation, test]
+systemComponent: ConformanceHarness
+producesDataStructureIds: [STRUCT-audit-report]

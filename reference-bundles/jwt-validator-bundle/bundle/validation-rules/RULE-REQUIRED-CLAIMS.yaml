@@ -1,0 +1,8 @@
+id: RULE-REQUIRED-CLAIMS
+kind: ValidationRule
+title: "Enforce Mandatory Claims"
+description: The validator MUST reject tokens that fail to include all claims defined as strictly REQUIRED by the active `validation_policy` profile.
+tags: [validation, policy]
+severity: ERROR
+throwsErrorCodeId: ERR-missing-claim
+implementsReferenceIds: [RFC-7519]

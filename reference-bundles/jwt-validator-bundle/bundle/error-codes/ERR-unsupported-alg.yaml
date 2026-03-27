@@ -1,0 +1,7 @@
+id: ERR-unsupported-alg
+kind: ErrorCode
+title: "Unsupported Algorithm"
+description: The token uses an algorithm that is either explicitly forbidden or not supported by the current profile.
+tags: [error, crypto]
+isRetryable: false
+httpStatusCode: 400

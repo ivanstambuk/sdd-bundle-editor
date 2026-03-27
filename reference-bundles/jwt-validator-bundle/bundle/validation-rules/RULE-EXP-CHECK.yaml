@@ -1,0 +1,9 @@
+id: RULE-EXP-CHECK
+kind: ValidationRule
+title: Enforce Expiration Time
+description: If the exp claim is present, its value must be greater than the current time (now_epoch_seconds) minus the configured leeway.
+rationale: Required by RFC 7519 Section 4.1.4.
+ruleType: TimeCheck
+throwsErrorCodeId: ERR-expired
+implementsReferenceIds:
+  - RFC-7519

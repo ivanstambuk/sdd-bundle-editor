@@ -1,0 +1,12 @@
+id: OP-validate-jwt
+kind: Operation
+title: Validate JWT
+description: The primary entrypoint for verifying a token against a defined token profile and dynamic runtime configurations.
+rationale: The core public API for any generated library.
+tags:
+  - api-surface
+  - core-logic
+producesDataStructureIds:
+  - STRUCT-validation-result
+governedByAdrIds:
+  - ADR-0001

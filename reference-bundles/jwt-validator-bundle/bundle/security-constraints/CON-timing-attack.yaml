@@ -1,0 +1,12 @@
+id: CON-timing-attack
+kind: SecurityConstraint
+title: Constant Time Signature Comparison
+description: When verifying cryptographic MACs (e.g., HS256), implementations MUST NOT use short-circuiting string comparisons. They MUST use constant-time operations.
+rationale: A timing side-channel attack could allow an attacker to forge a valid HMAC byte-by-byte.
+tags:
+  - side-channel
+  - mitigation
+  - crypto
+mitigation: Use `crypto.timingSafeEqual` in Node.js or `subtle::ConstantTimeEq` in Rust.
+governedByAdrIds:
+  - ADR-0001

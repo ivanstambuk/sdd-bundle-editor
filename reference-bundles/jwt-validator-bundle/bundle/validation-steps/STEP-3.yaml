@@ -1,0 +1,8 @@
+id: STEP-3
+kind: ValidationStep
+title: "Standard Checks"
+description: Perform all structural checks regarding expiration, audience, and future-dating.
+tags: [step, core]
+executionOrder: 3
+executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-AUD-MATCH]
+producesErrorCodeIds: [ERR-expired, ERR-premature, ERR-invalid-audience]

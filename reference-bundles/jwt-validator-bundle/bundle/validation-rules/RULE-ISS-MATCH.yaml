@@ -1,0 +1,8 @@
+id: RULE-ISS-MATCH
+kind: ValidationRule
+title: Validate Issuer Claim
+description: If the expected issuer is configured in the RuntimePolicy, the iss claim MUST exact-match it.
+rationale: Mitigates cross-tenant injection.
+ruleType: StringMatch
+governedByAdrIds:
+  - ADR-0001

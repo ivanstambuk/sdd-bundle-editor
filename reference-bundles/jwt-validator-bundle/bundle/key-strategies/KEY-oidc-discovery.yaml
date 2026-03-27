@@ -1,0 +1,6 @@
+id: KEY-oidc-discovery
+kind: KeyStrategy
+title: "OIDC Metadata Discovery"
+description: Highly dynamic discovery relying on `.well-known/openid-configuration` to find the relevant JWKS URI dynamically.
+tags: [keys, network, oidc]
+governedByAdrIds: []

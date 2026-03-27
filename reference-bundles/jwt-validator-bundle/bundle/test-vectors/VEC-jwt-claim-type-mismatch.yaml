@@ -1,0 +1,8 @@
+id: VEC-jwt-claim-type-mismatch
+kind: TestVector
+title: "Expiration Time is a String"
+description: Token features an `exp` claim, but its value is mistakenly encapsulated as a string ("2500000000") instead of an integer.
+tags: [test, structure]
+payloadJson: '{"exp": "2500000000"}'
+expectsErrorCodeIds: [ERR-type-mismatch]
+validatesRuleIds: [RULE-CLAIM-TYPE-CHECK]

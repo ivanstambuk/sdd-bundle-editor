@@ -1,0 +1,8 @@
+id: RULE-AUD-MATCH
+kind: ValidationRule
+title: "Validate Expected Audience"
+description: The validator MUST reject the token if the application's required audience identifier is not present in the `aud` claim array.
+tags: [validation, security]
+severity: ERROR
+throwsErrorCodeId: ERR-invalid-audience
+implementsReferenceIds: [RFC-7519]

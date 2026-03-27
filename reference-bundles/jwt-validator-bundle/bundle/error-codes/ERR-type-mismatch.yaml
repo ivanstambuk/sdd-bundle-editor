@@ -1,0 +1,7 @@
+id: ERR-type-mismatch
+kind: ErrorCode
+title: "Claim Type Mismatch"
+description: A claim in the payload was parsed as an expected type, but fails policy (e.g., `aud` expected as array but string found with strict parsing).
+tags: [error, validation]
+isRetryable: false
+httpStatusCode: 400

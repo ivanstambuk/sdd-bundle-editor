@@ -1,0 +1,7 @@
+id: CON-safe-diagnostics
+kind: SecurityConstraint
+title: "Safe Diagnostics Mode"
+description: Implementations MUST NOT return populated or unverified `claims_view` payloads on signature failure unless explicit diagnostic overrides (e.g., `allow_on_failure`) are deliberately passed in the configuration to prevent downstream trust manipulation.
+tags: [security, boundary]
+severity: CRITICAL
+mitigatesRiskIds: []

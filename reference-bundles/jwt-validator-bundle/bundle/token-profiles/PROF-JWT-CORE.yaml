@@ -1,0 +1,30 @@
+id: PROF-JWT-CORE
+kind: TokenProfile
+title: Basic JWT Validator Core
+description: The bare minimum required features to securely parse and validate a signed JSON Web Token.
+allowsAlgorithmIds:
+  - ALG-HS256
+  - ALG-RS256
+  - ALG-ES256
+  - ALG-PS256
+requiresHeaderIds:
+  - HDR-alg
+requiresClaimIds:
+  - CLAIM-exp
+optionalClaimIds:
+  - CLAIM-iss
+  - CLAIM-iat
+  - CLAIM-jti
+  - CLAIM-sub
+definesPipelineStepIds:
+  - STEP-1
+  - STEP-2
+usesFormatId: FMT-jws-compact
+usesKeyStrategyIds:
+  - KEY-static-jwks
+  - KEY-https-jwks
+  - KEY-oidc-discovery
+
+optionalHeaderIds:
+  - HDR-kid
+  - HDR-typ

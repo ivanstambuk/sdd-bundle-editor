@@ -1,0 +1,7 @@
+id: CLAIM-aud
+kind: PayloadClaim
+title: "aud (Audience) Claim"
+description: Identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim.
+tags: [security, claim]
+dataType: array
+constrainedByRuleIds: [RULE-AUD-MATCH]

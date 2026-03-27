@@ -1,0 +1,7 @@
+id: STRUCT-claims-view
+kind: DataStructure
+title: "Claims View Report"
+description: Decoded header and claims bundled together with strict field-level metadata indicating whether each property is `validated`, `partially_validated`, or `unvalidated`.
+tags: [data, output]
+formatType: json
+samplePayload: '{"claims": {"sub": {"value": "123", "validation_status": "validated"}}}'

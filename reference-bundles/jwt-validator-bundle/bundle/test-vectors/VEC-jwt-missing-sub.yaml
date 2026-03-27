@@ -1,0 +1,8 @@
+id: VEC-jwt-missing-sub
+kind: TestVector
+title: "Token Missing Mandatory Sub"
+description: Token completely lacks the `sub` claim, violating an explicit `validation_policy` requirement.
+tags: [test, structure]
+payloadJson: '{"iss": "https://secure.example.com", "exp": 2500000000}'
+expectsErrorCodeIds: [ERR-missing-claim]
+validatesRuleIds: [RULE-REQUIRED-CLAIMS]

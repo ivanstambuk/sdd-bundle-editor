@@ -1,0 +1,11 @@
+id: FMT-jws-compact
+kind: SerializationFormat
+title: JWS Compact Serialization
+description: Represents digitally signed or MACed content as a compact, URL-safe string. Consists of three Base64url-encoded parts separated by periods (`.`).
+rationale: Required by RFC 7515 for web-safe transmission of tokens.
+tags:
+  - encoding
+  - url-safe
+formatName: JWS Compact
+governedByAdrIds:
+  - ADR-0001

@@ -1,0 +1,6 @@
+id: RFC-7515
+kind: NormativeReference
+title: JSON Web Signature (JWS)
+description: Describes the compact URL-safe representation of digital signatures and MACs.
+tags: [security, standard]
+url: "https://datatracker.ietf.org/doc/html/rfc7515"

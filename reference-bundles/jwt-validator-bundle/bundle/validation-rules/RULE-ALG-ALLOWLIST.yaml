@@ -1,0 +1,10 @@
+id: RULE-ALG-ALLOWLIST
+kind: ValidationRule
+title: Enforce Algorithm Allowlist
+description: The "alg" header must match one of the algorithms explicitly allowed by the TokenProfile. Crucially, "none" MUST be rejected unless explicitly allowed.
+rationale: Prevents algorithm confusion attacks and bypasses via alg=none.
+ruleType: StringMatch
+implementsConstraintIds:
+  - CON-timing-attack
+implementsReferenceIds:
+  - RFC-7518

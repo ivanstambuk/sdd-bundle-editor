@@ -1,0 +1,7 @@
+id: STEP-2
+kind: ValidationStep
+title: Validate Claims
+description: Execute logical time-based and identity-based constraint tests against the unmarshaled payload claims.
+executionOrder: 2
+executesRuleIds:
+  - RULE-EXP-CHECK

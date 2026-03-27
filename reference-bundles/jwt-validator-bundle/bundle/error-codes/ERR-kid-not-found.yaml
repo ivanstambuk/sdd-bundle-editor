@@ -1,0 +1,7 @@
+id: ERR-kid-not-found
+kind: ErrorCode
+title: "Key ID Not Found"
+description: The specific `kid` from the token header does not exist in the configured trusted JWKS.
+tags: [error, crypto, indeterminate]
+isRetryable: true
+httpStatusCode: 401

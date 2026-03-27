@@ -23,12 +23,8 @@ type BundleTab = 'properties' | 'entityTypes' | 'relationships' | 'rawSchema';
  * Displayed when clicking on the bundle header in the navigator.
  * Uses a tabbed interface similar to EntityDetails for organized content.
  */
-export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
-    const [activeTab, setActiveTab] = useState<BundleTab>('properties');
-    const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
-    const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('list'); // Relationships view mode
-
-    if (!bundle) {
+export function BundleOverview(props: BundleOverviewProps) {
+    if (!props.bundle) {
         return (
             <div className={styles.container}>
                 <EmptyState
@@ -38,6 +34,13 @@ export function BundleOverview({ bundle, onSelectType }: BundleOverviewProps) {
             </div>
         );
     }
+    return <BundleOverviewContent bundle={props.bundle} onSelectType={props.onSelectType} />;
+}
+
+function BundleOverviewContent({ bundle, onSelectType }: { bundle: UiBundleSnapshot; onSelectType?: (entityType: string) => void }) {
+    const [activeTab, setActiveTab] = useState<BundleTab>('properties');
+    const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+    const [relViewMode, setRelViewMode] = useState<'list' | 'map'>('list'); // Relationships view mode
 
     const manifest = bundle.manifest;
     const bundleDef = bundle.bundleTypeDefinition;

@@ -1,0 +1,8 @@
+id: VEC-jwt-kid-missing
+kind: TestVector
+title: "Key Identifier Not Found"
+description: Providing a JWT with a kid that simply doesn't exist within the targeted Static JWKS block.
+tags: [test, crypto]
+payloadJson: '{"sub": "auth_test"}'
+expectsErrorCodeIds: [ERR-kid-not-found]
+validatesRuleIds: [RULE-KID-RESOLVE]

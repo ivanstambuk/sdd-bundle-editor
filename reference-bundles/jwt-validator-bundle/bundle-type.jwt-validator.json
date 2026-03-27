@@ -1,0 +1,595 @@
+{
+  "bundleType": "jwt-validator",
+  "version": "1.0.0",
+  "x-sdd-meta": {
+    "description": "A comprehensive metamodel for generating JSON Web Token parsers, validators, and conformance suites."
+  },
+  "entities": [
+    {
+      "entityType": "TokenProfile",
+      "idField": "id",
+      "schemaPath": "schemas/TokenProfile.schema.json",
+      "directory": "bundle/token-profiles",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#f7768e",
+      "order": 2
+    },
+    {
+      "entityType": "SerializationFormat",
+      "idField": "id",
+      "schemaPath": "schemas/SerializationFormat.schema.json",
+      "directory": "bundle/serialization-formats",
+      "filePattern": "{id}.yaml",
+      "category": "data",
+      "color": "#ff9e64",
+      "order": 1
+    },
+    {
+      "entityType": "HeaderField",
+      "idField": "id",
+      "schemaPath": "schemas/HeaderField.schema.json",
+      "directory": "bundle/header-fields",
+      "filePattern": "{id}.yaml",
+      "category": "data",
+      "color": "#e0af68",
+      "order": 2
+    },
+    {
+      "entityType": "PayloadClaim",
+      "idField": "id",
+      "schemaPath": "schemas/PayloadClaim.schema.json",
+      "directory": "bundle/payload-claims",
+      "filePattern": "{id}.yaml",
+      "category": "data",
+      "color": "#e0af68",
+      "order": 3
+    },
+    {
+      "entityType": "DataStructure",
+      "idField": "id",
+      "schemaPath": "schemas/DataStructure.schema.json",
+      "directory": "bundle/data-structures",
+      "filePattern": "{id}.yaml",
+      "category": "data",
+      "color": "#7dcfff",
+      "order": 4
+    },
+    {
+      "entityType": "ValidationRule",
+      "idField": "id",
+      "schemaPath": "schemas/ValidationRule.schema.json",
+      "directory": "bundle/validation-rules",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#73daca",
+      "order": 1
+    },
+    {
+      "entityType": "ValidationStep",
+      "idField": "id",
+      "schemaPath": "schemas/ValidationStep.schema.json",
+      "directory": "bundle/validation-steps",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#b4f9f8",
+      "order": 2
+    },
+    {
+      "entityType": "Operation",
+      "idField": "id",
+      "schemaPath": "schemas/Operation.schema.json",
+      "directory": "bundle/operations",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#2ac3de",
+      "order": 3
+    },
+    {
+      "entityType": "ErrorCode",
+      "idField": "id",
+      "schemaPath": "schemas/ErrorCode.schema.json",
+      "directory": "bundle/error-codes",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#ffc777",
+      "order": 4
+    },
+    {
+      "entityType": "CryptoAlgorithm",
+      "idField": "id",
+      "schemaPath": "schemas/CryptoAlgorithm.schema.json",
+      "directory": "bundle/crypto-algorithms",
+      "filePattern": "{id}.yaml",
+      "category": "crypto",
+      "color": "#c099ff",
+      "order": 1
+    },
+    {
+      "entityType": "KeyStrategy",
+      "idField": "id",
+      "schemaPath": "schemas/KeyStrategy.schema.json",
+      "directory": "bundle/key-strategies",
+      "filePattern": "{id}.yaml",
+      "category": "crypto",
+      "color": "#9d7cd8",
+      "order": 2
+    },
+    {
+      "entityType": "ConformanceClass",
+      "idField": "id",
+      "schemaPath": "schemas/ConformanceClass.schema.json",
+      "directory": "bundle/conformance-classes",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#9ece6a",
+      "order": 1
+    },
+    {
+      "entityType": "ConformanceSuite",
+      "idField": "id",
+      "schemaPath": "schemas/ConformanceSuite.schema.json",
+      "directory": "bundle/conformance-suites",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#73daca",
+      "order": 2
+    },
+    {
+      "entityType": "TestVector",
+      "idField": "id",
+      "schemaPath": "schemas/TestVector.schema.json",
+      "directory": "bundle/test-vectors",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#41a6b5",
+      "order": 3
+    },
+    {
+      "entityType": "MockKeySet",
+      "idField": "id",
+      "schemaPath": "schemas/MockKeySet.schema.json",
+      "directory": "bundle/mock-key-sets",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#1abc9c",
+      "order": 4
+    },
+    {
+      "entityType": "SecurityConstraint",
+      "idField": "id",
+      "schemaPath": "schemas/SecurityConstraint.schema.json",
+      "directory": "bundle/security-constraints",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#f7768e",
+      "order": 3
+    },
+    {
+      "entityType": "NormativeReference",
+      "idField": "id",
+      "schemaPath": "schemas/NormativeReference.schema.json",
+      "directory": "bundle/normative-references",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#ff9e64",
+      "order": 4
+    },
+    {
+      "entityType": "ADR",
+      "idField": "id",
+      "schemaPath": "schemas/ADR.schema.json",
+      "directory": "bundle/adrs",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#9ece6a",
+      "order": 1
+    },
+    {
+      "entityType": "Actor",
+      "idField": "id",
+      "schemaPath": "schemas/Actor.schema.json",
+      "directory": "bundle/actors",
+      "filePattern": "{id}.yaml",
+      "category": "governance",
+      "color": "#ff7c6a",
+      "order": 2
+    }
+  ],
+  "relations": [
+    {
+      "name": "ActorToADR_governedByAdrIds",
+      "fromEntity": "Actor",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRToActor_deciderActorIds",
+      "fromEntity": "ADR",
+      "toEntity": "Actor",
+      "fromField": "deciderActorIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ADRToADR_governedByAdrIds",
+      "fromEntity": "ADR",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToADR_governedByAdrIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToOperation_requiresOperationIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "Operation",
+      "fromField": "requiresOperationIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToActor_ownedByActorId",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "Actor",
+      "fromField": "ownedByActorId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ConformanceSuiteToADR_governedByAdrIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToConformanceClass_targetsClassIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "ConformanceClass",
+      "fromField": "targetsClassIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToTestVector_containsVectorIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "TestVector",
+      "fromField": "containsVectorIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "CryptoAlgorithmToADR_governedByAdrIds",
+      "fromEntity": "CryptoAlgorithm",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DataStructureToADR_governedByAdrIds",
+      "fromEntity": "DataStructure",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DataStructureToDataStructure_composesStructureIds",
+      "fromEntity": "DataStructure",
+      "toEntity": "DataStructure",
+      "fromField": "composesStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ErrorCodeToADR_governedByAdrIds",
+      "fromEntity": "ErrorCode",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "HeaderFieldToADR_governedByAdrIds",
+      "fromEntity": "HeaderField",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "HeaderFieldToValidationRule_constrainedByRuleIds",
+      "fromEntity": "HeaderField",
+      "toEntity": "ValidationRule",
+      "fromField": "constrainedByRuleIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "KeyStrategyToADR_governedByAdrIds",
+      "fromEntity": "KeyStrategy",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "MockKeySetToADR_governedByAdrIds",
+      "fromEntity": "MockKeySet",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "NormativeReferenceToADR_governedByAdrIds",
+      "fromEntity": "NormativeReference",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToADR_governedByAdrIds",
+      "fromEntity": "Operation",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToDataStructure_acceptsStructureIds",
+      "fromEntity": "Operation",
+      "toEntity": "DataStructure",
+      "fromField": "acceptsStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToDataStructure_producesDataStructureIds",
+      "fromEntity": "Operation",
+      "toEntity": "DataStructure",
+      "fromField": "producesDataStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PayloadClaimToADR_governedByAdrIds",
+      "fromEntity": "PayloadClaim",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PayloadClaimToDataStructure_definesNestedStructureId",
+      "fromEntity": "PayloadClaim",
+      "toEntity": "DataStructure",
+      "fromField": "definesNestedStructureId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "PayloadClaimToValidationRule_constrainedByRuleIds",
+      "fromEntity": "PayloadClaim",
+      "toEntity": "ValidationRule",
+      "fromField": "constrainedByRuleIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SecurityConstraintToADR_governedByAdrIds",
+      "fromEntity": "SecurityConstraint",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SerializationFormatToADR_governedByAdrIds",
+      "fromEntity": "SerializationFormat",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TestVectorToADR_governedByAdrIds",
+      "fromEntity": "TestVector",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TestVectorToErrorCode_expectsErrorCodeIds",
+      "fromEntity": "TestVector",
+      "toEntity": "ErrorCode",
+      "fromField": "expectsErrorCodeIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TestVectorToMockKeySet_usesMockKeyId",
+      "fromEntity": "TestVector",
+      "toEntity": "MockKeySet",
+      "fromField": "usesMockKeyId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToValidationRule_validatesRuleIds",
+      "fromEntity": "TestVector",
+      "toEntity": "ValidationRule",
+      "fromField": "validatesRuleIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToADR_governedByAdrIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToCryptoAlgorithm_allowsAlgorithmIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "CryptoAlgorithm",
+      "fromField": "allowsAlgorithmIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToDataStructure_acceptsPolicyId",
+      "fromEntity": "TokenProfile",
+      "toEntity": "DataStructure",
+      "fromField": "acceptsPolicyId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TokenProfileToDataStructure_returnsModelId",
+      "fromEntity": "TokenProfile",
+      "toEntity": "DataStructure",
+      "fromField": "returnsModelId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TokenProfileToHeaderField_optionalHeaderIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "HeaderField",
+      "fromField": "optionalHeaderIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToHeaderField_requiresHeaderIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "HeaderField",
+      "fromField": "requiresHeaderIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToKeyStrategy_usesKeyStrategyIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "KeyStrategy",
+      "fromField": "usesKeyStrategyIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToPayloadClaim_optionalClaimIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "PayloadClaim",
+      "fromField": "optionalClaimIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToPayloadClaim_requiresClaimIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "PayloadClaim",
+      "fromField": "requiresClaimIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToSerializationFormat_usesFormatId",
+      "fromEntity": "TokenProfile",
+      "toEntity": "SerializationFormat",
+      "fromField": "usesFormatId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TokenProfileToTokenProfile_inheritsProfileIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "TokenProfile",
+      "fromField": "inheritsProfileIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToValidationStep_definesPipelineStepIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "ValidationStep",
+      "fromField": "definesPipelineStepIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationRuleToADR_governedByAdrIds",
+      "fromEntity": "ValidationRule",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationRuleToDataStructure_bindsToContextPropertyId",
+      "fromEntity": "ValidationRule",
+      "toEntity": "DataStructure",
+      "fromField": "bindsToContextPropertyId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ValidationRuleToErrorCode_throwsErrorCodeId",
+      "fromEntity": "ValidationRule",
+      "toEntity": "ErrorCode",
+      "fromField": "throwsErrorCodeId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ValidationRuleToNormativeReference_implementsReferenceIds",
+      "fromEntity": "ValidationRule",
+      "toEntity": "NormativeReference",
+      "fromField": "implementsReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationRuleToSecurityConstraint_implementsConstraintIds",
+      "fromEntity": "ValidationRule",
+      "toEntity": "SecurityConstraint",
+      "fromField": "implementsConstraintIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationStepToADR_governedByAdrIds",
+      "fromEntity": "ValidationStep",
+      "toEntity": "ADR",
+      "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationStepToErrorCode_producesErrorCodeIds",
+      "fromEntity": "ValidationStep",
+      "toEntity": "ErrorCode",
+      "fromField": "producesErrorCodeIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValidationStepToValidationRule_executesRuleIds",
+      "fromEntity": "ValidationStep",
+      "toEntity": "ValidationRule",
+      "fromField": "executesRuleIds",
+      "multiplicity": "many"
+    }
+  ],
+  "categories": [
+    {
+      "name": "architecture",
+      "displayName": "Architecture & Design",
+      "icon": "🏛️",
+      "color": "#f7768e40",
+      "order": 1
+    },
+    {
+      "name": "data",
+      "displayName": "Data & Models",
+      "icon": "💾",
+      "color": "#e0af6840",
+      "order": 2
+    },
+    {
+      "name": "logic",
+      "displayName": "Validation Logic",
+      "icon": "⚙️",
+      "color": "#73daca40",
+      "order": 3
+    },
+    {
+      "name": "crypto",
+      "displayName": "Cryptography",
+      "icon": "🔐",
+      "color": "#c099ff40",
+      "order": 4
+    },
+    {
+      "name": "quality",
+      "displayName": "Quality & Conformance",
+      "icon": "✅",
+      "color": "#9ECE6A40",
+      "order": 5
+    },
+    {
+      "name": "governance",
+      "displayName": "Governance & Policy",
+      "icon": "⚖️",
+      "color": "#ff7c6a40",
+      "order": 6
+    }
+  ]
+}

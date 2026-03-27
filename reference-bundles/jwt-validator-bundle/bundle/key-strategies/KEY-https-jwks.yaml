@@ -1,0 +1,6 @@
+id: KEY-https-jwks
+kind: KeyStrategy
+title: "HTTPS JWKS Endpoint"
+description: Dynamic resolution of Key Material through a standard HTTP `.well-known/jwks.json` endpoint, with inherent caching mechanics.
+tags: [keys, network]
+governedByAdrIds: []

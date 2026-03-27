@@ -1,0 +1,12 @@
+id: ACT-sec-team
+kind: Actor
+title: Security Architecture Team
+description: The core security maintainers responsible for cryptographic auditing and compliance of the validator logic.
+rationale: Governs all security constraints and conformance validation suites.
+tags:
+  - governance
+  - owner
+role: SecurityAuditor
+email: security-leads@specstudio.com
+governedByAdrIds:
+  - ADR-0001

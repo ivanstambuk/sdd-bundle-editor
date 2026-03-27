@@ -1,0 +1,7 @@
+id: ERR-invalid-audience
+kind: ErrorCode
+title: "Invalid Audience"
+description: The validator's identity was not found in the token's `aud` array.
+tags: [error, security]
+isRetryable: false
+httpStatusCode: 403

@@ -1,0 +1,7 @@
+id: ERR-kid-ambiguous
+kind: ErrorCode
+title: "Ambiguous Key ID"
+description: The specific `kid` from the token header maps to multiple distinct keys in the configured trusted JWKS.
+tags: [error, crypto, indeterminate]
+isRetryable: false
+httpStatusCode: 500

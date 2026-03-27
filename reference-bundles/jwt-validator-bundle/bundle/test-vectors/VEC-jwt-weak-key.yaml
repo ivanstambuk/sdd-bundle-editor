@@ -1,0 +1,8 @@
+id: VEC-jwt-weak-key
+kind: TestVector
+title: "Weak RSA 1024-bit Key"
+description: Token signed accurately, but signed using an impermissibly small 1024-bit RSA key.
+tags: [test, crypto]
+payloadJson: '{"sub": "auth"}'
+expectsErrorCodeIds: [ERR-unsupported-alg]
+validatesRuleIds: []

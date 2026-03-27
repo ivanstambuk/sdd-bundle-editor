@@ -1,0 +1,6 @@
+id: RFC-7518
+kind: NormativeReference
+title: JSON Web Algorithms (JWA)
+description: Registers cryptographic algorithms and identifiers to be used with JWTs.
+tags: [crypto, standard]
+url: "https://datatracker.ietf.org/doc/html/rfc7518"

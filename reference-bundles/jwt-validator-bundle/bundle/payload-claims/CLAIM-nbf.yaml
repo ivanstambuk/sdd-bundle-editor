@@ -1,0 +1,7 @@
+id: CLAIM-nbf
+kind: PayloadClaim
+title: "nbf (Not Before) Claim"
+description: Identifies the time before which the JWT MUST NOT be accepted for processing.
+tags: [time, claim]
+dataType: number
+constrainedByRuleIds: [RULE-NBF-CHECK]

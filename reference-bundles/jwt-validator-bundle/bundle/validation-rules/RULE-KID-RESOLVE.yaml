@@ -1,0 +1,7 @@
+id: RULE-KID-RESOLVE
+kind: ValidationRule
+title: "Resolve Public Key via KID"
+description: The validator MUST extract the `kid` from the header and resolve it to exactly one verified public key in the trusted JWKS.
+tags: [validation, crypto]
+severity: FATAL
+implementsReferenceIds: [RFC-7515]

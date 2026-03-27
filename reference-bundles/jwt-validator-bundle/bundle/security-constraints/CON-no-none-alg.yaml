@@ -1,0 +1,9 @@
+id: CON-no-none-alg
+kind: SecurityConstraint
+title: "Strictly Forbid 'none' Algorithm"
+description: >
+  Under absolutely no circumstances should the validator accept the `none` algorithm.
+  This prevents a trivial bypass where attackers strip signatures.
+tags: [security, core]
+severity: CRITICAL
+mitigatesRiskIds: []

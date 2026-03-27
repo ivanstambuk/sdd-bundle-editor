@@ -1,0 +1,8 @@
+id: VEC-jwt-malformed
+kind: TestVector
+title: "Malformed JWS Input"
+description: Providing an invalid JWT string holding merely two dots or illegal base64 characters.
+tags: [test, syntax]
+payloadJson: '{"header": null, "payload": null}'
+expectsErrorCodeIds: [ERR-malformed]
+validatesRuleIds: [RULE-SYNTAX-CHECK]

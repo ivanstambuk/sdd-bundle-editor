@@ -40,14 +40,8 @@ interface EntityDetailsProps {
 
 type EntityTab = 'properties' | 'graph' | 'yaml';
 
-export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, diagnostics = [], entityConfigs }: EntityDetailsProps) {
-  // Active tab state
-  const [activeTab, setActiveTab] = useState<EntityTab>('properties');
-  const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
-  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
-  const [depViewMode, setDepViewMode] = useState<'list' | 'map'>('list'); // Dependencies view mode
-
-  if (!bundle || !entity) {
+export function EntityDetails(props: EntityDetailsProps) {
+  if (!props.bundle || !props.entity) {
     return (
       <div className={styles.container}>
         <div className={styles.placeholder}>
@@ -58,6 +52,23 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
       </div>
     );
   }
+  
+  return <EntityDetailsContent 
+    bundle={props.bundle} 
+    entity={props.entity} 
+    readOnly={props.readOnly} 
+    onNavigate={props.onNavigate} 
+    diagnostics={props.diagnostics} 
+    entityConfigs={props.entityConfigs} 
+  />;
+}
+
+function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, diagnostics = [], entityConfigs }: { bundle: UiBundleSnapshot, entity: UiEntity, readOnly?: boolean, onNavigate?: (entityType: string, entityId: string) => void, diagnostics?: UiDiagnostic[], entityConfigs?: UiEntityTypeConfig[] }) {
+  // Active tab state
+  const [activeTab, setActiveTab] = useState<EntityTab>('properties');
+  const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+  const [depViewMode, setDepViewMode] = useState<'list' | 'map'>('list'); // Dependencies view mode
 
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
 
@@ -687,12 +698,99 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
   };
 
 
+  const SddInternalLinkWidget = (props: any) => {
+    const { value } = props;
+    if (!value) return null;
+
+    let targetType = '';
+    let targetTitle = '';
+    
+    if (bundle?.entities) {
+      for (const [type, entities] of Object.entries(bundle.entities)) {
+         const found = entities.find(e => e.id === value);
+         if (found) {
+           targetType = type;
+           targetTitle = (found.data as any)?.title || '';
+           break;
+         }
+      }
+    }
+
+    if (targetType && onNavigate) {
+      const tooltip = targetTitle ? `Navigate to ${targetType}: ${targetTitle}` : `Navigate to ${targetType}`;
+      return (
+         <button 
+           type="button" 
+           onClick={(e) => { 
+               e.preventDefault(); 
+               onNavigate(targetType, value); 
+           }}
+           title={tooltip}
+           style={{
+               background: 'none',
+               border: 'none',
+               color: 'var(--color-accent, #7aa2f7)',
+               textDecoration: 'underline',
+               textUnderlineOffset: '2px',
+               cursor: 'pointer',
+               padding: 0,
+               font: 'inherit',
+               textAlign: 'left',
+               display: 'inline-block'
+           }}
+         >
+           {value}
+         </button>
+      );
+    }
+    
+    return <span>{value}</span>;
+  };
+
+  const UrlWidget = (props: any) => {
+    const { value } = props;
+    if (!value) return null;
+    
+    let isExternalUrl = false;
+    try { 
+        if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+            new URL(value); 
+            isExternalUrl = true; 
+        }
+    } catch {}
+
+    if (isExternalUrl) {
+      return (
+         <a 
+           href={value}
+           target="_blank"
+           rel="noopener noreferrer"
+           style={{
+               color: 'var(--color-accent, #7aa2f7)',
+               textDecoration: 'underline',
+               textUnderlineOffset: '2px',
+               display: 'inline-block',
+               padding: '4px 0',
+               wordBreak: 'break-all'
+           }}
+           title={`Open ${value} in a new tab`}
+         >
+           {value} <span style={{fontSize: '0.85em', opacity: 0.7}}>↗</span>
+         </a>
+      );
+    }
+    
+    return <span>{value}</span>;
+  };
+
   const widgets: Record<string, any> = {
     hidden: HiddenWidget,
     CheckboxWidget: CustomCheckboxWidget,
     SelectWidget: CustomSelectWidget,
     MarkdownWidget: MarkdownWidget,
     DateWidget: DateWidget,
+    SddInternalLinkWidget: SddInternalLinkWidget,
+    UrlWidget: UrlWidget,
   };
 
   const fields: Record<string, any> = {
@@ -730,19 +828,19 @@ export function EntityDetails({ bundle, entity, readOnly = true, onNavigate, dia
     // Handle object properties
     if (propSchema.properties && typeof propSchema.properties === 'object') {
       for (const [propName, ps] of Object.entries(propSchema.properties as Record<string, any>)) {
-        // Hide single reference fields - they're shown in "Uses" section
-        if (ps && ps.type === 'string' && ps.format === 'sdd-ref') {
-          targetUiSchema[propName] = { 'ui:widget': 'hidden' };
-        } else if (
-          ps &&
-          ps.type === 'array' &&
-          ps.items &&
-          ps.items.type === 'string' &&
-          ps.items.format === 'sdd-ref'
-        ) {
-          targetUiSchema[propName] = { 'ui:field': 'hiddenField' };
+        // Render reference fields as internal links instead of hiding them
+        const isRef = ps && ps.type === 'string' && (ps.format === 'sdd-ref' || ps['x-sdd-refTargets']);
+        const isRefArr = ps && ps.type === 'array' && ps.items && ps.items.type === 'string' && (ps.items.format === 'sdd-ref' || ps.items['x-sdd-refTargets'] || ps['x-sdd-refTargets']);
+
+        if (isRef) {
+          targetUiSchema[propName] = { ...targetUiSchema[propName], 'ui:widget': 'SddInternalLinkWidget' };
+        } else if (isRefArr) {
+          targetUiSchema[propName] = targetUiSchema[propName] || {};
+          targetUiSchema[propName].items = { ...targetUiSchema[propName].items, 'ui:widget': 'SddInternalLinkWidget' };
+        } else if (ps && ps.type === 'string' && ps.format === 'uri') {
+          targetUiSchema[propName] = { ...targetUiSchema[propName], 'ui:widget': 'UrlWidget' };
         } else if (ps && ps['x-sdd-widget']) {
-          targetUiSchema[propName] = { 'ui:widget': ps['x-sdd-widget'] };
+          targetUiSchema[propName] = { ...targetUiSchema[propName], 'ui:widget': ps['x-sdd-widget'] };
         }
 
         // Pass layout hints to ui:options so templates can access them even if RJSF strips schema extensions

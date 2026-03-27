@@ -1,0 +1,7 @@
+bundles:
+  - id: jwt-validator-bundle
+    path: ./reference-bundles/jwt-validator-bundle
+    description: "JWT Validator Specification"
+  - id: sdd-sample-bundle
+    path: ./reference-bundles/sdd-sample-bundle
+    description: "SDD Sample Details"

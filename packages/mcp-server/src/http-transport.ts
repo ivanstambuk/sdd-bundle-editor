@@ -553,6 +553,24 @@ skinparam actor {
     app.get(basePath, mcpGetHandler);
     app.delete(basePath, mcpDeleteHandler);
 
+    // Serve static frontend files if they exist (for production deployment)
+    const frontendPath = require("node:path").resolve(__dirname, '../../../apps/web/dist');
+    if (require("node:fs").existsSync(frontendPath)) {
+        app.use(express.static(frontendPath));
+        
+        // Fallback for single-page app routing
+        app.use((req: Request, res: Response, next: NextFunction) => {
+            if (req.method === 'GET' && req.accepts('html')) {
+                res.sendFile(require("node:path").join(frontendPath, 'index.html'));
+            } else {
+                next();
+            }
+        });
+        console.error(`[HTTP] Configured to serve static frontend from: ${frontendPath}`);
+    } else {
+        console.error(`[HTTP] Static frontend not found at ${frontendPath}, running as API only.`);
+    }
+
     /**
      * Start the HTTP server
      */

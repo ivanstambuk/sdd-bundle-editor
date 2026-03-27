@@ -25,7 +25,7 @@ The following major milestones have been completed:
 | Infra | External bundle repository migration |
 | Infra (2026-02-27) | Port remapping (5174/3003), Chrome CDP systemd service, PlantUML headless fix, crypto.subtle POST fallback, canonical restart-chrome.sh propagated to all sister projects |
 | UI (2026-02-27) | Boolean fields rendered as colored pill chips (`x-sdd-displayHint: booleanChips`); enum fields replaced with pill selector. Entity Types tab initial card grid implementation. |
-| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). |
+| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). Fixed Cloud Run Dockerfile `plantuml.jar` access by explicitly curling it during build. |
 | Metamodels (2026-03-27) | Fully hydrated the `jwt-validator-bundle`, successfully enforcing graph integrity and rigorous schema validation for cryptographic entities, pipelines, and test vectors. |
 
 **Current state**: Full read-only UI with MCP-based AI integration. All modifications via `apply_changes` MCP tool.

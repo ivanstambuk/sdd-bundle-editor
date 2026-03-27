@@ -24,8 +24,8 @@ The following major milestones have been completed:
 | 8.9 | Conformance testing (Profile rules, audit templates) |
 | Infra | External bundle repository migration |
 | Infra (2026-02-27) | Port remapping (5174/3003), Chrome CDP systemd service, PlantUML headless fix, crypto.subtle POST fallback, canonical restart-chrome.sh propagated to all sister projects |
-| UI (2026-02-27) | Boolean fields rendered as colored pill chips (`x-sdd-displayHint: booleanChips`); enum fields replaced with pill selector (strip ≤5, full-width grid 6–12, dropdown >12); Entity Types tab replaced with card grid (description + key field chips, click-to-navigate) |
-| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps (`x-sdd-layout: timeline`) via recursive RJSF array templates. Addressed deeply entrenched schema cache invalidation via RJSF useMemo decoupling and MCP server SSE listener race-condition decoupling. |
+| UI (2026-02-27) | Boolean fields rendered as colored pill chips (`x-sdd-displayHint: booleanChips`); enum fields replaced with pill selector. Entity Types tab initial card grid implementation. |
+| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). |
 | Metamodels (2026-03-27) | Fully hydrated the `jwt-validator-bundle`, successfully enforcing graph integrity and rigorous schema validation for cryptographic entities, pipelines, and test vectors. |
 
 **Current state**: Full read-only UI with MCP-based AI integration. All modifications via `apply_changes` MCP tool.

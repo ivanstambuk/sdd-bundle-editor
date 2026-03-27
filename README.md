@@ -49,13 +49,24 @@ AI assistants do not just answer simple questions—they process your architectu
 
 ## Quick Start
 
-### Prerequisites
+### Running with Docker (Recommended)
+
+You can build and run Spec Studio locally using Docker. This creates a self-contained environment with both the API and Web UI running on port 8080.
+
+```bash
+# Build the container
+docker build -t spec-studio .
+
+# Run the container
+docker run -p 8080:8080 spec-studio
+```
+Then navigate to `http://localhost:8080` in your browser.
+
+### Manual Setup (For Development)
 
 - Node.js 18+.
 - `pnpm` (recommended; see `package.json#packageManager`).
 - Git (required for AI flows, which enforce Git discipline).
-
-### Install dependencies
 
 ```bash
 pnpm install

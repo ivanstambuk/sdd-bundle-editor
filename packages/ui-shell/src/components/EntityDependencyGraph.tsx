@@ -302,6 +302,7 @@ export function EntityDependencyGraph({
                     type: 'labeled',
                 }}
                 proOptions={{ hideAttribution: true }}
+                style={{ width: '100%', height: '100%' }}
             >
                 <Background
                     variant={BackgroundVariant.Dots}

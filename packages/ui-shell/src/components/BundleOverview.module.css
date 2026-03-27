@@ -46,10 +46,15 @@
 
 .body {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
 }
 
 .tabContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     padding: var(--spacing-lg);
 }
 
@@ -203,6 +208,7 @@
 
 /* Dependencies */
 .dependenciesContainer {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);

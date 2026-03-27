@@ -304,7 +304,7 @@ export function RelationshipGraph({
                         type: 'labeled',
                     }}
                     proOptions={{ hideAttribution: true }}
-                    style={{ height: '400px', width: '100%' }}
+                    style={{ height: '100%', width: '100%' }}
                 >
                     <Background
                         variant={BackgroundVariant.Dots}

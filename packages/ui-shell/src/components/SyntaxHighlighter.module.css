@@ -12,8 +12,6 @@
     line-height: 1.5;
     color: var(--color-text-primary);
     white-space: pre;
-    max-height: 400px;
-    overflow-y: auto;
 }
 
 .codeBlock code {

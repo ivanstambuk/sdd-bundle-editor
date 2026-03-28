@@ -287,6 +287,11 @@ export function AppShell() {
               bundle={bundle}
               entityType={selectedEntityType}
               onNavigate={handleNavigate}
+              onSelectType={(entityType) => {
+                setSelectedEntityType(entityType);
+                selectEntity(null);
+                setViewMode('entityType');
+              }}
             />
           ) : (
             <EntityDetails

@@ -6,15 +6,18 @@ import { getEntityDisplayName, getEntityDisplayNamePlural, getEntityIcon } from 
 import { HeaderMetadata } from './HeaderMetadata';
 import { ReferenceList } from './ReferenceList';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
+import { EntityDependencyGraph } from './EntityDependencyGraph';
+import { extractRelationsFromSchemas } from '../utils/schemaUtils';
 import styles from './EntityTypeDetails.module.css';
 
 interface EntityTypeDetailsProps {
     bundle: UiBundleSnapshot | null;
     entityType: string | null;
     onNavigate?: (entityType: string, entityId: string) => void;
+    onSelectType?: (entityType: string) => void;
 }
 
-type EntityTypeTab = 'entities' | 'overview' | 'properties' | 'json';
+type EntityTypeTab = 'entities' | 'overview' | 'properties' | 'relationships' | 'json';
 
 /**
  * EntityTypeDetails - Shows the schema for an entity type (not an individual entity).
@@ -32,12 +35,13 @@ export function EntityTypeDetails(props: EntityTypeDetailsProps) {
             </div>
         );
     }
-    return <EntityTypeDetailsContent bundle={props.bundle} entityType={props.entityType} onNavigate={props.onNavigate} />;
+    return <EntityTypeDetailsContent bundle={props.bundle} entityType={props.entityType} onNavigate={props.onNavigate} onSelectType={props.onSelectType} />;
 }
 
-function EntityTypeDetailsContent({ bundle, entityType, onNavigate }: { bundle: UiBundleSnapshot; entityType: string; onNavigate?: (entityType: string, entityId: string) => void }) {
+function EntityTypeDetailsContent({ bundle, entityType, onNavigate, onSelectType }: { bundle: UiBundleSnapshot; entityType: string; onNavigate?: (entityType: string, entityId: string) => void; onSelectType?: (entityType: string) => void }) {
     const [activeTab, setActiveTab] = useState<EntityTypeTab>('entities');
     const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+    const [graphDepth, setGraphDepth] = useState<number>(1);
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
     const schema = bundle.schemas?.[entityType] as Record<string, unknown> | undefined;
@@ -264,6 +268,89 @@ function EntityTypeDetailsContent({ bundle, entityType, onNavigate }: { bundle: 
         );
     };
 
+    const typeEdges = useMemo(() => {
+        const relations = extractRelationsFromSchemas(bundle.schemas);
+        return relations.map(r => ({
+            fromEntityType: r.fromEntity,
+            fromId: r.fromEntity,
+            fromField: r.fromField,
+            toEntityType: r.toEntity,
+            toId: r.toEntity
+        }));
+    }, [bundle.schemas]);
+
+    const getFieldDisplay = (typeFilter: string, fieldFilter: string) => {
+        const relations = extractRelationsFromSchemas(bundle.schemas);
+        const rel = relations.find(r => r.fromEntity === typeFilter && r.fromField === fieldFilter);
+        return rel?.displayName || fieldFilter;
+    };
+
+    const renderRelationshipsTab = () => {
+        return (
+            <div className={styles.tabContent} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', background: 'var(--color-surface-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                    <div style={{ flex: 1 }}>
+                        <h3 style={{ margin: 0, fontSize: '14px', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>🗺️</span> Type Relationships Map
+                        </h3>
+                    </div>
+                    <div style={{ display: 'flex', background: 'var(--color-surface-secondary)', borderRadius: '6px', padding: '4px', border: '1px solid var(--color-border-subtle)' }}>
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${graphDepth === 1 ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setGraphDepth(1)}
+                            title="Only direct schema connections"
+                        >
+                            1st Degree
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${graphDepth === 2 ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setGraphDepth(2)}
+                            title="Connections 2 schema jumps away"
+                        >
+                            2nd Degree
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${graphDepth === 3 ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setGraphDepth(3)}
+                            title="Connections 3 schema jumps away"
+                        >
+                            3rd Degree
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.viewToggleBtn} ${graphDepth === 99 ? styles.viewToggleBtnActive : ''}`}
+                            onClick={() => setGraphDepth(99)}
+                            title="Show entire connected architectural schema"
+                        >
+                            Full Graph
+                        </button>
+                    </div>
+                </div>
+                <div style={{ flex: 1, minHeight: '600px', border: '1px solid var(--color-border)', borderRadius: '8px', overflow: 'hidden' }}>
+                    <EntityDependencyGraph
+                        key={`${entityType}:depth-${graphDepth}`}
+                        entityType={entityType}
+                        entityId={entityType}
+                        allEdges={typeEdges as any}
+                        depth={graphDepth}
+                        entityConfigs={bundle.bundleTypeDefinition?.entities || []}
+                        onNavigate={(navType, navId) => {
+                            if (navType === navId && onSelectType) {
+                                onSelectType(navType);
+                            } else if (onNavigate) {
+                                onNavigate(navType, navId);
+                            }
+                        }}
+                        getFieldDisplay={getFieldDisplay}
+                    />
+                </div>
+            </div>
+        );
+    };
+
     // Memoize JSON content for copy and display
     const jsonContent = useMemo(() => JSON.stringify(schema, null, 2), [schema]);
 
@@ -322,6 +409,14 @@ function EntityTypeDetailsContent({ bundle, entityType, onNavigate }: { bundle: 
                 </button>
                 <button
                     type="button"
+                    className={`${styles.tab} ${activeTab === 'relationships' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('relationships')}
+                    data-testid="tab-relationships"
+                >
+                    🔗 Relationships
+                </button>
+                <button
+                    type="button"
                     className={`${styles.tab} ${activeTab === 'json' ? styles.tabActive : ''}`}
                     onClick={() => setActiveTab('json')}
                     data-testid="tab-json"
@@ -334,6 +429,7 @@ function EntityTypeDetailsContent({ bundle, entityType, onNavigate }: { bundle: 
                 {activeTab === 'entities' && renderEntitiesTab()}
                 {activeTab === 'overview' && renderOverviewTab()}
                 {activeTab === 'properties' && renderPropertiesTab()}
+                {activeTab === 'relationships' && renderRelationshipsTab()}
                 {activeTab === 'json' && renderJsonTab()}
             </div>
         </div>

@@ -28,6 +28,7 @@ The following major milestones have been completed:
 | UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). Fixed Cloud Run Dockerfile `plantuml.jar` access by explicitly curling it during build. |
 | Metamodels (2026-03-27) | Fully hydrated the `jwt-validator-bundle`, successfully enforcing graph integrity and rigorous schema validation for cryptographic entities, pipelines, and test vectors. |
 | UI/Core (2026-03-28) | Added depth-of-connection visualization to `EntityDependencyGraph`. Implemented dynamically configurable BFS bounds (1st/2nd/3rd/Full) alongside terminology alignment and edge deduplication logic. |
+| UI/Core (2026-03-28) | **Type Relationships Map**: Embedded the N-degree relationship graph into the generic `EntityTypeDetails` summary component, intelligently parsing theoretical schema connections (`extractRelationsFromSchemas`) to produce lateral diagram views of structural blueprint domains. |
 
 **Current state**: Full read-only UI with MCP-based AI integration. All modifications via `apply_changes` MCP tool.
 

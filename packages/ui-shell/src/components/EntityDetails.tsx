@@ -69,6 +69,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
   const [activeSubTab, setActiveSubTab] = useState<string>('overview'); // Sub-tab within Details
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
   const [depViewMode, setDepViewMode] = useState<'list' | 'map'>('list'); // Dependencies view mode
+  const [graphDepth, setGraphDepth] = useState<number>(1); // Relationship map depth
 
   const schema = bundle.schemas?.[entity.entityType] as Record<string, unknown> | undefined;
 
@@ -1113,15 +1114,14 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
     );
 
     // Render Map View (React Flow graph)
-    // Key forces remount when entity changes - React Flow's internal hooks
-    // only initialize from props on mount, so we need to reset on entity change
+    // Key forces remount when entity/depth changes so React Flow's layout engine has a clean slate
     const renderMapView = () => (
       <EntityDependencyGraph
-        key={`${entity.entityType}:${entity.id}`}
+        key={`${entity.entityType}:${entity.id}:depth-${graphDepth}`}
         entityType={entity.entityType}
         entityId={entity.id}
-        outgoing={outgoing}
-        incoming={incoming}
+        allEdges={bundle.refGraph.edges}
+        depth={graphDepth}
         entityConfigs={entityConfigs || []}
         onNavigate={handleReferenceClick}
         getFieldDisplay={getFieldDisplay}
@@ -1150,7 +1150,47 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
               🗺️ Map
             </button>
           </div>
-          <span className={styles.dependenciesStats}>
+          
+          {depViewMode === 'map' && (
+            <div className={styles.viewToggle} style={{ marginLeft: '12px' }}>
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${graphDepth === 1 ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setGraphDepth(1)}
+                title="Only immediate connections"
+              >
+                1st Degree
+              </button>
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${graphDepth === 2 ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setGraphDepth(2)}
+                title="Connections 2 jumps away"
+              >
+                2nd Degree
+              </button>
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${graphDepth === 3 ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setGraphDepth(3)}
+                title="Connections 3 jumps away"
+              >
+                3rd Degree
+              </button>
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${graphDepth === 99 ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => setGraphDepth(99)}
+                title="Show entire completely connected graph"
+              >
+                Full Graph
+              </button>
+            </div>
+          )}
+          
+          <div style={{ flex: 1 }} />
+          
+          <span className={styles.dependenciesStats} style={{ marginLeft: 'auto' }}>
             {outgoing.length} outgoing • {incoming.length} incoming
           </span>
         </div>
@@ -1286,7 +1326,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
           onClick={() => setActiveTab('graph')}
           data-testid="tab-graph"
         >
-          🔗 Dependencies
+          🔗 Relationships
         </button>
         <button
           type="button"

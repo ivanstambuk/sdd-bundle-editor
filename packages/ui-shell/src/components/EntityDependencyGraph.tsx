@@ -40,10 +40,10 @@ interface EntityDependencyGraphProps {
     entityType: string;
     /** Current entity ID */
     entityId: string;
-    /** Outgoing references (this entity uses these) */
-    outgoing: EntityEdge[];
-    /** Incoming references (these entities use this one) */
-    incoming: EntityEdge[];
+    /** All references in the bundle */
+    allEdges: EntityEdge[];
+    /** Depth of BFS traversal (1, 2, or 3) */
+    depth: number;
     /** Entity type configurations for colors */
     entityConfigs: BundleTypeEntityConfig[];
     /** Callback when an entity node is clicked */
@@ -100,8 +100,8 @@ function getLayoutedElements(
 export function EntityDependencyGraph({
     entityType,
     entityId,
-    outgoing,
-    incoming,
+    allEdges,
+    depth,
     entityConfigs,
     onNavigate,
     getFieldDisplay,
@@ -110,17 +110,55 @@ export function EntityDependencyGraph({
     const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(() => {
         const nodes: Node[] = [];
         const edges: Edge<LabeledEdgeData>[] = [];
-        const addedNodes = new Set<string>();
 
         // Helper to create node ID
         const makeNodeId = (type: string, id: string) => `${type}:${id}`;
 
+        // Initialize BFS
+        const maxDepth = depth || 1;
+        let currentLevel = new Set<string>();
+        const rootId = makeNodeId(entityType, entityId);
+        currentLevel.add(rootId);
+
+        const visitedNodes = new Set<string>();
+        visitedNodes.add(rootId);
+
+        const collectedEdges = new Set<EntityEdge>();
+
+        // Traverse BFS
+        for (let currentDepth = 0; currentDepth < maxDepth; currentDepth++) {
+            const nextLevel = new Set<string>();
+
+            for (const nodeId of currentLevel) {
+                // Find all edges where this nodeId is source or target
+                for (const edge of allEdges) {
+                    const sourceId = makeNodeId(edge.fromEntityType, edge.fromId);
+                    const targetId = makeNodeId(edge.toEntityType, edge.toId);
+
+                    if (sourceId === nodeId) {
+                        collectedEdges.add(edge);
+                        if (!visitedNodes.has(targetId)) {
+                            visitedNodes.add(targetId);
+                            nextLevel.add(targetId);
+                        }
+                    } else if (targetId === nodeId) {
+                        collectedEdges.add(edge);
+                        if (!visitedNodes.has(sourceId)) {
+                            visitedNodes.add(sourceId);
+                            nextLevel.add(sourceId);
+                        }
+                    }
+                }
+            }
+            currentLevel = nextLevel;
+            if (currentLevel.size === 0) break;
+        }
+
         // Add center node (current entity)
-        const centerNodeId = makeNodeId(entityType, entityId);
         const centerColor = getEntityColorFromConfigs(entityType, entityConfigs);
 
         nodes.push({
-            id: centerNodeId,
+            id: rootId,
             type: 'default',
             data: {
                 label: entityId,
@@ -142,115 +180,84 @@ export function EntityDependencyGraph({
                 textAlign: 'center' as const,
             },
         });
-        addedNodes.add(centerNodeId);
 
-        // Add outgoing nodes (this entity uses these)
-        outgoing.forEach((edge, index) => {
-            const nodeId = makeNodeId(edge.toEntityType, edge.toId);
+        // Add all other nodes discovered in BFS
+        for (const nodeId of visitedNodes) {
+           if (nodeId === rootId) continue;
+           
+           // Extract type and id from composite nodeId
+           const splitIndex = nodeId.indexOf(':');
+           const nodeType = nodeId.slice(0, splitIndex);
+           const nodeLabelId = nodeId.slice(splitIndex + 1);
+           
+           const color = getEntityColorFromConfigs(nodeType, entityConfigs);
+           nodes.push({
+               id: nodeId,
+               type: 'default',
+               data: {
+                   label: nodeLabelId,
+                   entityType: nodeType,
+               },
+               position: { x: 0, y: 0 },
+               style: {
+                   background: color,
+                   color: '#1a1b26',
+                   border: 'none',
+                   borderRadius: '8px',
+                   padding: '10px 16px',
+                   fontWeight: 600,
+                   fontSize: '12px',
+                   boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                   cursor: 'pointer',
+                   minWidth: '120px',
+                   textAlign: 'center' as const,
+               },
+           });
+        }
 
-            if (!addedNodes.has(nodeId)) {
-                const color = getEntityColorFromConfigs(edge.toEntityType, entityConfigs);
-                nodes.push({
-                    id: nodeId,
-                    type: 'default',
-                    data: {
-                        label: edge.toId,
-                        entityType: edge.toEntityType,
-                    },
-                    position: { x: 0, y: 0 },
-                    style: {
-                        background: color,
-                        color: '#1a1b26',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '10px 16px',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                        cursor: 'pointer',
-                        minWidth: '120px',
-                        textAlign: 'center' as const,
-                    },
-                });
-                addedNodes.add(nodeId);
+        // Add all collected edges
+        let edgeIndex = 0;
+        for (const edge of collectedEdges) {
+            const sourceId = makeNodeId(edge.fromEntityType, edge.fromId);
+            const targetId = makeNodeId(edge.toEntityType, edge.toId);
+            const label = getFieldDisplay(edge.fromEntityType, edge.fromField);
+
+            // Determine styling based on whether it connects directly to root
+            let edgeColor = 'var(--color-border-subtle, #3b4261)';
+            let edgeWidth = 1;
+
+            if (sourceId === rootId) {
+                // Outgoing from center
+                edgeColor = 'var(--color-accent, #7aa2f7)';
+                edgeWidth = 2;
+            } else if (targetId === rootId) {
+                // Incoming to center
+                edgeColor = 'var(--color-border, #414868)';
+                edgeWidth = 1.5;
             }
 
-            // Edge from center to target
-            const label = getFieldDisplay(edge.fromEntityType, edge.fromField);
             edges.push({
-                id: `out-${index}`,
-                source: centerNodeId,
-                target: nodeId,
+                id: `edge-${edgeIndex++}`,
+                source: sourceId,
+                target: targetId,
                 type: 'labeled',
                 data: { label },
                 style: {
-                    stroke: 'var(--color-accent, #7aa2f7)',
-                    strokeWidth: 2,
+                    stroke: edgeColor,
+                    strokeWidth: edgeWidth,
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
-                    color: 'var(--color-accent, #7aa2f7)',
+                    color: edgeColor,
                     width: 20,
                     height: 20,
                 },
             });
-        });
-
-        // Add incoming nodes (these entities use this)
-        incoming.forEach((edge, index) => {
-            const nodeId = makeNodeId(edge.fromEntityType, edge.fromId);
-
-            if (!addedNodes.has(nodeId)) {
-                const color = getEntityColorFromConfigs(edge.fromEntityType, entityConfigs);
-                nodes.push({
-                    id: nodeId,
-                    type: 'default',
-                    data: {
-                        label: edge.fromId,
-                        entityType: edge.fromEntityType,
-                    },
-                    position: { x: 0, y: 0 },
-                    style: {
-                        background: color,
-                        color: '#1a1b26',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '10px 16px',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                        cursor: 'pointer',
-                        minWidth: '120px',
-                        textAlign: 'center' as const,
-                    },
-                });
-                addedNodes.add(nodeId);
-            }
-
-            // Edge from source to center
-            const label = getFieldDisplay(edge.fromEntityType, edge.fromField);
-            edges.push({
-                id: `in-${index}`,
-                source: nodeId,
-                target: centerNodeId,
-                type: 'labeled',
-                data: { label },
-                style: {
-                    stroke: 'var(--color-border, #414868)',
-                    strokeWidth: 1.5,
-                },
-                markerEnd: {
-                    type: MarkerType.ArrowClosed,
-                    color: 'var(--color-border, #414868)',
-                    width: 20,
-                    height: 20,
-                },
-            });
-        });
+        }
 
         // Apply layout
-        return getLayoutedElements(nodes, edges, centerNodeId);
-    }, [entityType, entityId, outgoing, incoming, entityConfigs, getFieldDisplay]);
+        return getLayoutedElements(nodes, edges, rootId);
+    }, [entityType, entityId, allEdges, depth, entityConfigs, getFieldDisplay]);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
@@ -272,7 +279,7 @@ export function EntityDependencyGraph({
     );
 
     // Empty state
-    if (outgoing.length === 0 && incoming.length === 0) {
+    if (layoutedEdges.length === 0) {
         return (
             <div className={styles.empty}>
                 <span className={styles.emptyIcon}>🔗</span>

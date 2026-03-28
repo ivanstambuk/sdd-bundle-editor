@@ -137,6 +137,7 @@ See `.agent/workflows/` for detailed instructions.
 9. **Sudo/Privileged Access**: The user has sudo access. If a task requires it (e.g., installing packages), **DO NOT FAIL**. Instead, pause and ask the user to run the specific command in a terminal code block.
    - Example: "I need `graphviz`. Please run: `sudo apt install graphviz`."
 10. **Validate Programmatic Bundle Changes**: Whenever you manually edit or directly hydrate model instances, schemas, or relationship JSON files on disk (rather than through formal UI/MCP channels), you **MUST** run the strict validator script (`npx ts-node packages/mcp-server/scripts/mcp-cli.ts validate_bundle --bundle <bundle-id> --json`) to verify node integrity before concluding your turn. Never leak orphaned entities or multiplicity failures into the frontend UI.
+11. **Dev Server Restarts Authorized**: AI agents are fully authorized to restart the dev server autonomously without asking the user. If file changes (like CSS modules) fail to hot-reload, do NOT use code workarounds (like inline styles). Simply restart the dev server.
 
 ---
 

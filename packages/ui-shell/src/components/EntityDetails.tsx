@@ -169,6 +169,12 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
     'ui:title': ' ',  // Space to effectively hide (empty string doesn't work)
   };
 
+  // If we lift title/name to the document header, hide the text inputs from the form to prevent duplication
+  if (readOnly) {
+    if ((schema as any)?.properties?.title) uiSchema.title = { 'ui:widget': 'hidden' };
+    if ((schema as any)?.properties?.name) uiSchema.name = { 'ui:widget': 'hidden' };
+  }
+
   // Convert camelCase/PascalCase to Title Case with proper word boundaries
   const formatLabel = (label: string): string => {
     if (!label) return '';
@@ -644,26 +650,16 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
 
     // ── 2. Pill selector (read-only, ≤12 options) ────────────────────────────
     if (isReadOnly && realOpts.length > 0 && realOpts.length <= 12) {
-      const isStrip = realOpts.length <= 5;
-      const containerClass = isStrip
-        ? `${rjsfStyles.enumPills} ${rjsfStyles.enumPillsStrip}`
-        : rjsfStyles.enumPills;
+      if (!value) return null;
+      const selectedOpt = realOpts.find(opt => opt.value === value);
+      if (!selectedOpt) return null;
 
+      // In read-only mode, only show the selected item to prevent "pill cloud" visual clutter
       return (
-        <div className={containerClass}>
-          {realOpts.map(opt => {
-            const isSelected = opt.value === value;
-            const pillClass = isSelected
-              ? `${rjsfStyles.enumPill} ${rjsfStyles.enumPillSelected}`
-              : rjsfStyles.enumPill;
-            // Every pill shows its own description on hover, not just the selected one
-            const tooltip = enumDescriptions?.[opt.value];
-            return (
-              <span key={opt.value} className={pillClass} title={tooltip}>
-                {getDisplayTitle(opt.value)}
-              </span>
-            );
-          })}
+        <div className={`${rjsfStyles.enumPills} ${rjsfStyles.enumPillsStrip}`}>
+          <span className={`${rjsfStyles.enumPill} ${rjsfStyles.enumPillSelected}`} title={enumDescriptions?.[selectedOpt.value]}>
+            {getDisplayTitle(selectedOpt.value)}
+          </span>
         </div>
       );
     }
@@ -1188,76 +1184,89 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
     </div>
   );
 
+  const entityData = entity.data as Record<string, any>;
+  const displayTitle = entityData?.title || entityData?.name;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <EntityTypeBadge
-            entityType={entity.entityType}
-            entityConfigs={entityConfigs}
-          />
-          <span className={styles.entityId}>{entity.id}</span>
-        </div>
-
-        {/* Header status badges - enums with x-sdd-enumStyles go next to entity type */}
-        <EntityHeaderBadges fields={headerMetadataFields} />
-
-        {/* Header metadata - dates and text fields on the right */}
-        {headerMetadataFields.filter(f => !f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
-          <div className={styles.headerMetadata}>
-            {headerMetadataFields
-              .filter(f => !f.fieldSchema?.['x-sdd-enumStyles'])
-              .map((field, idx, arr) => {
-                // Format date values nicely
-                let displayValue = field.value;
-                if (field.fieldSchema?.format === 'date' && displayValue) {
-                  try {
-                    const date = new Date(displayValue);
-                    displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                  } catch { /* keep original */ }
-                } else if (field.fieldSchema?.format === 'date-time' && displayValue) {
-                  try {
-                    const date = new Date(displayValue);
-                    displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                  } catch { /* keep original */ }
-                }
-
-                // For Actor refs, just show the ID cleanly
-                if (field.fieldSchema?.format === 'sdd-ref' && displayValue) {
-                  // Strip common prefixes for cleaner display
-                  displayValue = displayValue.replace(/^ACT-/, '').replace(/-/g, ' ');
-                }
-
-                return (
-                  <span key={field.fieldName} className={styles.metadataItem}>
-                    <span className={styles.metadataLabel}>{field.label}:</span>
-                    <span className={styles.metadataValue}>{displayValue || '—'}</span>
-                    {idx < arr.length - 1 && <span className={styles.metadataSep}>·</span>}
-                  </span>
-                );
-              })}
+        {/* Human-Readable Single Source of Truth Title */}
+        {displayTitle && <h1 className={styles.entityTitle}>{displayTitle}</h1>}
+        
+        <div className={styles.headerMetaRow}>
+          <div className={styles.headerLeft}>
+            <EntityTypeBadge
+              entityType={entity.entityType}
+              entityConfigs={entityConfigs}
+            />
+            <span className={styles.entityId}>{entity.id}</span>
           </div>
-        )}
 
-        <div className={styles.headerActions}>
-          <button
-            type="button"
-            className={styles.exportButton}
-            onClick={() => {
-              const result = exportEntityToMarkdown(entity, bundle, { includeDependencies: true });
-              const filename = `${entity.id}.md`;
-              downloadMarkdown(result.markdown, filename);
-            }}
-            title="Export to Markdown (includes dependencies)"
-          >
-            📄 Export
-          </button>
-          {hasDiagnostics && (
-            <span className={styles.diagnosticsBadge} title={`${errorCount} errors, ${warningCount} warnings`}>
-              {errorCount > 0 && <span className={styles.errorCount}>⛔ {errorCount}</span>}
-              {warningCount > 0 && <span className={styles.warningCount}>⚠️ {warningCount}</span>}
-            </span>
+          {/* Header status badges - enums with x-sdd-enumStyles go next to entity type */}
+          <EntityHeaderBadges fields={headerMetadataFields} />
+
+          {/* Header metadata - dates and text fields on the right */}
+          {headerMetadataFields.filter(f => !f.fieldSchema?.['x-sdd-enumStyles']).length > 0 && (
+            <>
+              <div className={styles.metaDivider} />
+              <div className={styles.headerMetadata}>
+                {headerMetadataFields
+                  .filter(f => !f.fieldSchema?.['x-sdd-enumStyles'])
+                  .map((field, idx, arr) => {
+                    // Format date values nicely
+                    let displayValue = field.value;
+                    if (field.fieldSchema?.format === 'date' && displayValue) {
+                      try {
+                        const date = new Date(displayValue);
+                        displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                      } catch { /* keep original */ }
+                    } else if (field.fieldSchema?.format === 'date-time' && displayValue) {
+                      try {
+                        const date = new Date(displayValue);
+                        displayValue = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                      } catch { /* keep original */ }
+                    }
+
+                    // For Actor refs, just show the ID cleanly
+                    if (field.fieldSchema?.format === 'sdd-ref' && displayValue) {
+                      // Strip common prefixes for cleaner display
+                      displayValue = displayValue.replace(/^ACT-/, '').replace(/-/g, ' ');
+                    }
+
+                    return (
+                      <span key={field.fieldName} className={styles.metadataItem}>
+                        <span className={styles.metadataLabel}>{field.label}:</span>
+                        <span className={styles.metadataValue}>{displayValue || '—'}</span>
+                        {idx < arr.length - 1 && <span className={styles.metadataSep}>·</span>}
+                      </span>
+                    );
+                  })}
+              </div>
+            </>
           )}
+          
+          <div className={styles.metaDivider} />
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              type="button"
+              className={styles.exportButton}
+              onClick={() => {
+                const result = exportEntityToMarkdown(entity, bundle, { includeDependencies: true });
+                const filename = `${entity.id}.md`;
+                downloadMarkdown(result.markdown, filename);
+              }}
+              title="Export to Markdown (includes dependencies)"
+            >
+              📄 Export
+            </button>
+            {hasDiagnostics && (
+              <span className={styles.diagnosticsBadge} title={`${errorCount} errors, ${warningCount} warnings`}>
+                {errorCount > 0 && <span className={styles.errorCount}>⛔ {errorCount}</span>}
+                {warningCount > 0 && <span className={styles.warningCount}>⚠️ {warningCount}</span>}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

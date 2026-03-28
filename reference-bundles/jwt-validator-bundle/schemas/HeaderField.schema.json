@@ -143,19 +143,14 @@
     },
     "handlingPolicy": {
       "type": "string",
+      "description": "Entity-local handling posture for whether this header is generally profile-controlled, merely optional, or rejected unless a future profile explicitly opts in. Profile header lists remain authoritative for requiredness.",
       "enum": [
-        "required",
         "optional",
         "profile-controlled",
         "reject-by-default"
       ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 27
-    },
-    "isRequired": {
-      "type": "boolean",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 30
     },
     "constrainedByRuleIds": {
       "type": "array",
@@ -192,15 +187,13 @@
           "name": {},
           "dataType": {},
           "semanticType": {},
-          "handlingPolicy": {},
-          "isRequired": {}
+          "handlingPolicy": {}
         },
         "required": [
           "name",
           "dataType",
           "semanticType",
-          "handlingPolicy",
-          "isRequired"
+          "handlingPolicy"
         ]
       }
     }

@@ -7,11 +7,33 @@ title: "OIDC Issuer Mismatch"
 description: OIDC discovery profile token with an issuer that does not match the expected discovered issuer binding.
 tags: [test, oidc, security]
 invocationProfileId: PROF-JWT-OIDC-DISCOVERY
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY
 payloadJson: '{"iss":"https://unexpected.example.com","exp":2500000000}'
+runtimePolicy:
+  expectedIssuer: https://issuer.example.com
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-oidc-discovery
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-oidc-discovery-issuer-mismatch
+  - MOCK-remote-jwks-cache-hit-rs256
+remoteResolutionScenario:
+  cacheState: warm-cache
+  refreshTrigger: none
+  expectedFetchBehavior: cache-only
+oidcDiscoveryScenario:
+  metadataState: initial-discovery
+  issuerBindingOutcome: mismatch
+  jwksUriOutcome: match
+  expectedDiscoveryBehavior: fetch-success
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-invalid-issuer]
 expectedPrimaryErrorCodeId: ERR-invalid-issuer
 expectedFailedRuleId: RULE-ISS-MATCH
-expectedTerminalStepId: STEP-2
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-ISS-MATCH]

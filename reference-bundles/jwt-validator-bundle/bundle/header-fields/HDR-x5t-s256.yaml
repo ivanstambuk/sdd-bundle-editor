@@ -10,6 +10,5 @@ name: x5t#S256
 dataType: string
 semanticType: CertificateThumbprint
 handlingPolicy: reject-by-default
-isRequired: false
 constrainedByRuleIds:
   - RULE-UNTRUSTED-HEADER-SOURCES

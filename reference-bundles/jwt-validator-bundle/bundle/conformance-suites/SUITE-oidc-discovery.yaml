@@ -9,8 +9,24 @@ tags: [test-plan, oidc]
 targetsClassIds:
   - CLASS-jwt-validator-oidc-discovery
 containsVectorIds:
+  - VEC-oidc-valid
+  - VEC-oidc-discovery-cache-hit-valid
+  - VEC-oidc-discovery-jwks-uri-mismatch
+  - VEC-oidc-discovery-refresh-fail-closed
   - VEC-oidc-invalid-issuer
-  - VEC-jwt-type-mismatch
+  - VEC-oidc-type-mismatch
+requiresFixtureIds:
+  - MOCK-oidc-discovery-cold-valid
+  - MOCK-oidc-discovery-cache-hit-valid
+  - MOCK-oidc-discovery-issuer-mismatch
+  - MOCK-oidc-discovery-jwks-uri-mismatch
+  - MOCK-oidc-discovery-refresh-fail
+  - MOCK-remote-jwks-cold-rs256
+  - MOCK-remote-jwks-cache-hit-rs256
+  - MOCK-remote-jwks-network-retry-fail
+requiresEnvironmentCapabilities:
+  - network-mock
+  - oidc-discovery-endpoint
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
   - ADR-0001

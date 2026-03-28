@@ -7,12 +7,21 @@ title: "Signature Verification Failure"
 description: A compact JWT whose signature bytes do not validate against the resolved trusted key.
 tags: [test, crypto, signature]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjoyNTAwMDAwMDAwfQ.invalid-signature
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-invalid-sig]
 expectedPrimaryErrorCodeId: ERR-invalid-sig
 expectedFailedRuleId: RULE-SIG-VERIFY
-expectedTerminalStepId: STEP-4
+expectedTerminalStepId: STEP-2
 validatesRuleIds: [RULE-SIG-VERIFY]
 usesMockKeyId: MOCK-hs256-static-1

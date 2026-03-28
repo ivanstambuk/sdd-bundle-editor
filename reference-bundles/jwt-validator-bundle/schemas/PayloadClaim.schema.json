@@ -148,8 +148,18 @@
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 27
     },
-    "isRequired": {
-      "type": "boolean",
+    "requiredWhenRuntimePolicyFields": {
+      "type": "array",
+      "description": "Runtime policy fields that make this claim mandatory when the corresponding policy expectation is supplied at invocation time.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "expectedIssuer",
+          "expectedSubject",
+          "expectedAudience"
+        ]
+      },
+      "uniqueItems": true,
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 30
     },

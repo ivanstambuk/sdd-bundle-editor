@@ -1,0 +1,20 @@
+id: MOCK-oidc-discovery-issuer-mismatch
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: OIDC Discovery Issuer Mismatch Fixture
+description: Simulated discovery metadata whose issuer does not match the issuer expected by the invocation policy or token.
+tags: [fixture, oidc, discovery, issuer]
+fixtureMode: oidc-discovery-document
+endpointUrl: https://example.com/.well-known/openid-configuration
+httpStatusCode: 200
+responseHeaders:
+  cache-control: max-age=300
+  etag: '"oidc-issuer-mismatch"'
+cacheDisposition: cold-start
+networkBehavior: success
+linkedJwksFixtureId: MOCK-remote-jwks-cache-hit-rs256
+discoveryDocument:
+  issuer: https://unexpected.example.com
+  jwks_uri: https://example.com/jwks.json

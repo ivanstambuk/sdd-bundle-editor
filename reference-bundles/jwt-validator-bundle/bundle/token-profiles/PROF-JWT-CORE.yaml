@@ -4,7 +4,7 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Basic JWT Validator Core
-description: Local stateless baseline for securely parsing and validating a signed compact JWT using caller-supplied trusted key material.
+description: Local stateless baseline for securely parsing, authenticating, and then validating a signed compact JWT using caller-supplied trusted key material.
 profileType: Custom
 profileFamily: JWT-CORE
 replayProtectionMode: out-of-scope

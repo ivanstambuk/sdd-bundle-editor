@@ -7,11 +7,17 @@ title: "NBF Boundary Equals Now"
 description: A token whose `nbf` exactly equals the evaluation time. The contract treats this boundary as valid.
 tags: [test, time, boundary, success]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"nbf": 1516239000, "exp": 2500000000}'
-environmentState:
-  now_epoch_seconds: 1516239000
-  leeway_seconds: 0
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: accepted
-expectedTerminalStepId: STEP-3
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectedTerminalStepId: STEP-4
 validatesRuleIds: [RULE-TIME-BOUNDARY-CHECK]

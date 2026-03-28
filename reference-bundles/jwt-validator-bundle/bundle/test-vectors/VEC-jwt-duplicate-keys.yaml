@@ -7,9 +7,18 @@ title: "Duplicate JSON Keys Exists"
 description: A structurally malformed token that attempts to exploit JSON parsers by declaring the `sub` claim twice in the payload to bypass downstream checks while passing signature checks.
 tags: [test, parse, security]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"sub": "admin", "sub": "user"}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: malformed
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-malformed]
 expectedPrimaryErrorCodeId: ERR-malformed
 expectedFailedRuleId: RULE-NO-DUPLICATE-KEYS

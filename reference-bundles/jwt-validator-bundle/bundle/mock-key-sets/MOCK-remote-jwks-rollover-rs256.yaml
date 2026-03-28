@@ -1,0 +1,25 @@
+id: MOCK-remote-jwks-rollover-rs256
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: Remote JWKS Rollover RS256 Fixture
+description: Simulated refresh target returned after key rollover, superseding the earlier remote JWKS state with a new signing key.
+tags: [fixture, remote, jwks, rollover]
+fixtureMode: remote-jwks-response
+endpointUrl: https://example.com/jwks.json
+httpStatusCode: 200
+responseHeaders:
+  cache-control: max-age=300
+  etag: '"jwks-v2"'
+cacheDisposition: refresh-target
+networkBehavior: success
+supersedesFixtureId: MOCK-remote-jwks-cache-hit-rs256
+jwks:
+  keys:
+    - kty: RSA
+      kid: remote-rs256-2
+      alg: RS256
+      use: sig
+      n: AbCdEfGhIjKlMnOpQrStUvWxYz0123456789abcdefghijklmnopqrstuvWXYZ9876543210mnopqrstuvABCDEFGHIJKLMNqrstuvwxyzabcdefGHIJKLMNopqrstu
+      e: AQAB

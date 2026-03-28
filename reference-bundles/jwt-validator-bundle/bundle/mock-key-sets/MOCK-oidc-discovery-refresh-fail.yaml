@@ -1,0 +1,16 @@
+id: MOCK-oidc-discovery-refresh-fail
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: OIDC Discovery Refresh Failure Fixture
+description: Simulated metadata refresh failure after a retryable discovery endpoint error, used to prove fail-closed discovery refresh behavior.
+tags: [fixture, oidc, discovery, network-failure]
+fixtureMode: oidc-discovery-document
+endpointUrl: https://example.com/.well-known/openid-configuration
+httpStatusCode: 503
+responseHeaders:
+  retry-after: '5'
+cacheDisposition: refresh-target
+networkBehavior: retryable-failure
+discoveryDocument: {}

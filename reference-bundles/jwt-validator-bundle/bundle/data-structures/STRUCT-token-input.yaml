@@ -1,0 +1,16 @@
+id: STRUCT-token-input
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Token Input Fragment
+description: Authoritative input fragment for a compact JWT string supplied to parser, validator, and vector invocation surfaces.
+tags: [data, input, fragment]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    token:
+      type: string
+  required:
+    - token

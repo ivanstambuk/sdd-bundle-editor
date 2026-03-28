@@ -10,5 +10,4 @@ name: iat
 dataType: number
 semanticType: NumericDate
 comparisonSemantics: none
-isRequired: false
 isStandardRFC: true

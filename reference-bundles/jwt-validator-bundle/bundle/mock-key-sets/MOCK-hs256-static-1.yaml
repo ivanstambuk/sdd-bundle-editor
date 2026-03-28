@@ -5,6 +5,7 @@ artifactClass: fixture
 lifecycleStatus: active
 title: Static HS256 Keyset 1
 description: Hardcoded HS256 key material for executing unit tests.
+fixtureMode: static-keyset
 jwks:
   keys:
     - kty: oct

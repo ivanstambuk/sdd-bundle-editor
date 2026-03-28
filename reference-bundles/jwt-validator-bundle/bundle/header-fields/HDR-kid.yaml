@@ -9,6 +9,8 @@ description: >
 tags: [header, crypto]
 name: kid
 handlingPolicy: profile-controlled
-isRequired: false
 dataType: string
 semanticType: KeyIdentifier
+constrainedByRuleIds:
+  - RULE-KID-RESOLVE
+  - RULE-KID-AMBIGUITY

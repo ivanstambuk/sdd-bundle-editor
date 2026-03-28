@@ -29,11 +29,19 @@ containsVectorIds:
   - VEC-jwt-invalid-subject
   - VEC-jwt-type-mismatch
   - VEC-jwt-missing-sub
+  - VEC-jwt-missing-issuer-required-by-policy
+  - VEC-jwt-missing-audience-required-by-policy
   - VEC-jwt-claim-type-mismatch
   - VEC-jwt-premature
   - VEC-jwt-wrong-aud
   - VEC-jwt-weak-key
   - VEC-jwt-duplicate-keys
+requiresFixtureIds:
+  - MOCK-hs256-static-1
+  - MOCK-hs256-duplicate-kid
+  - MOCK-rs256-weak-1024
+requiresEnvironmentCapabilities:
+  - static-key-fixtures
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
   - ADR-0001

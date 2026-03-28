@@ -1,0 +1,33 @@
+id: VEC-remote-jwks-invalid-issuer
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Remote JWKS Issuer Mismatch"
+description: Remote-JWKS profile token carries an issuer outside the runtime policy's configured issuer expectation for the remote trust anchor.
+tags: [test, remote, security]
+invocationProfileId: PROF-JWT-REMOTE-JWKS
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS
+payloadJson: '{"iss":"https://unexpected.example.com","exp":2500000000}'
+runtimePolicy:
+  expectedIssuer: https://issuer.example.com
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-https-jwks
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-remote-jwks-cache-hit-rs256
+remoteResolutionScenario:
+  cacheState: warm-cache
+  refreshTrigger: none
+  expectedFetchBehavior: cache-only
+expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectsErrorCodeIds: [ERR-invalid-issuer]
+expectedPrimaryErrorCodeId: ERR-invalid-issuer
+expectedFailedRuleId: RULE-ISS-MATCH
+expectedTerminalStepId: STEP-3
+validatesRuleIds: [RULE-ISS-MATCH]

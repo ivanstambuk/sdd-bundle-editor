@@ -7,10 +7,18 @@ title: "Unsupported Nested JWT"
 description: A compact signed token indicating nested JWT content through header typing, which the active profile does not support.
 tags: [test, format, boundary]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 headerJson: '{"cty":"JWT"}'
-rawJwtInput: a.b.c
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-unsupported-format]
 expectedPrimaryErrorCodeId: ERR-unsupported-format
 expectedFailedRuleId: RULE-COMPACT-JWS-ONLY

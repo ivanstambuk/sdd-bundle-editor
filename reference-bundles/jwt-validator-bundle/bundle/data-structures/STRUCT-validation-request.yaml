@@ -7,6 +7,8 @@ title: JWT Validation Request
 description: Request envelope for the authoritative validation operation, carrying the compact token input, selected profile, and runtime policy overrides.
 tags: [data, input, request]
 composesStructureIds:
+  - STRUCT-token-input
+  - STRUCT-profile-invocation
   - STRUCT-runtime-policy
   - STRUCT-validation-context
 schemaDefinition:
@@ -15,15 +17,20 @@ schemaDefinition:
   properties:
     token:
       type: string
-    profileId:
+    invocationProfileId:
       type: string
+      format: sdd-ref
+      title: Invocation Profile Reference
+      description: References related TokenProfile entity.
+      x-sdd-refTargets:
+        - TokenProfile
     runtimePolicy:
       $ref: '#/$defs/runtimePolicy'
     validationContext:
       $ref: '#/$defs/validationContext'
   required:
     - token
-    - profileId
+    - invocationProfileId
     - runtimePolicy
     - validationContext
   $defs:
@@ -65,8 +72,6 @@ schemaDefinition:
         currentTimeEpochSeconds:
           type: integer
           minimum: 0
-        selectedProfileId:
-          type: string
         selectedKeyStrategyId:
           type: string
         tenantId:

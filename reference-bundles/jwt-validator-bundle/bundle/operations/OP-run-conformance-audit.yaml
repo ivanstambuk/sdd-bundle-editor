@@ -8,4 +8,5 @@ description: Executes a set of validation and diagnostic scenarios against a spe
 tags: [operation, test]
 operationRole: harness
 systemComponent: ConformanceHarness
+acceptsStructureIds: [STRUCT-audit-request]
 producesDataStructureIds: [STRUCT-audit-report]

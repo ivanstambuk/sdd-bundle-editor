@@ -159,14 +159,10 @@
         "properties": {
           "executionStatus": {
             "const": "active"
-          },
-          "artifactClass": {
-            "const": "contract"
           }
         },
         "required": [
-          "executionStatus",
-          "artifactClass"
+          "executionStatus"
         ]
       },
       "then": {
@@ -179,26 +175,6 @@
           "operationRole",
           "acceptsStructureIds",
           "producesDataStructureIds"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "executionStatus": {
-            "const": "active"
-          }
-        },
-        "required": [
-          "executionStatus"
-        ]
-      },
-      "then": {
-        "properties": {
-          "operationRole": {}
-        },
-        "required": [
-          "operationRole"
         ]
       }
     },

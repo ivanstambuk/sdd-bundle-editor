@@ -1,0 +1,39 @@
+id: VEC-oidc-type-mismatch
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "OIDC Unexpected JWT Type Header"
+description: OIDC discovery profile token presents a `typ` header value that does not exact-match the runtime policy's expected media type.
+tags: [test, header, policy, oidc]
+invocationProfileId: PROF-JWT-OIDC-DISCOVERY
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY
+headerJson: '{"typ": "at+jwt"}'
+runtimePolicy:
+  expectedTyp: JWT
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-oidc-discovery
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-oidc-discovery-cache-hit-valid
+  - MOCK-remote-jwks-cache-hit-rs256
+remoteResolutionScenario:
+  cacheState: warm-cache
+  refreshTrigger: none
+  expectedFetchBehavior: cache-only
+oidcDiscoveryScenario:
+  metadataState: cached-discovery
+  issuerBindingOutcome: match
+  jwksUriOutcome: match
+  expectedDiscoveryBehavior: cache-only
+expectedOutcomeClass: malformed
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectsErrorCodeIds: [ERR-type-mismatch]
+expectedPrimaryErrorCodeId: ERR-type-mismatch
+expectedFailedRuleId: RULE-TYP-POLICY
+expectedTerminalStepId: STEP-3
+validatesRuleIds: [RULE-TYP-POLICY]

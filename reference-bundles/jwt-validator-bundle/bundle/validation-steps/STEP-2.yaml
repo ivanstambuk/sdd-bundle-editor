@@ -3,18 +3,21 @@ kind: ValidationStep
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: Validate Claims
-description: Execute header-policy, identity, and claim-shape checks against the decoded JWT before time-window evaluation.
+title: Resolve Trusted Key and Verify Signature
+description: Enforce cryptographic prerequisites, reject unsafe trust-source headers, resolve a trusted key, and authenticate the signature before any claim-level policy checks run.
 abortOnFailure: true
 executionOrder: 2
 executesRuleIds:
-  - RULE-REQUIRED-CLAIMS
-  - RULE-CLAIM-TYPE-CHECK
-  - RULE-ISS-MATCH
-  - RULE-SUB-MATCH
-  - RULE-TYP-POLICY
+  - RULE-ALG-ALLOWLIST
+  - RULE-CRIT-HEADER-POLICY
+  - RULE-UNTRUSTED-HEADER-SOURCES
+  - RULE-KID-RESOLVE
+  - RULE-KID-AMBIGUITY
+  - RULE-KEY-ALG-MATCH
+  - RULE-SIG-VERIFY
 producesErrorCodeIds:
-  - ERR-missing-claim
-  - ERR-type-mismatch
-  - ERR-invalid-issuer
-  - ERR-invalid-subject
+  - ERR-unsupported-alg
+  - ERR-unsupported-header
+  - ERR-kid-not-found
+  - ERR-kid-ambiguous
+  - ERR-invalid-sig

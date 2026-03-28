@@ -1,7 +1,7 @@
 export type LintSeverity = 'error' | 'warning';
 
 export interface LintRuleBase {
-  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id' | 'redundant-bidirectional-link' | 'no-empty-array' | 'forbid-values-when-field-includes' | 'suite-vector-profile-match';
+  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'required-field-when-field-equals' | 'enum-value' | 'quality-check' | 'descriptive-id' | 'redundant-bidirectional-link' | 'no-empty-array' | 'forbid-values-when-field-includes' | 'suite-vector-profile-match' | 'vector-profile-context-consistency' | 'vector-step-graph-consistency' | 'profile-step-order-consistency' | 'allowed-values-when-field-equals' | 'suite-vector-operation-match' | 'profile-operation-contract-match' | 'profile-inheritance-field-modes' | 'profile-effective-forbid-values-when-field-includes' | 'shape-equals';
   severity?: LintSeverity;
 }
 
@@ -45,6 +45,15 @@ export interface RequiredFieldRule extends LintRuleBase {
   targetEntities: string[];
   field: string;
   message?: string; // Custom error message
+}
+
+export interface RequiredFieldWhenFieldEqualsRule extends LintRuleBase {
+  type: 'required-field-when-field-equals';
+  targetEntities: string[];
+  whenField: string;
+  whenEqualsAny: string[];
+  field: string;
+  message?: string;
 }
 
 /** Validates that a field value is one of allowed enum values */
@@ -113,7 +122,104 @@ export interface SuiteVectorProfileMatchRule extends LintRuleBase {
   vectorProfileField: string;
 }
 
-export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule | RedundantBidirectionalLinkRule | NoEmptyArrayRule | ForbidValuesWhenFieldIncludesRule | SuiteVectorProfileMatchRule;
+export interface VectorProfileContextConsistencyRule extends LintRuleBase {
+  type: 'vector-profile-context-consistency';
+  vectorEntity: string;
+  profileEntity: string;
+  invocationProfileField: string;
+  evaluatedProfileField: string;
+  selectedProfileField?: string;
+  selectedKeyStrategyField: string;
+  profileKeyStrategyField: string;
+}
+
+export interface VectorStepGraphConsistencyRule extends LintRuleBase {
+  type: 'vector-step-graph-consistency';
+  vectorEntity: string;
+  stepEntity: string;
+  terminalStepField: string;
+  failedRuleField: string;
+  primaryErrorField: string;
+  stepRuleField: string;
+  stepErrorField: string;
+}
+
+export interface ProfileStepOrderConsistencyRule extends LintRuleBase {
+  type: 'profile-step-order-consistency';
+  profileEntity: string;
+  stepEntity: string;
+  profileStepField: string;
+  stepOrderField: string;
+}
+
+export interface AllowedValuesWhenFieldEqualsRule extends LintRuleBase {
+  type: 'allowed-values-when-field-equals';
+  targetEntities: string[];
+  whenField: string;
+  whenEqualsAny: string[];
+  field: string;
+  allowedValues: string[];
+  message?: string;
+}
+
+export interface SuiteVectorOperationMatchRule extends LintRuleBase {
+  type: 'suite-vector-operation-match';
+  suiteEntity: string;
+  classEntity: string;
+  classField: string;
+  classOperationField: string;
+  vectorField: string;
+  vectorOperationField: string;
+}
+
+export interface ProfileOperationContractMatchRule extends LintRuleBase {
+  type: 'profile-operation-contract-match';
+  profileEntity: string;
+  operationEntity: string;
+  operationId: string;
+  operationAcceptsField: string;
+  operationProducesField: string;
+  profilePolicyField: string;
+  profileContextField: string;
+  profileResultField: string;
+}
+
+export interface ProfileInheritanceFieldModesRule extends LintRuleBase {
+  type: 'profile-inheritance-field-modes';
+  profileEntity: string;
+  parentField: string;
+  inheritanceModeField: string;
+  fieldModesField: string;
+  trackedFields: string[];
+}
+
+export interface ProfileEffectiveForbidValuesWhenFieldIncludesRule extends LintRuleBase {
+  type: 'profile-effective-forbid-values-when-field-includes';
+  profileEntity: string;
+  parentField: string;
+  inheritanceModeField: string;
+  fieldModesField: string;
+  whenField: string;
+  whenIncludesAny: string[];
+  forbidField: string;
+  forbidValues: string[];
+  message?: string;
+}
+
+export interface ShapeEqualsRule extends LintRuleBase {
+  type: 'shape-equals';
+  leftSource: 'entity' | 'schema';
+  leftEntityType: string;
+  leftEntityId?: string;
+  leftPath: string;
+  rightSource: 'entity' | 'schema';
+  rightEntityType: string;
+  rightEntityId?: string;
+  rightPath: string;
+  message?: string;
+}
+
+export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | RequiredFieldWhenFieldEqualsRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule | RedundantBidirectionalLinkRule | NoEmptyArrayRule | ForbidValuesWhenFieldIncludesRule | SuiteVectorProfileMatchRule | VectorProfileContextConsistencyRule | VectorStepGraphConsistencyRule | ProfileStepOrderConsistencyRule | AllowedValuesWhenFieldEqualsRule | SuiteVectorOperationMatchRule | ProfileOperationContractMatchRule | ProfileInheritanceFieldModesRule | ProfileEffectiveForbidValuesWhenFieldIncludesRule | ShapeEqualsRule;
 
 export interface FeatureConfig {
   enabled?: boolean;

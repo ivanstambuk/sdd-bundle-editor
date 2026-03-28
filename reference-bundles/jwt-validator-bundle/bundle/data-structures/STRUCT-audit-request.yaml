@@ -1,0 +1,34 @@
+id: STRUCT-audit-request
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Conformance Audit Request
+description: Harness request identifying which conformance suite to execute and which validator operation should be exercised during the audit run.
+tags: [data, input, conformance]
+composesStructureIds:
+  - STRUCT-suite-selection
+  - STRUCT-validator-operation-selection
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    suiteId:
+      type: string
+      format: sdd-ref
+      title: Conformance Suite Reference
+      description: References related ConformanceSuite entity.
+      x-sdd-refTargets:
+        - ConformanceSuite
+    validatorOperationId:
+      type: string
+      format: sdd-ref
+      title: Validator Operation Reference
+      description: References related Operation entity.
+      x-sdd-refTargets:
+        - Operation
+    failFast:
+      type: boolean
+  required:
+    - suiteId
+    - validatorOperationId

@@ -7,14 +7,20 @@ title: "Expiration Boundary Equals Now"
 description: A token whose `exp` exactly equals the evaluation time. The contract requires that boundary to be treated as expired.
 tags: [test, time, boundary]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"exp": 1516239000}'
-environmentState:
-  now_epoch_seconds: 1516239000
-  leeway_seconds: 0
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-expired]
 expectedPrimaryErrorCodeId: ERR-expired
 expectedFailedRuleId: RULE-TIME-BOUNDARY-CHECK
-expectedTerminalStepId: STEP-3
+expectedTerminalStepId: STEP-4
 validatesRuleIds: [RULE-TIME-BOUNDARY-CHECK]

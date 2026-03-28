@@ -7,11 +7,20 @@ title: "Unsupported Critical Header Extension"
 description: JWT includes a `crit` declaration for a header extension outside the active profile.
 tags: [test, header, security]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 headerJson: '{"crit": ["b64"]}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-unsupported-header]
 expectedPrimaryErrorCodeId: ERR-unsupported-header
 expectedFailedRuleId: RULE-CRIT-HEADER-POLICY
-expectedTerminalStepId: STEP-4
+expectedTerminalStepId: STEP-2
 validatesRuleIds: [RULE-CRIT-HEADER-POLICY]

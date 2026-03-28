@@ -12,7 +12,6 @@ name: exp
 dataType: number
 semanticType: NumericDate
 comparisonSemantics: none
-isRequired: false
 isStandardRFC: true
 constrainedByRuleIds:
   - RULE-EXP-CHECK

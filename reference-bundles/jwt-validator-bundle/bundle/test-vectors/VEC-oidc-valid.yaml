@@ -1,0 +1,42 @@
+id: VEC-oidc-valid
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "OIDC Discovery Valid Token"
+description: OIDC discovery profile accepts a token whose issuer and `typ` header satisfy the profile's discovery-bound expectations.
+tags: [test, oidc, success]
+invocationProfileId: PROF-JWT-OIDC-DISCOVERY
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY
+headerJson: '{"alg":"RS256","typ":"JWT"}'
+payloadJson: '{"iss":"https://issuer.example.com","sub":"oidc-user","exp":2500000000}'
+runtimePolicy:
+  expectedIssuer: https://issuer.example.com
+  expectedTyp: JWT
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-oidc-discovery
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-oidc-discovery-cold-valid
+  - MOCK-remote-jwks-cold-rs256
+remoteResolutionScenario:
+  cacheState: cold-start
+  refreshTrigger: initial-fetch
+  expectedFetchBehavior: fetch-success
+oidcDiscoveryScenario:
+  metadataState: initial-discovery
+  issuerBindingOutcome: match
+  jwksUriOutcome: match
+  expectedDiscoveryBehavior: fetch-success
+expectedOutcomeClass: accepted
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectedTerminalStepId: STEP-4
+validatesRuleIds:
+  - RULE-ALG-ALLOWLIST
+  - RULE-ISS-MATCH
+  - RULE-TYP-POLICY
+  - RULE-EXP-CHECK

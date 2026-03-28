@@ -3,10 +3,10 @@ kind: ValidationStep
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Cryptographic Validation"
-description: Enforce cryptographic prerequisites, reject unsafe header-based trust sources, resolve keys, and halt execution if the signature cannot be authenticated.
-tags: [step, crypto]
+title: "Evaluate Time Window"
+description: Apply exp, nbf, and exact boundary semantics against the injected validation clock and allowed skew.
+tags: [step, time]
 abortOnFailure: true
 executionOrder: 4
-executesRuleIds: [RULE-ALG-ALLOWLIST, RULE-CRIT-HEADER-POLICY, RULE-UNTRUSTED-HEADER-SOURCES, RULE-KID-RESOLVE, RULE-KID-AMBIGUITY, RULE-KEY-ALG-MATCH, RULE-SIG-VERIFY]
-producesErrorCodeIds: [ERR-unsupported-alg, ERR-unsupported-header, ERR-kid-not-found, ERR-kid-ambiguous, ERR-invalid-sig]
+executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-TIME-BOUNDARY-CHECK]
+producesErrorCodeIds: [ERR-expired, ERR-premature]

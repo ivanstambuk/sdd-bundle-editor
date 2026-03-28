@@ -7,11 +7,21 @@ title: "Unexpected JWT Type Header"
 description: JWT presents a `typ` header value that does not exact-match the expected media type policy.
 tags: [test, header, policy]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 headerJson: '{"typ": "at+jwt"}'
+runtimePolicy:
+  expectedTyp: JWT
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: malformed
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-type-mismatch]
 expectedPrimaryErrorCodeId: ERR-type-mismatch
 expectedFailedRuleId: RULE-TYP-POLICY
-expectedTerminalStepId: STEP-2
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-TYP-POLICY]

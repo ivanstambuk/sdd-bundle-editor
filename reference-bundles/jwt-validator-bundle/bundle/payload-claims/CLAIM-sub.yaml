@@ -10,5 +10,9 @@ name: sub
 dataType: string
 semanticType: StringOrURI
 comparisonSemantics: exact-string
-isRequired: false
+requiredWhenRuntimePolicyFields:
+  - expectedSubject
 isStandardRFC: true
+constrainedByRuleIds:
+  - RULE-SUB-MATCH
+  - RULE-REQUIRED-CLAIMS

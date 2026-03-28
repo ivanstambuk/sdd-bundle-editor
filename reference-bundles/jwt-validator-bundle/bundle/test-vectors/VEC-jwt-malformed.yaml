@@ -7,9 +7,18 @@ title: "Malformed JWS Input"
 description: Providing an invalid JWT string holding merely two dots or illegal base64 characters.
 tags: [test, syntax]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"header": null, "payload": null}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: malformed
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-malformed]
 expectedPrimaryErrorCodeId: ERR-malformed
 expectedFailedRuleId: RULE-SYNTAX-CHECK

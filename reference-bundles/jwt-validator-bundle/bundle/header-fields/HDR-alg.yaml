@@ -12,7 +12,6 @@ tags:
 name: alg
 dataType: string
 semanticType: JOSEAlgorithm
-handlingPolicy: required
-isRequired: true
+handlingPolicy: profile-controlled
 constrainedByRuleIds:
   - RULE-ALG-ALLOWLIST

@@ -10,6 +10,5 @@ name: x5c
 dataType: array
 semanticType: CertificateChain
 handlingPolicy: reject-by-default
-isRequired: false
 constrainedByRuleIds:
   - RULE-UNTRUSTED-HEADER-SOURCES

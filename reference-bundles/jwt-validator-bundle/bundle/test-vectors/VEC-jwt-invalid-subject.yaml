@@ -7,11 +7,21 @@ title: "Incorrect Subject Mismatch"
 description: JWT holding a `sub` claim that does not exact-match the expected subject configured by the runtime policy.
 tags: [test, security]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"sub": "unexpected-user"}'
+runtimePolicy:
+  expectedSubject: auth-test-user
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-invalid-subject]
 expectedPrimaryErrorCodeId: ERR-invalid-subject
 expectedFailedRuleId: RULE-SUB-MATCH
-expectedTerminalStepId: STEP-2
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-SUB-MATCH]

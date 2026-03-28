@@ -4,7 +4,7 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: "Safe Diagnostics Mode"
-description: Implementations MUST NOT return populated or unverified `claims_view` payloads on signature failure unless explicit diagnostic overrides (e.g., `allow_on_failure`) are deliberately passed in the configuration to prevent downstream trust manipulation.
+description: Implementations MUST NOT return populated or unverified `STRUCT-claims-view` payloads on signature failure unless the runtime policy explicitly enables `allowDiagnosticClaimsOnFailure`, to prevent downstream trust manipulation.
 tags: [security, boundary]
 severity: CRITICAL
 mitigatesRiskIds: []

@@ -7,9 +7,18 @@ title: "Unsupported Compact JWE Input"
 description: Five-segment compact JWE input is syntactically JOSE, but outside the active signed-JWT contract.
 tags: [test, format, boundary]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 rawJwtInput: a.b.c.d.e
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-unsupported-format]
 expectedPrimaryErrorCodeId: ERR-unsupported-format
 expectedFailedRuleId: RULE-COMPACT-JWS-ONLY

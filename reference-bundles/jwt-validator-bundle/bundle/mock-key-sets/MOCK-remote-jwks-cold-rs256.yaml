@@ -1,0 +1,24 @@
+id: MOCK-remote-jwks-cold-rs256
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: Remote JWKS Cold Fetch RS256 Fixture
+description: Simulated HTTPS JWKS response for an initial cold-start fetch that returns a trusted RS256 signing key.
+tags: [fixture, remote, jwks, cold-start]
+fixtureMode: remote-jwks-response
+endpointUrl: https://example.com/jwks.json
+httpStatusCode: 200
+responseHeaders:
+  cache-control: max-age=300
+  etag: '"jwks-v1"'
+cacheDisposition: cold-start
+networkBehavior: success
+jwks:
+  keys:
+    - kty: RSA
+      kid: remote-rs256-1
+      alg: RS256
+      use: sig
+      n: zYxWVutsRQponMLKjiHGFedcba9876543210ZYXwvutsrqponmlkjihgfedcbaABCDEFGHIJKLMNOpqrstuvwxyz1234567890abcdefgHIJKLMNopqrstuvwxyzABCD
+      e: AQAB

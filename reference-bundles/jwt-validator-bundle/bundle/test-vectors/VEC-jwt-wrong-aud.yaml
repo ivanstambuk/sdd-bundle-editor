@@ -7,9 +7,19 @@ title: "Missing Expected Audience"
 description: JWT intended for a different backend microservice.
 tags: [test, security]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"aud": "not-this-service"}'
+runtimePolicy:
+  expectedAudience: api://expected-service
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-invalid-audience]
 expectedPrimaryErrorCodeId: ERR-invalid-audience
 expectedFailedRuleId: RULE-AUD-MATCH

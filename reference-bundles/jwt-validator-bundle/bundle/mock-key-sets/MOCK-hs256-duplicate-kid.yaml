@@ -1,0 +1,19 @@
+id: MOCK-hs256-duplicate-kid
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: Duplicate HS256 kid Fixture
+description: Static HS256 key material containing two distinct octet keys that intentionally share the same `kid` for ambiguity testing.
+tags: [fixture, crypto, kid]
+fixtureMode: static-keyset
+jwks:
+  keys:
+    - kty: oct
+      kid: dup-key
+      alg: HS256
+      k: AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow
+    - kty: oct
+      kid: dup-key
+      alg: HS256
+      k: hJtXIZ2uSN5kbQfbtTNWbgc3hN7m2SxW9K8Q0lR1yQ3pV5sC0jN4eM7uZ1xT6wY2Q4dE7fH2jK9lM1nP3qR5sQ

@@ -1,0 +1,17 @@
+id: MOCK-rs256-weak-1024
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: Weak RS256 1024-bit Fixture
+description: Static RSA key material representing an intentionally undersized 1024-bit RS256 signing key for weak-key rejection tests.
+tags: [fixture, crypto, rsa]
+fixtureMode: static-keyset
+jwks:
+  keys:
+    - kty: RSA
+      kid: rsa-weak-1
+      alg: RS256
+      use: sig
+      n: sXch4LhsR4A8R9N9y7F7e9G6m8Q3S2u4v5w6x7y8z9AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890abcdefghiJKLMNOpqrstuvwxyzABCDE
+      e: AQAB

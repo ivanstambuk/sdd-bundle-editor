@@ -1,0 +1,21 @@
+id: STRUCT-profile-invocation
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Profile Invocation Fragment
+description: Authoritative input fragment for selecting the token profile exercised by a validation-oriented request surface.
+tags: [data, input, fragment]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    invocationProfileId:
+      type: string
+      format: sdd-ref
+      title: Invocation Profile Reference
+      description: References related TokenProfile entity.
+      x-sdd-refTargets:
+        - TokenProfile
+  required:
+    - invocationProfileId

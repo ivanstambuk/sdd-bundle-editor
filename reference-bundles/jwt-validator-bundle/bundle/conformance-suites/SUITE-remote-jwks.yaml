@@ -1,0 +1,30 @@
+id: SUITE-remote-jwks
+kind: ConformanceSuite
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: Remote JWKS Execution Tests
+description: Focused suite for validators that resolve trusted signing keys from a configured HTTPS JWKS endpoint, emphasizing remote-profile algorithm policy, issuer expectations, and rejection of signer-controlled trust sources.
+tags: [test-plan, remote]
+targetsClassIds:
+  - CLASS-jwt-validator-remote-jwks
+containsVectorIds:
+  - VEC-remote-jwks-valid
+  - VEC-remote-jwks-cache-hit-valid
+  - VEC-remote-jwks-kid-miss-refresh-valid
+  - VEC-remote-jwks-rollover-refresh-valid
+  - VEC-remote-jwks-network-retry-fail-closed
+  - VEC-remote-jwks-hs256-disallowed
+  - VEC-remote-jwks-invalid-issuer
+  - VEC-remote-jwks-unsupported-header-jku
+requiresFixtureIds:
+  - MOCK-remote-jwks-cold-rs256
+  - MOCK-remote-jwks-cache-hit-rs256
+  - MOCK-remote-jwks-rollover-rs256
+  - MOCK-remote-jwks-network-retry-fail
+requiresEnvironmentCapabilities:
+  - network-mock
+  - remote-jwks-endpoint
+ownedByActorId: ACT-sec-team
+governedByAdrIds:
+  - ADR-0001

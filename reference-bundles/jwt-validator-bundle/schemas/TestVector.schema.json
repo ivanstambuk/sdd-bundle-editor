@@ -115,18 +115,93 @@
       "x-sdd-order": 12,
       "x-sdd-displayHint": "multiline"
     },
-    "environmentState": {
+    "runtimePolicy": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "now_epoch_seconds": {
+        "expectedIssuer": {
+          "type": "string"
+        },
+        "expectedSubject": {
+          "type": "string"
+        },
+        "expectedAudience": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          ]
+        },
+        "expectedTyp": {
+          "type": "string"
+        },
+        "allowedClockSkewSeconds": {
           "type": "integer"
         },
-        "leeway_seconds": {
-          "type": "integer"
+        "allowDiagnosticClaimsOnFailure": {
+          "type": "boolean"
+        },
+        "allowTrustSensitiveHeaderSources": {
+          "type": "boolean"
+        },
+        "allowedCriticalHeaders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
         }
       },
+      "required": [
+        "allowedClockSkewSeconds"
+      ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 20
+    },
+    "validationContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "currentTimeEpochSeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selectedKeyStrategyId": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "string"
+        },
+        "replayStateMode": {
+          "type": "string",
+          "enum": [
+            "out-of-scope",
+            "unchecked",
+            "checked"
+          ]
+        },
+        "invocationSource": {
+          "type": "string",
+          "enum": [
+            "runtime",
+            "diagnostic",
+            "conformance"
+          ]
+        }
+      },
+      "required": [
+        "currentTimeEpochSeconds",
+        "invocationSource"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
     },
     "invocationProfileId": {
       "type": "string",
@@ -138,6 +213,17 @@
       "format": "sdd-ref",
       "title": "Invocation Profile Reference",
       "description": "References related TokenProfile entity."
+    },
+    "invokesOperationId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "Operation"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 23,
+      "format": "sdd-ref",
+      "title": "Invokes Operation Reference",
+      "description": "References the operation exercised by this vector."
     },
     "validatesRuleIds": {
       "type": "array",
@@ -188,6 +274,27 @@
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 25
     },
+    "expectedKeySelectionStatus": {
+      "type": "string",
+      "enum": [
+        "not-applicable",
+        "resolved",
+        "missing",
+        "ambiguous"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 26
+    },
+    "expectedTrustDecision": {
+      "type": "string",
+      "enum": [
+        "trusted",
+        "rejected",
+        "indeterminate"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 27
+    },
     "expectedEvaluatedProfileId": {
       "type": "string",
       "x-sdd-refTargets": [
@@ -232,6 +339,106 @@
       "title": "Uses Mock Key Reference",
       "description": "References related MockKeySet entity."
     },
+    "requiresFixtureIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "MockKeySet"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 41,
+      "title": "Requires Fixture References",
+      "description": "References mock-key or remote-key fixtures required to execute this vector."
+    },
+    "remoteResolutionScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cacheState": {
+          "type": "string",
+          "enum": [
+            "cold-start",
+            "warm-cache",
+            "stale-cache"
+          ]
+        },
+        "refreshTrigger": {
+          "type": "string",
+          "enum": [
+            "none",
+            "initial-fetch",
+            "kid-miss",
+            "key-rollover",
+            "network-retry"
+          ]
+        },
+        "expectedFetchBehavior": {
+          "type": "string",
+          "enum": [
+            "not-reached",
+            "cache-only",
+            "fetch-success",
+            "refresh-success",
+            "fail-closed-after-retry"
+          ]
+        }
+      },
+      "required": [
+        "cacheState",
+        "refreshTrigger",
+        "expectedFetchBehavior"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 24
+    },
+    "oidcDiscoveryScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "metadataState": {
+          "type": "string",
+          "enum": [
+            "initial-discovery",
+            "cached-discovery",
+            "metadata-refresh"
+          ]
+        },
+        "issuerBindingOutcome": {
+          "type": "string",
+          "enum": [
+            "match",
+            "mismatch"
+          ]
+        },
+        "jwksUriOutcome": {
+          "type": "string",
+          "enum": [
+            "match",
+            "mismatch",
+            "drift"
+          ]
+        },
+        "expectedDiscoveryBehavior": {
+          "type": "string",
+          "enum": [
+            "fetch-success",
+            "cache-only",
+            "refresh-success",
+            "fail-closed"
+          ]
+        }
+      },
+      "required": [
+        "metadataState",
+        "issuerBindingOutcome",
+        "jwksUriOutcome",
+        "expectedDiscoveryBehavior"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 25
+    },
     "payloadJson": {
       "type": "string",
       "x-sdd-layoutGroup": "details",
@@ -258,15 +465,83 @@
       "then": {
         "properties": {
           "expectedOutcomeClass": {},
+          "expectedKeySelectionStatus": {},
+          "expectedTrustDecision": {},
           "validatesRuleIds": {},
           "invocationProfileId": {},
-          "expectedEvaluatedProfileId": {}
+          "invokesOperationId": {},
+          "expectedEvaluatedProfileId": {},
+          "runtimePolicy": {},
+          "validationContext": {}
         },
         "required": [
           "expectedOutcomeClass",
+          "expectedKeySelectionStatus",
+          "expectedTrustDecision",
           "validatesRuleIds",
           "invocationProfileId",
-          "expectedEvaluatedProfileId"
+          "invokesOperationId",
+          "expectedEvaluatedProfileId",
+          "runtimePolicy",
+          "validationContext"
+        ],
+        "oneOf": [
+          {
+            "properties": {
+              "rawJwtInput": {}
+            },
+            "required": [
+              "rawJwtInput"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "headerJson": {}
+                  },
+                  "required": [
+                    "headerJson"
+                  ]
+                },
+                {
+                  "properties": {
+                    "payloadJson": {}
+                  },
+                  "required": [
+                    "payloadJson"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "anyOf": [
+              {
+                "properties": {
+                  "headerJson": {}
+                },
+                "required": [
+                  "headerJson"
+                ]
+              },
+              {
+                "properties": {
+                  "payloadJson": {}
+                },
+                "required": [
+                  "payloadJson"
+                ]
+              }
+            ],
+            "not": {
+              "properties": {
+                "rawJwtInput": {}
+              },
+              "required": [
+                "rawJwtInput"
+              ]
+            }
+          }
         ]
       }
     }

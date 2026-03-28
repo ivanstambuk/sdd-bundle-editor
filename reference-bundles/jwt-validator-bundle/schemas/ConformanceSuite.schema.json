@@ -130,6 +130,27 @@
       "title": "Contains Vector References",
       "description": "References related TestVector entity."
     },
+    "requiresFixtureIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "MockKeySet"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 35,
+      "title": "Requires Fixture References",
+      "description": "References mock-key fixtures required to execute this suite."
+    },
+    "requiresEnvironmentCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 15
+    },
     "ownedByActorId": {
       "type": "string",
       "x-sdd-refTargets": [

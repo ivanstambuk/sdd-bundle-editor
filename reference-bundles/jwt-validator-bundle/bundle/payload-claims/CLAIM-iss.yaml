@@ -12,7 +12,8 @@ name: iss
 dataType: string
 semanticType: StringOrURI
 comparisonSemantics: uri-exact
-isRequired: false
+requiredWhenRuntimePolicyFields:
+  - expectedIssuer
 isStandardRFC: true
 constrainedByRuleIds:
   - RULE-ISS-MATCH

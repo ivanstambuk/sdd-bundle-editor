@@ -1,0 +1,18 @@
+id: STRUCT-parse-request
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: JWT Parse Request
+description: Minimal parser request carrying a raw token string for structural decoding without trust decisions.
+tags: [data, input, parser]
+composesStructureIds:
+  - STRUCT-token-input
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    token:
+      type: string
+  required:
+    - token

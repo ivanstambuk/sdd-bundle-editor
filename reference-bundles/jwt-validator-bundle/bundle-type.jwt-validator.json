@@ -275,6 +275,13 @@
       "multiplicity": "many"
     },
     {
+      "name": "ConformanceSuiteToMockKeySet_requiresFixtureIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "MockKeySet",
+      "fromField": "requiresFixtureIds",
+      "multiplicity": "many"
+    },
+    {
       "name": "CryptoAlgorithmToADR_governedByAdrIds",
       "fromEntity": "CryptoAlgorithm",
       "toEntity": "ADR",
@@ -329,6 +336,20 @@
       "toEntity": "ADR",
       "fromField": "governedByAdrIds",
       "multiplicity": "many"
+    },
+    {
+      "name": "MockKeySetToMockKeySet_linkedJwksFixtureId",
+      "fromEntity": "MockKeySet",
+      "toEntity": "MockKeySet",
+      "fromField": "linkedJwksFixtureId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "MockKeySetToMockKeySet_supersedesFixtureId",
+      "fromEntity": "MockKeySet",
+      "toEntity": "MockKeySet",
+      "fromField": "supersedesFixtureId",
+      "multiplicity": "one"
     },
     {
       "name": "NormativeReferenceToADR_governedByAdrIds",
@@ -420,6 +441,13 @@
       "toEntity": "MockKeySet",
       "fromField": "usesMockKeyId",
       "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToMockKeySet_requiresFixtureIds",
+      "fromEntity": "TestVector",
+      "toEntity": "MockKeySet",
+      "fromField": "requiresFixtureIds",
+      "multiplicity": "many"
     },
     {
       "name": "TestVectorToTokenProfile_invocationProfileId",

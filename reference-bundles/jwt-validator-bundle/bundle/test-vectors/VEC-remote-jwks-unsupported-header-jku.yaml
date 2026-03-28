@@ -1,0 +1,32 @@
+id: VEC-remote-jwks-unsupported-header-jku
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Remote JWKS Rejects Header-Supplied JKU"
+description: Remote-JWKS profile still rejects a signer-controlled `jku` header because trusted key source selection remains configuration-driven rather than token-driven.
+tags: [test, remote, header, security]
+invocationProfileId: PROF-JWT-REMOTE-JWKS
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS
+headerJson: '{"jku": "https://attacker.example/jwks.json"}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-https-jwks
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-remote-jwks-cache-hit-rs256
+remoteResolutionScenario:
+  cacheState: warm-cache
+  refreshTrigger: none
+  expectedFetchBehavior: not-reached
+expectedOutcomeClass: rejected
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
+expectsErrorCodeIds: [ERR-unsupported-header]
+expectedPrimaryErrorCodeId: ERR-unsupported-header
+expectedFailedRuleId: RULE-UNTRUSTED-HEADER-SOURCES
+expectedTerminalStepId: STEP-2
+validatesRuleIds: [RULE-UNTRUSTED-HEADER-SOURCES]

@@ -1,6 +1,6 @@
 id: STRUCT-claims-view
 kind: DataStructure
-executionStatus: advisory
+executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: "Claims View Report"

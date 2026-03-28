@@ -1,0 +1,25 @@
+id: MOCK-remote-jwks-cache-hit-rs256
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: Remote JWKS Warm Cache RS256 Fixture
+description: Simulated cached JWKS state representing a previously fetched remote RS256 keyset reused without another network request.
+tags: [fixture, remote, jwks, cache-hit]
+fixtureMode: remote-jwks-response
+endpointUrl: https://example.com/jwks.json
+httpStatusCode: 200
+responseHeaders:
+  cache-control: max-age=300
+  age: '120'
+  etag: '"jwks-v1"'
+cacheDisposition: warm-cache
+networkBehavior: success
+jwks:
+  keys:
+    - kty: RSA
+      kid: remote-rs256-1
+      alg: RS256
+      use: sig
+      n: zYxWVutsRQponMLKjiHGFedcba9876543210ZYXwvutsrqponmlkjihgfedcbaABCDEFGHIJKLMNOpqrstuvwxyz1234567890abcdefgHIJKLMNopqrstuvwxyzABCD
+      e: AQAB

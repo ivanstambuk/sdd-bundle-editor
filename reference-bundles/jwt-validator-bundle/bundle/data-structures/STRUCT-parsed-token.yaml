@@ -1,0 +1,32 @@
+id: STRUCT-parsed-token
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Parsed JWT Envelope
+description: Structural parse result exposing the decoded header and payload plus serialization observations, without asserting cryptographic trust.
+tags: [data, output, parser]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    syntaxValid:
+      type: boolean
+    inputFormatId:
+      type: string
+    segmentCount:
+      type: integer
+      minimum: 0
+    header:
+      type: object
+      additionalProperties: true
+    payload:
+      type: object
+      additionalProperties: true
+    parseDiagnostics:
+      type: array
+      items:
+        type: string
+  required:
+    - syntaxValid
+    - segmentCount

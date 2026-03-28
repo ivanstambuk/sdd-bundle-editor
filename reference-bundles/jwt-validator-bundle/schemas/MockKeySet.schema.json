@@ -104,12 +104,147 @@
       "title": "Governed By Adr References",
       "description": "References related ADR entity."
     },
+    "fixtureMode": {
+      "type": "string",
+      "enum": [
+        "static-keyset",
+        "remote-jwks-response",
+        "oidc-discovery-document"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 8
+    },
+    "endpointUrl": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 9
+    },
     "jwks": {
       "type": "object",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 10
+    },
+    "httpStatusCode": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "responseHeaders": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "cacheDisposition": {
+      "type": "string",
+      "enum": [
+        "none",
+        "cold-start",
+        "warm-cache",
+        "stale-cache",
+        "refresh-target"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 13
+    },
+    "networkBehavior": {
+      "type": "string",
+      "enum": [
+        "success",
+        "retryable-failure",
+        "permanent-failure"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 14
+    },
+    "discoveryDocument": {
+      "type": "object",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 15
+    },
+    "linkedJwksFixtureId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "MockKeySet"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 19,
+      "format": "sdd-ref",
+      "title": "Linked JWKS Fixture Reference",
+      "description": "References the JWKS fixture used after resolving discovery metadata."
+    },
+    "supersedesFixtureId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "MockKeySet"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20,
+      "format": "sdd-ref",
+      "title": "Supersedes Fixture Reference",
+      "description": "References the earlier fixture state that this remote response supersedes during rollover or refresh."
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "fixtureMode": {
+            "const": "remote-jwks-response"
+          }
+        },
+        "required": [
+          "fixtureMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "endpointUrl": {},
+          "httpStatusCode": {},
+          "cacheDisposition": {},
+          "networkBehavior": {}
+        },
+        "required": [
+          "endpointUrl",
+          "httpStatusCode",
+          "cacheDisposition",
+          "networkBehavior"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fixtureMode": {
+            "const": "oidc-discovery-document"
+          }
+        },
+        "required": [
+          "fixtureMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "endpointUrl": {},
+          "httpStatusCode": {},
+          "cacheDisposition": {},
+          "networkBehavior": {},
+          "discoveryDocument": {}
+        },
+        "required": [
+          "endpointUrl",
+          "httpStatusCode",
+          "cacheDisposition",
+          "networkBehavior",
+          "discoveryDocument"
+        ]
+      }
+    }
+  ],
   "x-sdd-ui": {
     "displayName": "Mock Key Set",
     "displayNamePlural": "Mock Key Sets",

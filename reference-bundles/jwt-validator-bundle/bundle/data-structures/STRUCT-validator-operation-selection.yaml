@@ -1,0 +1,21 @@
+id: STRUCT-validator-operation-selection
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Validator Operation Selection Fragment
+description: Authoritative input fragment for selecting the validator operation exercised by a harness request.
+tags: [data, input, fragment]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    validatorOperationId:
+      type: string
+      format: sdd-ref
+      title: Validator Operation Reference
+      description: References related Operation entity.
+      x-sdd-refTargets:
+        - Operation
+  required:
+    - validatorOperationId

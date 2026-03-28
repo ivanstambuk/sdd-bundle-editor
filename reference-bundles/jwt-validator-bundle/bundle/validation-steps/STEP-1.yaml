@@ -3,8 +3,8 @@ kind: ValidationStep
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: Parse and Verify Signature
-description: Decode the token envelope, reject unsupported JOSE container kinds, and verify low-level JSON and compact-serialization structure.
+title: Parse JWT Envelope
+description: Decode the token envelope, reject unsupported JOSE container kinds, and verify low-level JSON and compact-serialization structure before any trust decisions are made.
 abortOnFailure: true
 executionOrder: 1
 executesRuleIds:

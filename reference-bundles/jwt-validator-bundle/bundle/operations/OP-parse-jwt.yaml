@@ -8,4 +8,6 @@ description: Decodes the Base64Url segments strictly without cryptographic verif
 tags: [operation, parser]
 operationRole: parser
 systemComponent: CoreValidator
+acceptsStructureIds: [STRUCT-parse-request]
+producesDataStructureIds: [STRUCT-parsed-token]
 governedByAdrIds: [ADR-0001]

@@ -1,0 +1,29 @@
+id: VEC-jwt-missing-audience-required-by-policy
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Token Missing Audience Required By Policy"
+description: Token lacks the `aud` claim even though the runtime policy requires a specific audience expectation to be evaluated.
+tags: [test, policy, claim]
+invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-CORE
+payloadJson: '{"iss":"https://secure.example.com","exp":2500000000}'
+runtimePolicy:
+  expectedAudience: api://expected-service
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
+expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectsErrorCodeIds:
+  - ERR-missing-claim
+expectedPrimaryErrorCodeId: ERR-missing-claim
+expectedFailedRuleId: RULE-REQUIRED-CLAIMS
+expectedTerminalStepId: STEP-3
+validatesRuleIds:
+  - RULE-REQUIRED-CLAIMS

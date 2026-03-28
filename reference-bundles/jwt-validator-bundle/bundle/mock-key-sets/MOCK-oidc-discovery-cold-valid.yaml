@@ -1,0 +1,20 @@
+id: MOCK-oidc-discovery-cold-valid
+kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
+title: OIDC Discovery Cold Fetch Fixture
+description: Simulated initial OIDC discovery document fetch returning the expected issuer metadata and JWKS URI.
+tags: [fixture, oidc, discovery, cold-start]
+fixtureMode: oidc-discovery-document
+endpointUrl: https://example.com/.well-known/openid-configuration
+httpStatusCode: 200
+responseHeaders:
+  cache-control: max-age=300
+  etag: '"oidc-v1"'
+cacheDisposition: cold-start
+networkBehavior: success
+linkedJwksFixtureId: MOCK-remote-jwks-cold-rs256
+discoveryDocument:
+  issuer: https://issuer.example.com
+  jwks_uri: https://example.com/jwks.json

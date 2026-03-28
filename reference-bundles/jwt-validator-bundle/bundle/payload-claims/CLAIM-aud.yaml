@@ -10,4 +10,6 @@ name: aud
 dataType: string-or-array
 semanticType: Audience
 comparisonSemantics: audience-membership
+requiredWhenRuntimePolicyFields:
+  - expectedAudience
 constrainedByRuleIds: [RULE-AUD-MATCH]

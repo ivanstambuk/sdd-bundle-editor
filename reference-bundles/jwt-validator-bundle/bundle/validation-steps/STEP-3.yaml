@@ -3,10 +3,10 @@ kind: ValidationStep
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Standard Checks"
-description: Perform all structural checks regarding expiration, audience, and future-dating.
-tags: [step, core]
+title: "Validate Profile and Policy Claims"
+description: After signature authentication succeeds, enforce required claims, claim-shape constraints, and caller/profile identity or type expectations.
+tags: [step, claims]
 abortOnFailure: true
 executionOrder: 3
-executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-AUD-MATCH, RULE-TIME-BOUNDARY-CHECK]
-producesErrorCodeIds: [ERR-expired, ERR-premature, ERR-invalid-audience]
+executesRuleIds: [RULE-REQUIRED-CLAIMS, RULE-CLAIM-TYPE-CHECK, RULE-ISS-MATCH, RULE-SUB-MATCH, RULE-TYP-POLICY, RULE-AUD-MATCH]
+producesErrorCodeIds: [ERR-missing-claim, ERR-type-mismatch, ERR-invalid-issuer, ERR-invalid-subject, ERR-invalid-audience]

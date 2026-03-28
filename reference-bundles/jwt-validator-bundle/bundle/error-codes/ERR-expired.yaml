@@ -4,8 +4,10 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Token Expired
-description: Returned when the current clock time is strictly after the exp claim value, accounting for leeway.
+description: Returned when the current clock time is strictly after the exp claim value, accounting for `allowedClockSkewSeconds`.
 codeName: rejected-expired
 messageTemplate: The token expired at {{exp}}. Current time is {{now}}.
 outcomeClass: rejected
 severity: Critical
+isRetryable: true
+httpStatusCode: 401

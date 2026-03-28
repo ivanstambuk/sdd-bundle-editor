@@ -10,6 +10,5 @@ name: crit
 dataType: array
 semanticType: CriticalHeaders
 handlingPolicy: reject-by-default
-isRequired: false
 constrainedByRuleIds:
   - RULE-CRIT-HEADER-POLICY

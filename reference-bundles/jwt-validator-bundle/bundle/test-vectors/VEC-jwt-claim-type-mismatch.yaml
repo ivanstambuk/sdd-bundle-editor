@@ -7,11 +7,20 @@ title: "Expiration Time is a String"
 description: Token features an `exp` claim, but its value is mistakenly encapsulated as a string ("2500000000") instead of an integer.
 tags: [test, structure]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"exp": "2500000000"}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: malformed
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-type-mismatch]
 expectedPrimaryErrorCodeId: ERR-type-mismatch
 expectedFailedRuleId: RULE-CLAIM-TYPE-CHECK
-expectedTerminalStepId: STEP-2
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-CLAIM-TYPE-CHECK]

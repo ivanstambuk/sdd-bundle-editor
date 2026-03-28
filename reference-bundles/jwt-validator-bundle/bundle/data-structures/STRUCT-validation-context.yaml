@@ -13,8 +13,6 @@ schemaDefinition:
     currentTimeEpochSeconds:
       type: integer
       minimum: 0
-    selectedProfileId:
-      type: string
     selectedKeyStrategyId:
       type: string
     tenantId:

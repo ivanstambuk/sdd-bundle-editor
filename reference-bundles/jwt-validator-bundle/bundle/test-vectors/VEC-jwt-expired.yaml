@@ -6,15 +6,21 @@ lifecycleStatus: active
 title: Expired JWT Token Test
 description: A token signed correctly with the static hs256 mock key, but its exp claim is set to a time in the past.
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.XbP_rZEDQk7_wXJ_I6i3gE8fA11D3lX2z0VmV_x-N48
-environmentState:
-  now_epoch_seconds: 1516239100
-  leeway_seconds: 0
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239100
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectedPrimaryErrorCodeId: ERR-expired
 expectedFailedRuleId: RULE-EXP-CHECK
-expectedTerminalStepId: STEP-3
+expectedTerminalStepId: STEP-4
 validatesRuleIds:
   - RULE-EXP-CHECK
 expectsErrorCodeIds:

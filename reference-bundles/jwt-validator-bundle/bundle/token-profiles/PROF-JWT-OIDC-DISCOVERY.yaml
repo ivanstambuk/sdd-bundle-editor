@@ -11,49 +11,27 @@ replayProtectionMode: out-of-scope
 inheritsProfileIds:
   - PROF-JWT-REMOTE-JWKS
 inheritanceMode: additive
+inheritanceFieldModes:
+  unsupportedFormatIds: inherit
+  usesKeyStrategyIds: replace
+  requiresHeaderIds: inherit
+  optionalHeaderIds: inherit
+  requiresClaimIds: extend
+  optionalClaimIds: narrow
+  allowsAlgorithmIds: inherit
+  definesPipelineStepIds: inherit
+  implementsReferenceIds: extend
 implementsReferenceIds:
-  - RFC-7515
-  - RFC-7518
-  - RFC-7519
-  - RFC-8725
   - OIDC-CORE
 acceptsPolicyId: STRUCT-runtime-policy
 acceptsContextId: STRUCT-validation-context
 returnsModelId: STRUCT-validation-result
-unsupportedFormatIds:
-  - FMT-jwe-compact
-  - FMT-jws-json
-  - FMT-nested-jwt
-allowsAlgorithmIds:
-  - ALG-RS256
-  - ALG-ES256
-  - ALG-PS256
-definesPipelineStepIds:
-  - STEP-1
-  - STEP-2
-  - STEP-3
-  - STEP-4
-usesFormatId: FMT-jws-compact
 usesKeyStrategyIds:
   - KEY-oidc-discovery
-requiresHeaderIds:
-  - HDR-alg
 requiresClaimIds:
-  - CLAIM-exp
   - CLAIM-iss
 optionalClaimIds:
   - CLAIM-aud
   - CLAIM-iat
   - CLAIM-jti
   - CLAIM-sub
-optionalHeaderIds:
-  - HDR-kid
-  - HDR-typ
-  - HDR-cty
-  - HDR-crit
-  - HDR-jku
-  - HDR-jwk
-  - HDR-x5u
-  - HDR-x5c
-  - HDR-x5t
-  - HDR-x5t-s256

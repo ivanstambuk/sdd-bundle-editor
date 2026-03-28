@@ -10,5 +10,4 @@ name: jti
 dataType: string
 semanticType: JWTID
 comparisonSemantics: exact-string
-isRequired: false
 isStandardRFC: true

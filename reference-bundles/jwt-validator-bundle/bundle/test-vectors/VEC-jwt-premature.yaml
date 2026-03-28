@@ -7,11 +7,20 @@ title: "NBF Claim in the Future"
 description: JWT signed perfectly but with an NBF set to next year.
 tags: [test, time]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"nbf": 2500000000}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
 expectsErrorCodeIds: [ERR-premature]
 expectedPrimaryErrorCodeId: ERR-premature
 expectedFailedRuleId: RULE-NBF-CHECK
-expectedTerminalStepId: STEP-3
+expectedTerminalStepId: STEP-4
 validatesRuleIds: [RULE-NBF-CHECK]

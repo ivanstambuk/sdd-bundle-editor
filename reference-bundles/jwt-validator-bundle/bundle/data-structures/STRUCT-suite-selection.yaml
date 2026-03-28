@@ -1,0 +1,21 @@
+id: STRUCT-suite-selection
+kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Conformance Suite Selection Fragment
+description: Authoritative input fragment for selecting which conformance suite a harness invocation should execute.
+tags: [data, input, fragment]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    suiteId:
+      type: string
+      format: sdd-ref
+      title: Conformance Suite Reference
+      description: References related ConformanceSuite entity.
+      x-sdd-refTargets:
+        - ConformanceSuite
+  required:
+    - suiteId

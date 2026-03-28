@@ -7,11 +7,20 @@ title: "Untrusted Header-Supplied Key Source"
 description: JWT includes a `jku` header pointing to signer-controlled key material, which the active profile rejects by default.
 tags: [test, header, security, remote]
 invocationProfileId: PROF-JWT-CORE
+invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
 headerJson: '{"jku": "https://attacker.example/jwks.json"}'
+runtimePolicy:
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-static-jwks
+  invocationSource: conformance
 expectedOutcomeClass: rejected
+expectedKeySelectionStatus: not-applicable
+expectedTrustDecision: rejected
 expectsErrorCodeIds: [ERR-unsupported-header]
 expectedPrimaryErrorCodeId: ERR-unsupported-header
 expectedFailedRuleId: RULE-UNTRUSTED-HEADER-SOURCES
-expectedTerminalStepId: STEP-4
+expectedTerminalStepId: STEP-2
 validatesRuleIds: [RULE-UNTRUSTED-HEADER-SOURCES]

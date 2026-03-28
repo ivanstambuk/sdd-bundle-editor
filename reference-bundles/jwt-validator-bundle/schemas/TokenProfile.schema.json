@@ -312,6 +312,61 @@
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 8
     },
+    "inheritanceFieldModes": {
+      "type": "object",
+      "additionalProperties": false,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 9,
+      "properties": {
+        "unsupportedFormatIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "usesKeyStrategyIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "requiresHeaderIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "optionalHeaderIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "requiresClaimIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "optionalClaimIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "allowsAlgorithmIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "definesPipelineStepIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        },
+        "implementsReferenceIds": {
+          "type": "string",
+          "enum": ["inherit", "extend", "narrow", "replace"]
+        }
+      },
+      "required": [
+        "unsupportedFormatIds",
+        "usesKeyStrategyIds",
+        "requiresHeaderIds",
+        "optionalHeaderIds",
+        "requiresClaimIds",
+        "optionalClaimIds",
+        "allowsAlgorithmIds",
+        "definesPipelineStepIds",
+        "implementsReferenceIds"
+      ]
+    },
     "supersedesProfileIds": {
       "type": "array",
       "items": {
@@ -358,11 +413,6 @@
           "profileType": {},
           "profileFamily": {},
           "replayProtectionMode": {},
-          "usesFormatId": {},
-          "unsupportedFormatIds": {},
-          "allowsAlgorithmIds": {},
-          "definesPipelineStepIds": {},
-          "implementsReferenceIds": {},
           "acceptsPolicyId": {},
           "acceptsContextId": {},
           "returnsModelId": {}
@@ -371,14 +421,49 @@
           "profileType",
           "profileFamily",
           "replayProtectionMode",
+          "acceptsPolicyId",
+          "acceptsContextId",
+          "returnsModelId"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "executionStatus": {
+            "const": "active"
+          },
+          "artifactClass": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "executionStatus",
+          "artifactClass"
+        ],
+        "not": {
+          "properties": {
+            "inheritsProfileIds": {}
+          },
+          "required": [
+            "inheritsProfileIds"
+          ]
+        }
+      },
+      "then": {
+        "properties": {
+          "usesFormatId": {},
+          "unsupportedFormatIds": {},
+          "allowsAlgorithmIds": {},
+          "definesPipelineStepIds": {},
+          "implementsReferenceIds": {}
+        },
+        "required": [
           "usesFormatId",
           "unsupportedFormatIds",
           "allowsAlgorithmIds",
           "definesPipelineStepIds",
-          "implementsReferenceIds",
-          "acceptsPolicyId",
-          "acceptsContextId",
-          "returnsModelId"
+          "implementsReferenceIds"
         ]
       }
     },
@@ -396,10 +481,12 @@
       },
       "then": {
         "properties": {
-          "inheritanceMode": {}
+          "inheritanceMode": {},
+          "inheritanceFieldModes": {}
         },
         "required": [
-          "inheritanceMode"
+          "inheritanceMode",
+          "inheritanceFieldModes"
         ]
       }
     }

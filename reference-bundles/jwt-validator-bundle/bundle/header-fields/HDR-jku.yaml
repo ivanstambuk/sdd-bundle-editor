@@ -10,6 +10,5 @@ name: jku
 dataType: string
 semanticType: RemoteJWKSetUrl
 handlingPolicy: reject-by-default
-isRequired: false
 constrainedByRuleIds:
   - RULE-UNTRUSTED-HEADER-SOURCES

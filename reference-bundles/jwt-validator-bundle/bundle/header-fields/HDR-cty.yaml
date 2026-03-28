@@ -10,6 +10,5 @@ name: cty
 dataType: string
 semanticType: MediaType
 handlingPolicy: profile-controlled
-isRequired: false
 constrainedByRuleIds:
   - RULE-COMPACT-JWS-ONLY

@@ -23,10 +23,30 @@ rules:
     minLinks: 1
     severity: error
 
+  conformance-class-owned-by-suite:
+    type: coverage
+    fromEntity: ConformanceSuite
+    toEntity: ConformanceClass
+    viaField: targetsClassIds
+    minLinks: 1
+    severity: error
+
   test-vector-validates-rules:
     type: required-field
     targetEntities: [TestVector]
     field: validatesRuleIds
+    severity: error
+
+  active-error-codes-http-status:
+    type: required-field
+    targetEntities: [ErrorCode]
+    field: httpStatusCode
+    severity: error
+
+  active-error-codes-retryability:
+    type: required-field
+    targetEntities: [ErrorCode]
+    field: isRetryable
     severity: error
 
   no-empty-contract-arrays:
@@ -62,4 +82,397 @@ rules:
     classProfileField: targetsProfileIds
     vectorField: containsVectorIds
     vectorProfileField: invocationProfileId
+    severity: error
+
+  suite-vector-operation-match:
+    type: suite-vector-operation-match
+    suiteEntity: ConformanceSuite
+    classEntity: ConformanceClass
+    classField: targetsClassIds
+    classOperationField: requiresOperationIds
+    vectorField: containsVectorIds
+    vectorOperationField: invokesOperationId
+    severity: error
+
+  profile-operation-contract-match:
+    type: profile-operation-contract-match
+    profileEntity: TokenProfile
+    operationEntity: Operation
+    operationId: OP-validate-jwt
+    operationAcceptsField: acceptsStructureIds
+    operationProducesField: producesDataStructureIds
+    profilePolicyField: acceptsPolicyId
+    profileContextField: acceptsContextId
+    profileResultField: returnsModelId
+    severity: error
+
+  vector-profile-context-consistency:
+    type: vector-profile-context-consistency
+    vectorEntity: TestVector
+    profileEntity: TokenProfile
+    invocationProfileField: invocationProfileId
+    evaluatedProfileField: expectedEvaluatedProfileId
+    selectedKeyStrategyField: validationContext.selectedKeyStrategyId
+    profileKeyStrategyField: usesKeyStrategyIds
+    severity: error
+
+  remote-vectors-require-fixtures:
+    type: required-field-when-field-equals
+    targetEntities: [TestVector]
+    whenField: validationContext.selectedKeyStrategyId
+    whenEqualsAny: [KEY-https-jwks]
+    field: requiresFixtureIds
+    severity: error
+
+  remote-vectors-require-scenario:
+    type: required-field-when-field-equals
+    targetEntities: [TestVector]
+    whenField: validationContext.selectedKeyStrategyId
+    whenEqualsAny: [KEY-https-jwks]
+    field: remoteResolutionScenario
+    severity: error
+
+  oidc-vectors-require-fixtures:
+    type: required-field-when-field-equals
+    targetEntities: [TestVector]
+    whenField: validationContext.selectedKeyStrategyId
+    whenEqualsAny: [KEY-oidc-discovery]
+    field: requiresFixtureIds
+    severity: error
+
+  oidc-vectors-require-remote-scenario:
+    type: required-field-when-field-equals
+    targetEntities: [TestVector]
+    whenField: validationContext.selectedKeyStrategyId
+    whenEqualsAny: [KEY-oidc-discovery]
+    field: remoteResolutionScenario
+    severity: error
+
+  oidc-vectors-require-discovery-scenario:
+    type: required-field-when-field-equals
+    targetEntities: [TestVector]
+    whenField: validationContext.selectedKeyStrategyId
+    whenEqualsAny: [KEY-oidc-discovery]
+    field: oidcDiscoveryScenario
+    severity: error
+
+  vector-step-graph-consistency:
+    type: vector-step-graph-consistency
+    vectorEntity: TestVector
+    stepEntity: ValidationStep
+    terminalStepField: expectedTerminalStepId
+    failedRuleField: expectedFailedRuleId
+    primaryErrorField: expectedPrimaryErrorCodeId
+    stepRuleField: executesRuleIds
+    stepErrorField: producesErrorCodeIds
+    severity: error
+
+  profile-step-order-consistency:
+    type: profile-step-order-consistency
+    profileEntity: TokenProfile
+    stepEntity: ValidationStep
+    profileStepField: definesPipelineStepIds
+    stepOrderField: executionOrder
+    severity: error
+
+  profile-inheritance-field-modes:
+    type: profile-inheritance-field-modes
+    profileEntity: TokenProfile
+    parentField: inheritsProfileIds
+    inheritanceModeField: inheritanceMode
+    fieldModesField: inheritanceFieldModes
+    trackedFields:
+      - unsupportedFormatIds
+      - usesKeyStrategyIds
+      - requiresHeaderIds
+      - optionalHeaderIds
+      - requiresClaimIds
+      - optionalClaimIds
+      - allowsAlgorithmIds
+      - definesPipelineStepIds
+      - implementsReferenceIds
+    severity: error
+
+  additive-required-claims-no-drop:
+    type: allowed-values-when-field-equals
+    targetEntities: [TokenProfile]
+    whenField: inheritanceMode
+    whenEqualsAny: [additive]
+    field: inheritanceFieldModes.requiresClaimIds
+    allowedValues: [inherit, extend]
+    severity: error
+
+  additive-required-headers-no-drop:
+    type: allowed-values-when-field-equals
+    targetEntities: [TokenProfile]
+    whenField: inheritanceMode
+    whenEqualsAny: [additive]
+    field: inheritanceFieldModes.requiresHeaderIds
+    allowedValues: [inherit, extend]
+    severity: error
+
+  effective-remote-profiles-no-hs256:
+    type: profile-effective-forbid-values-when-field-includes
+    profileEntity: TokenProfile
+    parentField: inheritsProfileIds
+    inheritanceModeField: inheritanceMode
+    fieldModesField: inheritanceFieldModes
+    whenField: usesKeyStrategyIds
+    whenIncludesAny: [KEY-https-jwks, KEY-oidc-discovery]
+    forbidField: allowsAlgorithmIds
+    forbidValues: [ALG-HS256]
+    severity: error
+
+  validation-request-runtime-policy-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-validation-request
+    leftPath: schemaDefinition.$defs.runtimePolicy
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-runtime-policy
+    rightPath: schemaDefinition
+    severity: error
+
+  validation-request-token-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-validation-request
+    leftPath: schemaDefinition.properties.token
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-token-input
+    rightPath: schemaDefinition.properties.token
+    severity: error
+
+  validation-request-invocation-profile-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-validation-request
+    leftPath: schemaDefinition.properties.invocationProfileId
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-profile-invocation
+    rightPath: schemaDefinition.properties.invocationProfileId
+    severity: error
+
+  validation-request-validation-context-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-validation-request
+    leftPath: schemaDefinition.$defs.validationContext
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-validation-context
+    rightPath: schemaDefinition
+    severity: error
+
+  parse-request-token-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-parse-request
+    leftPath: schemaDefinition.properties.token
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-token-input
+    rightPath: schemaDefinition.properties.token
+    severity: error
+
+  audit-request-suite-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-audit-request
+    leftPath: schemaDefinition.properties.suiteId
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-suite-selection
+    rightPath: schemaDefinition.properties.suiteId
+    severity: error
+
+  audit-request-validator-operation-shape:
+    type: shape-equals
+    leftSource: entity
+    leftEntityType: DataStructure
+    leftEntityId: STRUCT-audit-request
+    leftPath: schemaDefinition.properties.validatorOperationId
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-validator-operation-selection
+    rightPath: schemaDefinition.properties.validatorOperationId
+    severity: error
+
+  test-vector-runtime-policy-shape:
+    type: shape-equals
+    leftSource: schema
+    leftEntityType: TestVector
+    leftPath: properties.runtimePolicy
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-runtime-policy
+    rightPath: schemaDefinition
+    severity: error
+
+  test-vector-validation-context-shape:
+    type: shape-equals
+    leftSource: schema
+    leftEntityType: TestVector
+    leftPath: properties.validationContext
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-validation-context
+    rightPath: schemaDefinition
+    severity: error
+
+  test-vector-token-shape:
+    type: shape-equals
+    leftSource: schema
+    leftEntityType: TestVector
+    leftPath: properties.rawJwtInput
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-token-input
+    rightPath: schemaDefinition.properties.token
+    severity: error
+
+  test-vector-invocation-profile-shape:
+    type: shape-equals
+    leftSource: schema
+    leftEntityType: TestVector
+    leftPath: properties.invocationProfileId
+    rightSource: entity
+    rightEntityType: DataStructure
+    rightEntityId: STRUCT-profile-invocation
+    rightPath: schemaDefinition.properties.invocationProfileId
+    severity: error
+
+  static-strategy-cache-behavior:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [STATIC]
+    field: cacheBehavior
+    allowedValues: [NO-CACHE]
+    severity: error
+
+  static-strategy-trust-source:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [STATIC]
+    field: trustSourceType
+    allowedValues: [INVOKER-PROVIDED]
+    severity: error
+
+  static-strategy-refresh:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [STATIC]
+    field: refreshStrategy
+    allowedValues: [never]
+    severity: error
+
+  static-strategy-rollover:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [STATIC]
+    field: rolloverBehavior
+    allowedValues: [manual-only]
+    severity: error
+
+  static-strategy-issuer-binding:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [STATIC]
+    field: issuerBindingMode
+    allowedValues: [none]
+    severity: error
+
+  jwks-strategy-cache-behavior:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [JWKS-URI]
+    field: cacheBehavior
+    allowedValues: [HTTP-CACHE]
+    severity: error
+
+  jwks-strategy-trust-source:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [JWKS-URI]
+    field: trustSourceType
+    allowedValues: [DIRECT-JWKS-URI]
+    severity: error
+
+  jwks-strategy-rollover:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [JWKS-URI]
+    field: rolloverBehavior
+    allowedValues: [cache-refresh]
+    severity: error
+
+  jwks-strategy-issuer-binding:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [JWKS-URI]
+    field: issuerBindingMode
+    allowedValues: [issuer-allowlist]
+    severity: error
+
+  oidc-strategy-cache-behavior:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [OIDC-DISCOVERY]
+    field: cacheBehavior
+    allowedValues: [DISCOVERY-CACHE]
+    severity: error
+
+  oidc-strategy-trust-source:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [OIDC-DISCOVERY]
+    field: trustSourceType
+    allowedValues: [OIDC-DISCOVERY]
+    severity: error
+
+  oidc-strategy-refresh:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [OIDC-DISCOVERY]
+    field: refreshStrategy
+    allowedValues: [metadata-driven]
+    severity: error
+
+  oidc-strategy-rollover:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [OIDC-DISCOVERY]
+    field: rolloverBehavior
+    allowedValues: [discovery-refresh]
+    severity: error
+
+  oidc-strategy-issuer-binding:
+    type: allowed-values-when-field-equals
+    targetEntities: [KeyStrategy]
+    whenField: strategyType
+    whenEqualsAny: [OIDC-DISCOVERY]
+    field: issuerBindingMode
+    allowedValues: [discovery-issuer-bound]
     severity: error

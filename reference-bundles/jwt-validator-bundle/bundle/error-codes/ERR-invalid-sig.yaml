@@ -9,3 +9,5 @@ codeName: rejected-signature
 messageTemplate: The JWS signature is invalid or could not be verified.
 outcomeClass: rejected
 severity: Critical
+isRetryable: false
+httpStatusCode: 401

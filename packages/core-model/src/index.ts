@@ -444,7 +444,7 @@ export async function loadBundleWithSchemaValidation(
   // Load and run lint rules, if configured.
   const lintConfigPath = bundle.manifest.spec.lintConfig?.path;
   const lintConfig = await loadLintConfig(bundleDir, lintConfigPath);
-  const lintDiagnostics = runLintRules(bundle, lintConfig);
+  const lintDiagnostics = runLintRules(bundle, lintConfig, rawSchemas);
   for (const ld of lintDiagnostics) {
     diagnostics.push({
       severity: ld.severity,

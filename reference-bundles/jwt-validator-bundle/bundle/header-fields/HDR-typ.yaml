@@ -10,6 +10,7 @@ description: >
 tags: [header]
 name: typ
 handlingPolicy: profile-controlled
-isRequired: false
 dataType: string
 semanticType: MediaType
+constrainedByRuleIds:
+  - RULE-TYP-POLICY

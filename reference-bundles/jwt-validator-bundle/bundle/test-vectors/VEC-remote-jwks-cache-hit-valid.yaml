@@ -1,0 +1,35 @@
+id: VEC-remote-jwks-cache-hit-valid
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Remote JWKS Cache Hit Valid Token"
+description: Remote-JWKS profile reuses a warm cached JWKS entry and accepts a token without performing an additional remote fetch.
+tags: [test, remote, cache, success]
+invocationProfileId: PROF-JWT-REMOTE-JWKS
+invokesOperationId: OP-validate-jwt
+expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS
+headerJson: '{"alg":"RS256","kid":"remote-rs256-1"}'
+payloadJson: '{"iss":"https://issuer.example.com","sub":"remote-cache-user","exp":2500000000}'
+runtimePolicy:
+  expectedIssuer: https://issuer.example.com
+  allowedClockSkewSeconds: 0
+validationContext:
+  currentTimeEpochSeconds: 1516239000
+  selectedKeyStrategyId: KEY-https-jwks
+  invocationSource: conformance
+requiresFixtureIds:
+  - MOCK-remote-jwks-cache-hit-rs256
+remoteResolutionScenario:
+  cacheState: warm-cache
+  refreshTrigger: none
+  expectedFetchBehavior: cache-only
+expectedOutcomeClass: accepted
+expectedKeySelectionStatus: resolved
+expectedTrustDecision: trusted
+expectedTerminalStepId: STEP-4
+validatesRuleIds:
+  - RULE-KID-RESOLVE
+  - RULE-SIG-VERIFY
+  - RULE-ISS-MATCH
+  - RULE-EXP-CHECK

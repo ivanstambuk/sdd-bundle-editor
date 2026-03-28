@@ -1,9 +1,14 @@
 id: RULE-EXP-CHECK
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Enforce Expiration Time
 description: If the exp claim is present, its value must be greater than the current time (now_epoch_seconds) minus the configured leeway.
 rationale: Required by RFC 7519 Section 4.1.4.
+severity: ERROR
 ruleType: TimeCheck
 throwsErrorCodeId: ERR-expired
 implementsReferenceIds:
   - RFC-7519
+bindsToContextPropertyId: STRUCT-validation-context

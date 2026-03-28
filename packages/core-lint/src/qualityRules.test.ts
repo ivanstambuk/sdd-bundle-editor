@@ -5,7 +5,7 @@ import { LintConfig } from './types';
 describe('required-field rule', () => {
     it('reports missing required field', () => {
         const bundle = {
-            entities: new Map([
+            entities: new Map<any, any>([
                 ['Requirement', new Map([
                     ['REQ-001', { id: 'REQ-001', entityType: 'Requirement', data: { id: 'REQ-001', title: 'Test' } }],
                 ])],
@@ -34,7 +34,7 @@ describe('required-field rule', () => {
 
     it('passes when required field is present', () => {
         const bundle = {
-            entities: new Map([
+            entities: new Map<any, any>([
                 ['Requirement', new Map([
                     ['REQ-001', { id: 'REQ-001', entityType: 'Requirement', data: { id: 'REQ-001', title: 'Test', kind: 'functional' } }],
                 ])],
@@ -399,5 +399,135 @@ describe('quality-check rule', () => {
 
         const diagnostics = runLintRules(bundle, config);
         expect(diagnostics).toHaveLength(0);
+    });
+});
+
+describe('no-empty-array rule', () => {
+    it('reports arrays that are present but empty', () => {
+        const bundle = {
+            entities: new Map([
+                ['TokenProfile', new Map([
+                    ['PROF-test', { id: 'PROF-test', entityType: 'TokenProfile', data: { id: 'PROF-test', optionalHeaderIds: [] } }],
+                ])],
+            ]),
+            idRegistry: new Map(),
+            refGraph: { edges: [] },
+        };
+
+        const config: LintConfig = {
+            rules: {
+                'no-empty-optional-headers': {
+                    type: 'no-empty-array',
+                    targetEntities: ['TokenProfile'],
+                    fields: ['optionalHeaderIds'],
+                    severity: 'error',
+                },
+            },
+        };
+
+        const diagnostics = runLintRules(bundle, config);
+        expect(diagnostics).toHaveLength(1);
+        expect(diagnostics[0].field).toBe('optionalHeaderIds');
+    });
+});
+
+describe('forbid-values-when-field-includes rule', () => {
+    it('reports forbidden combinations', () => {
+        const bundle = {
+            entities: new Map([
+                ['TokenProfile', new Map([
+                    ['PROF-test', {
+                        id: 'PROF-test',
+                        entityType: 'TokenProfile',
+                        data: {
+                            id: 'PROF-test',
+                            usesKeyStrategyIds: ['KEY-https-jwks'],
+                            allowsAlgorithmIds: ['ALG-HS256', 'ALG-RS256'],
+                        },
+                    }],
+                ])],
+            ]),
+            idRegistry: new Map(),
+            refGraph: { edges: [] },
+        };
+
+        const config: LintConfig = {
+            rules: {
+                'remote-profiles-no-hs256': {
+                    type: 'forbid-values-when-field-includes',
+                    targetEntities: ['TokenProfile'],
+                    whenField: 'usesKeyStrategyIds',
+                    whenIncludesAny: ['KEY-https-jwks'],
+                    forbidField: 'allowsAlgorithmIds',
+                    forbidValues: ['ALG-HS256'],
+                    severity: 'error',
+                },
+            },
+        };
+
+        const diagnostics = runLintRules(bundle, config);
+        expect(diagnostics).toHaveLength(1);
+        expect(diagnostics[0].field).toBe('allowsAlgorithmIds');
+    });
+});
+
+describe('suite-vector-profile-match rule', () => {
+    it('reports suites that include vectors for the wrong profile family', () => {
+        const bundle: any = {
+            entities: new Map<any, any>([
+                ['ConformanceSuite', new Map([
+                    ['SUITE-test', {
+                        id: 'SUITE-test',
+                        entityType: 'ConformanceSuite',
+                        data: {
+                            id: 'SUITE-test',
+                            targetsClassIds: ['CLASS-core'],
+                            containsVectorIds: ['VEC-oidc'],
+                        },
+                    }],
+                ])],
+                ['ConformanceClass', new Map([
+                    ['CLASS-core', {
+                        id: 'CLASS-core',
+                        entityType: 'ConformanceClass',
+                        data: {
+                            id: 'CLASS-core',
+                            targetsProfileIds: ['PROF-JWT-CORE'],
+                        },
+                    }],
+                ])],
+                ['TestVector', new Map([
+                    ['VEC-oidc', {
+                        id: 'VEC-oidc',
+                        entityType: 'TestVector',
+                        data: {
+                            id: 'VEC-oidc',
+                            invocationProfileId: 'PROF-JWT-OIDC-DISCOVERY',
+                        },
+                    }],
+                ])],
+            ]),
+            idRegistry: new Map(),
+            refGraph: { edges: [] },
+        };
+
+        const config: LintConfig = {
+            rules: {
+                'suite-profile-vector-match': {
+                    type: 'suite-vector-profile-match',
+                    suiteEntity: 'ConformanceSuite',
+                    classEntity: 'ConformanceClass',
+                    classField: 'targetsClassIds',
+                    classProfileField: 'targetsProfileIds',
+                    vectorField: 'containsVectorIds',
+                    vectorProfileField: 'invocationProfileId',
+                    severity: 'error',
+                },
+            },
+        };
+
+        const diagnostics = runLintRules(bundle, config);
+        expect(diagnostics).toHaveLength(1);
+        expect(diagnostics[0].entityId).toBe('SUITE-test');
     });
 });

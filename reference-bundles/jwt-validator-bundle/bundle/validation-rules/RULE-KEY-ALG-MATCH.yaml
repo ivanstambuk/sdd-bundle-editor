@@ -1,5 +1,8 @@
 id: RULE-KEY-ALG-MATCH
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Algorithm and Key Type Compatibility"
 description: The validator MUST reject the token if the `alg` specified in the header or validation policy is cryptographically incompatible with the resolved key's `kty` (e.g., attempting an ECSDA algorithm with an RSA key).
 tags: [validation, crypto, policy]

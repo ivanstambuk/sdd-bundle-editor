@@ -1,0 +1,15 @@
+id: HDR-jku
+kind: HeaderField
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "jku (JWK Set URL) Header Parameter"
+description: Points to a remote JWK Set URL supplied by the token producer. This bundle rejects it by default because it moves trust selection into attacker-controlled input.
+tags: [header, security, remote]
+name: jku
+dataType: string
+semanticType: RemoteJWKSetUrl
+handlingPolicy: reject-by-default
+isRequired: false
+constrainedByRuleIds:
+  - RULE-UNTRUSTED-HEADER-SOURCES

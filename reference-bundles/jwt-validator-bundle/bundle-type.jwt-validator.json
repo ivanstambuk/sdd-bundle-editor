@@ -233,6 +233,20 @@
       "multiplicity": "many"
     },
     {
+      "name": "ConformanceClassToTokenProfile_targetsProfileIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "TokenProfile",
+      "fromField": "targetsProfileIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToConformanceClass_supersedesClassIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "ConformanceClass",
+      "fromField": "supersedesClassIds",
+      "multiplicity": "many"
+    },
+    {
       "name": "ConformanceSuiteToActor_ownedByActorId",
       "fromEntity": "ConformanceSuite",
       "toEntity": "Actor",
@@ -394,10 +408,31 @@
       "multiplicity": "many"
     },
     {
+      "name": "TestVectorToErrorCode_expectedPrimaryErrorCodeId",
+      "fromEntity": "TestVector",
+      "toEntity": "ErrorCode",
+      "fromField": "expectedPrimaryErrorCodeId",
+      "multiplicity": "one"
+    },
+    {
       "name": "TestVectorToMockKeySet_usesMockKeyId",
       "fromEntity": "TestVector",
       "toEntity": "MockKeySet",
       "fromField": "usesMockKeyId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToTokenProfile_invocationProfileId",
+      "fromEntity": "TestVector",
+      "toEntity": "TokenProfile",
+      "fromField": "invocationProfileId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToTokenProfile_expectedEvaluatedProfileId",
+      "fromEntity": "TestVector",
+      "toEntity": "TokenProfile",
+      "fromField": "expectedEvaluatedProfileId",
       "multiplicity": "one"
     },
     {
@@ -406,6 +441,20 @@
       "toEntity": "ValidationRule",
       "fromField": "validatesRuleIds",
       "multiplicity": "many"
+    },
+    {
+      "name": "TestVectorToValidationRule_expectedFailedRuleId",
+      "fromEntity": "TestVector",
+      "toEntity": "ValidationRule",
+      "fromField": "expectedFailedRuleId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToValidationStep_expectedTerminalStepId",
+      "fromEntity": "TestVector",
+      "toEntity": "ValidationStep",
+      "fromField": "expectedTerminalStepId",
+      "multiplicity": "one"
     },
     {
       "name": "TokenProfileToADR_governedByAdrIds",
@@ -429,11 +478,25 @@
       "multiplicity": "one"
     },
     {
+      "name": "TokenProfileToDataStructure_acceptsContextId",
+      "fromEntity": "TokenProfile",
+      "toEntity": "DataStructure",
+      "fromField": "acceptsContextId",
+      "multiplicity": "one"
+    },
+    {
       "name": "TokenProfileToDataStructure_returnsModelId",
       "fromEntity": "TokenProfile",
       "toEntity": "DataStructure",
       "fromField": "returnsModelId",
       "multiplicity": "one"
+    },
+    {
+      "name": "TokenProfileToNormativeReference_implementsReferenceIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "NormativeReference",
+      "fromField": "implementsReferenceIds",
+      "multiplicity": "many"
     },
     {
       "name": "TokenProfileToHeaderField_optionalHeaderIds",
@@ -478,10 +541,24 @@
       "multiplicity": "one"
     },
     {
+      "name": "TokenProfileToSerializationFormat_unsupportedFormatIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "SerializationFormat",
+      "fromField": "unsupportedFormatIds",
+      "multiplicity": "many"
+    },
+    {
       "name": "TokenProfileToTokenProfile_inheritsProfileIds",
       "fromEntity": "TokenProfile",
       "toEntity": "TokenProfile",
       "fromField": "inheritsProfileIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TokenProfileToTokenProfile_supersedesProfileIds",
+      "fromEntity": "TokenProfile",
+      "toEntity": "TokenProfile",
+      "fromField": "supersedesProfileIds",
       "multiplicity": "many"
     },
     {

@@ -1,8 +1,17 @@
 id: VEC-jwt-premature
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "NBF Claim in the Future"
 description: JWT signed perfectly but with an NBF set to next year.
 tags: [test, time]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"nbf": 2500000000}'
+expectedOutcomeClass: rejected
 expectsErrorCodeIds: [ERR-premature]
+expectedPrimaryErrorCodeId: ERR-premature
+expectedFailedRuleId: RULE-NBF-CHECK
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-NBF-CHECK]

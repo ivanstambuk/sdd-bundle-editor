@@ -1,0 +1,17 @@
+id: VEC-jwt-type-mismatch
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Unexpected JWT Type Header"
+description: JWT presents a `typ` header value that does not exact-match the expected media type policy.
+tags: [test, header, policy]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+headerJson: '{"typ": "at+jwt"}'
+expectedOutcomeClass: malformed
+expectsErrorCodeIds: [ERR-type-mismatch]
+expectedPrimaryErrorCodeId: ERR-type-mismatch
+expectedFailedRuleId: RULE-TYP-POLICY
+expectedTerminalStepId: STEP-2
+validatesRuleIds: [RULE-TYP-POLICY]

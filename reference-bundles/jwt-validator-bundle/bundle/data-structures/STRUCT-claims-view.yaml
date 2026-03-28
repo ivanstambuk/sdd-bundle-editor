@@ -1,7 +1,88 @@
 id: STRUCT-claims-view
 kind: DataStructure
+executionStatus: advisory
+artifactClass: support
+lifecycleStatus: active
 title: "Claims View Report"
-description: Decoded header and claims bundled together with strict field-level metadata indicating whether each property is `validated`, `partially_validated`, or `unvalidated`.
+description: Decoded header and claim observations bundled with field-level trust metadata so diagnostic tooling can expose what was parsed, what was verified, and what remains untrusted.
 tags: [data, output]
 formatType: json
-samplePayload: '{"claims": {"sub": {"value": "123", "validation_status": "validated"}}}'
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    evaluatedProfileId:
+      type: string
+    trustLevel:
+      type: string
+      enum:
+        - validated
+        - partially_validated
+        - unvalidated
+    signatureState:
+      type: string
+      enum:
+        - not-evaluated
+        - verified
+        - failed
+    header:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties: false
+        properties:
+          valueType:
+            type: string
+          trustLevel:
+            type: string
+            enum:
+              - validated
+              - partially_validated
+              - unvalidated
+          source:
+            type: string
+            enum:
+              - compact-header
+              - derived
+          validationStatus:
+            type: string
+            enum:
+              - accepted
+              - rejected
+              - ignored
+        required:
+          - trustLevel
+          - validationStatus
+    claims:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties: false
+        properties:
+          valueType:
+            type: string
+          trustLevel:
+            type: string
+            enum:
+              - validated
+              - partially_validated
+              - unvalidated
+          source:
+            type: string
+            enum:
+              - payload
+              - derived
+          validationStatus:
+            type: string
+            enum:
+              - accepted
+              - rejected
+              - ignored
+        required:
+          - trustLevel
+          - validationStatus
+  required:
+    - trustLevel
+    - signatureState
+    - claims
+samplePayload: '{"evaluatedProfileId":"PROF-JWT-CORE","trustLevel":"partially_validated","signatureState":"failed","claims":{"sub":{"valueType":"string","trustLevel":"unvalidated","source":"payload","validationStatus":"ignored"}}}'

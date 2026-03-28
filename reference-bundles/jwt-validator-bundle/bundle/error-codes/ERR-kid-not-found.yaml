@@ -1,7 +1,14 @@
 id: ERR-kid-not-found
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Key ID Not Found"
 description: The specific `kid` from the token header does not exist in the configured trusted JWKS.
 tags: [error, crypto, indeterminate]
+codeName: indeterminate-kid-not-found
+messageTemplate: The token key identifier could not be resolved from trusted key material.
+outcomeClass: indeterminate
+severity: Indeterminate
 isRetryable: true
 httpStatusCode: 401

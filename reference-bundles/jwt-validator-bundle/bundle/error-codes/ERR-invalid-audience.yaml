@@ -1,7 +1,14 @@
 id: ERR-invalid-audience
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Invalid Audience"
 description: The validator's identity was not found in the token's `aud` array.
 tags: [error, security]
+codeName: rejected-invalid-audience
+messageTemplate: The token audience does not match the expected audience.
+outcomeClass: rejected
+severity: Critical
 isRetryable: false
 httpStatusCode: 403

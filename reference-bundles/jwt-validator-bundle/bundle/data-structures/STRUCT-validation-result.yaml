@@ -1,21 +1,87 @@
 id: STRUCT-validation-result
 kind: DataStructure
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Validation Result Model
-description: The output object returned by the validate_jwt operation. Contains the boolean status and any explicitly identified error codes.
-rationale: Provides a structured interface for callers to handle token rejection safely.
+description: The output object returned by the validate_jwt operation. Captures the evaluated profile, serialization boundary decision, key-selection and trust outcomes, and the terminal rule or step when validation fails.
+rationale: Provides a structured interface for callers and conformance harnesses to distinguish rejection, malformed input, indeterminate trust, and successful acceptance without relying on prose interpretation.
 tags:
   - output
   - dto
 schemaDefinition:
   type: object
+  additionalProperties: false
   properties:
     isValid:
       type: boolean
+    outcomeClass:
+      type: string
+      enum:
+        - accepted
+        - rejected
+        - malformed
+        - indeterminate
+        - diagnostic
+    evaluatedProfileId:
+      type: string
+    matchedProfileId:
+      type: string
+    inputFormatId:
+      type: string
+    selectedAlgorithmId:
+      type: string
+    selectedKeyStrategyId:
+      type: string
+    keySelectionStatus:
+      type: string
+      enum:
+        - not-applicable
+        - resolved
+        - missing
+        - ambiguous
+    trustDecision:
+      type: string
+      enum:
+        - trusted
+        - rejected
+        - indeterminate
+    terminalStepId:
+      type: string
+    failedRuleId:
+      type: string
+    primaryErrorCode:
+      type: string
     errorCodes:
       type: array
       items:
         type: string
+    diagnostics:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          stepId:
+            type: string
+          ruleId:
+            type: string
+          status:
+            type: string
+            enum:
+              - passed
+              - failed
+              - skipped
+          errorCode:
+            type: string
+        required:
+          - status
   required:
     - isValid
+    - outcomeClass
+    - evaluatedProfileId
+    - keySelectionStatus
+    - trustDecision
+    - errorCodes
 governedByAdrIds:
   - ADR-0001

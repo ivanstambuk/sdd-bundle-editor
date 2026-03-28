@@ -1,7 +1,11 @@
 id: OP-extract-claims
 kind: Operation
+executionStatus: advisory
+artifactClass: support
+lifecycleStatus: active
 title: "Extract Claims Diagnostics"
-description: Conceptual operation that decodes a JWT and returns a tagged `claims_view`, regardless of whether full signature validation succeeds, explicitly marking fields as unvalidated for debugging.
+description: Diagnostic-only operation that decodes a JWT and returns a tagged `claims_view`, explicitly preserving unvalidated trust state when signature verification does not succeed.
 tags: [operation, diagnostic]
+operationRole: diagnostic
 systemComponent: DiagnosticCLI
 producesDataStructureIds: [STRUCT-claims-view]

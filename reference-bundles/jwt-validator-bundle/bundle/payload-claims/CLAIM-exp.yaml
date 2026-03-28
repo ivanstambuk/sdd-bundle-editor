@@ -1,5 +1,8 @@
 id: CLAIM-exp
 kind: PayloadClaim
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Expiration Time
 description: The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing.
 rationale: Mitigates token replay attacks.
@@ -7,6 +10,8 @@ tags:
   - time-based
 name: exp
 dataType: number
+semanticType: NumericDate
+comparisonSemantics: none
 isRequired: false
 isStandardRFC: true
 constrainedByRuleIds:

@@ -1,5 +1,8 @@
 id: RULE-TIME-BOUNDARY-CHECK
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Strict Time Boundary Evaluation"
 description: The validator MUST process boundary conditions exactly according to the injected `now_epoch_seconds`. (e.g. if `exp` == `now`, it is expired. If `nbf` == `now`, it is valid).
 tags: [validation, time, boundary]
@@ -7,3 +10,4 @@ severity: ERROR
 throwsErrorCodeId: ERR-expired
 implementsReferenceIds: [RFC-7519]
 implementsConstraintIds: [CON-clock-skew]
+bindsToContextPropertyId: STRUCT-validation-context

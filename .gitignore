@@ -41,3 +41,6 @@ tools/plantuml/plantuml.jar
 
 # Local scripts (personal convenience, not pushed)
 scripts/local/
+
+# Temporary local analysis artifacts
+.scratch/

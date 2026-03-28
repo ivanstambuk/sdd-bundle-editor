@@ -1,5 +1,8 @@
 id: MOCK-hs256-static-1
 kind: MockKeySet
+executionStatus: active
+artifactClass: fixture
+lifecycleStatus: active
 title: Static HS256 Keyset 1
 description: Hardcoded HS256 key material for executing unit tests.
 jwks:

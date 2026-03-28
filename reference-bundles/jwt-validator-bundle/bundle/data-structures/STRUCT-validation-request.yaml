@@ -1,0 +1,88 @@
+id: STRUCT-validation-request
+kind: DataStructure
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: JWT Validation Request
+description: Request envelope for the authoritative validation operation, carrying the compact token input, selected profile, and runtime policy overrides.
+tags: [data, input, request]
+composesStructureIds:
+  - STRUCT-runtime-policy
+  - STRUCT-validation-context
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    token:
+      type: string
+    profileId:
+      type: string
+    runtimePolicy:
+      $ref: '#/$defs/runtimePolicy'
+    validationContext:
+      $ref: '#/$defs/validationContext'
+  required:
+    - token
+    - profileId
+    - runtimePolicy
+    - validationContext
+  $defs:
+    runtimePolicy:
+      type: object
+      additionalProperties: false
+      properties:
+        expectedIssuer:
+          type: string
+        expectedSubject:
+          type: string
+        expectedAudience:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+              minItems: 1
+        expectedTyp:
+          type: string
+        allowedClockSkewSeconds:
+          type: integer
+          minimum: 0
+        allowDiagnosticClaimsOnFailure:
+          type: boolean
+        allowTrustSensitiveHeaderSources:
+          type: boolean
+        allowedCriticalHeaders:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      required:
+        - allowedClockSkewSeconds
+    validationContext:
+      type: object
+      additionalProperties: false
+      properties:
+        currentTimeEpochSeconds:
+          type: integer
+          minimum: 0
+        selectedProfileId:
+          type: string
+        selectedKeyStrategyId:
+          type: string
+        tenantId:
+          type: string
+        replayStateMode:
+          type: string
+          enum:
+            - out-of-scope
+            - unchecked
+            - checked
+        invocationSource:
+          type: string
+          enum:
+            - runtime
+            - diagnostic
+            - conformance
+      required:
+        - currentTimeEpochSeconds
+        - invocationSource

@@ -1,5 +1,8 @@
 id: ALG-RS256
 kind: CryptoAlgorithm
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: RSASSA-PKCS1-v1_5 using SHA-256
 description: RS256 provides asymmetric signature verification using RSA key pairs.
 rationale: Most widely used algorithm in OIDC and enterprise identity platforms.
@@ -9,3 +12,5 @@ tags:
 joseName: RS256
 keyFamily: RSA
 minKeySizeBits: 2048
+strengthBits: 112
+isQuantumSafe: false

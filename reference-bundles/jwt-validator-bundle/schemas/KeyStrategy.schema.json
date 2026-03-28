@@ -5,7 +5,10 @@
   "required": [
     "id",
     "kind",
-    "title"
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus"
   ],
   "additionalProperties": false,
   "properties": {
@@ -53,6 +56,44 @@
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 99
     },
+    "executionStatus": {
+      "type": "string",
+      "title": "Execution Status",
+      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "title": "Artifact Class",
+      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "title": "Lifecycle Status",
+      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
     "governedByAdrIds": {
       "type": "array",
       "items": {
@@ -62,7 +103,9 @@
         "ADR"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
+      "x-sdd-order": 10,
+      "title": "Governed By Adr References",
+      "description": "References related ADR entity."
     },
     "strategyType": {
       "type": "string",
@@ -76,16 +119,153 @@
     },
     "cacheBehavior": {
       "type": "string",
+      "enum": [
+        "NO-CACHE",
+        "HTTP-CACHE",
+        "DISCOVERY-CACHE"
+      ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 20
+    },
+    "trustSourceType": {
+      "type": "string",
+      "enum": [
+        "INVOKER-PROVIDED",
+        "DIRECT-JWKS-URI",
+        "OIDC-DISCOVERY"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 25
     },
     "endpointUrl": {
       "type": "string",
       "format": "uri",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 15
+    },
+    "cacheTtlSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 30
+    },
+    "refreshStrategy": {
+      "type": "string",
+      "enum": [
+        "never",
+        "ttl-expiry",
+        "on-miss",
+        "metadata-driven"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 35
+    },
+    "staleKeyBehavior": {
+      "type": "string",
+      "enum": [
+        "reject",
+        "temporary-accept",
+        "retry-before-reject"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 40
+    },
+    "rolloverBehavior": {
+      "type": "string",
+      "enum": [
+        "manual-only",
+        "cache-refresh",
+        "discovery-refresh"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 45
+    },
+    "networkFailureBehavior": {
+      "type": "string",
+      "enum": [
+        "fail-closed",
+        "retry-then-fail",
+        "use-stale-then-fail"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 50
+    },
+    "issuerBindingMode": {
+      "type": "string",
+      "enum": [
+        "none",
+        "issuer-allowlist",
+        "discovery-issuer-bound"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 55
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "executionStatus": {
+            "const": "active"
+          },
+          "artifactClass": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "executionStatus",
+          "artifactClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "strategyType": {},
+          "cacheBehavior": {},
+          "trustSourceType": {},
+          "refreshStrategy": {},
+          "staleKeyBehavior": {},
+          "rolloverBehavior": {},
+          "networkFailureBehavior": {},
+          "issuerBindingMode": {}
+        },
+        "required": [
+          "strategyType",
+          "cacheBehavior",
+          "trustSourceType",
+          "refreshStrategy",
+          "staleKeyBehavior",
+          "rolloverBehavior",
+          "networkFailureBehavior",
+          "issuerBindingMode"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "strategyType": {
+            "enum": [
+              "JWKS-URI",
+              "OIDC-DISCOVERY"
+            ]
+          }
+        },
+        "required": [
+          "strategyType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "endpointUrl": {},
+          "cacheTtlSeconds": {}
+        },
+        "required": [
+          "endpointUrl",
+          "cacheTtlSeconds"
+        ]
+      }
+    }
+  ],
   "x-sdd-ui": {
     "displayName": "Key Strategy",
     "displayNamePlural": "Key Strategies",

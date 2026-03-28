@@ -1,0 +1,14 @@
+id: FMT-nested-jwt
+kind: SerializationFormat
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: Nested JWT
+description: Nested JWT form where one JWT is carried inside another JOSE container. This bundle does not currently support nested processing in the authoritative validator contract.
+tags: [nested, unsupported]
+formatName: Nested JWT
+containerType: JWT
+serializationVariant: nested
+supportStatus: unsupported
+governedByAdrIds:
+  - ADR-0001

@@ -1,5 +1,8 @@
 id: RULE-SIG-VERIFY
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Verify Cryptographic Signature"
 description: The validator MUST strictly compute the cryptographic signature of the header and payload using the resolved public key, rejecting the token entirely if it fails to match the provided signature.
 tags: [validation, security, crypto]

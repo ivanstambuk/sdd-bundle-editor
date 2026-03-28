@@ -1,6 +1,20 @@
 id: KEY-oidc-discovery
 kind: KeyStrategy
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "OIDC Metadata Discovery"
 description: Highly dynamic discovery relying on `.well-known/openid-configuration` to find the relevant JWKS URI dynamically.
 tags: [keys, network, oidc]
-governedByAdrIds: []
+strategyType: OIDC-DISCOVERY
+cacheBehavior: DISCOVERY-CACHE
+trustSourceType: OIDC-DISCOVERY
+endpointUrl: https://example.com/.well-known/openid-configuration
+cacheTtlSeconds: 300
+refreshStrategy: metadata-driven
+staleKeyBehavior: retry-before-reject
+rolloverBehavior: discovery-refresh
+networkFailureBehavior: retry-then-fail
+issuerBindingMode: discovery-issuer-bound
+governedByAdrIds:
+  - ADR-0001

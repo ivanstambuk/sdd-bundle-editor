@@ -1,7 +1,11 @@
 id: OP-parse-jwt
 kind: Operation
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
 title: "Parse JWT String"
 description: Decodes the Base64Url segments strictly without cryptographic verification to extract headers and claims for pre-validation inspect.
 tags: [operation, parser]
+operationRole: parser
 systemComponent: CoreValidator
 governedByAdrIds: [ADR-0001]

@@ -1,8 +1,17 @@
 id: VEC-jwt-weak-key
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Weak RSA 1024-bit Key"
 description: Token signed accurately, but signed using an impermissibly small 1024-bit RSA key.
 tags: [test, crypto]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"sub": "auth"}'
+expectedOutcomeClass: rejected
 expectsErrorCodeIds: [ERR-unsupported-alg]
-validatesRuleIds: []
+expectedPrimaryErrorCodeId: ERR-unsupported-alg
+expectedFailedRuleId: RULE-KEY-ALG-MATCH
+expectedTerminalStepId: STEP-4
+validatesRuleIds: [RULE-KEY-ALG-MATCH]

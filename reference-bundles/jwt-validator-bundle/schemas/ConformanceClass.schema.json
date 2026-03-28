@@ -5,7 +5,10 @@
   "required": [
     "id",
     "kind",
-    "title"
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus"
   ],
   "additionalProperties": false,
   "properties": {
@@ -53,6 +56,44 @@
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 99
     },
+    "executionStatus": {
+      "type": "string",
+      "title": "Execution Status",
+      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "title": "Artifact Class",
+      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "title": "Lifecycle Status",
+      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
     "governedByAdrIds": {
       "type": "array",
       "items": {
@@ -62,7 +103,9 @@
         "ADR"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
+      "x-sdd-order": 10,
+      "title": "Governed By Adr References",
+      "description": "References related ADR entity."
     },
     "requiresOperationIds": {
       "type": "array",
@@ -73,9 +116,65 @@
         "Operation"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 20
+      "x-sdd-order": 20,
+      "title": "Requires Operation References",
+      "description": "References related Operation entity."
+    },
+    "targetsProfileIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "TokenProfile"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 25,
+      "title": "Targets Profile References",
+      "description": "References related TokenProfile entity."
+    },
+    "supersedesClassIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ConformanceClass"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30,
+      "title": "Supersedes Class References",
+      "description": "References related ConformanceClass entity."
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "executionStatus": {
+            "const": "active"
+          },
+          "artifactClass": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "executionStatus",
+          "artifactClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "requiresOperationIds": {},
+          "targetsProfileIds": {}
+        },
+        "required": [
+          "requiresOperationIds",
+          "targetsProfileIds"
+        ]
+      }
+    }
+  ],
   "x-sdd-ui": {
     "displayName": "Conformance Class",
     "displayNamePlural": "Conformance Classes",

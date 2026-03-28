@@ -1,8 +1,12 @@
 id: STEP-3
 kind: ValidationStep
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Standard Checks"
 description: Perform all structural checks regarding expiration, audience, and future-dating.
 tags: [step, core]
+abortOnFailure: true
 executionOrder: 3
-executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-AUD-MATCH]
+executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-AUD-MATCH, RULE-TIME-BOUNDARY-CHECK]
 producesErrorCodeIds: [ERR-expired, ERR-premature, ERR-invalid-audience]

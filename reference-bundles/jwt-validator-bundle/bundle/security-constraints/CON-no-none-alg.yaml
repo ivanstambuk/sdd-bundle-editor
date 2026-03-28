@@ -1,5 +1,8 @@
 id: CON-no-none-alg
 kind: SecurityConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
 title: "Strictly Forbid 'none' Algorithm"
 description: >
   Under absolutely no circumstances should the validator accept the `none` algorithm.

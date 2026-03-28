@@ -1,0 +1,15 @@
+id: HDR-jwk
+kind: HeaderField
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "jwk (Embedded JWK) Header Parameter"
+description: Embeds a verification key directly in the token header. This bundle rejects embedded keys by default because they bypass configured trust anchors.
+tags: [header, security, crypto]
+name: jwk
+dataType: object
+semanticType: EmbeddedJWK
+handlingPolicy: reject-by-default
+isRequired: false
+constrainedByRuleIds:
+  - RULE-UNTRUSTED-HEADER-SOURCES

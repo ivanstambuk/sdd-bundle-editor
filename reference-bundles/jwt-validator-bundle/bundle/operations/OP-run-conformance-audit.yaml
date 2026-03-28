@@ -1,7 +1,11 @@
 id: OP-run-conformance-audit
 kind: Operation
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
 title: "Execute Conformance Suite"
-description: Executes a set of validation and claim-extraction scenarios against a specific Validator implementation, returning a generated human-readable error or audit report.
+description: Executes a set of validation and diagnostic scenarios against a specific validator implementation and returns an audit report with expected versus observed outcomes for each vector.
 tags: [operation, test]
+operationRole: harness
 systemComponent: ConformanceHarness
 producesDataStructureIds: [STRUCT-audit-report]

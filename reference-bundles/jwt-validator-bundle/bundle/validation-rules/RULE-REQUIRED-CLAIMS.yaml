@@ -1,5 +1,8 @@
 id: RULE-REQUIRED-CLAIMS
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Enforce Mandatory Claims"
 description: The validator MUST reject tokens that fail to include all claims defined as strictly REQUIRED by the active `validation_policy` profile.
 tags: [validation, policy]

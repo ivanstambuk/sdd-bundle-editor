@@ -1,7 +1,13 @@
 id: CLAIM-aud
 kind: PayloadClaim
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "aud (Audience) Claim"
 description: Identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim.
 tags: [security, claim]
-dataType: array
+name: aud
+dataType: string-or-array
+semanticType: Audience
+comparisonSemantics: audience-membership
 constrainedByRuleIds: [RULE-AUD-MATCH]

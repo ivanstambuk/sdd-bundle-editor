@@ -1,8 +1,17 @@
 id: VEC-jwt-wrong-aud
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Missing Expected Audience"
 description: JWT intended for a different backend microservice.
 tags: [test, security]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"aud": "not-this-service"}'
+expectedOutcomeClass: rejected
 expectsErrorCodeIds: [ERR-invalid-audience]
+expectedPrimaryErrorCodeId: ERR-invalid-audience
+expectedFailedRuleId: RULE-AUD-MATCH
+expectedTerminalStepId: STEP-3
 validatesRuleIds: [RULE-AUD-MATCH]

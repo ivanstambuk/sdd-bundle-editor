@@ -1,0 +1,18 @@
+id: VEC-jwt-invalid-signature
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Signature Verification Failure"
+description: A compact JWT whose signature bytes do not validate against the resolved trusted key.
+tags: [test, crypto, signature]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjoyNTAwMDAwMDAwfQ.invalid-signature
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-invalid-sig]
+expectedPrimaryErrorCodeId: ERR-invalid-sig
+expectedFailedRuleId: RULE-SIG-VERIFY
+expectedTerminalStepId: STEP-4
+validatesRuleIds: [RULE-SIG-VERIFY]
+usesMockKeyId: MOCK-hs256-static-1

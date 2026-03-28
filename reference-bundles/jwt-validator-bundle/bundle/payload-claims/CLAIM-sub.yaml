@@ -1,7 +1,14 @@
 id: CLAIM-sub
 kind: PayloadClaim
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "sub (Subject) Claim"
 description: Identifies the principal that is the subject of the JWT.
 tags: [identity, claim]
+name: sub
 dataType: string
-
+semanticType: StringOrURI
+comparisonSemantics: exact-string
+isRequired: false
+isStandardRFC: true

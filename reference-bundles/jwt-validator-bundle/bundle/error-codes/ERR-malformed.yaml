@@ -1,7 +1,14 @@
 id: ERR-malformed
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Malformed Token Structure"
 description: The token is not a syntactically valid compact JWS string (e.g., wrong number of segments, invalid Base64url characters).
 tags: [error, parse]
+codeName: malformed-token
+messageTemplate: The token is not a valid compact JWS string.
+outcomeClass: malformed
+severity: Critical
 isRetryable: false
 httpStatusCode: 400

@@ -1,9 +1,16 @@
 id: STEP-1
 kind: ValidationStep
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Parse and Verify Signature
-description: Decode the base64url segments, verify the JSON structure, resolve the key, and compute the cryptographic signature.
+description: Decode the token envelope, reject unsupported JOSE container kinds, and verify low-level JSON and compact-serialization structure.
+abortOnFailure: true
 executionOrder: 1
 executesRuleIds:
-  - RULE-ALG-ALLOWLIST
+  - RULE-SYNTAX-CHECK
+  - RULE-COMPACT-JWS-ONLY
+  - RULE-NO-DUPLICATE-KEYS
 producesErrorCodeIds:
-  - ERR-invalid-sig
+  - ERR-malformed
+  - ERR-unsupported-format

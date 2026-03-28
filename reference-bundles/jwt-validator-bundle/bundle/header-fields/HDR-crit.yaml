@@ -1,0 +1,15 @@
+id: HDR-crit
+kind: HeaderField
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "crit (Critical Headers) Header Parameter"
+description: Declares extension header parameters that must be understood and processed. Unsupported critical headers must be rejected.
+tags: [header, security]
+name: crit
+dataType: array
+semanticType: CriticalHeaders
+handlingPolicy: reject-by-default
+isRequired: false
+constrainedByRuleIds:
+  - RULE-CRIT-HEADER-POLICY

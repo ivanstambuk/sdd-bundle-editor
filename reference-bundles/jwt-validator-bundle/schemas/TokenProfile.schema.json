@@ -5,7 +5,10 @@
   "required": [
     "id",
     "kind",
-    "title"
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus"
   ],
   "additionalProperties": false,
   "properties": {
@@ -53,6 +56,44 @@
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 99
     },
+    "executionStatus": {
+      "type": "string",
+      "title": "Execution Status",
+      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "title": "Artifact Class",
+      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "title": "Lifecycle Status",
+      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
     "inheritsProfileIds": {
       "type": "array",
       "items": {
@@ -62,7 +103,9 @@
         "TokenProfile"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
+      "x-sdd-order": 10,
+      "title": "Inherits Profile References",
+      "description": "References related TokenProfile entity."
     },
     "usesFormatId": {
       "type": "string",
@@ -70,7 +113,23 @@
         "SerializationFormat"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 20
+      "x-sdd-order": 20,
+      "format": "sdd-ref",
+      "title": "Uses Format Reference",
+      "description": "References related SerializationFormat entity."
+    },
+    "unsupportedFormatIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "SerializationFormat"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 25,
+      "title": "Unsupported Format References",
+      "description": "References related SerializationFormat entity."
     },
     "usesKeyStrategyIds": {
       "type": "array",
@@ -81,7 +140,9 @@
         "KeyStrategy"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 30
+      "x-sdd-order": 30,
+      "title": "Uses Key Strategy References",
+      "description": "References related KeyStrategy entity."
     },
     "requiresHeaderIds": {
       "type": "array",
@@ -92,7 +153,9 @@
         "HeaderField"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 40
+      "x-sdd-order": 40,
+      "title": "Requires Header References",
+      "description": "References related HeaderField entity."
     },
     "optionalHeaderIds": {
       "type": "array",
@@ -103,7 +166,9 @@
         "HeaderField"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 50
+      "x-sdd-order": 50,
+      "title": "Optional Header References",
+      "description": "References related HeaderField entity."
     },
     "requiresClaimIds": {
       "type": "array",
@@ -114,7 +179,9 @@
         "PayloadClaim"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 60
+      "x-sdd-order": 60,
+      "title": "Requires Claim References",
+      "description": "References related PayloadClaim entity."
     },
     "optionalClaimIds": {
       "type": "array",
@@ -125,29 +192,37 @@
         "PayloadClaim"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 70
+      "x-sdd-order": 70,
+      "title": "Optional Claim References",
+      "description": "References related PayloadClaim entity."
     },
     "allowsAlgorithmIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "x-sdd-refTargets": [
         "CryptoAlgorithm"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 80
+      "x-sdd-order": 80,
+      "title": "Allows Algorithm References",
+      "description": "References related CryptoAlgorithm entity."
     },
     "definesPipelineStepIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "x-sdd-refTargets": [
         "ValidationStep"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 90
+      "x-sdd-order": 90,
+      "title": "Defines Pipeline Step References",
+      "description": "References related ValidationStep entity."
     },
     "governedByAdrIds": {
       "type": "array",
@@ -158,7 +233,22 @@
         "ADR"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 100
+      "x-sdd-order": 100,
+      "title": "Governed By Adr References",
+      "description": "References related ADR entity."
+    },
+    "implementsReferenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "NormativeReference"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 105,
+      "title": "Implements Reference References",
+      "description": "References related NormativeReference entity."
     },
     "acceptsPolicyId": {
       "type": "string",
@@ -166,7 +256,21 @@
         "DataStructure"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 110
+      "x-sdd-order": 110,
+      "format": "sdd-ref",
+      "title": "Accepts Policy Reference",
+      "description": "References related DataStructure entity."
+    },
+    "acceptsContextId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "DataStructure"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 115,
+      "format": "sdd-ref",
+      "title": "Accepts Context Reference",
+      "description": "References related DataStructure entity."
     },
     "returnsModelId": {
       "type": "string",
@@ -174,7 +278,52 @@
         "DataStructure"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 120
+      "x-sdd-order": 120,
+      "format": "sdd-ref",
+      "title": "Returns Model Reference",
+      "description": "References related DataStructure entity."
+    },
+    "profileFamily": {
+      "type": "string",
+      "enum": [
+        "JWT-CORE",
+        "JWT-REMOTE",
+        "OIDC"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 6
+    },
+    "replayProtectionMode": {
+      "type": "string",
+      "enum": [
+        "out-of-scope",
+        "stateless-only",
+        "jti-tracking"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 7
+    },
+    "inheritanceMode": {
+      "type": "string",
+      "enum": [
+        "additive",
+        "override"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 8
+    },
+    "supersedesProfileIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "TokenProfile"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 125,
+      "title": "Supersedes Profile References",
+      "description": "References related TokenProfile entity."
     },
     "profileType": {
       "type": "string",
@@ -188,6 +337,73 @@
       "x-sdd-order": 5
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "executionStatus": {
+            "const": "active"
+          },
+          "artifactClass": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "executionStatus",
+          "artifactClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "profileType": {},
+          "profileFamily": {},
+          "replayProtectionMode": {},
+          "usesFormatId": {},
+          "unsupportedFormatIds": {},
+          "allowsAlgorithmIds": {},
+          "definesPipelineStepIds": {},
+          "implementsReferenceIds": {},
+          "acceptsPolicyId": {},
+          "acceptsContextId": {},
+          "returnsModelId": {}
+        },
+        "required": [
+          "profileType",
+          "profileFamily",
+          "replayProtectionMode",
+          "usesFormatId",
+          "unsupportedFormatIds",
+          "allowsAlgorithmIds",
+          "definesPipelineStepIds",
+          "implementsReferenceIds",
+          "acceptsPolicyId",
+          "acceptsContextId",
+          "returnsModelId"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "inheritsProfileIds": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "inheritsProfileIds"
+        ]
+      },
+      "then": {
+        "properties": {
+          "inheritanceMode": {}
+        },
+        "required": [
+          "inheritanceMode"
+        ]
+      }
+    }
+  ],
   "x-sdd-ui": {
     "displayName": "Token Profile",
     "displayNamePlural": "Token Profiles",

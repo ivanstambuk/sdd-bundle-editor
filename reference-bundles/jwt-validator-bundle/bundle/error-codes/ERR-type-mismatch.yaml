@@ -1,7 +1,14 @@
 id: ERR-type-mismatch
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Claim Type Mismatch"
-description: A claim in the payload was parsed as an expected type, but fails policy (e.g., `aud` expected as array but string found with strict parsing).
+description: A claim or header value was parsed with a type or media-type shape that is incompatible with the active profile or runtime policy.
 tags: [error, validation]
+codeName: malformed-claim-type
+messageTemplate: A claim uses a JSON type that is not valid for the active profile.
+outcomeClass: malformed
+severity: Critical
 isRetryable: false
 httpStatusCode: 400

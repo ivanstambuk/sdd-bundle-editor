@@ -1,0 +1,15 @@
+id: HDR-x5u
+kind: HeaderField
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "x5u (X.509 URL) Header Parameter"
+description: Points to a remote X.509 certificate location controlled by the token producer. This bundle rejects it by default because it shifts trust to untrusted input.
+tags: [header, certificate, security, remote]
+name: x5u
+dataType: string
+semanticType: CertificateUrl
+handlingPolicy: reject-by-default
+isRequired: false
+constrainedByRuleIds:
+  - RULE-UNTRUSTED-HEADER-SOURCES

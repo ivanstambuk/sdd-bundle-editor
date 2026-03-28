@@ -1,6 +1,14 @@
 id: CLAIM-iat
 kind: PayloadClaim
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "iat (Issued At) Claim"
 description: Identifies the time at which the JWT was issued. Can be used to determine age.
 tags: [time, claim]
+name: iat
 dataType: number
+semanticType: NumericDate
+comparisonSemantics: none
+isRequired: false
+isStandardRFC: true

@@ -1,0 +1,17 @@
+id: VEC-jwt-unsupported-jws-json
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Unsupported JWS JSON Serialization"
+description: JWS JSON serialization is valid JOSE, but outside the active compact signed-JWT contract.
+tags: [test, format, boundary]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+rawJwtInput: '{"payload":"abc","signatures":[{"protected":"eyJhbGciOiJIUzI1NiJ9","signature":"sig"}]}'
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-unsupported-format]
+expectedPrimaryErrorCodeId: ERR-unsupported-format
+expectedFailedRuleId: RULE-COMPACT-JWS-ONLY
+expectedTerminalStepId: STEP-1
+validatesRuleIds: [RULE-COMPACT-JWS-ONLY]

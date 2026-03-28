@@ -1,0 +1,20 @@
+id: VEC-jwt-exp-boundary
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Expiration Boundary Equals Now"
+description: A token whose `exp` exactly equals the evaluation time. The contract requires that boundary to be treated as expired.
+tags: [test, time, boundary]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+payloadJson: '{"exp": 1516239000}'
+environmentState:
+  now_epoch_seconds: 1516239000
+  leeway_seconds: 0
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-expired]
+expectedPrimaryErrorCodeId: ERR-expired
+expectedFailedRuleId: RULE-TIME-BOUNDARY-CHECK
+expectedTerminalStepId: STEP-3
+validatesRuleIds: [RULE-TIME-BOUNDARY-CHECK]

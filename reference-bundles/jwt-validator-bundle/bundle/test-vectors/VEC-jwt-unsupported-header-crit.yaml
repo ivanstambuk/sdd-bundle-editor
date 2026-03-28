@@ -1,0 +1,17 @@
+id: VEC-jwt-unsupported-header-crit
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Unsupported Critical Header Extension"
+description: JWT includes a `crit` declaration for a header extension outside the active profile.
+tags: [test, header, security]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+headerJson: '{"crit": ["b64"]}'
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-unsupported-header]
+expectedPrimaryErrorCodeId: ERR-unsupported-header
+expectedFailedRuleId: RULE-CRIT-HEADER-POLICY
+expectedTerminalStepId: STEP-4
+validatesRuleIds: [RULE-CRIT-HEADER-POLICY]

@@ -1,5 +1,8 @@
 id: HDR-alg
 kind: HeaderField
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Algorithm Header
 description: The "alg" (algorithm) header parameter identifies the cryptographic algorithm used to secure the JWS.
 rationale: Crucial for determining the verification execution path.
@@ -8,6 +11,8 @@ tags:
   - core-jose
 name: alg
 dataType: string
+semanticType: JOSEAlgorithm
+handlingPolicy: required
 isRequired: true
 constrainedByRuleIds:
   - RULE-ALG-ALLOWLIST

@@ -1,6 +1,20 @@
 id: KEY-https-jwks
 kind: KeyStrategy
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "HTTPS JWKS Endpoint"
-description: Dynamic resolution of Key Material through a standard HTTP `.well-known/jwks.json` endpoint, with inherent caching mechanics.
+description: Dynamic resolution of key material from an explicitly configured HTTPS JWKS URI, with bounded cache and refresh behavior defined by the active profile.
 tags: [keys, network]
-governedByAdrIds: []
+strategyType: JWKS-URI
+cacheBehavior: HTTP-CACHE
+trustSourceType: DIRECT-JWKS-URI
+endpointUrl: https://example.com/jwks.json
+cacheTtlSeconds: 300
+refreshStrategy: on-miss
+staleKeyBehavior: retry-before-reject
+rolloverBehavior: cache-refresh
+networkFailureBehavior: retry-then-fail
+issuerBindingMode: issuer-allowlist
+governedByAdrIds:
+  - ADR-0001

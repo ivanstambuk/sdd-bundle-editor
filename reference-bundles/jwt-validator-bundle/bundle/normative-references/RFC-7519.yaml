@@ -1,5 +1,8 @@
 id: RFC-7519
 kind: NormativeReference
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
 title: JSON Web Token (JWT)
 description: The foundational IETF specification defining the structure and claims of JWTs.
 rationale: Source of truth for all structured definitions.
@@ -7,6 +10,8 @@ tags:
   - ietf
   - spec
 url: https://datatracker.ietf.org/doc/html/rfc7519
+referenceType: RFC
+publisher: IETF
 section: Section 4.1
 governedByAdrIds:
   - ADR-0001

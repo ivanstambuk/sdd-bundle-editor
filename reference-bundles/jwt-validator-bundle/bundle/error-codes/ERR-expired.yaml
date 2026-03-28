@@ -1,7 +1,11 @@
 id: ERR-expired
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Token Expired
 description: Returned when the current clock time is strictly after the exp claim value, accounting for leeway.
 codeName: rejected-expired
 messageTemplate: The token expired at {{exp}}. Current time is {{now}}.
+outcomeClass: rejected
 severity: Critical

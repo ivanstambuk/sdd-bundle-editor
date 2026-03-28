@@ -1,0 +1,14 @@
+id: RULE-CRIT-HEADER-POLICY
+kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Reject Unsupported Critical Headers"
+description: If the `crit` header is present, every listed extension must be explicitly understood and allowed by the active profile; otherwise the token MUST be rejected.
+tags: [validation, header, security]
+severity: FATAL
+ruleType: HeaderPolicy
+throwsErrorCodeId: ERR-unsupported-header
+implementsReferenceIds:
+  - RFC-7515
+  - RFC-8725

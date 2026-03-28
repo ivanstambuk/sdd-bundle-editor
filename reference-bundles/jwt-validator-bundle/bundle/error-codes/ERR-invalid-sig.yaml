@@ -1,7 +1,11 @@
 id: ERR-invalid-sig
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Invalid Signature
 description: Returned when the cryptographic signature does not match the payload.
 codeName: rejected-signature
 messageTemplate: The JWS signature is invalid or could not be verified.
+outcomeClass: rejected
 severity: Critical

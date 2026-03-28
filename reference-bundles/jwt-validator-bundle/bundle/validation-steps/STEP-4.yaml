@@ -1,8 +1,12 @@
 id: STEP-4
 kind: ValidationStep
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Cryptographic Validation"
-description: Retrieve key from JWKS and halt execution if the RSA/ECDSA signature cannot be authenticated.
+description: Enforce cryptographic prerequisites, reject unsafe header-based trust sources, resolve keys, and halt execution if the signature cannot be authenticated.
 tags: [step, crypto]
+abortOnFailure: true
 executionOrder: 4
-executesRuleIds: [RULE-KID-RESOLVE, RULE-SIG-VERIFY]
-producesErrorCodeIds: [ERR-invalid-sig]
+executesRuleIds: [RULE-ALG-ALLOWLIST, RULE-CRIT-HEADER-POLICY, RULE-UNTRUSTED-HEADER-SOURCES, RULE-KID-RESOLVE, RULE-KID-AMBIGUITY, RULE-KEY-ALG-MATCH, RULE-SIG-VERIFY]
+producesErrorCodeIds: [ERR-unsupported-alg, ERR-unsupported-header, ERR-kid-not-found, ERR-kid-ambiguous, ERR-invalid-sig]

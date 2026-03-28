@@ -1,7 +1,14 @@
 id: ERR-missing-claim
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Missing Required Claim"
 description: The token is missing a claim that was mandated by the validation policy profile (e.g., missing `sub` or `aud`).
 tags: [error, validation]
+codeName: rejected-missing-claim
+messageTemplate: The token is missing a required claim.
+outcomeClass: rejected
+severity: Critical
 isRetryable: false
 httpStatusCode: 400

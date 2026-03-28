@@ -1,0 +1,65 @@
+rules:
+  validation-rule-owned-by-step:
+    type: coverage
+    fromEntity: ValidationStep
+    toEntity: ValidationRule
+    viaField: executesRuleIds
+    minLinks: 1
+    severity: error
+
+  validation-step-owned-by-profile:
+    type: coverage
+    fromEntity: TokenProfile
+    toEntity: ValidationStep
+    viaField: definesPipelineStepIds
+    minLinks: 1
+    severity: error
+
+  test-vector-owned-by-suite:
+    type: coverage
+    fromEntity: ConformanceSuite
+    toEntity: TestVector
+    viaField: containsVectorIds
+    minLinks: 1
+    severity: error
+
+  test-vector-validates-rules:
+    type: required-field
+    targetEntities: [TestVector]
+    field: validatesRuleIds
+    severity: error
+
+  no-empty-contract-arrays:
+    type: no-empty-array
+    targetEntities: [TokenProfile, ConformanceClass, ConformanceSuite, TestVector, ValidationStep]
+    fields:
+      - unsupportedFormatIds
+      - usesKeyStrategyIds
+      - allowsAlgorithmIds
+      - definesPipelineStepIds
+      - targetsProfileIds
+      - targetsClassIds
+      - containsVectorIds
+      - validatesRuleIds
+      - expectsErrorCodeIds
+      - producesErrorCodeIds
+    severity: error
+
+  remote-profiles-no-hs256:
+    type: forbid-values-when-field-includes
+    targetEntities: [TokenProfile]
+    whenField: usesKeyStrategyIds
+    whenIncludesAny: [KEY-https-jwks, KEY-oidc-discovery]
+    forbidField: allowsAlgorithmIds
+    forbidValues: [ALG-HS256]
+    severity: error
+
+  suite-profile-vector-match:
+    type: suite-vector-profile-match
+    suiteEntity: ConformanceSuite
+    classEntity: ConformanceClass
+    classField: targetsClassIds
+    classProfileField: targetsProfileIds
+    vectorField: containsVectorIds
+    vectorProfileField: invocationProfileId
+    severity: error

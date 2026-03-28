@@ -1,7 +1,7 @@
 export type LintSeverity = 'error' | 'warning';
 
 export interface LintRuleBase {
-  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id' | 'redundant-bidirectional-link';
+  type: 'regex' | 'has-link' | 'coverage' | 'no-broken-ref' | 'ref-type-mismatch' | 'required-field' | 'enum-value' | 'quality-check' | 'descriptive-id' | 'redundant-bidirectional-link' | 'no-empty-array' | 'forbid-values-when-field-includes' | 'suite-vector-profile-match';
   severity?: LintSeverity;
 }
 
@@ -87,7 +87,33 @@ export interface RedundantBidirectionalLinkRule extends LintRuleBase {
   type: 'redundant-bidirectional-link';
 }
 
-export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule | RedundantBidirectionalLinkRule;
+export interface NoEmptyArrayRule extends LintRuleBase {
+  type: 'no-empty-array';
+  targetEntities: string[];
+  fields: string[];
+}
+
+export interface ForbidValuesWhenFieldIncludesRule extends LintRuleBase {
+  type: 'forbid-values-when-field-includes';
+  targetEntities: string[];
+  whenField: string;
+  whenIncludesAny: string[];
+  forbidField: string;
+  forbidValues: string[];
+  message?: string;
+}
+
+export interface SuiteVectorProfileMatchRule extends LintRuleBase {
+  type: 'suite-vector-profile-match';
+  suiteEntity: string;
+  classEntity: string;
+  classField: string;
+  classProfileField: string;
+  vectorField: string;
+  vectorProfileField: string;
+}
+
+export type LintRule = RegexRule | HasLinkRule | CoverageRule | NoBrokenRefRule | RefTypeMismatchRule | RequiredFieldRule | EnumValueRule | QualityCheckRule | DescriptiveIdRule | RedundantBidirectionalLinkRule | NoEmptyArrayRule | ForbidValuesWhenFieldIncludesRule | SuiteVectorProfileMatchRule;
 
 export interface FeatureConfig {
   enabled?: boolean;

@@ -1,11 +1,17 @@
 id: OP-validate-jwt
 kind: Operation
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Validate JWT
 description: The primary entrypoint for verifying a token against a defined token profile and dynamic runtime configurations.
 rationale: The core public API for any generated library.
 tags:
   - api-surface
   - core-logic
+operationRole: authoritative
+acceptsStructureIds:
+  - STRUCT-validation-request
 producesDataStructureIds:
   - STRUCT-validation-result
 governedByAdrIds:

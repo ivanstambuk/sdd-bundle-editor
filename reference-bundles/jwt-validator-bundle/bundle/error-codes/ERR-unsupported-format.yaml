@@ -1,0 +1,14 @@
+id: ERR-unsupported-format
+kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Unsupported JWT Format"
+description: The input is a JOSE or JWT serialization outside the active compact signed-JWT contract, such as JWE, JWS JSON serialization, or nested JWT.
+tags: [error, format, boundary]
+codeName: rejected-unsupported-format
+messageTemplate: The token format is outside the supported compact signed JWT contract.
+outcomeClass: rejected
+severity: Critical
+isRetryable: false
+httpStatusCode: 400

@@ -1,8 +1,17 @@
 id: VEC-jwt-missing-sub
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Token Missing Mandatory Sub"
 description: Token completely lacks the `sub` claim, violating an explicit `validation_policy` requirement.
 tags: [test, structure]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"iss": "https://secure.example.com", "exp": 2500000000}'
+expectedOutcomeClass: rejected
 expectsErrorCodeIds: [ERR-missing-claim]
+expectedPrimaryErrorCodeId: ERR-missing-claim
+expectedFailedRuleId: RULE-REQUIRED-CLAIMS
+expectedTerminalStepId: STEP-2
 validatesRuleIds: [RULE-REQUIRED-CLAIMS]

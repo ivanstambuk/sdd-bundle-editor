@@ -1,8 +1,17 @@
 id: VEC-jwt-duplicate-keys
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Duplicate JSON Keys Exists"
 description: A structurally malformed token that attempts to exploit JSON parsers by declaring the `sub` claim twice in the payload to bypass downstream checks while passing signature checks.
 tags: [test, parse, security]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"sub": "admin", "sub": "user"}'
+expectedOutcomeClass: malformed
 expectsErrorCodeIds: [ERR-malformed]
+expectedPrimaryErrorCodeId: ERR-malformed
+expectedFailedRuleId: RULE-NO-DUPLICATE-KEYS
+expectedTerminalStepId: STEP-1
 validatesRuleIds: [RULE-NO-DUPLICATE-KEYS]

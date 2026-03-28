@@ -1,8 +1,17 @@
 id: VEC-jwt-invalid-issuer
 kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Incorrect Issuer Mismatch"
 description: JWT holding an unknown or malicious `iss` field when the application expects a specific tenant URL.
 tags: [test, security]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
 payloadJson: '{"iss": "https://malicious.example.com"}'
+expectedOutcomeClass: rejected
 expectsErrorCodeIds: [ERR-invalid-issuer]
+expectedPrimaryErrorCodeId: ERR-invalid-issuer
+expectedFailedRuleId: RULE-ISS-MATCH
+expectedTerminalStepId: STEP-2
 validatesRuleIds: [RULE-ISS-MATCH]

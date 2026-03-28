@@ -1,5 +1,8 @@
 id: CLASS-jwt-validator-core
 kind: ConformanceClass
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Core Validation Profile
 description: The baseline requirements for an implementation to claim it can safely decode, verify, and validate standard signed JWTs.
 rationale: Standardizes what it means to be securely conformant to base RFCs.
@@ -8,5 +11,7 @@ tags:
   - baseline
 requiresOperationIds:
   - OP-validate-jwt
+targetsProfileIds:
+  - PROF-JWT-CORE
 governedByAdrIds:
   - ADR-0001

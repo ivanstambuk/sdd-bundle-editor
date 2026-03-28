@@ -5,7 +5,10 @@
   "required": [
     "id",
     "kind",
-    "title"
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus"
   ],
   "additionalProperties": false,
   "properties": {
@@ -53,6 +56,44 @@
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 99
     },
+    "executionStatus": {
+      "type": "string",
+      "title": "Execution Status",
+      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "title": "Artifact Class",
+      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "title": "Lifecycle Status",
+      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
     "governedByAdrIds": {
       "type": "array",
       "items": {
@@ -62,7 +103,9 @@
         "ADR"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
+      "x-sdd-order": 10,
+      "title": "Governed By Adr References",
+      "description": "References related ADR entity."
     },
     "ruleType": {
       "type": "string",
@@ -71,7 +114,9 @@
         "StringMatch",
         "AbsenceCheck",
         "Regex",
-        "CryptoVerify"
+        "CryptoVerify",
+        "FormatCheck",
+        "HeaderPolicy"
       ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 10
@@ -87,29 +132,38 @@
         "ErrorCode"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 20
+      "x-sdd-order": 20,
+      "format": "sdd-ref",
+      "title": "Throws Error Code Reference",
+      "description": "References related ErrorCode entity."
     },
     "implementsConstraintIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "x-sdd-refTargets": [
         "SecurityConstraint"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 30
+      "x-sdd-order": 30,
+      "title": "Implements Constraint References",
+      "description": "References related SecurityConstraint entity."
     },
     "implementsReferenceIds": {
       "type": "array",
       "items": {
         "type": "string"
       },
+      "minItems": 1,
       "x-sdd-refTargets": [
         "NormativeReference"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 40
+      "x-sdd-order": 40,
+      "title": "Implements Reference References",
+      "description": "References related NormativeReference entity."
     },
     "bindsToContextPropertyId": {
       "type": "string",
@@ -117,7 +171,10 @@
         "DataStructure"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 50
+      "x-sdd-order": 50,
+      "format": "sdd-ref",
+      "title": "Binds To Context Property Reference",
+      "description": "References related DataStructure entity."
     },
     "severity": {
       "type": "string",
@@ -132,6 +189,60 @@
       "x-sdd-order": 5
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "executionStatus": {
+            "const": "active"
+          },
+          "artifactClass": {
+            "const": "contract"
+          }
+        },
+        "required": [
+          "executionStatus",
+          "artifactClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "severity": {},
+          "throwsErrorCodeId": {}
+        },
+        "required": [
+          "severity",
+          "throwsErrorCodeId"
+        ],
+        "anyOf": [
+          {
+            "properties": {
+              "implementsReferenceIds": {}
+            },
+            "required": [
+              "implementsReferenceIds"
+            ]
+          },
+          {
+            "properties": {
+              "implementsConstraintIds": {}
+            },
+            "required": [
+              "implementsConstraintIds"
+            ]
+          },
+          {
+            "properties": {
+              "governedByAdrIds": {}
+            },
+            "required": [
+              "governedByAdrIds"
+            ]
+          }
+        ]
+      }
+    }
+  ],
   "x-sdd-ui": {
     "displayName": "Validation Rule",
     "displayNamePlural": "Validation Rules",

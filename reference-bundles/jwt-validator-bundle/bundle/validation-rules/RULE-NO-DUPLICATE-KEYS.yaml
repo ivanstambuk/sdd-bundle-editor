@@ -1,5 +1,8 @@
 id: RULE-NO-DUPLICATE-KEYS
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Reject Duplicate JSON Keys"
 description: To prevent parser manipulation attacks where signature logic sees one key and application logic sees another, the validator MUST reject headers or payloads containing duplicate JSON keys.
 tags: [validation, parse, security]

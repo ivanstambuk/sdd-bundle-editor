@@ -1,0 +1,17 @@
+id: VEC-jwt-invalid-subject
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Incorrect Subject Mismatch"
+description: JWT holding a `sub` claim that does not exact-match the expected subject configured by the runtime policy.
+tags: [test, security]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+payloadJson: '{"sub": "unexpected-user"}'
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-invalid-subject]
+expectedPrimaryErrorCodeId: ERR-invalid-subject
+expectedFailedRuleId: RULE-SUB-MATCH
+expectedTerminalStepId: STEP-2
+validatesRuleIds: [RULE-SUB-MATCH]

@@ -1,5 +1,8 @@
 id: SUITE-core-validation
 kind: ConformanceSuite
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Core Execution Tests
 description: A comprehensive suite proving the logic of the Core Validation Profile against edge cases like expiration, signature tampering, and clock skews.
 rationale: Automates security verification.
@@ -9,13 +12,26 @@ tags:
 targetsClassIds:
   - CLASS-jwt-validator-core
 containsVectorIds:
+  - VEC-jwt-valid-static
+  - VEC-jwt-valid-on-nbf-boundary
   - VEC-jwt-expired
+  - VEC-jwt-exp-boundary
   - VEC-jwt-malformed
+  - VEC-jwt-unsupported-jwe
+  - VEC-jwt-unsupported-jws-json
+  - VEC-jwt-unsupported-nested
+  - VEC-jwt-unsupported-header-jku
+  - VEC-jwt-unsupported-header-crit
   - VEC-jwt-kid-ambiguous
   - VEC-jwt-kid-missing
+  - VEC-jwt-invalid-signature
   - VEC-jwt-invalid-issuer
+  - VEC-jwt-invalid-subject
+  - VEC-jwt-type-mismatch
   - VEC-jwt-missing-sub
   - VEC-jwt-claim-type-mismatch
+  - VEC-jwt-premature
+  - VEC-jwt-wrong-aud
   - VEC-jwt-weak-key
   - VEC-jwt-duplicate-keys
 ownedByActorId: ACT-sec-team

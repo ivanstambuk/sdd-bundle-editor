@@ -1,0 +1,17 @@
+id: RULE-COMPACT-JWS-ONLY
+kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Accept Only Compact Signed JWT Input"
+description: The validator MUST accept only compact signed JWT input and reject JWE, JWS JSON serialization, nested JWT, or any other JOSE container outside the active profile boundary.
+tags: [validation, format, boundary]
+severity: FATAL
+ruleType: FormatCheck
+throwsErrorCodeId: ERR-unsupported-format
+implementsReferenceIds:
+  - RFC-7515
+  - RFC-7519
+  - RFC-8725
+implementsConstraintIds:
+  - CON-safe-diagnostics

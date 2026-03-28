@@ -1,0 +1,16 @@
+id: SUITE-oidc-discovery
+kind: ConformanceSuite
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: OIDC Discovery Execution Tests
+description: Focused suite for OIDC discovery validators, emphasizing issuer binding and profile-specific type expectations.
+tags: [test-plan, oidc]
+targetsClassIds:
+  - CLASS-jwt-validator-oidc-discovery
+containsVectorIds:
+  - VEC-oidc-invalid-issuer
+  - VEC-jwt-type-mismatch
+ownedByActorId: ACT-sec-team
+governedByAdrIds:
+  - ADR-0001

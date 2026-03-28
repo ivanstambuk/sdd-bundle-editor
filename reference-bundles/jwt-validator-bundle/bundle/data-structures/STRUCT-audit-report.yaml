@@ -1,7 +1,82 @@
 id: STRUCT-audit-report
 kind: DataStructure
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
 title: "Conformance Audit Report"
-description: Summary of how an implementation behaved across a standardized conformance test run, classifying tests into `pass`, `fail`, `indeterminate`, or `drift`.
+description: Summary of how an implementation behaved across a standardized conformance test run, with per-vector expected versus observed outcomes and rule-level failure metadata.
 tags: [data, output, conformance]
 formatType: json
-samplePayload: '{"summary": {"status": "pass", "vector_counts": {"total": 50, "passed": 50}}}'
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    targetClassId:
+      type: string
+    targetProfileId:
+      type: string
+    summary:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum:
+            - pass
+            - fail
+            - indeterminate
+            - drift
+        totalVectors:
+          type: integer
+          minimum: 0
+        passedVectors:
+          type: integer
+          minimum: 0
+        failedVectors:
+          type: integer
+          minimum: 0
+      required:
+        - status
+        - totalVectors
+    vectorResults:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          vectorId:
+            type: string
+          status:
+            type: string
+            enum:
+              - pass
+              - fail
+              - indeterminate
+              - drift
+          expectedOutcomeClass:
+            type: string
+          observedOutcomeClass:
+            type: string
+          expectedPrimaryErrorCodeId:
+            type: string
+          observedPrimaryErrorCodeId:
+            type: string
+          observedFailedRuleId:
+            type: string
+          observedTerminalStepId:
+            type: string
+          observedErrorCodes:
+            type: array
+            items:
+              type: string
+          notes:
+            type: array
+            items:
+              type: string
+        required:
+          - vectorId
+          - status
+  required:
+    - summary
+    - vectorResults
+samplePayload: '{"targetClassId":"CLASS-jwt-validator-core","targetProfileId":"PROF-JWT-CORE","summary":{"status":"pass","totalVectors":12,"passedVectors":12,"failedVectors":0},"vectorResults":[{"vectorId":"VEC-jwt-valid-static","status":"pass","expectedOutcomeClass":"accepted","observedOutcomeClass":"accepted","observedErrorCodes":[]}]}'

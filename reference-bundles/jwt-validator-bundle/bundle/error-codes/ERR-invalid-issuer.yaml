@@ -1,7 +1,14 @@
 id: ERR-invalid-issuer
 kind: ErrorCode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Invalid Issuer"
 description: The token's `iss` claim does not match the `expected_issuer` defined in the validation policy.
 tags: [error, security]
+codeName: rejected-invalid-issuer
+messageTemplate: The token issuer does not match the expected issuer.
+outcomeClass: rejected
+severity: Critical
 isRetryable: false
 httpStatusCode: 403

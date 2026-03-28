@@ -1,8 +1,12 @@
 id: RULE-NBF-CHECK
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Reject Premature Tokens"
 description: The validator MUST reject the token if the current system time is strictly earlier than the `nbf` claim (accounting for allowed clock skew).
 tags: [validation, time]
 severity: ERROR
 implementsConstraintIds: [CON-timing-attack]
 throwsErrorCodeId: ERR-premature
+bindsToContextPropertyId: STRUCT-validation-context

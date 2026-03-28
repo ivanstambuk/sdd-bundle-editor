@@ -5,14 +5,17 @@ import {
   type CoverageRule,
   type DescriptiveIdRule,
   type EnumValueRule,
+  type ForbidValuesWhenFieldIncludesRule,
   type HasLinkRule,
   type LintConfig,
   type LintDiagnostic,
   type LintRule,
+  type NoEmptyArrayRule,
   type QualityCheckRule,
   type RedundantBidirectionalLinkRule,
   type RegexRule,
   type RequiredFieldRule,
+  type SuiteVectorProfileMatchRule,
 } from './types';
 
 interface LintEntity {
@@ -209,6 +212,34 @@ function runRequiredFieldRule(bundle: LintBundle, ruleName: string, rule: Requir
           field: rule.field,
           source: 'lint',
         });
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
+function runNoEmptyArrayRule(bundle: LintBundle, ruleName: string, rule: NoEmptyArrayRule): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  for (const entityType of rule.targetEntities) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      for (const field of rule.fields) {
+        const value = (entity.data as Record<string, unknown>)[field];
+        if (Array.isArray(value) && value.length === 0) {
+          diagnostics.push({
+            code: ruleName,
+            message: `Field "${field}" on ${entityType} "${entity.id}" is present but empty. Omit it or provide at least one value.`,
+            severity: ruleSeverity(rule),
+            entityType,
+            entityId: entity.id,
+            field,
+            source: 'lint',
+          });
+        }
       }
     }
   }
@@ -444,6 +475,101 @@ function runRedundantBidirectionalLinkRule(
   return diagnostics;
 }
 
+function includesAnyValue(value: unknown, wanted: string[]): boolean {
+  if (Array.isArray(value)) {
+    return value.some((item) => typeof item === 'string' && wanted.includes(item));
+  }
+  return typeof value === 'string' && wanted.includes(value);
+}
+
+function runForbidValuesWhenFieldIncludesRule(
+  bundle: LintBundle,
+  ruleName: string,
+  rule: ForbidValuesWhenFieldIncludesRule
+): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+
+  for (const entityType of rule.targetEntities) {
+    const entitiesOfType = bundle.entities.get(entityType);
+    if (!entitiesOfType) continue;
+
+    for (const entity of entitiesOfType.values()) {
+      const whenValue = (entity.data as Record<string, unknown>)[rule.whenField];
+      if (!includesAnyValue(whenValue, rule.whenIncludesAny)) {
+        continue;
+      }
+
+      const forbidValue = (entity.data as Record<string, unknown>)[rule.forbidField];
+      if (!includesAnyValue(forbidValue, rule.forbidValues)) {
+        continue;
+      }
+
+      diagnostics.push({
+        code: ruleName,
+        message: rule.message ?? `${entityType} "${entity.id}" combines "${rule.whenField}" with forbidden value(s) in "${rule.forbidField}".`,
+        severity: ruleSeverity(rule),
+        entityType,
+        entityId: entity.id,
+        field: rule.forbidField,
+        source: 'lint',
+      });
+    }
+  }
+
+  return diagnostics;
+}
+
+function runSuiteVectorProfileMatchRule(
+  bundle: LintBundle,
+  ruleName: string,
+  rule: SuiteVectorProfileMatchRule
+): LintDiagnostic[] {
+  const diagnostics: LintDiagnostic[] = [];
+  const suites = bundle.entities.get(rule.suiteEntity);
+  const classes = bundle.entities.get(rule.classEntity);
+  const vectors = bundle.entities.get('TestVector');
+  if (!suites || !classes || !vectors) return diagnostics;
+
+  for (const suite of suites.values()) {
+    const classIds = (suite.data[rule.classField] as unknown[]) ?? [];
+    const allowedProfiles = new Set<string>();
+
+    for (const classId of classIds) {
+      if (typeof classId !== 'string') continue;
+      const klass = classes.get(classId);
+      if (!klass) continue;
+      const profileIds = (klass.data[rule.classProfileField] as unknown[]) ?? [];
+      for (const profileId of profileIds) {
+        if (typeof profileId === 'string') {
+          allowedProfiles.add(profileId);
+        }
+      }
+    }
+
+    const vectorIds = (suite.data[rule.vectorField] as unknown[]) ?? [];
+    for (const vectorId of vectorIds) {
+      if (typeof vectorId !== 'string') continue;
+      const vector = vectors.get(vectorId);
+      if (!vector) continue;
+      const profileId = vector.data[rule.vectorProfileField];
+      if (typeof profileId !== 'string') continue;
+      if (!allowedProfiles.has(profileId)) {
+        diagnostics.push({
+          code: ruleName,
+          message: `${rule.suiteEntity} "${suite.id}" includes TestVector "${vector.id}" for profile "${profileId}", but its targeted classes do not include that profile.`,
+          severity: ruleSeverity(rule),
+          entityType: rule.suiteEntity,
+          entityId: suite.id,
+          field: rule.vectorField,
+          source: 'lint',
+        });
+      }
+    }
+  }
+
+  return diagnostics;
+}
+
 export function runLintRules(bundle: LintBundle, config: LintConfig | undefined): LintDiagnostic[] {
   if (!config?.rules) return [];
   const diagnostics: LintDiagnostic[] = [];
@@ -466,6 +592,9 @@ export function runLintRules(bundle: LintBundle, config: LintConfig | undefined)
       case 'required-field':
         diagnostics.push(...runRequiredFieldRule(bundle, name, rule));
         break;
+      case 'no-empty-array':
+        diagnostics.push(...runNoEmptyArrayRule(bundle, name, rule));
+        break;
       case 'enum-value':
         diagnostics.push(...runEnumValueRule(bundle, name, rule));
         break;
@@ -477,6 +606,12 @@ export function runLintRules(bundle: LintBundle, config: LintConfig | undefined)
         break;
       case 'redundant-bidirectional-link':
         diagnostics.push(...runRedundantBidirectionalLinkRule(bundle, name, rule));
+        break;
+      case 'forbid-values-when-field-includes':
+        diagnostics.push(...runForbidValuesWhenFieldIncludesRule(bundle, name, rule));
+        break;
+      case 'suite-vector-profile-match':
+        diagnostics.push(...runSuiteVectorProfileMatchRule(bundle, name, rule));
         break;
       default:
         break;

@@ -1,0 +1,39 @@
+id: STRUCT-runtime-policy
+kind: DataStructure
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: Runtime Policy Model
+description: Runtime configuration supplied by the caller to refine how the active JWT profile should be evaluated for a specific execution context.
+tags: [data, input, policy]
+schemaDefinition:
+  type: object
+  additionalProperties: false
+  properties:
+    expectedIssuer:
+      type: string
+    expectedSubject:
+      type: string
+    expectedAudience:
+      oneOf:
+        - type: string
+        - type: array
+          items:
+            type: string
+          minItems: 1
+    expectedTyp:
+      type: string
+    allowedClockSkewSeconds:
+      type: integer
+      minimum: 0
+    allowDiagnosticClaimsOnFailure:
+      type: boolean
+    allowTrustSensitiveHeaderSources:
+      type: boolean
+    allowedCriticalHeaders:
+      type: array
+      items:
+        type: string
+      uniqueItems: true
+  required:
+    - allowedClockSkewSeconds

@@ -1,5 +1,8 @@
 id: CLAIM-iss
 kind: PayloadClaim
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Issuer
 description: The "iss" (issuer) claim identifies the principal that issued the JWT.
 rationale: Allows relying parties to verify the token came from a trusted source.
@@ -7,6 +10,8 @@ tags:
   - identity
 name: iss
 dataType: string
+semanticType: StringOrURI
+comparisonSemantics: uri-exact
 isRequired: false
 isStandardRFC: true
 constrainedByRuleIds:

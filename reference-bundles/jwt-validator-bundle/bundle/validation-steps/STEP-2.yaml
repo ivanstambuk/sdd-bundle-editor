@@ -1,7 +1,20 @@
 id: STEP-2
 kind: ValidationStep
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Validate Claims
-description: Execute logical time-based and identity-based constraint tests against the unmarshaled payload claims.
+description: Execute header-policy, identity, and claim-shape checks against the decoded JWT before time-window evaluation.
+abortOnFailure: true
 executionOrder: 2
 executesRuleIds:
-  - RULE-EXP-CHECK
+  - RULE-REQUIRED-CLAIMS
+  - RULE-CLAIM-TYPE-CHECK
+  - RULE-ISS-MATCH
+  - RULE-SUB-MATCH
+  - RULE-TYP-POLICY
+producesErrorCodeIds:
+  - ERR-missing-claim
+  - ERR-type-mismatch
+  - ERR-invalid-issuer
+  - ERR-invalid-subject

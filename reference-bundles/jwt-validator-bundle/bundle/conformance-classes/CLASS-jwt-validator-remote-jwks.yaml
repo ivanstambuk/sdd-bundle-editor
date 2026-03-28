@@ -1,0 +1,14 @@
+id: CLASS-jwt-validator-remote-jwks
+kind: ConformanceClass
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: Remote JWKS Validation Profile
+description: Conformance class for implementations that extend the local JWT core with direct HTTPS JWKS retrieval.
+tags: [compliance, remote]
+requiresOperationIds:
+  - OP-validate-jwt
+targetsProfileIds:
+  - PROF-JWT-REMOTE-JWKS
+governedByAdrIds:
+  - ADR-0001

@@ -1,7 +1,25 @@
 id: PROF-JWT-CORE
 kind: TokenProfile
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: Basic JWT Validator Core
-description: The bare minimum required features to securely parse and validate a signed JSON Web Token.
+description: Local stateless baseline for securely parsing and validating a signed compact JWT using caller-supplied trusted key material.
+profileType: Custom
+profileFamily: JWT-CORE
+replayProtectionMode: out-of-scope
+implementsReferenceIds:
+  - RFC-7515
+  - RFC-7518
+  - RFC-7519
+  - RFC-8725
+acceptsPolicyId: STRUCT-runtime-policy
+acceptsContextId: STRUCT-validation-context
+returnsModelId: STRUCT-validation-result
+unsupportedFormatIds:
+  - FMT-jwe-compact
+  - FMT-jws-json
+  - FMT-nested-jwt
 allowsAlgorithmIds:
   - ALG-HS256
   - ALG-RS256
@@ -12,6 +30,7 @@ requiresHeaderIds:
 requiresClaimIds:
   - CLAIM-exp
 optionalClaimIds:
+  - CLAIM-aud
   - CLAIM-iss
   - CLAIM-iat
   - CLAIM-jti
@@ -19,12 +38,20 @@ optionalClaimIds:
 definesPipelineStepIds:
   - STEP-1
   - STEP-2
+  - STEP-3
+  - STEP-4
 usesFormatId: FMT-jws-compact
 usesKeyStrategyIds:
   - KEY-static-jwks
-  - KEY-https-jwks
-  - KEY-oidc-discovery
 
 optionalHeaderIds:
   - HDR-kid
   - HDR-typ
+  - HDR-cty
+  - HDR-crit
+  - HDR-jku
+  - HDR-jwk
+  - HDR-x5u
+  - HDR-x5c
+  - HDR-x5t
+  - HDR-x5t-s256

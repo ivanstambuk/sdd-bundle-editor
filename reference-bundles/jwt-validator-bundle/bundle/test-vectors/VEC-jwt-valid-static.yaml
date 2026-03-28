@@ -1,0 +1,22 @@
+id: VEC-jwt-valid-static
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: Valid Static-Key JWT
+description: A correctly signed compact JWT validated under the local static-key baseline with all required checks passing.
+tags: [test, success, baseline]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.XbP_rZEDQk7_wXJ_I6i3gE8fA11D3lX2z0VmV_x-N48
+environmentState:
+  now_epoch_seconds: 1516239000
+  leeway_seconds: 0
+expectedOutcomeClass: accepted
+expectedTerminalStepId: STEP-4
+validatesRuleIds:
+  - RULE-SYNTAX-CHECK
+  - RULE-ALG-ALLOWLIST
+  - RULE-SIG-VERIFY
+  - RULE-EXP-CHECK
+usesMockKeyId: MOCK-hs256-static-1

@@ -1,5 +1,8 @@
 id: CON-jwks-tls
 kind: SecurityConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
 title: "JWKS over TLS Only"
 description: JWKS endpoints must only be fetched over validated `https://` connections.
 tags: [security, network]

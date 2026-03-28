@@ -1,0 +1,17 @@
+id: VEC-jwt-unsupported-header-jku
+kind: TestVector
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: "Untrusted Header-Supplied Key Source"
+description: JWT includes a `jku` header pointing to signer-controlled key material, which the active profile rejects by default.
+tags: [test, header, security, remote]
+invocationProfileId: PROF-JWT-CORE
+expectedEvaluatedProfileId: PROF-JWT-CORE
+headerJson: '{"jku": "https://attacker.example/jwks.json"}'
+expectedOutcomeClass: rejected
+expectsErrorCodeIds: [ERR-unsupported-header]
+expectedPrimaryErrorCodeId: ERR-unsupported-header
+expectedFailedRuleId: RULE-UNTRUSTED-HEADER-SOURCES
+expectedTerminalStepId: STEP-4
+validatesRuleIds: [RULE-UNTRUSTED-HEADER-SOURCES]

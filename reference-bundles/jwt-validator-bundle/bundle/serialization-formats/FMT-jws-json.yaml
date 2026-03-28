@@ -1,0 +1,14 @@
+id: FMT-jws-json
+kind: SerializationFormat
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: JWS JSON Serialization
+description: JSON-based JWS serialization. This bundle currently models only compact signed JWT input for authoritative validation.
+tags: [encoding, json, unsupported]
+formatName: JWS JSON
+containerType: JWS
+serializationVariant: json
+supportStatus: unsupported
+governedByAdrIds:
+  - ADR-0001

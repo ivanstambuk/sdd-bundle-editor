@@ -1,0 +1,14 @@
+id: FMT-jwe-compact
+kind: SerializationFormat
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+title: JWE Compact Serialization
+description: Compact encrypted JOSE serialization using five dot-delimited segments. This validator ontology does not treat encrypted JWE input as part of the supported validation contract.
+tags: [encoding, encrypted, unsupported]
+formatName: JWE Compact
+containerType: JWE
+serializationVariant: compact
+supportStatus: unsupported
+governedByAdrIds:
+  - ADR-0001

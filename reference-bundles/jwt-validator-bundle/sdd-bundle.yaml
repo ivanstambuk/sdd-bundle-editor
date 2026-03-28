@@ -89,3 +89,9 @@ spec:
       Actor:
         dir: bundle/actors
         filePattern: "{id}.yaml"
+
+  domainKnowledge:
+    path: domain/domain-knowledge.md
+
+  lintConfig:
+    path: config/sdd-lint.yaml

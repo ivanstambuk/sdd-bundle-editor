@@ -1,5 +1,8 @@
 id: RULE-CLAIM-TYPE-CHECK
 kind: ValidationRule
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: "Enforce Strict Claim Types"
 description: The validator MUST reject tokens that provide claims in the wrong primitive JSON types compared to standard (e.g., numeric time claims incorrectly passed as strings).
 tags: [validation, parse]

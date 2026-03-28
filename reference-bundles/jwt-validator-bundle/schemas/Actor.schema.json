@@ -53,6 +53,44 @@
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 99
     },
+    "executionStatus": {
+      "type": "string",
+      "title": "Execution Status",
+      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "title": "Artifact Class",
+      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "title": "Lifecycle Status",
+      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
     "governedByAdrIds": {
       "type": "array",
       "items": {
@@ -62,7 +100,9 @@
         "ADR"
       ],
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
+      "x-sdd-order": 10,
+      "title": "Governed By Adr References",
+      "description": "References related ADR entity."
     },
     "role": {
       "type": "string",

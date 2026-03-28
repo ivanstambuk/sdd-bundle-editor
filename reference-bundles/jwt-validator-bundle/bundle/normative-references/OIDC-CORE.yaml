@@ -1,0 +1,11 @@
+id: OIDC-CORE
+kind: NormativeReference
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
+title: OpenID Connect Core 1.0
+description: Defines ID Token semantics, discovery expectations, and validation requirements for OpenID Connect implementations.
+tags: [oidc, standard]
+url: https://openid.net/specs/openid-connect-core-1_0.html
+referenceType: OIDC
+publisher: OpenID Foundation

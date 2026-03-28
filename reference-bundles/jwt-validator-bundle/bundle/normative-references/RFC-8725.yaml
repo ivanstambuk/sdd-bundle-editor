@@ -1,6 +1,11 @@
 id: RFC-8725
 kind: NormativeReference
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
 title: JSON Web Token Best Current Practices
 description: Outlines critical security pitfalls and how to avoid them in modern JWT deployments.
 tags: [security, bcp]
 url: "https://datatracker.ietf.org/doc/html/rfc8725"
+referenceType: RFC
+publisher: IETF

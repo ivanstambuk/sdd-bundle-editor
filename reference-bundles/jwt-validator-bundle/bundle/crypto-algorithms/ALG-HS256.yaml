@@ -1,5 +1,8 @@
 id: ALG-HS256
 kind: CryptoAlgorithm
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
 title: HMAC with SHA-256
 description: HS256 provides a symmetric signature verification method using a shared secret.
 rationale: Required by JWT spec as the baseline symmetric algorithm.
@@ -9,3 +12,5 @@ tags:
 joseName: HS256
 keyFamily: OCT
 minKeySizeBits: 256
+strengthBits: 128
+isQuantumSafe: false

@@ -1,0 +1,24 @@
+id: OP-hopmac256
+kind: Operation
+title: HopMAC256 One-Shot
+description: Computes HopMAC256(Key, M, C, L) as the profiled KT256-based hash-then-MAC construction.
+operationRole: authoritative
+methodName: HopMAC256
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-hopmac256
+acceptsStructureIds:
+  - STRUCT-hopmac-call-input
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-hopmac-key-length
+  - CON-hopmac256-tag-length
+  - CON-kt-message-length
+  - CON-kt-customization-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861

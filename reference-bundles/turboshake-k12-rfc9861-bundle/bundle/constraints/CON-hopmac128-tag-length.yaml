@@ -1,0 +1,19 @@
+id: CON-hopmac128-tag-length
+kind: Constraint
+title: HopMAC128 tag length
+statement: HopMAC128 tags MUST satisfy 16 <= L <= 2^64 - 1 bytes.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.HopMAC.L_HopMAC128
+structuredValue:
+  min: 16
+  max: 18446744073709551615
+appliesToPrimitiveIds:
+  - PRIM-hopmac128
+appliesToOperationIds:
+  - OP-hopmac128
+normativeReferenceIds:
+  - RFC-9861

@@ -1,0 +1,16 @@
+id: CLASS-kp
+kind: ConformanceClass
+title: KP Permutation Support
+description: Minimal capability claim for the Keccak-p[1600,12] permutation primitive.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsProfileIds:
+  - PROF-TURBOSHAKE-K12-RFC9861
+requiresPrimitiveIds:
+  - PRIM-kp
+requiresOperationIds:
+  - OP-kp-permute
+normativeReferenceIds:
+  - RFC-9861
+  - FIPS-202

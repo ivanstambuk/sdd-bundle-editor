@@ -1,0 +1,24 @@
+id: OP-turboshake-context-squeeze
+kind: Operation
+title: TurboSHAKEContext.squeeze
+description: Squeezes output bytes from the finalized context while preserving the XOF prefix property across sequential calls.
+operationRole: stateful-method
+methodName: squeeze
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-turboshake-context
+acceptsStructureIds:
+  - STRUCT-context-method-input
+  - STRUCT-turboshake-context-state
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-streaming-squeeze-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-state
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861
+phases: [SQUEEZING]

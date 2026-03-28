@@ -1,0 +1,12 @@
+id: FIPS-202
+kind: NormativeReference
+title: SHA-3 Standard
+description: Source of truth for the Keccak permutation family used by the KP primitive and inherited constructions.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
+referenceType: FIPS
+publisher: NIST
+section: full
+tags: [crypto, keccak, sha3]

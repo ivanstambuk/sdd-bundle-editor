@@ -1,0 +1,23 @@
+id: OP-turboshake-context-init
+kind: Operation
+title: TurboSHAKEContext.init
+description: Initializes or reinitializes the TurboSHAKE streaming context with a domain byte.
+operationRole: stateful-method
+methodName: init
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-turboshake-context
+acceptsStructureIds:
+  - STRUCT-context-method-input
+  - STRUCT-turboshake-context-state
+producesDataStructureIds:
+  - STRUCT-result-type
+governedByConstraintIds:
+  - CON-turboshake-domain-byte
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861
+phases: [INIT, ABSORBING, SQUEEZING]

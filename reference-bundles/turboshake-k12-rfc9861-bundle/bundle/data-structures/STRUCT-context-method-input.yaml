@@ -1,0 +1,14 @@
+id: STRUCT-context-method-input
+kind: DataStructure
+title: Context Method Input
+description: Generic input structure for TurboSHAKE context methods such as init, absorb, and squeeze.
+structureKind: input-model
+formatType: object
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  properties:
+    D: UInt8
+    chunk: ByteString
+    len: UInt64

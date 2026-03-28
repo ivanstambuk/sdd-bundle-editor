@@ -1,0 +1,19 @@
+id: STRUCT-turboshake-context-state
+kind: DataStructure
+title: TurboSHAKEContext State
+description: Streaming TurboSHAKE context holding internal sponge state, domain byte, partial block buffer, and phase.
+structureKind: context-state
+formatType: conceptual
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  fields:
+    - S
+    - D
+    - buffer
+    - phase
+  phases:
+    - INIT
+    - ABSORBING
+    - SQUEEZING

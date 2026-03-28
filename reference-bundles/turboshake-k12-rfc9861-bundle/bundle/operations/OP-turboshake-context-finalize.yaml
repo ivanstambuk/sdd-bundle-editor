@@ -1,0 +1,20 @@
+id: OP-turboshake-context-finalize
+kind: Operation
+title: TurboSHAKEContext.finalize
+description: Finalizes absorption, appends the domain byte logically, applies padding, and transitions the context to squeezing.
+operationRole: stateful-method
+methodName: finalize
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-turboshake-context
+acceptsStructureIds:
+  - STRUCT-turboshake-context-state
+producesDataStructureIds:
+  - STRUCT-result-type
+mayRaiseErrorCategoryIds:
+  - ERRCAT-state
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861
+phases: [INIT, ABSORBING]

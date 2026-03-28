@@ -1,0 +1,17 @@
+id: OP-kp-permute
+kind: Operation
+title: KP Permute
+description: Applies the Keccak-p[1600,12] permutation to a 1600-bit state and returns the transformed state.
+operationRole: authoritative
+methodName: permute
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-kp
+acceptsStructureIds:
+  - STRUCT-bitstring-1600
+producesDataStructureIds:
+  - STRUCT-bitstring-1600
+normativeReferenceIds:
+  - RFC-9861
+  - FIPS-202

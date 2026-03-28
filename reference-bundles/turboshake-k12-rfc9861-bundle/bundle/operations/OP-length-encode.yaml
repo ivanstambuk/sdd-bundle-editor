@@ -1,0 +1,21 @@
+id: OP-length-encode
+kind: Operation
+title: length_encode
+description: Encodes an integer input into the KT helper representation used for customization and tree framing.
+operationRole: helper
+methodName: length_encode
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-length-encode
+acceptsStructureIds:
+  - STRUCT-length-encode-input
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-length-encode-domain
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861

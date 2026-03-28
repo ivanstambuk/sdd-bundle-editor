@@ -1,0 +1,31 @@
+{
+  "$id": "sdd-bundle:crypto-profile:TestVector",
+  "type": "object",
+  "title": "TestVector",
+  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "vectorKind", "primitiveId", "invokesOperationId", "sourceReferenceId"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^VEC-[a-z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "TestVector", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "vectorKind": { "type": "string", "enum": ["external-family", "concrete"], "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "primitiveId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 20, "title": "primitive" },
+    "invokesOperationId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Operation"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 21, "title": "invokes" },
+    "sourceReferenceId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 22, "title": "source reference" },
+    "parameterModelId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["DataStructure"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 23, "title": "parameter model" },
+    "parameters": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "expectedResult": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
+    "notes": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
+    "tags": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "details", "x-sdd-order": 99 }
+  },
+  "x-sdd-ui": { "displayName": "Test Vector", "displayNamePlural": "Test Vectors", "icon": "🧾" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 },
+    "traceability": { "title": "Relationships", "order": 3 }
+  }
+}

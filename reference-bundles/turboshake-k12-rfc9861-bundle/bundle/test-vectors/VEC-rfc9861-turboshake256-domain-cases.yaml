@@ -1,0 +1,36 @@
+id: VEC-rfc9861-turboshake256-domain-cases
+kind: TestVector
+title: RFC 9861 TurboSHAKE256 Domain Cases
+description: Aggregates the explicit TurboSHAKE256 FF/domain-byte cases, including the reserved KT domain values used for test coverage.
+vectorKind: external-family
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+primitiveId: PRIM-turboshake256
+invokesOperationId: OP-turboshake256
+sourceReferenceId: RFC-9861
+parameterModelId: STRUCT-test-vector-parameters
+parameters:
+  cases:
+    - M_hex: FFFFFF
+      D: 1
+      L: 64
+    - M_hex: FF
+      D: 6
+      L: 64
+    - M_hex: FFFFFF
+      D: 7
+      L: 64
+    - M_hex: FFFFFFFFFFFFFF
+      D: 11
+      L: 64
+    - M_hex: FF
+      D: 48
+      L: 64
+    - M_hex: FFFFFF
+      D: 127
+      L: 64
+expectedResult:
+  canonicalOutputs: upstream-rfc-9861
+  sourceSection: "RFC 9861 §5"
+tags: [rfc, turboshake256, domain]

@@ -1,0 +1,13 @@
+id: STRUCT-bitstring-1600
+kind: DataStructure
+title: BitString[1600]
+description: 1600-bit Keccak state interpreted as a 5x5 array of 64-bit lanes.
+structureKind: conceptual-type
+formatType: conceptual
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  type: fixed-bitstring
+  bits: 1600
+  interpretation: keccak-lanes

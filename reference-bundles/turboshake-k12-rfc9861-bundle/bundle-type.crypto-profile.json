@@ -1,0 +1,328 @@
+{
+  "bundleType": "crypto-profile",
+  "version": "1.0.0",
+  "x-sdd-meta": {
+    "description": "Reference metamodel for cryptographic primitive profiles, constraints, and conformance assets."
+  },
+  "entities": [
+    {
+      "entityType": "CryptoProfile",
+      "idField": "id",
+      "schemaPath": "schemas/CryptoProfile.schema.json",
+      "directory": "bundle/profiles",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#f7768e",
+      "order": 1
+    },
+    {
+      "entityType": "NormativeReference",
+      "idField": "id",
+      "schemaPath": "schemas/NormativeReference.schema.json",
+      "directory": "bundle/normative-references",
+      "filePattern": "{id}.yaml",
+      "category": "architecture",
+      "color": "#ff9e64",
+      "order": 2
+    },
+    {
+      "entityType": "Primitive",
+      "idField": "id",
+      "schemaPath": "schemas/Primitive.schema.json",
+      "directory": "bundle/primitives",
+      "filePattern": "{id}.yaml",
+      "category": "crypto",
+      "color": "#c099ff",
+      "order": 1
+    },
+    {
+      "entityType": "Constraint",
+      "idField": "id",
+      "schemaPath": "schemas/Constraint.schema.json",
+      "directory": "bundle/constraints",
+      "filePattern": "{id}.yaml",
+      "category": "governance",
+      "color": "#e0af68",
+      "order": 1
+    },
+    {
+      "entityType": "Operation",
+      "idField": "id",
+      "schemaPath": "schemas/Operation.schema.json",
+      "directory": "bundle/operations",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#2ac3de",
+      "order": 1
+    },
+    {
+      "entityType": "DataStructure",
+      "idField": "id",
+      "schemaPath": "schemas/DataStructure.schema.json",
+      "directory": "bundle/data-structures",
+      "filePattern": "{id}.yaml",
+      "category": "data",
+      "color": "#7dcfff",
+      "order": 1
+    },
+    {
+      "entityType": "ErrorCategory",
+      "idField": "id",
+      "schemaPath": "schemas/ErrorCategory.schema.json",
+      "directory": "bundle/error-categories",
+      "filePattern": "{id}.yaml",
+      "category": "logic",
+      "color": "#ffc777",
+      "order": 2
+    },
+    {
+      "entityType": "ConformanceClass",
+      "idField": "id",
+      "schemaPath": "schemas/ConformanceClass.schema.json",
+      "directory": "bundle/conformance-classes",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#9ece6a",
+      "order": 1
+    },
+    {
+      "entityType": "ConformanceSuite",
+      "idField": "id",
+      "schemaPath": "schemas/ConformanceSuite.schema.json",
+      "directory": "bundle/conformance-suites",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#73daca",
+      "order": 2
+    },
+    {
+      "entityType": "TestVector",
+      "idField": "id",
+      "schemaPath": "schemas/TestVector.schema.json",
+      "directory": "bundle/test-vectors",
+      "filePattern": "{id}.yaml",
+      "category": "quality",
+      "color": "#41a6b5",
+      "order": 3
+    }
+  ],
+  "relations": [
+    {
+      "name": "CryptoProfileToNormativeReference_normativeReferenceIds",
+      "fromEntity": "CryptoProfile",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "CryptoProfileToPrimitive_supportedPrimitiveIds",
+      "fromEntity": "CryptoProfile",
+      "toEntity": "Primitive",
+      "fromField": "supportedPrimitiveIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "CryptoProfileToConformanceClass_conformanceClassIds",
+      "fromEntity": "CryptoProfile",
+      "toEntity": "ConformanceClass",
+      "fromField": "conformanceClassIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "CryptoProfileToConformanceSuite_conformanceSuiteIds",
+      "fromEntity": "CryptoProfile",
+      "toEntity": "ConformanceSuite",
+      "fromField": "conformanceSuiteIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToNormativeReference_normativeReferenceIds",
+      "fromEntity": "Primitive",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToConstraint_governedByConstraintIds",
+      "fromEntity": "Primitive",
+      "toEntity": "Constraint",
+      "fromField": "governedByConstraintIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToOperation_exposesOperationIds",
+      "fromEntity": "Primitive",
+      "toEntity": "Operation",
+      "fromField": "exposesOperationIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToErrorCategory_returnsErrorCategoryIds",
+      "fromEntity": "Primitive",
+      "toEntity": "ErrorCategory",
+      "fromField": "returnsErrorCategoryIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToDataStructure_inputStructureIds",
+      "fromEntity": "Primitive",
+      "toEntity": "DataStructure",
+      "fromField": "inputStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "PrimitiveToDataStructure_outputStructureIds",
+      "fromEntity": "Primitive",
+      "toEntity": "DataStructure",
+      "fromField": "outputStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintToPrimitive_appliesToPrimitiveIds",
+      "fromEntity": "Constraint",
+      "toEntity": "Primitive",
+      "fromField": "appliesToPrimitiveIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintToOperation_appliesToOperationIds",
+      "fromEntity": "Constraint",
+      "toEntity": "Operation",
+      "fromField": "appliesToOperationIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConstraintToNormativeReference_normativeReferenceIds",
+      "fromEntity": "Constraint",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToPrimitive_belongsToPrimitiveId",
+      "fromEntity": "Operation",
+      "toEntity": "Primitive",
+      "fromField": "belongsToPrimitiveId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "OperationToDataStructure_acceptsStructureIds",
+      "fromEntity": "Operation",
+      "toEntity": "DataStructure",
+      "fromField": "acceptsStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToDataStructure_producesDataStructureIds",
+      "fromEntity": "Operation",
+      "toEntity": "DataStructure",
+      "fromField": "producesDataStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToConstraint_governedByConstraintIds",
+      "fromEntity": "Operation",
+      "toEntity": "Constraint",
+      "fromField": "governedByConstraintIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToErrorCategory_mayRaiseErrorCategoryIds",
+      "fromEntity": "Operation",
+      "toEntity": "ErrorCategory",
+      "fromField": "mayRaiseErrorCategoryIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "OperationToNormativeReference_normativeReferenceIds",
+      "fromEntity": "Operation",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DataStructureToDataStructure_composesStructureIds",
+      "fromEntity": "DataStructure",
+      "toEntity": "DataStructure",
+      "fromField": "composesStructureIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToCryptoProfile_targetsProfileIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "CryptoProfile",
+      "fromField": "targetsProfileIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToPrimitive_requiresPrimitiveIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "Primitive",
+      "fromField": "requiresPrimitiveIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToOperation_requiresOperationIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "Operation",
+      "fromField": "requiresOperationIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceClassToNormativeReference_normativeReferenceIds",
+      "fromEntity": "ConformanceClass",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToConformanceClass_targetsClassIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "ConformanceClass",
+      "fromField": "targetsClassIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToTestVector_containsVectorIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "TestVector",
+      "fromField": "containsVectorIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConformanceSuiteToNormativeReference_normativeReferenceIds",
+      "fromEntity": "ConformanceSuite",
+      "toEntity": "NormativeReference",
+      "fromField": "normativeReferenceIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "TestVectorToPrimitive_primitiveId",
+      "fromEntity": "TestVector",
+      "toEntity": "Primitive",
+      "fromField": "primitiveId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToOperation_invokesOperationId",
+      "fromEntity": "TestVector",
+      "toEntity": "Operation",
+      "fromField": "invokesOperationId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToNormativeReference_sourceReferenceId",
+      "fromEntity": "TestVector",
+      "toEntity": "NormativeReference",
+      "fromField": "sourceReferenceId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "TestVectorToDataStructure_parameterModelId",
+      "fromEntity": "TestVector",
+      "toEntity": "DataStructure",
+      "fromField": "parameterModelId",
+      "multiplicity": "one"
+    }
+  ]
+}

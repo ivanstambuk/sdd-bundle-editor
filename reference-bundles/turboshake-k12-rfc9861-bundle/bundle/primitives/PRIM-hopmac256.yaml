@@ -1,0 +1,25 @@
+id: PRIM-hopmac256
+kind: Primitive
+title: HopMAC256
+description: Profile-defined named MAC constructed as KT256(Key, KT256(M, C, 64), L).
+primitiveCategory: mac
+family: HopMAC
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-hopmac-key-length
+  - CON-hopmac256-tag-length
+  - CON-kt-message-length
+  - CON-kt-customization-length
+exposesOperationIds:
+  - OP-hopmac256
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-hopmac-call-input
+outputStructureIds:
+  - STRUCT-byte-string

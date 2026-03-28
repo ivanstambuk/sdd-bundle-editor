@@ -1,0 +1,12 @@
+id: DRAFT-K12-10
+kind: NormativeReference
+title: draft-irtf-cfrg-kangarootwelve-10
+description: Historical draft used for background and consistency checks against RFC 9861.
+executionStatus: advisory
+artifactClass: documentation
+lifecycleStatus: active
+url: https://datatracker.ietf.org/doc/draft-irtf-cfrg-kangarootwelve/10/
+referenceType: Draft
+publisher: IETF
+section: full
+tags: [crypto, kangarootwelve, draft]

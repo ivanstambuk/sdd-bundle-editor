@@ -1,0 +1,24 @@
+id: PRIM-turboshake128
+kind: Primitive
+title: TurboSHAKE128
+description: One-shot extendable-output function using rate 168 bytes and capacity 32 bytes.
+primitiveCategory: xof
+family: TurboSHAKE
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-turboshake-message-length
+  - CON-turboshake-domain-byte
+  - CON-turboshake-output-length
+exposesOperationIds:
+  - OP-turboshake128
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-xof-call-input
+outputStructureIds:
+  - STRUCT-byte-string

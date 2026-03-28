@@ -1,0 +1,26 @@
+id: CON-turboshake-domain-byte
+kind: Constraint
+title: TurboSHAKE domain byte
+statement: Public TurboSHAKE APIs MUST accept D only in the range 1..127, with default 0x1F; reserved values 0x06, 0x07, and 0x0B are disallowed on the public TurboSHAKE surface when KT is present.
+severity: must
+constraintKind: policy
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.TurboSHAKE.D
+structuredValue:
+  min: 1
+  max: 127
+  default: 31
+  reservedWhenKtPresent: [6, 7, 11]
+appliesToPrimitiveIds:
+  - PRIM-turboshake128
+  - PRIM-turboshake256
+  - PRIM-turboshake-context
+appliesToOperationIds:
+  - OP-turboshake128
+  - OP-turboshake256
+  - OP-turboshake-context-init
+normativeReferenceIds:
+  - RFC-9861
+rationale: Keeps the public TurboSHAKE surface distinct from the internal domain values used by KT.

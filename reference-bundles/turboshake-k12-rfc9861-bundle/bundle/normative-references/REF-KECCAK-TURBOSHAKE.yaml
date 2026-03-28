@@ -1,0 +1,12 @@
+id: REF-KECCAK-TURBOSHAKE
+kind: NormativeReference
+title: Keccak Team TurboSHAKE Notes
+description: Informational Keccak team material explaining TurboSHAKE details and usage.
+executionStatus: advisory
+artifactClass: documentation
+lifecycleStatus: active
+url: https://keccak.team/turboshake.html
+referenceType: Informational
+publisher: Keccak Team
+section: full
+tags: [crypto, keccak, turboshake]

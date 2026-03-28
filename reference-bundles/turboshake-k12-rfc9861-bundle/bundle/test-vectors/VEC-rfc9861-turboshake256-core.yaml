@@ -1,0 +1,34 @@
+id: VEC-rfc9861-turboshake256-core
+kind: TestVector
+title: RFC 9861 TurboSHAKE256 Core Families
+description: Aggregates the RFC 9861 TurboSHAKE256 empty, long-output, and patterned families referenced by the source profile.
+vectorKind: external-family
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+primitiveId: PRIM-turboshake256
+invokesOperationId: OP-turboshake256
+sourceReferenceId: RFC-9861
+parameterModelId: STRUCT-test-vector-parameters
+parameters:
+  families:
+    - empty:
+        M_len: 0
+        D: 31
+        L: 64
+    - empty-long:
+        M_len: 0
+        D: 31
+        L: 10032
+        outputSlice:
+          kind: last
+          bytes: 32
+    - patterned:
+        pattern: ptn
+        nValues: [17**0, 17**1, 17**2, 17**3, 17**4, 17**5, 17**6]
+        D: 31
+        L: 64
+expectedResult:
+  canonicalOutputs: upstream-rfc-9861
+  sourceSection: "RFC 9861 §5"
+tags: [rfc, turboshake256, family]

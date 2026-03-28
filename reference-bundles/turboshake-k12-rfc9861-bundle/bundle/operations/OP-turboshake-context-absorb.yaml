@@ -1,0 +1,24 @@
+id: OP-turboshake-context-absorb
+kind: Operation
+title: TurboSHAKEContext.absorb
+description: Absorbs a message chunk into the streaming context while tracking total conceptual message length.
+operationRole: stateful-method
+methodName: absorb
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-turboshake-context
+acceptsStructureIds:
+  - STRUCT-context-method-input
+  - STRUCT-turboshake-context-state
+producesDataStructureIds:
+  - STRUCT-result-type
+governedByConstraintIds:
+  - CON-turboshake-message-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-state
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861
+phases: [INIT, ABSORBING]

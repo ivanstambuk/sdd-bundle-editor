@@ -1,0 +1,12 @@
+id: RFC-9861
+kind: NormativeReference
+title: KangarooTwelve and TurboSHAKE
+description: Primary RFC defining TurboSHAKE, KangarooTwelve, HopMAC construction guidance, and published test vectors used by this profile.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+url: https://datatracker.ietf.org/doc/rfc9861/
+referenceType: RFC
+publisher: IETF
+section: full
+tags: [crypto, xof, turboshake, kangarootwelve, hopmac]

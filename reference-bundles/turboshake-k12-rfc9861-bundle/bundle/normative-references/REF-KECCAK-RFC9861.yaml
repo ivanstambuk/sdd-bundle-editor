@@ -1,0 +1,12 @@
+id: REF-KECCAK-RFC9861
+kind: NormativeReference
+title: Keccak Team RFC 9861 Commentary
+description: Informational commentary and background on RFC 9861 from the Keccak team.
+executionStatus: advisory
+artifactClass: documentation
+lifecycleStatus: active
+url: https://keccak.team/2025/rfc9861.html
+referenceType: Informational
+publisher: Keccak Team
+section: full
+tags: [crypto, keccak, commentary]

@@ -1,0 +1,24 @@
+id: OP-kt256
+kind: Operation
+title: KT256 One-Shot
+description: Computes KT256(M, C, L) using the profiled `length_encode` domain and the RFC 9861 internal TurboSHAKE domain bindings.
+operationRole: authoritative
+methodName: KT256
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-kt256
+acceptsStructureIds:
+  - STRUCT-xof-call-input
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-kt-message-length
+  - CON-kt-customization-length
+  - CON-length-encode-domain
+  - CON-turboshake-output-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861

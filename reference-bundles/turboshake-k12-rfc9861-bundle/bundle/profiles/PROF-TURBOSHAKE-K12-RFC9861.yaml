@@ -1,0 +1,61 @@
+id: PROF-TURBOSHAKE-K12-RFC9861
+kind: CryptoProfile
+title: TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 Profile
+description: |
+  Port of the sibling `sdd-specs` profile `sdd.crypto.xof.turboshake-kt-hopmac-rfc9861-profile`.
+
+  The bundle captures the normative profile surface for TurboSHAKE128/256,
+  KangarooTwelve KT128/KT256, HopMAC128/256, the TurboSHAKE streaming context,
+  and the helper `length_encode`.
+scope: |
+  This profile narrows RFC 9861 for interoperable implementations. It fixes
+  parameter bounds, error semantics, streaming contracts, and HopMAC policies
+  while preserving the underlying TurboSHAKE and KangarooTwelve constructions.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: draft
+sourceSpecId: sdd.crypto.xof.turboshake-kt-hopmac-rfc9861-profile
+version: 1.0.0
+sourceDirectory: /home/ivan/dev/sdd-specs/specs/protocols/crypto/turboshake-kt-hopmac-rfc9861-profile
+sourceArtifacts:
+  - spec.yaml
+  - spec.md
+  - profile-spec.md
+  - profile-core.yaml
+  - conformance.yaml
+normativeReferenceIds:
+  - RFC-9861
+  - FIPS-202
+  - REF-KECCAK-TURBOSHAKE
+  - REF-KECCAK-RFC9861
+  - DRAFT-K12-10
+supportedPrimitiveIds:
+  - PRIM-kp
+  - PRIM-turboshake128
+  - PRIM-turboshake256
+  - PRIM-turboshake-context
+  - PRIM-kt128
+  - PRIM-kt256
+  - PRIM-hopmac128
+  - PRIM-hopmac256
+  - PRIM-length-encode
+conformanceClassIds:
+  - CLASS-kp
+  - CLASS-turboshake-core
+  - CLASS-k12-core
+  - CLASS-hopmac-profile
+conformanceSuiteIds:
+  - SUITE-rfc9861-turboshake
+  - SUITE-rfc9861-k12
+  - SUITE-local-hopmac
+knownSourceIssues:
+  - profile-core-yaml-invalid
+  - hopmac256-local-hex-has-embedded-space
+  - stale-rfc-md-and-missing-commentary-links
+importNotes: |
+  This initial port keeps the source structure queryable without trying to model
+  every informative index block. `AgentCoreView`, `SpecIndex`,
+  `ImplementationChecklist`, and schema invariants remain deferred.
+
+  The imported conformance layer keeps RFC vector families as grouped test-vector
+  entities and stores the local HopMAC vectors as concrete entries.

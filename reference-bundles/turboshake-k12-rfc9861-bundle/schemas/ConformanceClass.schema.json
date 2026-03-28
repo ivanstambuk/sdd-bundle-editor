@@ -1,0 +1,51 @@
+{
+  "$id": "sdd-bundle:crypto-profile:ConformanceClass",
+  "type": "object",
+  "title": "ConformanceClass",
+  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "targetsProfileIds"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CLASS-[a-z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "ConformanceClass", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "targetsProfileIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["CryptoProfile"] },
+      "minItems": 1,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20,
+      "title": "targets profiles"
+    },
+    "requiresPrimitiveIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 21,
+      "title": "requires primitives"
+    },
+    "requiresOperationIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Operation"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 22,
+      "title": "requires operations"
+    },
+    "normativeReferenceIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 23,
+      "title": "normative references"
+    }
+  },
+  "x-sdd-ui": { "displayName": "Conformance Class", "displayNamePlural": "Conformance Classes", "icon": "🎖️" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 },
+    "traceability": { "title": "Relationships", "order": 3 }
+  }
+}

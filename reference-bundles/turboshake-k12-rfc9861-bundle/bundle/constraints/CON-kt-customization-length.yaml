@@ -1,0 +1,25 @@
+id: CON-kt-customization-length
+kind: Constraint
+title: KT customization length
+statement: KT128 and KT256 MUST support conceptual customization lengths 0 <= |C| <= 2^64 - 1 bytes.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.KangarooTwelve.C_length
+structuredValue:
+  min: 0
+  max: 18446744073709551615
+appliesToPrimitiveIds:
+  - PRIM-kt128
+  - PRIM-kt256
+  - PRIM-hopmac128
+  - PRIM-hopmac256
+appliesToOperationIds:
+  - OP-kt128
+  - OP-kt256
+  - OP-hopmac128
+  - OP-hopmac256
+normativeReferenceIds:
+  - RFC-9861

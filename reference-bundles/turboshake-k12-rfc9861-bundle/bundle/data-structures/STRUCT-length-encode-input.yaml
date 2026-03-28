@@ -1,0 +1,12 @@
+id: STRUCT-length-encode-input
+kind: DataStructure
+title: length_encode Input
+description: Integer input model for the helper algorithm `length_encode(x)`.
+structureKind: input-model
+formatType: scalar
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  properties:
+    x: Integer

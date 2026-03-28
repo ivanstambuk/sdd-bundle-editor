@@ -1,0 +1,19 @@
+id: CLASS-k12-core
+kind: ConformanceClass
+title: KangarooTwelve Core Support
+description: Capability claim for KT128, KT256, and the helper `length_encode`.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsProfileIds:
+  - PROF-TURBOSHAKE-K12-RFC9861
+requiresPrimitiveIds:
+  - PRIM-kt128
+  - PRIM-kt256
+  - PRIM-length-encode
+requiresOperationIds:
+  - OP-kt128
+  - OP-kt256
+  - OP-length-encode
+normativeReferenceIds:
+  - RFC-9861

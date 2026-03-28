@@ -1,0 +1,22 @@
+id: PRIM-length-encode
+kind: Primitive
+title: length_encode
+description: Helper algorithm used by the KT constructions with a profiled domain guarantee up to 2^64-1.
+primitiveCategory: helper
+family: KangarooTwelve
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-length-encode-domain
+exposesOperationIds:
+  - OP-length-encode
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-length-encode-input
+outputStructureIds:
+  - STRUCT-byte-string

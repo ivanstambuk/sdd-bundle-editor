@@ -1,0 +1,61 @@
+apiVersion: sdd.v1
+kind: Bundle
+metadata:
+  name: turboshake-k12-rfc9861-reference
+  bundleType: crypto-profile
+  schemaVersion: 1.0.0
+
+spec:
+  bundleTypeDefinition: bundle-type.crypto-profile.json
+
+  schemas:
+    documents:
+      CryptoProfile: schemas/CryptoProfile.schema.json
+      NormativeReference: schemas/NormativeReference.schema.json
+      Primitive: schemas/Primitive.schema.json
+      Constraint: schemas/Constraint.schema.json
+      Operation: schemas/Operation.schema.json
+      DataStructure: schemas/DataStructure.schema.json
+      ErrorCategory: schemas/ErrorCategory.schema.json
+      ConformanceClass: schemas/ConformanceClass.schema.json
+      ConformanceSuite: schemas/ConformanceSuite.schema.json
+      TestVector: schemas/TestVector.schema.json
+
+  layout:
+    documents:
+      CryptoProfile:
+        dir: bundle/profiles
+        filePattern: "{id}.yaml"
+      NormativeReference:
+        dir: bundle/normative-references
+        filePattern: "{id}.yaml"
+      Primitive:
+        dir: bundle/primitives
+        filePattern: "{id}.yaml"
+      Constraint:
+        dir: bundle/constraints
+        filePattern: "{id}.yaml"
+      Operation:
+        dir: bundle/operations
+        filePattern: "{id}.yaml"
+      DataStructure:
+        dir: bundle/data-structures
+        filePattern: "{id}.yaml"
+      ErrorCategory:
+        dir: bundle/error-categories
+        filePattern: "{id}.yaml"
+      ConformanceClass:
+        dir: bundle/conformance-classes
+        filePattern: "{id}.yaml"
+      ConformanceSuite:
+        dir: bundle/conformance-suites
+        filePattern: "{id}.yaml"
+      TestVector:
+        dir: bundle/test-vectors
+        filePattern: "{id}.yaml"
+
+  domainKnowledge:
+    path: domain/domain-knowledge.md
+
+  lintConfig:
+    path: config/sdd-lint.yaml

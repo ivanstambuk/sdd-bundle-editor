@@ -1,0 +1,35 @@
+id: VEC-rfc9861-kt256-families
+kind: TestVector
+title: RFC 9861 KT256 Families
+description: Aggregates the RFC 9861 KT256 vector families for empty inputs, patterned messages, patterned customization, and the mixed 8192-byte cases.
+vectorKind: external-family
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+primitiveId: PRIM-kt256
+invokesOperationId: OP-kt256
+sourceReferenceId: RFC-9861
+parameterModelId: STRUCT-test-vector-parameters
+parameters:
+  families:
+    - empty:
+        M_len: 0
+        C_len: 0
+        L_values: [64, 128, 10064]
+    - patterned-message:
+        pattern: ptn
+        M_n_values: [1, 17, 17**2, 17**3, 17**4, 17**5]
+        C_len: 0
+        L: 64
+    - patterned-customization:
+        M_len: 0
+        C_n_values: [1, 41, 41**2, 41**3]
+        L: 64
+    - mixed-8192:
+        M_len: 8192
+        C_len_values: [0, 8189, 8190]
+        L: 64
+expectedResult:
+  canonicalOutputs: upstream-rfc-9861
+  sourceSection: "RFC 9861 §5"
+tags: [rfc, kt256, family]

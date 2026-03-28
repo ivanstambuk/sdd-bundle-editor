@@ -1,0 +1,24 @@
+id: CON-turboshake-message-length
+kind: Constraint
+title: TurboSHAKE message length
+statement: Conceptual TurboSHAKE message length MUST support 0 <= |M| <= 2^64 - 1 bytes for one-shot and streaming usage.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.TurboSHAKE.M_length
+structuredValue:
+  min: 0
+  max: 18446744073709551615
+  domainNote: profile-guaranteed-64-bit-range
+appliesToPrimitiveIds:
+  - PRIM-turboshake128
+  - PRIM-turboshake256
+  - PRIM-turboshake-context
+appliesToOperationIds:
+  - OP-turboshake128
+  - OP-turboshake256
+  - OP-turboshake-context-absorb
+normativeReferenceIds:
+  - RFC-9861

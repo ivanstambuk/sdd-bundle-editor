@@ -1,0 +1,19 @@
+id: CON-streaming-squeeze-length
+kind: Constraint
+title: Streaming squeeze length
+statement: Each TurboSHAKEContext `squeeze(len)` call MUST support 0 <= len <= 2^64 - 1 bytes, and sequential squeezes must preserve the XOF prefix property.
+severity: must
+constraintKind: state
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.Streaming.squeeze_len
+structuredValue:
+  min: 0
+  max: 18446744073709551615
+appliesToPrimitiveIds:
+  - PRIM-turboshake-context
+appliesToOperationIds:
+  - OP-turboshake-context-squeeze
+normativeReferenceIds:
+  - RFC-9861

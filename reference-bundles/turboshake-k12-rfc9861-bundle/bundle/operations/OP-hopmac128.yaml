@@ -1,0 +1,24 @@
+id: OP-hopmac128
+kind: Operation
+title: HopMAC128 One-Shot
+description: Computes HopMAC128(Key, M, C, L) as the profiled KT128-based hash-then-MAC construction.
+operationRole: authoritative
+methodName: HopMAC128
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-hopmac128
+acceptsStructureIds:
+  - STRUCT-hopmac-call-input
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-hopmac-key-length
+  - CON-hopmac128-tag-length
+  - CON-kt-message-length
+  - CON-kt-customization-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861

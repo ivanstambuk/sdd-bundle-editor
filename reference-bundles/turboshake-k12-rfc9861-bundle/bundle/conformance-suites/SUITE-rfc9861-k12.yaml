@@ -1,0 +1,15 @@
+id: SUITE-rfc9861-k12
+kind: ConformanceSuite
+title: RFC 9861 KangarooTwelve Vectors
+description: External RFC vector coverage for KT128 and KT256 across empty, pattern, and mixed customization families.
+suiteKind: rfc-external
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsClassIds:
+  - CLASS-k12-core
+containsVectorIds:
+  - VEC-rfc9861-kt128-families
+  - VEC-rfc9861-kt256-families
+normativeReferenceIds:
+  - RFC-9861

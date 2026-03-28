@@ -1,0 +1,71 @@
+{
+  "$id": "sdd-bundle:crypto-profile:CryptoProfile",
+  "type": "object",
+  "title": "CryptoProfile",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "sourceSpecId",
+    "version",
+    "normativeReferenceIds",
+    "supportedPrimitiveIds"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PROF-[A-Z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "CryptoProfile", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "scope": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 30 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "sourceSpecId": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
+    "version": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "sourceDirectory": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
+    "sourceArtifacts": { "type": "array", "items": { "type": "string" }, "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
+    "normativeReferenceIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"] },
+      "minItems": 1,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20,
+      "title": "normative references"
+    },
+    "supportedPrimitiveIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"] },
+      "minItems": 1,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 21,
+      "title": "supported primitives"
+    },
+    "conformanceClassIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["ConformanceClass"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 22,
+      "title": "conformance classes"
+    },
+    "conformanceSuiteIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["ConformanceSuite"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 23,
+      "title": "conformance suites"
+    },
+    "knownSourceIssues": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "notes", "x-sdd-order": 30 },
+    "importNotes": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "notes", "x-sdd-order": 31 }
+  },
+  "x-sdd-ui": { "displayName": "Crypto Profile", "displayNamePlural": "Crypto Profiles", "icon": "🧭" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 },
+    "traceability": { "title": "Relationships", "order": 3 },
+    "notes": { "title": "Import Notes", "order": 4 }
+  }
+}

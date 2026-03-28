@@ -1,0 +1,48 @@
+{
+  "$id": "sdd-bundle:crypto-profile:Constraint",
+  "type": "object",
+  "title": "Constraint",
+  "required": ["id", "kind", "title", "statement", "severity", "executionStatus", "artifactClass", "lifecycleStatus", "constraintKind"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CON-[a-z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "Constraint", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "statement": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "severity": { "type": "string", "enum": ["must", "should", "may"], "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
+    "constraintKind": { "type": "string", "enum": ["parameter", "policy", "state", "host-mapping", "conformance"], "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "sourceConstraintKey": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
+    "structuredValue": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
+    "rationale": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "details", "x-sdd-order": 14 },
+    "appliesToPrimitiveIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20,
+      "title": "applies to primitives"
+    },
+    "appliesToOperationIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Operation"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 21,
+      "title": "applies to operations"
+    },
+    "normativeReferenceIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 22,
+      "title": "normative references"
+    }
+  },
+  "x-sdd-ui": { "displayName": "Constraint", "displayNamePlural": "Constraints", "icon": "🚧" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 },
+    "traceability": { "title": "Relationships", "order": 3 }
+  }
+}

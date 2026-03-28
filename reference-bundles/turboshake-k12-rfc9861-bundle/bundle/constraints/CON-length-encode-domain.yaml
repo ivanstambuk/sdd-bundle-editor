@@ -1,0 +1,24 @@
+id: CON-length-encode-domain
+kind: Constraint
+title: length_encode domain
+statement: The profiled domain for `length_encode(x)` is 0 <= x <= 2^64 - 1 even though RFC 9861 describes a broader conceptual bound.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.KangarooTwelve.length_encode_domain
+structuredValue:
+  min: 0
+  max: 18446744073709551615
+  broaderRfcDomain: x-lt-256-pow-255
+appliesToPrimitiveIds:
+  - PRIM-length-encode
+  - PRIM-kt128
+  - PRIM-kt256
+appliesToOperationIds:
+  - OP-length-encode
+  - OP-kt128
+  - OP-kt256
+normativeReferenceIds:
+  - RFC-9861

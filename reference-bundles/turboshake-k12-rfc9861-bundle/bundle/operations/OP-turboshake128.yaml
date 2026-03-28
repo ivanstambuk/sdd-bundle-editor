@@ -1,0 +1,23 @@
+id: OP-turboshake128
+kind: Operation
+title: TurboSHAKE128 One-Shot
+description: Computes TurboSHAKE128(M, D, L) with explicit validation of message length, domain byte, and output length.
+operationRole: authoritative
+methodName: TurboSHAKE128
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+belongsToPrimitiveId: PRIM-turboshake128
+acceptsStructureIds:
+  - STRUCT-xof-call-input
+producesDataStructureIds:
+  - STRUCT-byte-string
+governedByConstraintIds:
+  - CON-turboshake-message-length
+  - CON-turboshake-domain-byte
+  - CON-turboshake-output-length
+mayRaiseErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+normativeReferenceIds:
+  - RFC-9861

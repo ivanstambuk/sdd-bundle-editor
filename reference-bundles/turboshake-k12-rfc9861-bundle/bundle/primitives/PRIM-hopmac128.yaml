@@ -1,0 +1,25 @@
+id: PRIM-hopmac128
+kind: Primitive
+title: HopMAC128
+description: Profile-defined named MAC constructed as KT128(Key, KT128(M, C, 32), L).
+primitiveCategory: mac
+family: HopMAC
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-hopmac-key-length
+  - CON-hopmac128-tag-length
+  - CON-kt-message-length
+  - CON-kt-customization-length
+exposesOperationIds:
+  - OP-hopmac128
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-hopmac-call-input
+outputStructureIds:
+  - STRUCT-byte-string

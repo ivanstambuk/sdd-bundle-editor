@@ -1,0 +1,12 @@
+id: ERRCAT-state
+kind: ErrorCategory
+title: StateError
+description: API usage is invalid for the current operation phase or context lifetime.
+canonicalTag: state
+sourceName: StateError
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+semantics: |
+  Covers phase misuse such as squeezing before finalize, or using context APIs in
+  a disallowed lifecycle state.

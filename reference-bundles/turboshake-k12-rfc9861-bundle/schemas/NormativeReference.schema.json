@@ -1,0 +1,26 @@
+{
+  "$id": "sdd-bundle:crypto-profile:NormativeReference",
+  "type": "object",
+  "title": "NormativeReference",
+  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "url", "referenceType"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^(RFC-[0-9]+|FIPS-[0-9]+|REF-[A-Z0-9-]+|DRAFT-[A-Z0-9-]+)$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "NormativeReference", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "url": { "type": "string", "format": "uri", "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
+    "referenceType": { "type": "string", "enum": ["RFC", "FIPS", "Informational", "Draft"], "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "publisher": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
+    "section": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
+    "tags": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "details", "x-sdd-order": 99 }
+  },
+  "x-sdd-ui": { "displayName": "Normative Reference", "displayNamePlural": "Normative References", "icon": "📚" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 }
+  }
+}

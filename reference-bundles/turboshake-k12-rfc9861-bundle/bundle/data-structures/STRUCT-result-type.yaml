@@ -1,0 +1,13 @@
+id: STRUCT-result-type
+kind: DataStructure
+title: ResultType
+description: Conceptual operation result as either `Ok(payload)` or `Err(reason)`.
+structureKind: output-model
+formatType: tagged-union
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  okVariant: Ok
+  errVariant: Err
+  errPayload: ErrorCategory

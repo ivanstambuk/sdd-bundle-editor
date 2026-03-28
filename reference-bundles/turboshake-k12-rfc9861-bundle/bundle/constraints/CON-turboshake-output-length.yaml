@@ -1,0 +1,25 @@
+id: CON-turboshake-output-length
+kind: Constraint
+title: Output length
+statement: One-shot XOF operations in this profile MUST support 1 <= L <= 2^64 - 1 bytes.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.TurboSHAKE.L
+structuredValue:
+  min: 1
+  max: 18446744073709551615
+appliesToPrimitiveIds:
+  - PRIM-turboshake128
+  - PRIM-turboshake256
+  - PRIM-kt128
+  - PRIM-kt256
+appliesToOperationIds:
+  - OP-turboshake128
+  - OP-turboshake256
+  - OP-kt128
+  - OP-kt256
+normativeReferenceIds:
+  - RFC-9861

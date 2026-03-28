@@ -1,0 +1,15 @@
+id: STRUCT-xof-call-input
+kind: DataStructure
+title: XOF Call Input
+description: Generic input structure for one-shot TurboSHAKE and KT calls.
+structureKind: input-model
+formatType: object
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  properties:
+    M: ByteString
+    C: ByteString
+    D: UInt8
+    L: UInt64

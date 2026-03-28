@@ -1,0 +1,19 @@
+id: CON-hopmac256-tag-length
+kind: Constraint
+title: HopMAC256 tag length
+statement: HopMAC256 tags MUST satisfy 32 <= L <= 2^64 - 1 bytes.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.HopMAC.L_HopMAC256
+structuredValue:
+  min: 32
+  max: 18446744073709551615
+appliesToPrimitiveIds:
+  - PRIM-hopmac256
+appliesToOperationIds:
+  - OP-hopmac256
+normativeReferenceIds:
+  - RFC-9861

@@ -1,0 +1,22 @@
+id: CON-hopmac-key-length
+kind: Constraint
+title: HopMAC key length
+statement: HopMAC keys MUST satisfy 1 <= |Key| <= 2^64 - 1 bytes, with the source noting a special side-channel advantage for keys of length <= 69 bytes.
+severity: must
+constraintKind: parameter
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+sourceConstraintKey: Constraints.HopMAC.Key_length
+structuredValue:
+  min: 1
+  max: 18446744073709551615
+  singlePermutationScaAdvantageAtOrBelowBytes: 69
+appliesToPrimitiveIds:
+  - PRIM-hopmac128
+  - PRIM-hopmac256
+appliesToOperationIds:
+  - OP-hopmac128
+  - OP-hopmac256
+normativeReferenceIds:
+  - RFC-9861

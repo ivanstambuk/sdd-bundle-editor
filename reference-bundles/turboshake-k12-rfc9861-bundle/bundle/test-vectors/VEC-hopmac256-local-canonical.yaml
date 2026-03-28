@@ -1,0 +1,30 @@
+id: VEC-hopmac256-local-canonical
+kind: TestVector
+title: Local HopMAC256 Canonical Vector
+description: Concrete local canonical vector for the profile-defined HopMAC256 primitive.
+vectorKind: concrete
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+primitiveId: PRIM-hopmac256
+invokesOperationId: OP-hopmac256
+sourceReferenceId: RFC-9861
+parameterModelId: STRUCT-test-vector-parameters
+parameters:
+  key:
+    kind: pattern
+    pattern: ptn
+    length: 32
+  message:
+    kind: pattern
+    pattern: ptn
+    length: 64
+  customization:
+    kind: utf8
+    value: HopMAC256 local test
+  L: 64
+expectedResult:
+  sourceTextHex: 8F561D5DE2AB767AD46E958714CF15CF998953EFAF5748A1DA5B2BE91E085B49BBA39E2323F1B7AAB6A9834DAB7DB87D017AFDE6BCCC A05763BF9BADF1FBB856
+  normalizedHexCandidate: 8F561D5DE2AB767AD46E958714CF15CF998953EFAF5748A1DA5B2BE91E085B49BBA39E2323F1B7AAB6A9834DAB7DB87D017AFDE6BCCCA05763BF9BADF1FBB856
+  note: source-contains-embedded-space
+tags: [hopmac256, local, canonical, source-needs-confirmation]

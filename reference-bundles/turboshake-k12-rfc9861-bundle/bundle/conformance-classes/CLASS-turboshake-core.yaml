@@ -1,0 +1,22 @@
+id: CLASS-turboshake-core
+kind: ConformanceClass
+title: TurboSHAKE Core Support
+description: Capability claim for TurboSHAKE128/256 one-shot support and the profiled streaming context behavior.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsProfileIds:
+  - PROF-TURBOSHAKE-K12-RFC9861
+requiresPrimitiveIds:
+  - PRIM-turboshake128
+  - PRIM-turboshake256
+  - PRIM-turboshake-context
+requiresOperationIds:
+  - OP-turboshake128
+  - OP-turboshake256
+  - OP-turboshake-context-init
+  - OP-turboshake-context-absorb
+  - OP-turboshake-context-finalize
+  - OP-turboshake-context-squeeze
+normativeReferenceIds:
+  - RFC-9861

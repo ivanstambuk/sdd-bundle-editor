@@ -1,0 +1,19 @@
+id: PRIM-kp
+kind: Primitive
+title: KP
+description: Keccak-p[1600,12] permutation primitive used as the foundation for the profiled constructions.
+primitiveCategory: permutation
+family: Keccak-p
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+  - FIPS-202
+exposesOperationIds:
+  - OP-kp-permute
+inputStructureIds:
+  - STRUCT-bitstring-1600
+outputStructureIds:
+  - STRUCT-bitstring-1600
+notes: Deterministic and side-effect free.

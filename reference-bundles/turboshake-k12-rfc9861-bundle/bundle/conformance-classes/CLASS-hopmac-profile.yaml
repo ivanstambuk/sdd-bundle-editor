@@ -1,0 +1,17 @@
+id: CLASS-hopmac-profile
+kind: ConformanceClass
+title: HopMAC Profile Support
+description: Capability claim for the profile-defined HopMAC128 and HopMAC256 named primitives.
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsProfileIds:
+  - PROF-TURBOSHAKE-K12-RFC9861
+requiresPrimitiveIds:
+  - PRIM-hopmac128
+  - PRIM-hopmac256
+requiresOperationIds:
+  - OP-hopmac128
+  - OP-hopmac256
+normativeReferenceIds:
+  - RFC-9861

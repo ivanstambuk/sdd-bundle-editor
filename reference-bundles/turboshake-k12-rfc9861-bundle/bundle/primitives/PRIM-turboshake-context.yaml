@@ -1,0 +1,32 @@
+id: PRIM-turboshake-context
+kind: Primitive
+title: TurboSHAKEContext
+description: Stateful TurboSHAKE streaming context with explicit phase transitions for init, absorb, finalize, squeeze, and reset.
+primitiveCategory: xof-context
+family: TurboSHAKE
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-turboshake-message-length
+  - CON-turboshake-domain-byte
+  - CON-turboshake-output-length
+  - CON-streaming-squeeze-length
+exposesOperationIds:
+  - OP-turboshake-context-init
+  - OP-turboshake-context-absorb
+  - OP-turboshake-context-finalize
+  - OP-turboshake-context-squeeze
+  - OP-turboshake-context-reset
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-state
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-context-method-input
+  - STRUCT-turboshake-context-state
+outputStructureIds:
+  - STRUCT-result-type
+  - STRUCT-byte-string

@@ -1,0 +1,15 @@
+id: SUITE-local-hopmac
+kind: ConformanceSuite
+title: Local HopMAC Canonical Vectors
+description: Concrete local vectors for the profile-defined HopMAC128 and HopMAC256 named primitives.
+suiteKind: local-canonical
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+targetsClassIds:
+  - CLASS-hopmac-profile
+containsVectorIds:
+  - VEC-hopmac128-local-canonical
+  - VEC-hopmac256-local-canonical
+normativeReferenceIds:
+  - RFC-9861

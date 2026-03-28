@@ -1,0 +1,25 @@
+id: PRIM-kt128
+kind: Primitive
+title: KT128
+description: KangarooTwelve tree-hash extendable-output function over TurboSHAKE128.
+primitiveCategory: xof
+family: KangarooTwelve
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+normativeReferenceIds:
+  - RFC-9861
+governedByConstraintIds:
+  - CON-kt-message-length
+  - CON-kt-customization-length
+  - CON-length-encode-domain
+  - CON-turboshake-output-length
+exposesOperationIds:
+  - OP-kt128
+returnsErrorCategoryIds:
+  - ERRCAT-parameter
+  - ERRCAT-internal
+inputStructureIds:
+  - STRUCT-xof-call-input
+outputStructureIds:
+  - STRUCT-byte-string

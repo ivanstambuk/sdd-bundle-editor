@@ -1,0 +1,12 @@
+id: ERRCAT-parameter
+kind: ErrorCategory
+title: ParameterError
+description: Caller-supplied inputs violate the declared profile constraints.
+canonicalTag: parameter
+sourceName: ParameterError
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+semantics: |
+  Covers invalid domain bytes, invalid lengths, and out-of-range conceptual
+  values such as illegal `length_encode(x)` inputs.

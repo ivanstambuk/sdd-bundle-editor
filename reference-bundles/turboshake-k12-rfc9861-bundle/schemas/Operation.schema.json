@@ -1,0 +1,61 @@
+{
+  "$id": "sdd-bundle:crypto-profile:Operation",
+  "type": "object",
+  "title": "Operation",
+  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "operationRole", "belongsToPrimitiveId"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^OP-[a-z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "kind": { "type": "string", "const": "Operation", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
+    "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
+    "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
+    "operationRole": { "type": "string", "enum": ["authoritative", "helper", "harness", "stateful-method"], "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
+    "methodName": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
+    "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
+    "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
+    "belongsToPrimitiveId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 20, "title": "belongs to" },
+    "acceptsStructureIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["DataStructure"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 21,
+      "title": "accepts"
+    },
+    "producesDataStructureIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["DataStructure"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 22,
+      "title": "produces"
+    },
+    "governedByConstraintIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Constraint"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 23,
+      "title": "governed by"
+    },
+    "mayRaiseErrorCategoryIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["ErrorCategory"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 24,
+      "title": "errors"
+    },
+    "normativeReferenceIds": {
+      "type": "array",
+      "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"] },
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 25,
+      "title": "normative references"
+    },
+    "phases": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "details", "x-sdd-order": 30 }
+  },
+  "x-sdd-ui": { "displayName": "Operation", "displayNamePlural": "Operations", "icon": "⚡" },
+  "x-sdd-layoutGroups": {
+    "overview": { "title": "Overview", "order": 1 },
+    "details": { "title": "Properties & Configuration", "order": 2 },
+    "traceability": { "title": "Relationships", "order": 3 }
+  }
+}

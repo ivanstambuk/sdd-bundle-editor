@@ -1,0 +1,15 @@
+id: STRUCT-hopmac-call-input
+kind: DataStructure
+title: HopMAC Call Input
+description: Generic input structure for one-shot HopMAC operations.
+structureKind: input-model
+formatType: object
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+schemaDefinition:
+  properties:
+    Key: ByteString
+    M: ByteString
+    C: ByteString
+    L: UInt64

@@ -1,0 +1,13 @@
+id: ERRCAT-internal
+kind: ErrorCategory
+title: InternalError
+description: Unexpected faults not attributable to caller-visible inputs or state.
+canonicalTag: internal
+sourceName: InternalError
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+semantics: |
+  Represents internal invariant failures or resource faults. Once a context has
+  produced this category, it should be treated as unusable for further profile
+  operations.

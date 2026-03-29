@@ -2,7 +2,7 @@
   "$id": "https://example.com/sdd/Viewpoint.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Viewpoint",
-  "description": "Reusable diagram template with semantic rules for PlantUML generation",
+  "description": "Reusable diagram template with semantic rules for Mermaid generation",
   "type": "object",
   "required": [
     "createdDate",
@@ -35,17 +35,17 @@
     "diagramKind": {
       "type": "string",
       "enum": [
-        "plantuml-component",
-        "plantuml-sequence",
-        "plantuml-class",
-        "plantuml-activity"
+        "mermaid-flowchart",
+        "mermaid-sequence",
+        "mermaid-class",
+        "mermaid-state"
       ],
-      "description": "Type of PlantUML diagram this viewpoint produces",
+      "description": "Type of Mermaid diagram this viewpoint produces",
       "x-sdd-enumTitles": {
-        "plantuml-component": "PlantUML Component",
-        "plantuml-sequence": "PlantUML Sequence",
-        "plantuml-class": "PlantUML Class",
-        "plantuml-activity": "PlantUML Activity"
+        "mermaid-flowchart": "Mermaid Flowchart",
+        "mermaid-sequence": "Mermaid Sequence",
+        "mermaid-class": "Mermaid Class",
+        "mermaid-state": "Mermaid State"
       },
       "x-sdd-layoutGroup": "overview",
       "x-sdd-order": 20
@@ -78,13 +78,13 @@
       "x-sdd-layoutGroup": "template",
       "x-sdd-order": 10
     },
-    "plantumlTemplate": {
+    "mermaidTemplate": {
       "type": "string",
-      "description": "Optional Jinja-style template for generating PlantUML",
+      "description": "Optional template or starter snippet for generating Mermaid",
       "x-sdd-displayHint": "markdown",
       "x-sdd-layoutGroup": "template",
       "x-sdd-prominence": "hero",
-      "x-sdd-prominenceLabel": "PlantUML Template",
+      "x-sdd-prominenceLabel": "Mermaid Template",
       "x-sdd-prominenceIcon": "🎨",
       "x-sdd-order": 20
     },

@@ -1,6 +1,6 @@
 id: VP-api-sequence
 name: API Sequence Diagram
-diagramKind: plantuml-sequence
+diagramKind: mermaid-sequence
 description: 'Sequence diagram showing the flow of API calls between actors,
 
   components, and services for a specific scenario.

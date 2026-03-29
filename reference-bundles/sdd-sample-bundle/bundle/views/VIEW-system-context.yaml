@@ -11,39 +11,11 @@ scope:
   - COMP-auth-service
   - COMP-api-gateway
   - COMP-data-store
-plantuml: '@startuml
-
-  !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-
-
-  title System Context - Spec Studio
-
-
-  Person(end_user, "End User", "Browses and edits spec bundles")
-
-  Person(admin, "Administrator", "Configures system and manages bundles")
-
-
-  System(sdd_editor, "Spec Studio", "Web-based tool for viewing and editing
-  SDD specification bundles")
-
-
-  System_Ext(git, "Git Repository", "Stores bundle files and tracks changes")
-
-  System_Ext(ai, "AI Provider", "Provides LLM capabilities for spec generation")
-
-
-  Rel(end_user, sdd_editor, "Uses", "HTTPS")
-
-  Rel(admin, sdd_editor, "Configures", "HTTPS")
-
-  Rel(sdd_editor, git, "Reads/Writes", "Git protocol")
-
-  Rel(sdd_editor, ai, "Generates content", "HTTPS/API")
-
-  @enduml
-
-  '
+mermaid: "```mermaid\nflowchart LR\n    EndUser([End User])\n    Admin([Administrator])\n\
+  \    Studio[\"Spec Studio<br/>Web-based SDD bundle editor\"]\n    Git[(\"Git Repository\"\
+  )]\n    AI[(\"AI Provider\")]\n\n    EndUser -->|Uses HTTPS| Studio\n    Admin -->|Configures\
+  \ via HTTPS| Studio\n    Studio -->|Reads/Writes via Git protocol| Git\n    Studio\
+  \ -->|Generates content via HTTPS/API| AI\n```"
 outputPath: docs/diagrams/system-context.png
 referencedEntities:
 - ACT-end-user

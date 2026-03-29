@@ -11,10 +11,11 @@ deciderActorIds:
 context: "We need a standardized way to validate entity YAML files against their \n\
   expected structure. The validation system must support custom extensions\nfor SDD-specific\
   \ features like entity references and ID templates.\n\n\n## Authentication Flow\n\
-  \n```plantuml\n@startuml\nactor User\nparticipant \"Frontend\" as FE\nparticipant\
-  \ \"Auth Service\" as Auth\nparticipant \"User DB\" as DB\n\nUser -> FE: Login Request\n\
-  FE -> Auth: POST /auth/login\nAuth -> DB: Verify Credentials\nDB --> Auth: User\
-  \ Data\nAuth --> FE: JWT Token\nFE --> User: Login Success\n@enduml\n```\n"
+  \n```mermaid\nsequenceDiagram\n    actor User\n    participant FE as Frontend\n\
+    participant Auth as Auth Service\n    participant DB as User DB\n\n    User->>FE:\
+  \ Login Request\n    FE->>Auth: POST /auth/login\n    Auth->>DB: Verify Credentials\n\
+    DB-->>Auth: User Data\n    Auth-->>FE: JWT Token\n    FE-->>User: Login Success\n\
+  ```\n"
 problem: 'How do we validate bundle entities in a way that is both standards-based
 
   and extensible for SDD-specific semantics?

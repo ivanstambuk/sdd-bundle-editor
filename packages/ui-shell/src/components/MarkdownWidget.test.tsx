@@ -5,10 +5,6 @@ vi.mock('./MermaidDiagram', () => ({
     MermaidDiagram: ({ code }: { code: string }) => <div data-testid="mermaid-diagram">{code}</div>,
 }));
 
-vi.mock('./PlantUmlDiagram', () => ({
-    PlantUmlDiagram: ({ code }: { code: string }) => <div data-testid="plantuml-diagram">{code}</div>,
-}));
-
 describe('MarkdownWidget', () => {
     it('routes mermaid fences to the Mermaid renderer', () => {
         render(
@@ -23,18 +19,17 @@ describe('MarkdownWidget', () => {
         expect(screen.getByTestId('mermaid-diagram')).toHaveTextContent(/graph TD\s+A-->B/);
     });
 
-    it('keeps PlantUML fences routed to the existing renderer', () => {
+    it('renders unknown code fences as plain code blocks', () => {
         render(
             <MarkdownWidget
                 id="markdown"
-                value={'```plantuml\n@startuml\nAlice -> Bob: Hi\n@enduml\n```'}
+                value={'```custom\nplain code example\n```'}
                 onChange={() => {}}
                 readonly
             />,
         );
 
-        expect(screen.getByTestId('plantuml-diagram')).toHaveTextContent(
-            /@startuml\s+Alice -> Bob: Hi\s+@enduml/,
-        );
+        expect(screen.queryByTestId('mermaid-diagram')).not.toBeInTheDocument();
+        expect(screen.getByText(/plain code example/)).toBeInTheDocument();
     });
 });

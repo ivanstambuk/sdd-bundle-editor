@@ -674,9 +674,9 @@ LAYOUTS = {
                 'x-sdd-order': 30,
             }),
             'scope':               ('diagram',      {'x-sdd-order': 10}),
-            'plantuml':            ('diagram',      {
+            'mermaid':             ('diagram',      {
                 'x-sdd-prominence': 'hero',
-                'x-sdd-prominenceLabel': 'PlantUML Source',
+                'x-sdd-prominenceLabel': 'Mermaid Source',
                 'x-sdd-prominenceIcon': '🎨',
                 'x-sdd-order': 20,
             }),
@@ -704,9 +704,9 @@ LAYOUTS = {
             }),
             'allowedEntityTypes':  ('overview', {'x-sdd-layout': 'bulletList', 'x-sdd-order': 40}),
             'selectionDefaults':   ('template', {'x-sdd-order': 10}),
-            'plantumlTemplate':    ('template', {
+            'mermaidTemplate':     ('template', {
                 'x-sdd-prominence': 'hero',
-                'x-sdd-prominenceLabel': 'PlantUML Template',
+                'x-sdd-prominenceLabel': 'Mermaid Template',
                 'x-sdd-prominenceIcon': '🎨',
                 'x-sdd-order': 20,
             }),

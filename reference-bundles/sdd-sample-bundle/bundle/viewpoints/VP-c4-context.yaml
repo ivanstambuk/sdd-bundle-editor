@@ -1,6 +1,6 @@
 id: VP-c4-context
 name: C4 Context Diagram
-diagramKind: plantuml-component
+diagramKind: mermaid-flowchart
 description: 'System context diagram showing the system boundary, external actors,
 
   and external systems. Based on C4 model level 1.

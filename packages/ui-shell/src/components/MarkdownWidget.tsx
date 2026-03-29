@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MermaidDiagram } from './MermaidDiagram';
-import { PlantUmlDiagram } from './PlantUmlDiagram';
 import styles from './MarkdownWidget.module.css';
 
 interface MarkdownWidgetProps {
@@ -15,22 +14,17 @@ interface MarkdownWidgetProps {
 }
 
 /**
- * Custom code block renderer that handles diagram fences.
+ * Custom code block renderer that handles Mermaid fences.
  * Other code blocks are rendered normally with syntax highlighting.
  */
 function CodeBlock({ node, className, children, ...props }: any) {
-    // Extract language from className (e.g., "language-plantuml")
+    // Extract language from className (e.g., "language-mermaid")
     const match = /language-(\w+)/.exec(className || '');
     const language = match ? match[1] : '';
 
     if (language === 'mermaid') {
         const code = String(children).replace(/\n$/, '');
         return <MermaidDiagram code={code} />;
-    }
-
-    if (language === 'plantuml' || language === 'puml') {
-        const code = String(children).replace(/\n$/, '');
-        return <PlantUmlDiagram code={code} />;
     }
 
     // Default code block rendering
@@ -42,7 +36,7 @@ function CodeBlock({ node, className, children, ...props }: any) {
 }
 
 /**
- * Custom pre block renderer that lets diagram components own their wrapper.
+ * Custom pre block renderer that lets Mermaid own its wrapper.
  */
 function PreBlock({ children, ...props }: any) {
     const childArray = React.Children.toArray(children);
@@ -52,7 +46,7 @@ function PreBlock({ children, ...props }: any) {
     if (React.isValidElement(childElement)) {
         const childProps = childElement.props as Record<string, unknown>;
         const className = typeof childProps.className === 'string' ? childProps.className : '';
-        const match = /language-(mermaid|plantuml|puml)/.exec(className);
+        const match = /language-(mermaid)/.exec(className);
         if (match) {
             return <>{children}</>;
         }
@@ -76,7 +70,7 @@ function PreBlock({ children, ...props }: any) {
  * - Task lists (- [ ] item)
  * - Autolinks
  * 
- * Also supports Mermaid and PlantUML diagrams in fenced code blocks.
+ * Also supports Mermaid diagrams in fenced code blocks.
  */
 export function MarkdownWidget(props: MarkdownWidgetProps) {
     const { id, value, onChange, disabled, readonly, placeholder } = props;

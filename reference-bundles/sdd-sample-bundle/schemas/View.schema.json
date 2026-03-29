@@ -2,7 +2,7 @@
   "$id": "https://example.com/sdd/View.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "View",
-  "description": "Concrete diagram definition with embedded PlantUML, bound to a viewpoint",
+  "description": "Concrete diagram definition with embedded Mermaid, bound to a viewpoint",
   "type": "object",
   "required": [
     "createdDate",
@@ -11,7 +11,7 @@
     "lastModifiedBy",
     "lastModifiedDate",
     "name",
-    "plantuml"
+    "mermaid"
   ],
   "properties": {
     "id": {
@@ -91,14 +91,14 @@
       "x-sdd-layoutGroup": "diagram",
       "x-sdd-order": 10
     },
-    "plantuml": {
+    "mermaid": {
       "type": "string",
-      "description": "The PlantUML source code for this diagram",
+      "description": "The Mermaid source code for this diagram",
       "x-sdd-widget": "textarea",
       "x-sdd-displayHint": "markdown",
       "x-sdd-layoutGroup": "diagram",
       "x-sdd-prominence": "hero",
-      "x-sdd-prominenceLabel": "PlantUML Source",
+      "x-sdd-prominenceLabel": "Mermaid Source",
       "x-sdd-prominenceIcon": "🎨",
       "x-sdd-order": 20
     },
@@ -114,7 +114,7 @@
         "type": "string"
       },
       "uniqueItems": true,
-      "description": "List of entity IDs referenced in the PlantUML diagram",
+      "description": "List of entity IDs referenced in the Mermaid diagram",
       "x-sdd-layoutGroup": "traceability",
       "x-sdd-order": 10
     },

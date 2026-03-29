@@ -25,7 +25,7 @@ The following major milestones have been completed:
 | Infra | External bundle repository migration |
 | Infra (2026-02-27) | Port remapping (5174/3003), Chrome CDP systemd service, PlantUML headless fix, crypto.subtle POST fallback, canonical restart-chrome.sh propagated to all sister projects |
 | UI (2026-02-27) | Boolean fields rendered as colored pill chips (`x-sdd-displayHint: booleanChips`); enum fields replaced with pill selector. Entity Types tab initial card grid implementation. |
-| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). Fixed Cloud Run Dockerfile `plantuml.jar` access by explicitly curling it during build. |
+| UI/Core (2026-03-27) | Timeline layouts for Scenario Steps. Addressed schema cache invalidation. Redesigned Entity Type cards to 'Structured Enterprise' layout (color-hashed side-stripes, high-density, no attributes). |
 | Metamodels (2026-03-27) | Fully hydrated the `jwt-validator-bundle`, successfully enforcing graph integrity and rigorous schema validation for cryptographic entities, pipelines, and test vectors. |
 | UI/Core (2026-03-28) | Added depth-of-connection visualization to `EntityDependencyGraph`. Implemented dynamically configurable BFS bounds (1st/2nd/3rd/Full) alongside terminology alignment and edge deduplication logic. |
 | UI/Core (2026-03-28) | **Type Relationships Map**: Embedded the N-degree relationship graph into the generic `EntityTypeDetails` summary component, intelligently parsing theoretical schema connections (`extractRelationsFromSchemas`) to produce lateral diagram views of structural blueprint domains. |
@@ -183,7 +183,7 @@ Status:
   - Another bundle author can follow the documented pattern without reverse-engineering the JWT implementation
 
 ### Mermaid Follow-Up
-- Implemented on 2026-03-29 as additive Mermaid support in the markdown renderer. PlantUML remains available; explicit deprecation/removal is still pending.
+- Implemented on 2026-03-29 as Mermaid-only diagram support across the markdown renderer, sample bundle content, and server/runtime paths.
 - [x] Phase MMD-1: Define the diagram-format strategy for markdown-rendered entities.
   Scope:
   - Freeze the recommended strategy:
@@ -226,7 +226,7 @@ Status:
   - Visual validation completed against the affected ADRs
   - Diagram rendering is proven, not assumed
 
-- [ ] Phase MMD-4: Decide whether PlantUML remains supported.
+- [x] Phase MMD-4: Decide whether PlantUML remains supported.
   Scope:
   - After Mermaid support lands, decide whether PlantUML stays as a secondary capability or is removed from the markdown path.
   - If removing it, plan deprecation/migration of existing content and server endpoints.

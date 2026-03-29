@@ -8,16 +8,9 @@ RUN pnpm build
 
 FROM node:22-slim AS runner
 
-# Install Java JRE for PlantUML, along with curl and graphviz
-RUN apt-get update && apt-get install -y default-jre-headless curl graphviz && rm -rf /var/lib/apt/lists/*
-
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY --from=builder /app /app
-
-# Download PlantUML
-RUN mkdir -p /app/tools/plantuml && \
-    curl -L https://github.com/plantuml/plantuml/releases/download/v1.2024.8/plantuml-1.2024.8.jar -o /app/tools/plantuml/plantuml.jar
 
 ENV PORT=8080
 ENV MCP_HTTP_PORT=8080

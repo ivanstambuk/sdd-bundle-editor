@@ -60,10 +60,10 @@ const customTitles = {
     'e2e-test': 'E2E Test',
     'perf-test': 'Performance Test',
     // Viewpoint
-    'plantuml-component': 'PlantUML Component',
-    'plantuml-sequence': 'PlantUML Sequence',
-    'plantuml-class': 'PlantUML Class',
-    'plantuml-activity': 'PlantUML Activity',
+    'mermaid-flowchart': 'Mermaid Flowchart',
+    'mermaid-sequence': 'Mermaid Sequence',
+    'mermaid-class': 'Mermaid Class',
+    'mermaid-state': 'Mermaid State',
     // Fixture
     'mock-service': 'Mock Service',
     'external-system-harness': 'External System Harness',

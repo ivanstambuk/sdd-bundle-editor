@@ -9,16 +9,15 @@ description: 'Sequence diagram showing the user login flow through the
 scope:
   scenarioIds:
   - SCN-login-success
-plantuml: "@startuml\n!include ../../../tools/plantuml/sequence-theme.iuml\n\ntitle\
-  \ User Login Flow (SCN-login-success)\n\nactor \"End User\" as user\nparticipant\
-  \ \"Web UI\\n(COMP-data-store)\" as ui\nparticipant \"Backend Server\\n(COMP-api-gateway)\"\
-  \ as server\nparticipant \"Core Model\\n(COMP-auth-service)\" as model\n\nuser ->\
-  \ ui: Navigate to login page\nuser -> ui: Enter credentials\nuser -> ui: Click login\
-  \ button\n\nui -> server: POST /auth/login\nactivate server\n\nserver -> model:\
-  \ Validate credentials\nactivate model\nmodel --> server: User authenticated\ndeactivate\
-  \ model\n\nserver --> ui: 200 OK + session token\ndeactivate server\n\nui --> user:\
-  \ Display dashboard\n\nnote right of server\n  Session stored in memory\n  for subsequent\
-  \ requests\nend note\n@enduml\n"
+mermaid: "```mermaid\nsequenceDiagram\n    actor user as End User\n    participant\
+  \ ui as Web UI\\n(COMP-data-store)\n    participant server as Backend Server\\\
+  n(COMP-api-gateway)\n    participant model as Core Model\\n(COMP-auth-service)\n\
+  \n    user->>ui: Navigate to login page\n    user->>ui: Enter credentials\n   \
+  \ user->>ui: Click login button\n    ui->>server: POST /auth/login\n    activate\
+  \ server\n    server->>model: Validate credentials\n    activate model\n    model-->>server:\
+  \ User authenticated\n    deactivate model\n    server-->>ui: 200 OK + session\
+  \ token\n    deactivate server\n    ui-->>user: Display dashboard\n    Note right\
+  \ of server: Session stored in memory\\nfor subsequent requests\n```"
 outputPath: docs/diagrams/login-sequence.png
 referencedEntities:
 - ACT-end-user

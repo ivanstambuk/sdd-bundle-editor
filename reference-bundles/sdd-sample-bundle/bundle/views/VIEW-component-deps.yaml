@@ -11,19 +11,12 @@ scope:
   - COMP-auth-service
   - COMP-api-gateway
   - COMP-data-store
-plantuml: "@startuml\n!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml\n\
-  \ntitle Component Dependencies - Spec Studio\n\nContainer(ui, \"Web UI\",\
-  \ \"React/TypeScript\", \"Provides visual bundle navigation and agent chat\")\n\
-  Container(server, \"Backend Server\", \"Node.js/Fastify\", \"REST API for bundle\
-  \ operations and agent communication\")\nContainer(model, \"Core Model\", \"TypeScript\"\
-  , \"Bundle loading, entity management, and validation\")\n\nContainerDb(bundle,\
-  \ \"Bundle Files\", \"YAML/JSON\", \"SDD specification files stored on disk\")\n\
-  \nRel(ui, server, \"Uses\", \"HTTP/REST\")\nRel(server, model, \"Uses\", \"TypeScript\
-  \ import\")\nRel(model, bundle, \"Reads/Writes\", \"File I/O\")\n\nnote right of\
-  \ ui\n  COMP-data-store: Web UI\n  Consumes PROTO-auth-flow\nend note\n\nnote right\
-  \ of server\n  COMP-api-gateway: Backend Server\n  Provides PROTO-auth-flow\nend\
-  \ note\n\nnote right of model\n  COMP-auth-service: Core Model\n  Library used by\
-  \ Server\nend note\n@enduml\n"
+mermaid: "```mermaid\nflowchart LR\n    UI[\"Web UI<br/>React/TypeScript\"]\n \
+  \   Server[\"Backend Server<br/>Node.js/Fastify\"]\n    Model[\"Core Model<br/>TypeScript\"\
+  ]\n    Bundle[(\"Bundle Files<br/>YAML/JSON\")]\n\n    UI -->|Uses HTTP/REST| Server\n\
+    \    Server -->|Uses TypeScript import| Model\n    Model -->|Reads/Writes via\
+  \ File I/O| Bundle\n\n    UI:::note\n    Server:::note\n    Model:::note\n\n \
+  \   classDef note fill:#f5f5f5,stroke:#999,color:#222;\n```"
 outputPath: docs/diagrams/component-deps.png
 referencedEntities:
 - COMP-auth-service

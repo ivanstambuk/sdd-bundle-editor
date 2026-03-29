@@ -1,6 +1,6 @@
 id: VP-component-dependency
 name: Component Dependency Diagram
-diagramKind: plantuml-component
+diagramKind: mermaid-flowchart
 description: 'Shows components and their dependencies, including which protocols
 
   they provide and consume. Based on C4 model level 2 (container).

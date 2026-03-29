@@ -353,7 +353,7 @@ let sharedClient: McpClient | null = null;
  * For more control, use McpClient directly.
  * 
  * @example
- * const result = await callMcpTool<{ svg: string }>('render_plantuml', { code: '...' });
+ * const result = await callMcpTool<{ bundles: unknown[] }>('list_bundles');
  */
 export async function callMcpTool<T = unknown>(
     tool: string,
@@ -378,4 +378,3 @@ export async function callMcpTool<T = unknown>(
     // If not wrapped in envelope, return as-is
     return result.data as T;
 }
-

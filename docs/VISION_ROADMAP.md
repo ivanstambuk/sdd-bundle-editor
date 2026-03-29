@@ -79,11 +79,11 @@ This keeps momentum while allowing course correction.
 
 ---
 
-### Phase 4: Views & Viewpoints – PlantUML Diagrams ⬆️ HIGH PRIORITY
+### Phase 4: Views & Viewpoints – Mermaid Diagrams ⬆️ HIGH PRIORITY
 - Add `viewpoint` entity (diagram template)
-- Add `view` entity (concrete diagram with PlantUML)
+- Add `view` entity (concrete diagram with Mermaid)
 - Implement viewpoints: C4 context, API sequence, component dependency
-- PlantUML generation using `tools/plantuml/`
+- Mermaid-authored diagrams in bundle content
 - View↔entity reference tracking
 - **Update sample bundle**
 

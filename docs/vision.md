@@ -525,7 +525,7 @@ This allows both embedded and referenced patterns: either inline the OpenAPI, or
 
 ---
 
-### 🧭 Views, viewpoints, and PlantUML
+### 🧭 Views, viewpoints, and Mermaid
 
 #### 20. `viewpoint`
 
@@ -534,10 +534,10 @@ This allows both embedded and referenced patterns: either inline the OpenAPI, or
 **Fields:**
 
 * `id`: `VP-c4-context`, `VP-api-sequence`, `VP-error-propagation`, `VP-test-flow`, `VP-nfr-impact`
-* `diagram_kind`: `plantuml-component | plantuml-sequence | plantuml-class | plantuml-activity | plantuml-archimate` (whatever subset you standardise)
+* `diagram_kind`: `mermaid-flowchart | mermaid-sequence | mermaid-class | mermaid-state` (whatever subset you standardise)
 * `allowed_entity_types`: e.g. `["component", "protocol", "scenario", "actor"]`
 * `selection_defaults`: optional (e.g. “all components with tag = 'auth'”)
-* `plantuml_template`: optional Jinja/parameterised template snippet
+* `mermaid_template`: optional template snippet
 
 **Core initial viewpoints (based on your acceptance of “all” earlier):**
 
@@ -555,7 +555,7 @@ You can extend as needed later.
 
 #### 21. `view`
 
-**Role:** Concrete diagram definition bound to a viewpoint, with static PlantUML stored in spec (static-first) but generated/maintained by AI.
+**Role:** Concrete diagram definition bound to a viewpoint, with static Mermaid stored in spec (static-first) but generated/maintained by AI.
 
 **Fields:**
 
@@ -563,14 +563,14 @@ You can extend as needed later.
 * `name`
 * `viewpoint_id`: `VP-api-sequence`
 * `scope`: e.g. `{ scenario_ids: [SCN-LOGIN-001] }` or filters
-* `plantuml`: the actual PlantUML source
+* `mermaid`: the actual Mermaid source
 
 **Relations:**
 
-* References all entities included in the view, typically via IDs inside the PlantUML comments or via a sidecar link list.
+* References all entities included in the view, typically via IDs inside the Mermaid source or via a sidecar link list.
 
 **Governance rule:**
-AI agents must regenerate or patch `plantuml` whenever the underlying entities change, and they must be able to verify that every `VIEW` still corresponds to valid IDs in the spec (no broken references).
+AI agents must regenerate or patch `mermaid` whenever the underlying entities change, and they must be able to verify that every `VIEW` still corresponds to valid IDs in the spec (no broken references).
 
 ---
 
@@ -759,4 +759,3 @@ Every operation emits a **diff** (proposed YAML changes + PlantUML updates). You
 | 23 | `view`                    | Concrete diagram with embedded PlantUML                                     | Diagram instance                                   |
 
 This set stays within your desired 20–30 element window (23 entities), is strongly aligned with SDD/spec-as-source, and captures the parts of EA/Archi that actually matter for application + technical architecture, tests, security, and observability, without dragging in legacy baggage like epics/features/stories or heavy deployment modeling.
-

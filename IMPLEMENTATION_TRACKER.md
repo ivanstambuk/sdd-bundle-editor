@@ -11,7 +11,6 @@ Completed work belongs in:
 
 ### P1 – Reference Bundles
 - [ ] Protocol spec bundle (for example EC-OPRF/FHE-style)
-- [ ] Crypto profile reference bundle: port the sibling `sdd-specs` TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 profile into a dedicated bundle type
 - [ ] Feature-based project bundle (for example EUDIW simulator)
 
 Why it matters:
@@ -28,12 +27,6 @@ Why it matters:
 - Improves AI ergonomics and cross-bundle intelligence.
 - Good follow-up once backend priorities are settled.
 
-### P3 – VS Code Integration
-- [ ] VS Code extension for tighter agent integration than web UI
-
-Why it matters:
-- Potentially high value, but broader surface area and less bounded than the backend/MCP items.
-
 ## Detailed Backlog
 
 ### Reference Bundles
@@ -42,12 +35,6 @@ Why it matters:
   - Create a bundle that stresses protocol modeling, flows, constraints, and conformance.
   Acceptance:
   - Bundle validates cleanly and is useful as a reference corpus.
-
-- [ ] Crypto profile reference bundle
-  Scope:
-  - Port the sibling `sdd-specs` TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 material into a dedicated bundle type.
-  Acceptance:
-  - Bundle validates cleanly and reflects the target domain faithfully.
 
 - [ ] Feature-based project bundle
   Scope:
@@ -60,6 +47,3 @@ Why it matters:
 - [ ] Cross-bundle relationship analysis
 - [ ] Resource template completions (`bundleId`, `entityType`, `id`)
 - [ ] Prompt argument completions using `completable()` wrapper
-
-### VS Code Integration
-- [ ] VS Code extension for tighter agent integration than web UI

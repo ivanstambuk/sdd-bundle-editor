@@ -8,7 +8,7 @@ artifactClass: contract
 lifecycleStatus: active
 primitiveId: PRIM-hopmac128
 invokesOperationId: OP-hopmac128
-sourceReferenceId: RFC-9861
+normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
   key:

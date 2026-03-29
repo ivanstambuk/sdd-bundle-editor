@@ -1,13 +1,12 @@
 id: CON-hopmac-key-length
 kind: Constraint
 title: HopMAC key length
-statement: HopMAC keys MUST satisfy 1 <= |Key| <= 2^64 - 1 bytes, with the source noting a special side-channel advantage for keys of length <= 69 bytes.
+statement: HopMAC keys MUST satisfy 1 <= |Key| <= 2^64 - 1 bytes, with a documented side-channel advantage for keys of length <= 69 bytes.
 severity: must
 constraintKind: parameter
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-sourceConstraintKey: Constraints.HopMAC.Key_length
 structuredValue:
   min: 1
   max: 18446744073709551615

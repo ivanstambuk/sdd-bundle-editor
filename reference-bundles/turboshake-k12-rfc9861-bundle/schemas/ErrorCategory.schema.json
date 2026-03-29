@@ -10,7 +10,7 @@
     "title": { "type": "string", "x-sdd-layoutGroup": "overview", "x-sdd-order": 10 },
     "description": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "overview", "x-sdd-order": 20 },
     "canonicalTag": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
-    "sourceName": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
+    "canonicalName": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
     "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
     "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
     "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },

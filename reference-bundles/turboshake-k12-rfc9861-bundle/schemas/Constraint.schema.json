@@ -14,9 +14,8 @@
     "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
     "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
     "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
-    "sourceConstraintKey": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
-    "structuredValue": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
-    "rationale": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "details", "x-sdd-order": 14 },
+    "structuredValue": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
+    "rationale": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
     "appliesToPrimitiveIds": {
       "type": "array",
       "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"] },

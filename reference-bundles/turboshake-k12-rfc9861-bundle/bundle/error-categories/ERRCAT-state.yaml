@@ -3,7 +3,7 @@ kind: ErrorCategory
 title: StateError
 description: API usage is invalid for the current operation phase or context lifetime.
 canonicalTag: state
-sourceName: StateError
+canonicalName: StateError
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active

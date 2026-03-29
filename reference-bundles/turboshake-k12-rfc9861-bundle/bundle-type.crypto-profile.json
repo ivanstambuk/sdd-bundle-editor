@@ -311,10 +311,10 @@
       "multiplicity": "one"
     },
     {
-      "name": "TestVectorToNormativeReference_sourceReferenceId",
+      "name": "TestVectorToNormativeReference_normativeReferenceId",
       "fromEntity": "TestVector",
       "toEntity": "NormativeReference",
-      "fromField": "sourceReferenceId",
+      "fromField": "normativeReferenceId",
       "multiplicity": "one"
     },
     {

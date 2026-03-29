@@ -3,7 +3,7 @@ kind: ErrorCategory
 title: ParameterError
 description: Caller-supplied inputs violate the declared profile constraints.
 canonicalTag: parameter
-sourceName: ParameterError
+canonicalName: ParameterError
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active

@@ -7,7 +7,6 @@ constraintKind: parameter
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-sourceConstraintKey: Constraints.HopMAC.L_HopMAC256
 structuredValue:
   min: 32
   max: 18446744073709551615

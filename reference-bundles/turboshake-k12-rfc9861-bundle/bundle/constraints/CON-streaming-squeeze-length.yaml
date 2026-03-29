@@ -7,7 +7,6 @@ constraintKind: state
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-sourceConstraintKey: Constraints.Streaming.squeeze_len
 structuredValue:
   min: 0
   max: 18446744073709551615

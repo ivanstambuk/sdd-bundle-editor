@@ -1,7 +1,7 @@
 id: STRUCT-test-vector-parameters
 kind: DataStructure
 title: Test Vector Parameters
-description: Parameter payload for imported vector families and concrete local vectors.
+description: Parameter payload for RFC family vectors and concrete local vectors.
 structureKind: test-vector-model
 formatType: object
 executionStatus: active

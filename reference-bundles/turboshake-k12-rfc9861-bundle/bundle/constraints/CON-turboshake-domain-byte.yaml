@@ -7,7 +7,6 @@ constraintKind: policy
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-sourceConstraintKey: Constraints.TurboSHAKE.D
 structuredValue:
   min: 1
   max: 127

@@ -1,14 +1,14 @@
 id: VEC-rfc9861-turboshake128-domain-cases
 kind: TestVector
 title: RFC 9861 TurboSHAKE128 Domain Cases
-description: Aggregates the explicit TurboSHAKE128 FF/domain-byte cases exposed by the source conformance bundle.
+description: Aggregates the explicit TurboSHAKE128 FF/domain-byte cases used by this bundle's conformance model.
 vectorKind: external-family
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 primitiveId: PRIM-turboshake128
 invokesOperationId: OP-turboshake128
-sourceReferenceId: RFC-9861
+normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
   cases:
@@ -19,6 +19,6 @@ parameters:
       D: 127
       L: 32
 expectedResult:
-  canonicalOutputs: upstream-rfc-9861
-  sourceSection: "RFC 9861 §5"
+  resolution: normative-reference
+  normativeSection: "RFC 9861 §5"
 tags: [rfc, turboshake128, domain]

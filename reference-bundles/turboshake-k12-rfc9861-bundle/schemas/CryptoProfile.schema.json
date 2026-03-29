@@ -9,7 +9,6 @@
     "executionStatus",
     "artifactClass",
     "lifecycleStatus",
-    "sourceSpecId",
     "version",
     "normativeReferenceIds",
     "supportedPrimitiveIds"
@@ -24,10 +23,7 @@
     "executionStatus": { "type": "string", "enum": ["active", "advisory", "planned"], "x-sdd-layoutGroup": "details", "x-sdd-order": 1 },
     "artifactClass": { "type": "string", "enum": ["contract", "support", "fixture", "documentation"], "x-sdd-layoutGroup": "details", "x-sdd-order": 2 },
     "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
-    "sourceSpecId": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
-    "version": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
-    "sourceDirectory": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },
-    "sourceArtifacts": { "type": "array", "items": { "type": "string" }, "x-sdd-layoutGroup": "details", "x-sdd-order": 13 },
+    "version": { "type": "string", "x-sdd-layoutGroup": "details", "x-sdd-order": 10 },
     "normativeReferenceIds": {
       "type": "array",
       "items": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"] },
@@ -58,14 +54,14 @@
       "x-sdd-order": 23,
       "title": "conformance suites"
     },
-    "knownSourceIssues": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "notes", "x-sdd-order": 30 },
-    "importNotes": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "notes", "x-sdd-order": 31 }
+    "knownIssues": { "type": "array", "items": { "type": "string" }, "x-sdd-displayHint": "chips", "x-sdd-layoutGroup": "notes", "x-sdd-order": 30 },
+    "bundleNotes": { "type": "string", "x-sdd-displayHint": "markdown", "x-sdd-layoutGroup": "notes", "x-sdd-order": 31 }
   },
   "x-sdd-ui": { "displayName": "Crypto Profile", "displayNamePlural": "Crypto Profiles", "icon": "🧭" },
   "x-sdd-layoutGroups": {
     "overview": { "title": "Overview", "order": 1 },
     "details": { "title": "Properties & Configuration", "order": 2 },
     "traceability": { "title": "Relationships", "order": 3 },
-    "notes": { "title": "Import Notes", "order": 4 }
+    "notes": { "title": "Notes", "order": 4 }
   }
 }

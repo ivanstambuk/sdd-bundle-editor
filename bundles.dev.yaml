@@ -8,3 +8,8 @@ bundles:
     path: ./reference-bundles/jwt-validator-bundle
     tags: [jwt, validator, real-data]
     description: "Comprehensive metamodel and real-data specs for JWT Validation."
+
+  - id: turboshake-k12-rfc9861-bundle
+    path: ./reference-bundles/turboshake-k12-rfc9861-bundle
+    tags: [crypto, turboshake, kangarootwelve, hopmac, rfc9861]
+    description: "TurboSHAKE, KangarooTwelve, and HopMAC reference crypto-profile bundle."

@@ -5,3 +5,6 @@ bundles:
   - id: sdd-sample-bundle
     path: ./reference-bundles/sdd-sample-bundle
     description: "SDD Sample Details"
+  - id: turboshake-k12-rfc9861-bundle
+    path: ./reference-bundles/turboshake-k12-rfc9861-bundle
+    description: "TurboSHAKE, KangarooTwelve, and HopMAC reference bundle"

@@ -2,7 +2,7 @@
   "$id": "sdd-bundle:crypto-profile:TestVector",
   "type": "object",
   "title": "TestVector",
-  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "vectorKind", "primitiveId", "invokesOperationId", "sourceReferenceId"],
+  "required": ["id", "kind", "title", "executionStatus", "artifactClass", "lifecycleStatus", "vectorKind", "primitiveId", "invokesOperationId", "normativeReferenceId"],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "string", "pattern": "^VEC-[a-z0-9-]+$", "x-sdd-displayHint": "hidden", "x-sdd-layoutGroup": "overview" },
@@ -15,7 +15,7 @@
     "lifecycleStatus": { "type": "string", "enum": ["draft", "active", "deprecated", "superseded"], "x-sdd-layoutGroup": "details", "x-sdd-order": 3 },
     "primitiveId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Primitive"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 20, "title": "primitive" },
     "invokesOperationId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["Operation"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 21, "title": "invokes" },
-    "sourceReferenceId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 22, "title": "source reference" },
+    "normativeReferenceId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["NormativeReference"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 22, "title": "normative reference" },
     "parameterModelId": { "type": "string", "format": "sdd-ref", "x-sdd-refTargets": ["DataStructure"], "x-sdd-layoutGroup": "traceability", "x-sdd-order": 23, "title": "parameter model" },
     "parameters": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 11 },
     "expectedResult": { "type": "object", "additionalProperties": true, "x-sdd-layoutGroup": "details", "x-sdd-order": 12 },

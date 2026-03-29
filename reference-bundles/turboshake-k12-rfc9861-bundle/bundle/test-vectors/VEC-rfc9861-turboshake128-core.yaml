@@ -1,14 +1,14 @@
 id: VEC-rfc9861-turboshake128-core
 kind: TestVector
 title: RFC 9861 TurboSHAKE128 Core Families
-description: Aggregates the RFC 9861 TurboSHAKE128 empty, long-output, and patterned families referenced by the source profile.
+description: Aggregates the RFC 9861 TurboSHAKE128 empty, long-output, and patterned families defined for this profile.
 vectorKind: external-family
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 primitiveId: PRIM-turboshake128
 invokesOperationId: OP-turboshake128
-sourceReferenceId: RFC-9861
+normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
   families:
@@ -29,7 +29,7 @@ parameters:
         D: 31
         L: 32
 expectedResult:
-  canonicalOutputs: upstream-rfc-9861
-  sourceSection: "RFC 9861 §5"
-notes: The sibling source defers canonical hex output text to RFC 9861 itself.
+  resolution: normative-reference
+  normativeSection: "RFC 9861 §5"
+notes: Canonical hex outputs are referenced from RFC 9861 rather than duplicated here.
 tags: [rfc, turboshake128, family]

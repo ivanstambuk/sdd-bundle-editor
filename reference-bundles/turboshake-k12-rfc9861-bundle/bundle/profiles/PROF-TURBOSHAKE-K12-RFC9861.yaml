@@ -2,9 +2,7 @@ id: PROF-TURBOSHAKE-K12-RFC9861
 kind: CryptoProfile
 title: TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 Profile
 description: |
-  Port of the sibling `sdd-specs` profile `sdd.crypto.xof.turboshake-kt-hopmac-rfc9861-profile`.
-
-  The bundle captures the normative profile surface for TurboSHAKE128/256,
+  This bundle captures the normative profile surface for TurboSHAKE128/256,
   KangarooTwelve KT128/KT256, HopMAC128/256, the TurboSHAKE streaming context,
   and the helper `length_encode`.
 scope: |
@@ -14,15 +12,7 @@ scope: |
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: draft
-sourceSpecId: sdd.crypto.xof.turboshake-kt-hopmac-rfc9861-profile
 version: 1.0.0
-sourceDirectory: /home/ivan/dev/sdd-specs/specs/protocols/crypto/turboshake-kt-hopmac-rfc9861-profile
-sourceArtifacts:
-  - spec.yaml
-  - spec.md
-  - profile-spec.md
-  - profile-core.yaml
-  - conformance.yaml
 normativeReferenceIds:
   - RFC-9861
   - FIPS-202
@@ -48,14 +38,11 @@ conformanceSuiteIds:
   - SUITE-rfc9861-turboshake
   - SUITE-rfc9861-k12
   - SUITE-local-hopmac
-knownSourceIssues:
-  - profile-core-yaml-invalid
-  - hopmac256-local-hex-has-embedded-space
-  - stale-rfc-md-and-missing-commentary-links
-importNotes: |
-  This initial port keeps the source structure queryable without trying to model
-  every informative index block. `AgentCoreView`, `SpecIndex`,
-  `ImplementationChecklist`, and schema invariants remain deferred.
+knownIssues:
+  - hopmac256-canonical-output-needs-confirmation
+bundleNotes: |
+  This bundle focuses on the normative profile contract, conformance structure,
+  and test-vector coverage needed for implementation and review.
 
-  The imported conformance layer keeps RFC vector families as grouped test-vector
-  entities and stores the local HopMAC vectors as concrete entries.
+  RFC vector families are currently stored as grouped test-vector entities,
+  while the local HopMAC vectors are stored as concrete entries.

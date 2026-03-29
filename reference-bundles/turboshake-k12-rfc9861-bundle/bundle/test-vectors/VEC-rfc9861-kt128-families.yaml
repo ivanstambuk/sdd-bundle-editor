@@ -8,7 +8,7 @@ artifactClass: contract
 lifecycleStatus: active
 primitiveId: PRIM-kt128
 invokesOperationId: OP-kt128
-sourceReferenceId: RFC-9861
+normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
   families:
@@ -30,6 +30,6 @@ parameters:
         C_len_values: [0, 8189, 8190]
         L: 32
 expectedResult:
-  canonicalOutputs: upstream-rfc-9861
-  sourceSection: "RFC 9861 §5"
+  resolution: normative-reference
+  normativeSection: "RFC 9861 §5"
 tags: [rfc, kt128, family]

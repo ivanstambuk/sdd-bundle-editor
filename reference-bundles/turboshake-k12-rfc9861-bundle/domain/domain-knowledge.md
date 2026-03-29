@@ -8,13 +8,13 @@ The core distinction is:
 - `Operation`: callable contract or stateful method surface
 - `Constraint`: normative bounds and policy restrictions
 - `ConformanceClass` and `ConformanceSuite`: capability claims and executable coverage
-- `TestVector`: either a concrete vector or a family definition imported from an upstream standard
+- `TestVector`: either a concrete vector or a family definition derived from a normative standard
 
 This bundle is intended to be:
 - spec-oriented
 - read-mostly
-- traceable back to upstream normative sources
+- traceable to normative references
 - suitable for AI-assisted reasoning and bundle validation
 
-When there is tension between readability and source fidelity, prefer preserving structured
+When there is tension between readability and normative fidelity, prefer preserving structured
 normative meaning over flattening content into prose.

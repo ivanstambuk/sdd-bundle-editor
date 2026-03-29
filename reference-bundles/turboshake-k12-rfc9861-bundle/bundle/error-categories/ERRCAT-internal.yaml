@@ -3,7 +3,7 @@ kind: ErrorCategory
 title: InternalError
 description: Unexpected faults not attributable to caller-visible inputs or state.
 canonicalTag: internal
-sourceName: InternalError
+canonicalName: InternalError
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active

@@ -3,7 +3,7 @@ name: System Administrator
 kind: human
 description: Privileged user who manages system configuration and user access
 responsibilities:
-- Configure agent backends
+- Configure MCP integrations
 - Manage bundle schemas
 - Review audit logs
 tags:

@@ -62,7 +62,6 @@ sdd-bundle-editor/
 │   ├── core-schema     # JSON Schema loading & validation (Ajv, Draft 2020-12)
 │   ├── core-model      # Bundle loading, parsing, ID registry, RefGraph
 │   ├── core-lint       # Lint rules, gate semantics, diagnostics
-│   ├── core-ai         # AI provider abstraction (no-op, http, cli)
 │   ├── ui-shell        # React components (EntityNavigator, EntityDetails, etc.)
 │   ├── mcp-server      # MCP server for AI assistants and web UI
 │   ├── cli             # Command-line interface (validate, report-coverage)
@@ -76,7 +75,6 @@ sdd-bundle-editor/
 ```
 core-schema ─┐
              ├─> core-model ─┬─> core-lint
-             │               ├─> core-ai
              │               ├─> cli
              │               └─> mcp-server
 ui-shell ────────────────────────> web

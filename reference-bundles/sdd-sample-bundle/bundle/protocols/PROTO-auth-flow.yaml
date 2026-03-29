@@ -4,9 +4,8 @@ version: 1.0.0
 kind: http-rest
 role: provider
 description: "RESTful API for managing SDD bundles. Provides endpoints for reading\
-  \ bundle \nstructure, validating entities, and applying agent-proposed changes.\n\
-  \nThis protocol is used by the web UI and MCP clients to interact with the\nbundle\
-  \ editor backend.\n"
+  \ bundle \nstructure and validating entities.\n\nThis protocol is used by the\
+  \ web UI and MCP clients to interact with the\nbundle editor backend.\n"
 summary: REST API for SDD bundle operations
 transport: http
 authentication: none
@@ -21,16 +20,6 @@ endpoints:
   description: Validate the bundle and return diagnostics
   requestSchemaId: DS-validate-request
   responseSchemaId: DS-validate-response
-- path: /agent/start
-  method: POST
-  description: Start a new agent conversation
-  requestSchemaId: DS-agent-start-request
-  responseSchemaId: DS-agent-response
-- path: /agent/accept
-  method: POST
-  description: Accept and apply proposed changes
-  requestSchemaId: DS-agent-accept-request
-  responseSchemaId: DS-agent-accept-response
 providedByComponents:
 - COMP-api-gateway
 consumedByComponents:

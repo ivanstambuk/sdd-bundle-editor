@@ -12,7 +12,6 @@ sdd-bundle-editor/
 │   ├── core-model/          # Bundle loading, entity types
 │   ├── core-schema/         # JSON Schema validation
 │   ├── core-lint/           # Linting rules
-│   ├── core-ai/             # AI agent backends
 │   ├── git-utils/           # Git operations
 │   ├── ui-shell/            # Shared React components
 │   ├── mcp-server/          # MCP server (stdio + HTTP)

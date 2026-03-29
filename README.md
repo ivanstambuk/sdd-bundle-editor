@@ -195,11 +195,10 @@ SDD bundles are maintained in separate repositories. The sample bundle is at `/h
 - `packages/core-schema` – JSON Schema loading/compilation and validation (Ajv, custom `sdd-ref` format).
 - `packages/core-model` – bundle manifest/entity loading, ID registry, reference graph, validation pipeline.
 - `packages/core-lint` – lint engine (`regex`, `has-link`, `coverage`) on top of the core model.
-- `packages/core-ai` – AI provider abstraction and stub `generate/refine/fix` flows.
 - `packages/git-utils` – shared Git helpers (repo detection, branch, clean working tree).
 - `packages/ui-shell` – React UI components and app shell (used by `apps/web`).
 - `packages/mcp-server` – MCP server for AI assistants and web UI.
-- `packages/cli` – `sdd-bundle` CLI wrapping the core model/lint (plus stub AI).
+- `packages/cli` – `sdd-bundle` CLI for validation and coverage reporting.
 - `apps/web` – React SPA that uses MCP server for all data operations.
 
 ### Running the Full Stack

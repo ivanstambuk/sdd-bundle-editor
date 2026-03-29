@@ -2,7 +2,7 @@
  * ChangeApplicationService
  * 
  * Pure service for applying proposed changes to a bundle in-memory.
- * Extracted from the /agent/accept route handler for testability.
+ * Extracted from the bundle write flow for testability.
  */
 
 import { Bundle, ProposedChange } from '../types';

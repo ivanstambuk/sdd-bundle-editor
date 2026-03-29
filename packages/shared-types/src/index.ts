@@ -11,8 +11,8 @@ export * from './bundle-types';
 // Schema metadata types (for x-sdd-meta extension)
 export * from './schema-meta';
 
-// Type definitions (interfaces, type aliases)
-export * from './api/agent';
+// Shared bundle change payloads
+export * from './change-types';
 
 // TypeBox schemas for runtime validation
 export * from './schemas';

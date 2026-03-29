@@ -132,8 +132,8 @@ ls -la artifacts/*.png
 
 **1. Explicit Context is Mandatory**
 - The backend server is stateless regarding "active bundle"
-- **Rule**: Every API call to `/agent/*` or `/bundle/*` MUST include `?bundleDir=...` or pass `bundleDir` in the body
-- **Why**: E2E tests run on temporary directories, not `process.cwd()`. Omitting this causes silent failures or 400 errors
+- **Rule**: Every MCP HTTP request or bundle API call MUST include explicit bundle context
+- **Why**: E2E tests run on temporary directories, not `process.cwd()`. Omitting this causes silent failures or loading the wrong bundle
 
 **2. E2E Debugging**
 - **Unified Logs**: Capture output to a file to see server logs side-by-side with test results:
@@ -164,11 +164,11 @@ ls -la artifacts/*.png
 1. UI Component (what triggers the action?)
    └── AppShell.tsx → handler function
 
-2. API Call (what endpoint is called?)
-   └── /agent/accept, /bundle/save, etc.
+2. Transport Call (what MCP tool or HTTP endpoint is called?)
+   └── `apply_changes`, `validate_bundle`, `/mcp`, etc.
 
-3. Route Handler (how is the request processed?)
-   └── apps/server/src/routes/agent.ts
+3. Transport Handler (how is the request processed?)
+   └── MCP server transport/tool handler
 
 4. Service Layer (what business logic runs?)
    └── ChangeApplicationService.ts, write.ts

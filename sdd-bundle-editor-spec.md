@@ -379,7 +379,6 @@ The MCP Server provides bundle access to AI assistants:
 | `core-schema` | JSON Schema loading & validation (Ajv) |
 | `core-model` | Bundle loading, ID registry, RefGraph |
 | `core-lint` | Lint rules, gate semantics |
-| `core-ai` | AI provider abstraction |
 | `ui-shell` | React components |
 | `cli` | Command-line interface |
 | `git-utils` | Git operations |

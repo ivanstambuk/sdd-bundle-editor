@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SecurityMeasure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "kind",
+    "statement"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SECM-[a-z0-9-]+$",
+      "x-sdd-entityType": "SecurityMeasure",
+      "x-sdd-idTemplate": "SECM-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "statement": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "participantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Participant"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "normativeCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "NormativeCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceBootstrapSecurityMeasureId": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

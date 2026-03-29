@@ -1,0 +1,31 @@
+{
+  "id": "DCAP-explicit-authorisation-closure-support",
+  "title": "Explicit Authorisation Closure Support",
+  "slug": "explicit-authorisation-closure-support",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "The procedure of explicitly closing an authorisation shall be supported by the ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-62b37182d29146f0` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-62b37182d29146f0`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-explicit-authorisation-close-support"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-explicit-authorisation-close-support"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-62b37182d29146f0",
+  "sourceBootstrapRuleCandidateId": "DRCAND-62b37182d29146f0",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-authorisation-control",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement requires support for one explicit closure action inside the broader authorisation-management surface."
+}

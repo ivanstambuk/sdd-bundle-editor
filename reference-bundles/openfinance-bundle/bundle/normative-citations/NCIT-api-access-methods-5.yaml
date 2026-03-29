@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-access-methods-5",
+  "title": "API Access Methods Citation",
+  "slug": "api-access-methods-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-f7326476a7-2-1-api-access-methods-api-access-methods",
+  "bootstrapSectionIds": [
+    "SEC-f7326476a7-2-1-api-access-methods"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-discovery-api-v1-1-20250124-pdf-implementation-guidelines-2f05960313"
+  ],
+  "publicationTitles": [
+    "Discovery API v1.1 20250124.pdf"
+  ],
+  "sectionTitles": [
+    "API Access Methods"
+  ],
+  "pageSpans": [
+    "10-12"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Discovery API v1.1 20250124.pdf"
+  ],
+  "excerpt": "2.1 API Access Methods The following access methods are described in detail within this document. From a standardisation point of view, these services are optional, since not mandatory to grant access via an API. Nevertheless, such services could be mandated e.g. by related API access schemes. Endpoint Method Condition Description /aspsp-apis GET Optional This service provides a list with all available different ASPSP APIs contained in a directoy.",
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

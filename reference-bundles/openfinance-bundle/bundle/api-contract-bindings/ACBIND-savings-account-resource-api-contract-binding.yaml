@@ -1,0 +1,39 @@
+{
+  "id": "ACBIND-savings-account-resource-api-contract-binding",
+  "title": "Savings Account Resource API Contract Binding",
+  "slug": "savings-account-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "savings-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-savings-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-savings-account-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/savings",
+    "/v2/savings/{account-id}",
+    "/v2/savings/{account-id}/balances",
+    "/v2/savings/{account-id}/transactions"
+  ],
+  "operationSignatures": [
+    "GET /v2/savings",
+    "GET /v2/savings/{account-id}",
+    "GET /v2/savings/{account-id}/balances",
+    "GET /v2/savings/{account-id}/transactions"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-savings-account-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

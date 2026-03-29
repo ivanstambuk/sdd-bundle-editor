@@ -1,0 +1,37 @@
+{
+  "id": "NCIT-pending-payment-camt-052-statement-inclusion",
+  "title": "Pending Payment CAMT.052 Statement Inclusion Citation",
+  "slug": "pending-payment-camt-052-statement-inclusion-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-7f01126b5101c76b",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-4-4-4-read-transaction-list",
+    "SEC-83af6a40e8-4-5-4-read-transaction-list"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "Read Transaction List",
+    "Read Transaction List"
+  ],
+  "pageSpans": [
+    "95-104",
+    "77-83"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "The camt.052 may include pending payments which are not yet finally booked.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

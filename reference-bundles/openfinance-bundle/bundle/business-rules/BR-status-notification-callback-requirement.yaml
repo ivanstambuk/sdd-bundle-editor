@@ -1,0 +1,37 @@
+{
+  "id": "BR-status-notification-callback-requirement",
+  "title": "Status Notification Callback Requirement",
+  "slug": "status-notification-callback-requirement",
+  "theme": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "The ASPSP shall send status information to this URI if the Status Notification Service is supported by the ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-d08498b2b43ce110`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-status-notification-callback-requirement"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-d08498b2b43ce110",
+  "sourceBootstrapClusterId": "NSTMT-d08498b2b43ce110",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

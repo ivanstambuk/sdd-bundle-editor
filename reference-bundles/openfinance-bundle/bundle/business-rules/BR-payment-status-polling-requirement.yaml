@@ -1,0 +1,36 @@
+{
+  "id": "BR-payment-status-polling-requirement",
+  "title": "Payment Status Polling Requirement",
+  "slug": "payment-status-polling-requirement",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "For the Decoupled, Redirect SCA Approach or OAuth2 SCA approach, there must be at least another message pair Payment Status Request and Payment Status Response to retrieve the information whether the SCA method was successful.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-6f6995dbd3cca114`. The statement repeats 4 times across 4 publications and 2 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-authorisation-sub-resource",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-signing-basket"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-payment-status-polling-requirement"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-6f6995dbd3cca114",
+  "sourceBootstrapClusterId": "NSTMT-6f6995dbd3cca114",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

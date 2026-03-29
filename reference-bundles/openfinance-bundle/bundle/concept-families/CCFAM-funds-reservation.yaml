@@ -1,0 +1,26 @@
+{
+  "id": "CCFAM-funds-reservation",
+  "title": "Funds Reservation Concept Family",
+  "slug": "funds-reservation-concept-family",
+  "theme": "funds-reservation",
+  "summary": "Aggregate derivation family for theme `funds-reservation` with 1 rule candidates, 1 capability candidates, and 1 flow candidates.",
+  "businessRuleIds": [
+    "BR-funds-availability-and-reservation"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-funds-reservation-closure"
+  ],
+  "processFlowIds": [
+    "DFLOW-funds-reservation-closure"
+  ],
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-funds-reservation",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

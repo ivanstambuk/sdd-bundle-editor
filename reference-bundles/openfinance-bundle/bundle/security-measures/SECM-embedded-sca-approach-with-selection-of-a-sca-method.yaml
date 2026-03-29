@@ -1,0 +1,15 @@
+{
+  "id": "SECM-embedded-sca-approach-with-selection-of-a-sca-method",
+  "title": "Embedded SCA Approach with Selection of a SCA method",
+  "slug": "embedded-sca-approach-with-selection-of-a-sca-method",
+  "kind": "other",
+  "statement": "3.1.5 Embedded SCA Approach with Selection of a SCA method In the following flow, there is a selection of an SCA method added in case of the ASPSP supporting several SCA methods for the corresponding PSU. The ASPSP transmits first the Consent API Establish Consents Messages available methods to the PISP. The PISP might filter them, if not all authentication methods can be technically supported. The available methods then are presented to the PSU for choice.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-embedded-sca-approach-with-selection-of-a-sca-method"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b28ecd8502-3-1-5-embedded-sca-approach-with-selection-of-a-sca-method-embedded-sca-approach-with-selection-of-a-sca-method",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

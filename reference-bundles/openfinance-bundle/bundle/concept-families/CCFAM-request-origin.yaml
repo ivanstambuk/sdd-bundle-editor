@@ -1,0 +1,31 @@
+{
+  "id": "CCFAM-request-origin",
+  "title": "Request Origin Concept Family",
+  "slug": "request-origin-concept-family",
+  "theme": "request-origin",
+  "summary": "Aggregate derivation family for theme `request-origin` with 1 rule candidates, 1 capability candidates, and 1 flow candidates.",
+  "businessRuleIds": [
+    "BR-psu-initiated-request-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-psu-initiated-request-handling"
+  ],
+  "processFlowIds": [
+    "DFLOW-psu-initiated-request"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-request-origin",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

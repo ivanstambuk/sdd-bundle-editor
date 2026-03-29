@@ -1,0 +1,123 @@
+{
+  "id": "TCIT-payment-initiation-capability",
+  "title": "Payment Initiation Capability OpenAPI Evidence",
+  "slug": "payment-initiation-capability-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-payment-capability",
+  "technicalTheme": "payment-initiation",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-core-psd2-compliance-licencerestricted-payment-initiation-service-bg-ofa-pis-recent-openapi-yaml-40df884733",
+    "API-openfinance-v2-extended-services-licencerestricted-extended-payment-initiation-services-bg-ofa-xpis-recent-openapi-yaml-eda16121ef"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-extended-payment-initiation-services-delete-8c85bff81c",
+    "OP-extended-payment-initiation-services-get-25d32336ea",
+    "OP-extended-payment-initiation-services-get-4382856185",
+    "OP-extended-payment-initiation-services-get-f239c04912",
+    "OP-extended-payment-initiation-services-post-22ee408c7f",
+    "OP-extended-payment-initiation-services-post-447116be51",
+    "OP-extended-payment-initiation-services-post-a33f592772",
+    "OP-extended-payment-initiation-services-post-c27d19bb26",
+    "OP-extended-payment-initiation-services-put-87d80d6be5",
+    "OP-payment-initiation-service-get-590c5da8b4",
+    "OP-payment-initiation-service-post-3cfc31e689",
+    "OP-payment-initiation-service-post-9f5e875069",
+    "OP-payment-initiation-service-post-c517a4a019"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-extended-payment-initiation-services-1eca32c853",
+    "SCHEMA-extended-payment-initiation-services-8d50481d78",
+    "SCHEMA-extended-payment-initiation-services-fca41922a3"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-extended-payment-initiation-services-032bfc1462",
+    "FIELD-extended-payment-initiation-services-0b2951c1cd",
+    "FIELD-extended-payment-initiation-services-346e8c6fac",
+    "FIELD-extended-payment-initiation-services-3979d88fb7",
+    "FIELD-extended-payment-initiation-services-3c6a27485e",
+    "FIELD-extended-payment-initiation-services-4741acc699",
+    "FIELD-extended-payment-initiation-services-4893da9055",
+    "FIELD-extended-payment-initiation-services-4a18936b40",
+    "FIELD-extended-payment-initiation-services-4b33c9d07b",
+    "FIELD-extended-payment-initiation-services-4f9499ae78",
+    "FIELD-extended-payment-initiation-services-669cdf83ee",
+    "FIELD-extended-payment-initiation-services-67231b820c",
+    "FIELD-extended-payment-initiation-services-6957465721",
+    "FIELD-extended-payment-initiation-services-6adc089cf0",
+    "FIELD-extended-payment-initiation-services-76be55a475",
+    "FIELD-extended-payment-initiation-services-7e50c8e859",
+    "FIELD-extended-payment-initiation-services-86cf7d90ad",
+    "FIELD-extended-payment-initiation-services-8a17e0f15d",
+    "FIELD-extended-payment-initiation-services-8a687d259b",
+    "FIELD-extended-payment-initiation-services-8ed624f662",
+    "FIELD-extended-payment-initiation-services-9029a7d02d",
+    "FIELD-extended-payment-initiation-services-9a59ff3884",
+    "FIELD-extended-payment-initiation-services-a62ae713a6",
+    "FIELD-extended-payment-initiation-services-a67fdebd92",
+    "FIELD-extended-payment-initiation-services-bf884bd510",
+    "FIELD-extended-payment-initiation-services-c1f4a8ba11",
+    "FIELD-extended-payment-initiation-services-c8ee49780e",
+    "FIELD-extended-payment-initiation-services-d2c02b301c",
+    "FIELD-extended-payment-initiation-services-e7fa388cf8",
+    "FIELD-extended-payment-initiation-services-e8f9add68a",
+    "FIELD-extended-payment-initiation-services-fbfda4d2aa"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Payment Initiation Service"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}",
+    "GET /v2/bulk-payments/{payment-product}/{paymentId}/extended-status",
+    "GET /v2/{extended-payment-service6}/{payment-product}/{paymentId}/initiations",
+    "GET /v2/{extended-payment-service6}/{payment-product}/{paymentId}/initiations/{initiationId}",
+    "GET /v2/{extended-payment-service6}/{payment-product}/{paymentId}/initiations/{initiationId}/status",
+    "POST /v2/bulk-payments/{payment-product}",
+    "POST /v2/payments/{payment-product}",
+    "POST /v2/periodic-payments/{payment-product}",
+    "POST /v2/secured-payments/{payment-product}",
+    "POST /v2/{extended-payment-service1}/{payment-product}/{paymentId}/initiations",
+    "POST /v2/{extended-payment-service3}/{payment-product}/{paymentId}/initiations",
+    "POST /v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations",
+    "PUT /v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}/confirmation"
+  ],
+  "schemaNames": [
+    "_links_200_XPIS_Initiation_Status",
+    "_links_201_Multiple_Recurring_Initiation_XPIS",
+    "initiation"
+  ],
+  "fieldPaths": [
+    "_links",
+    "confirmInitiation",
+    "confirmation",
+    "encryptionCertificates",
+    "initiationId",
+    "instructedAmount",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "status",
+    "transactionStatus"
+  ],
+  "samplePaths": [
+    "/v2/bulk-payments/{payment-product}",
+    "/v2/bulk-payments/{payment-product}/{paymentId}/extended-status",
+    "/v2/payments/{payment-product}",
+    "/v2/periodic-payments/{payment-product}",
+    "/v2/secured-payments/{payment-product}",
+    "/v2/{extended-payment-service1}/{payment-product}/{paymentId}/initiations",
+    "/v2/{extended-payment-service3}/{payment-product}/{paymentId}/initiations",
+    "/v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

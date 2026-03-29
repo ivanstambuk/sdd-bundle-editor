@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-client-authorisation-5",
+  "title": "Client Authorisation Citation",
+  "slug": "client-authorisation-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-d9d1753974-6-2-client-authorisation-client-authorisation",
+  "bootstrapSectionIds": [
+    "SEC-d9d1753974-6-2-client-authorisation"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-implementation-guidelines-b073dfbc8d"
+  ],
+  "publicationTitles": [
+    "Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "sectionTitles": [
+    "Client Authorisation"
+  ],
+  "pageSpans": [
+    "28"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "excerpt": "6.2 Client Authorisation ASPSPs might refuse access to the openFinance API even if the related eIDAS certificate is valid, if not all related contract conditions are fulfilled. This might be controlled e.g. via a scheme directory.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

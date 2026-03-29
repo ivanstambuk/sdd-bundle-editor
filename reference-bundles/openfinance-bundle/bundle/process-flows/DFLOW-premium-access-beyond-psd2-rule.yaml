@@ -1,0 +1,32 @@
+{
+  "id": "DFLOW-premium-access-beyond-psd2-rule",
+  "title": "Premium Access Beyond PSD2 Rule",
+  "slug": "premium-access-beyond-psd2-rule",
+  "kind": "access-policy",
+  "conceptFamilyId": "CCFAM-access-policy",
+  "statement": "In general, services offered by an ASPSP at his openFinance API may be accessed/used not only by API Clients registered by an NCA in the role of a TPP according to the PSD2 regulation.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-4489702c8e9fff4e` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-request-to-pay"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-premium-access-beyond-psd2"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-premium-access-beyond-psd2"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-4489702c8e9fff4e",
+  "sourceBootstrapRuleCandidateId": "DRCAND-4489702c8e9fff4e",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate."
+}

@@ -1,0 +1,59 @@
+{
+  "id": "NCIT-service-support-gating",
+  "title": "Service Support Gating Citation",
+  "slug": "service-support-gating-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-979a7c65bed2bd41",
+  "bootstrapSectionIds": [
+    "SEC-2d10ee39f1-3-1-services-of-the-openfinance-api",
+    "SEC-54c5ea50d9-3-1-services-of-the-openfinance-api",
+    "SEC-bacf2c1e24-2-1-services-of-the-openfinance-api",
+    "SEC-d9d1753974-2-1-services-of-the-openfinance-api",
+    "SEC-e22ae5e40f-3-1-services-of-the-openfinance-api",
+    "SEC-e67c097507-3-1-services-of-the-openfinance-api"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-document-services-v1-0-20241216-pdf-implementation-guidelines-bc23424051",
+    "PUB-openfinance-document-services-v1-0-20241216-pdf-operational-rules-bc23424051",
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-implementation-guidelines-b073dfbc8d",
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-operational-rules-b073dfbc8d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "Document Services V1.0 20241216.pdf",
+    "Document Services V1.0 20241216.pdf",
+    "Extended Payment Initiation Services V2.1 20240731.pdf",
+    "Extended Payment Initiation Services V2.1 20240731.pdf",
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Services of the openFinance API",
+    "Services of the openFinance API",
+    "Services of the openFinance API",
+    "Services of the openFinance API",
+    "Services of the openFinance API",
+    "Services of the openFinance API"
+  ],
+  "pageSpans": [
+    "16",
+    "23",
+    "9",
+    "9",
+    "23",
+    "16"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Document Services V1.0 20241216.pdf",
+    "../downloads/pdfs/Extended Payment Initiation Services V2.1 20240731.pdf",
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "This openFinance API standard is not defining whether a service is to be supported in the openFinance API or not, but it might define a mandatory support of sub-services once a dedicated openFinance API service is offered.",
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

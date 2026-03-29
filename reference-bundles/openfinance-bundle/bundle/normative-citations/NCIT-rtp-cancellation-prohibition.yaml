@@ -1,0 +1,35 @@
+{
+  "id": "NCIT-rtp-cancellation-prohibition",
+  "title": "RTP Cancellation Prohibition Citation",
+  "slug": "rtp-cancellation-prohibition-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-487295e3c4951c67",
+  "bootstrapSectionIds": [
+    "SEC-54c5ea50d9-7-1-confirmation-of-the-consent-of-the-psu-towards-the-api-client",
+    "SEC-e22ae5e40f-7-1-confirmation-of-the-consent-of-the-psu-towards-the-api-client"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Confirmation of the consent of the PSU (towards the API Client)",
+    "Confirmation of the consent of the PSU (towards the API Client)"
+  ],
+  "pageSpans": [
+    "36-50",
+    "36-50"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "An RTP shall not be cancelled if a corresponding payment has already been initiated.",
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

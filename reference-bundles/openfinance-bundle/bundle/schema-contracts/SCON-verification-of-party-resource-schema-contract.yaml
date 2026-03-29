@@ -1,0 +1,44 @@
+{
+  "id": "SCON-verification-of-party-resource-schema-contract",
+  "title": "Verification Of Party Resource Schema Contract",
+  "slug": "verification-of-party-resource-schema-contract",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "verification-of-party",
+  "conceptFamilyIds": [
+    "CCFAM-verification-of-party"
+  ],
+  "domainResourceIds": [
+    "RES-verification-of-party-request"
+  ],
+  "technicalCitationIds": [
+    "TCIT-verification-of-party-resource"
+  ],
+  "schemaNames": [
+    "partyDescription2",
+    "partyDescription4",
+    "partyIdentification",
+    "partyVerificationRequest",
+    "partyVerificationRequestAndResponse",
+    "partyVerificationResponse"
+  ],
+  "fieldPaths": [
+    "additionalInformation",
+    "identification",
+    "matchedName",
+    "name",
+    "organisationId",
+    "party",
+    "partyAccount",
+    "partyAgent",
+    "partyIdMatch",
+    "partyNameMatch",
+    "postaladdress",
+    "privateId",
+    "uetr"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-verification-resource",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

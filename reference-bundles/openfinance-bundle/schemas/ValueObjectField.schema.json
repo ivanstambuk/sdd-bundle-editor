@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ValueObjectField",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "fieldName",
+    "valueObjectId",
+    "summary"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^VOF-[a-z0-9-]+$",
+      "x-sdd-entityType": "ValueObjectField",
+      "x-sdd-idTemplate": "VOF-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "fieldName": {
+      "type": "string"
+    },
+    "valueObjectId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "ValueObject"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "conceptFamilyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConceptFamily"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "technicalCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TechnicalCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "schemaContractIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "SchemaContract"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "fieldPaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "derivationBasis": {
+      "type": "string",
+      "enum": [
+        "value-object-field-pattern"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

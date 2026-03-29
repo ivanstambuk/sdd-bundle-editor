@@ -1,0 +1,39 @@
+{
+  "id": "CCFAM-cancellation",
+  "title": "Cancellation Concept Family",
+  "slug": "cancellation-concept-family",
+  "theme": "cancellation",
+  "summary": "Aggregate derivation family for theme `cancellation` with 2 rule candidates, 2 capability candidates, and 2 flow candidates.",
+  "businessRuleIds": [
+    "BR-document-cancellation-prohibition",
+    "BR-rtp-cancellation-prohibition"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-cancellation",
+    "DCAP-document-cancellation-handling",
+    "DCAP-rtp-cancellation-handling"
+  ],
+  "processFlowIds": [
+    "DFLOW-document-cancellation",
+    "DFLOW-rtp-cancellation"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-cancellation",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

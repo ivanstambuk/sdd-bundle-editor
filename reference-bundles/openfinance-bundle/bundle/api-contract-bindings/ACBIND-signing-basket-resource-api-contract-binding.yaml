@@ -1,0 +1,52 @@
+{
+  "id": "ACBIND-signing-basket-resource-api-contract-binding",
+  "title": "Signing Basket Resource API Contract Binding",
+  "slug": "signing-basket-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "signing-basket",
+  "domainResourceIds": [
+    "RES-signing-basket"
+  ],
+  "technicalCitationIds": [
+    "TCIT-signing-basket-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/signing-baskets",
+    "/v2/signing-baskets/{basketId}",
+    "/v2/signing-baskets/{basketId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/signing-baskets/{basketId}",
+    "GET /v2/signing-baskets/{basketId}",
+    "GET /v2/signing-baskets/{basketId}/status",
+    "POST /v2/signing-baskets"
+  ],
+  "apiSpecTitles": [
+    "Consent API for V2.x",
+    "Request to Pay Services API for V2.x",
+    "openFinance API Framework Data Dictionary",
+    "openFinance API Framework Implementation Guidelines Document Services",
+    "openFinance API Framework Implementation Guidelines Protocol Functions and Security Measures for V2.x- Signing Basket API",
+    "openFinance API Framework Implementation Guidelines for Discovery Services",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Payment Initiation Service"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-signing-basket-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

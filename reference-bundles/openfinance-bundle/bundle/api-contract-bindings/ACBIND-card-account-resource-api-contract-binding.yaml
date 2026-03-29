@@ -1,0 +1,49 @@
+{
+  "id": "ACBIND-card-account-resource-api-contract-binding",
+  "title": "Card Account Resource API Contract Binding",
+  "slug": "card-account-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "card-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-card-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-card-account-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/card-accounts",
+    "/v2/card-accounts/{account-id}",
+    "/v2/card-accounts/{account-id}/balances",
+    "/v2/card-accounts/{account-id}/transactions",
+    "/v2/cards",
+    "/v2/cards/{card-id}",
+    "/v2/cards/{card-id}/balances",
+    "/v2/cards/{card-id}/transactions"
+  ],
+  "operationSignatures": [
+    "GET /v2/card-accounts",
+    "GET /v2/card-accounts/{account-id}",
+    "GET /v2/card-accounts/{account-id}/balances",
+    "GET /v2/card-accounts/{account-id}/transactions",
+    "GET /v2/cards",
+    "GET /v2/cards/{card-id}",
+    "GET /v2/cards/{card-id}/balances",
+    "GET /v2/cards/{card-id}/transactions"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Account Information Service"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-card-account-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

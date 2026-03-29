@@ -94,7 +94,7 @@ export function useBundleState(initialBundleDir: string): UseBundleStateReturn {
 
         try {
             log.info('Loading bundle via MCP API', { activeBundleDir });
-            const data = await mcpBundleApi.load(activeBundleDir);
+            const data = await mcpBundleApi.loadFresh(activeBundleDir);
             setBundle(data.bundle);
             setDiagnostics(data.diagnostics);
             log.info('Bundle loaded successfully', {
@@ -220,4 +220,3 @@ export function useBundleState(initialBundleDir: string): UseBundleStateReturn {
         clearError,
     };
 }
-

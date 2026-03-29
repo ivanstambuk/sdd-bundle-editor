@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-access-methods-5",
+  "title": "API Access Methods",
+  "slug": "api-access-methods",
+  "kind": "other",
+  "statement": "2.1 API Access Methods The following access methods are described in detail within this document. From a standardisation point of view, these services are optional, since not mandatory to grant access via an API. Nevertheless, such services could be mandated e.g. by related API access schemes. Endpoint Method Condition Description /aspsp-apis GET Optional This service provides a list with all available different ASPSP APIs contained in a directoy.",
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-access-methods-5"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-f7326476a7-2-1-api-access-methods-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "TCIT-document-handling-flow",
+  "title": "Document Handling Flow OpenAPI Evidence",
+  "slug": "document-handling-flow-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-document-flow",
+  "technicalTheme": "document-lifecycle",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-document-services-bg-ofa-document-recent-openapi-yaml-2d12def5d0"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-document-services-delete-3995b55575",
+    "OP-document-services-get-1bf6add599",
+    "OP-document-services-get-93d939adec",
+    "OP-document-services-post-e07278e565"
+  ],
+  "bootstrapApiSchemaObjectIds": [],
+  "bootstrapApiFieldIds": [],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Document Services"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}/status",
+    "POST /v2/documents"
+  ],
+  "schemaNames": [],
+  "fieldPaths": [],
+  "samplePaths": [
+    "/v2/documents",
+    "/v2/documents/{documentResourceId}",
+    "/v2/documents/{documentResourceId}/status"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

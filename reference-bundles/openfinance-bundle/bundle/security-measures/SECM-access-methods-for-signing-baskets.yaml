@@ -1,0 +1,15 @@
+{
+  "id": "SECM-access-methods-for-signing-baskets",
+  "title": "Access Methods for Signing Baskets",
+  "slug": "access-methods-for-signing-baskets",
+  "kind": "other",
+  "statement": "11.1 Access Methods for Signing Baskets Please note that the Establish Signing Basket Request is one instantiation of the Transaction Initiation Request as introduced in Section 2.2.5, i.e. the notion of authorisation sub resources and related access methods do also apply here but are specified generically in Section 9. The following access methods are provided for signing baskets: Endpoints Method Condition Description signing-baskets POST Optional Creates a signing basket resource, where all transactions to be signed will be addressed within the body. Section 11.2 signing-baskets/{basketId} GET Mandatory Retrieve the content of a signing basket resize. Section 11.3 signing- GET Mandatory R",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-access-methods-for-signing-baskets"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-11-1-access-methods-for-signing-baskets-access-methods-for-signing-baskets",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

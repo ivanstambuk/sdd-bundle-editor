@@ -1,0 +1,15 @@
+{
+  "id": "SECM-access-methods-for-authorisations",
+  "title": "Access Methods for Authorisations",
+  "slug": "access-methods-for-authorisations",
+  "kind": "other",
+  "statement": "9.3 Access Methods for Authorisations Processes on starting authorisations, update PSU identification or PSU authentication data and explicit authorisation of transactions by using SCA are very similar in all services. The API calls supporting these processes are described in the following independently from the service/endpoint. These processes usually are used following a hyperlink of the ASPSP. The usage is defined at the beginning of the following sections.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-access-methods-for-authorisations"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-9-3-access-methods-for-authorisations-access-methods-for-authorisations",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

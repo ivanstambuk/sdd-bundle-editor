@@ -1,0 +1,31 @@
+{
+  "id": "DFLOW-explicit-authorisation-closure",
+  "title": "Explicit Authorisation Closure",
+  "slug": "explicit-authorisation-closure",
+  "kind": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "The procedure of explicitly closing an authorisation shall be supported by the ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-62b37182d29146f0` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-explicit-authorisation-close-support"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-explicit-authorisation-close-support"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-62b37182d29146f0",
+  "sourceBootstrapRuleCandidateId": "DRCAND-62b37182d29146f0",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate.",
+  "parentProcessFlowId": "DFLOW-authorisation",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because it is one explicit closure path inside the broader authorisation lifecycle."
+}

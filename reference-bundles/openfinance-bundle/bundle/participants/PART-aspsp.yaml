@@ -1,0 +1,33 @@
+{
+  "id": "PART-aspsp",
+  "title": "Account Servicing Payment Service Provider",
+  "slug": "account-servicing-payment-service-provider",
+  "participantName": "Account Servicing Payment Service Provider",
+  "abbreviation": "ASPSP",
+  "kind": "bank-provider",
+  "aliases": [
+    "ASPSP",
+    "ASPSPs",
+    "Account Servicing Payment Service Provider"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-account-servicing-payment-service-provider"
+  ],
+  "sourceBootstrapParticipantId": "PART-aspsp",
+  "notes": "Servicing bank/API provider role exposing XS2A and openFinance interfaces and executing bank-side checks, consent handling, and authorisation logic."
+}

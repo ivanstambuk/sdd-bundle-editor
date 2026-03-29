@@ -1,0 +1,37 @@
+{
+  "id": "DCAP-status-notification-fallback-handling",
+  "title": "Status Notification Fallback Handling",
+  "slug": "status-notification-fallback-handling",
+  "theme": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "The first alternative shall only be used by an API Client if the Resource Status Notification function is not useable by the API Client.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-1544381ac0d8eb94` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-1544381ac0d8eb94`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu"
+  ],
+  "domainResourceIds": [
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-notification-fallback-usage"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-notification-fallback-usage"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-1544381ac0d8eb94",
+  "sourceBootstrapRuleCandidateId": "DRCAND-1544381ac0d8eb94",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-status-notification",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement defines the fallback variant inside the broader notification-delivery surface."
+}

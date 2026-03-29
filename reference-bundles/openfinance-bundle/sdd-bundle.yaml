@@ -1,0 +1,74 @@
+apiVersion: sdd.v1
+kind: Bundle
+metadata:
+  name: openFinance V2
+  bundleType: openfinance
+  schemaVersion: 1.0.0
+spec:
+  bundleTypeDefinition: schemas/bundle-type.json
+  schemas:
+    documents:
+      Participant: schemas/Participant.schema.json
+      DomainResource: schemas/DomainResource.schema.json
+      ProductSurface: schemas/ProductSurface.schema.json
+      SecurityMeasure: schemas/SecurityMeasure.schema.json
+      BusinessRule: schemas/BusinessRule.schema.json
+      DomainCapability: schemas/DomainCapability.schema.json
+      ProcessFlow: schemas/ProcessFlow.schema.json
+      ConceptFamily: schemas/ConceptFamily.schema.json
+      ValueObject: schemas/ValueObject.schema.json
+      ValueObjectField: schemas/ValueObjectField.schema.json
+      StatusTransition: schemas/StatusTransition.schema.json
+      NormativeCitation: schemas/NormativeCitation.schema.json
+      TechnicalCitation: schemas/TechnicalCitation.schema.json
+      ApiContractBinding: schemas/ApiContractBinding.schema.json
+      SchemaContract: schemas/SchemaContract.schema.json
+  layout:
+    documents:
+      Participant:
+        dir: bundle/participants
+        filePattern: "{id}.yaml"
+      DomainResource:
+        dir: bundle/domain-resources
+        filePattern: "{id}.yaml"
+      ProductSurface:
+        dir: bundle/product-surfaces
+        filePattern: "{id}.yaml"
+      SecurityMeasure:
+        dir: bundle/security-measures
+        filePattern: "{id}.yaml"
+      BusinessRule:
+        dir: bundle/business-rules
+        filePattern: "{id}.yaml"
+      DomainCapability:
+        dir: bundle/domain-capabilities
+        filePattern: "{id}.yaml"
+      ProcessFlow:
+        dir: bundle/process-flows
+        filePattern: "{id}.yaml"
+      ConceptFamily:
+        dir: bundle/concept-families
+        filePattern: "{id}.yaml"
+      ValueObject:
+        dir: bundle/value-objects
+        filePattern: "{id}.yaml"
+      ValueObjectField:
+        dir: bundle/value-object-fields
+        filePattern: "{id}.yaml"
+      StatusTransition:
+        dir: bundle/status-transitions
+        filePattern: "{id}.yaml"
+      NormativeCitation:
+        dir: bundle/normative-citations
+        filePattern: "{id}.yaml"
+      TechnicalCitation:
+        dir: bundle/technical-citations
+        filePattern: "{id}.yaml"
+      ApiContractBinding:
+        dir: bundle/api-contract-bindings
+        filePattern: "{id}.yaml"
+      SchemaContract:
+        dir: bundle/schema-contracts
+        filePattern: "{id}.yaml"
+  domainKnowledge:
+    path: domain/domain-knowledge.md

@@ -1,0 +1,14 @@
+{
+  "id": "CCFAM-discovery",
+  "title": "Discovery Concept Family",
+  "slug": "discovery-concept-family",
+  "theme": "discovery",
+  "summary": "Technical domain grouping for service discovery and directory-style retrieval surfaces.",
+  "domainCapabilityIds": [
+    "DCAP-service-discovery"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet."
+}

@@ -1,0 +1,29 @@
+{
+  "id": "CCFAM-document-services",
+  "title": "Document Services Concept Family",
+  "slug": "document-services-concept-family",
+  "theme": "document-services",
+  "summary": "Technical domain grouping for document resources, document-service capabilities, and document lifecycle flows.",
+  "domainCapabilityIds": [
+    "DCAP-document-access"
+  ],
+  "processFlowIds": [
+    "DFLOW-document-handling"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet.",
+  "valueObjectIds": [
+    "VO-client-message",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-document-status-transition"
+  ]
+}

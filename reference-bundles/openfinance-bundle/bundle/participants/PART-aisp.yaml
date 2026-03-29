@@ -1,0 +1,32 @@
+{
+  "id": "PART-aisp",
+  "title": "Account Information Service Provider",
+  "slug": "account-information-service-provider",
+  "participantName": "Account Information Service Provider",
+  "abbreviation": "AISP",
+  "kind": "account-information-provider",
+  "parentParticipantId": "PART-tpp",
+  "aliases": [
+    "AISP",
+    "AISPs",
+    "Account Information Service Provider"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-account-information-service-provider"
+  ],
+  "sourceBootstrapParticipantId": "PART-aisp",
+  "notes": "TPP subtype operating account information services on behalf of a PSU."
+}

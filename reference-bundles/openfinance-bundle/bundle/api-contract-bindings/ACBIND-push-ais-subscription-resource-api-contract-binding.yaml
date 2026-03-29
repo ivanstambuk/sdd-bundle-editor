@@ -1,0 +1,46 @@
+{
+  "id": "ACBIND-push-ais-subscription-resource-api-contract-binding",
+  "title": "Push AIS Subscription Resource API Contract Binding",
+  "slug": "push-ais-subscription-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "subscription",
+  "conceptFamilyIds": [
+    "CCFAM-subscription-management"
+  ],
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "technicalCitationIds": [
+    "TCIT-push-ais-subscription-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/subscriptions/{push-accountinformation-subservice}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status",
+    "POST /v2/subscriptions/{push-accountinformation-subservice}"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

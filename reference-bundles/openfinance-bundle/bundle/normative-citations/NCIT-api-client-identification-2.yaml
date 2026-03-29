@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-client-identification-2",
+  "title": "API-Client identification Citation",
+  "slug": "api-client-identification-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-e67c097507-7-2-api-client-identification-api-client-identification",
+  "bootstrapSectionIds": [
+    "SEC-e67c097507-7-2-api-client-identification"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-document-services-v1-0-20241216-pdf-operational-rules-bc23424051"
+  ],
+  "publicationTitles": [
+    "Document Services V1.0 20241216.pdf"
+  ],
+  "sectionTitles": [
+    "API-Client identification"
+  ],
+  "pageSpans": [
+    "26"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Document Services V1.0 20241216.pdf"
+  ],
+  "excerpt": "7.2 API-Client identification Accessing clients are identified based on eIDAS certificates (QWAC) in analogy to the Core XS2A Interface, but without mandating PSD2 specific attributes in the certificate. These certificates are only used for the identification of the API client. In general these certificates will not contain any scheme or service specific data. See also [oFA-OR-ADM].",
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

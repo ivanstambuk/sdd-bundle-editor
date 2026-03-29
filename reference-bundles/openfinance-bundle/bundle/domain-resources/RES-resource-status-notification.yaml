@@ -1,0 +1,40 @@
+{
+  "id": "RES-resource-status-notification",
+  "title": "Resource Status Notification",
+  "slug": "resource-status-notification",
+  "resourceName": "Resource Status Notification",
+  "kind": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "aliases": [
+    "resource status notification",
+    "resource status notification function"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-resource-status-notification"
+  ],
+  "technicalCitationIds": [
+    "TCIT-notification-endpoint-resource",
+    "TCIT-status-notification-capability",
+    "TCIT-status-notification-flow"
+  ],
+  "sourceBootstrapResourceId": "RES-resource-status-notification",
+  "notes": "Notification resource/functionality used to push resource status changes to API clients."
+}

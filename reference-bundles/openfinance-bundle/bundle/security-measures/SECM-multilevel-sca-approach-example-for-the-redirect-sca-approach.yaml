@@ -1,0 +1,15 @@
+{
+  "id": "SECM-multilevel-sca-approach-example-for-the-redirect-sca-approach",
+  "title": "Multilevel SCA Approach: Example for the Redirect SCA Approach",
+  "slug": "multilevel-sca-approach-example-for-the-redirect-sca-approach",
+  "kind": "other",
+  "statement": "3.1.12 Multilevel SCA Approach: Example for the Redirect SCA Approach The multilevel SCA Approach supports the authorisation of a payment by several users, e.g. in a 4 eyes principle authorisation. Multilevel SCA are always handled with Explicit start of the openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service several Authorisation Mechanisms. In the following the flow for a 4 eyes principle authorisation is shown, where both SCA are performed by redirect. PSU PISP ASPSP PSU initiates a payment via a TPP 1.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-multilevel-sca-approach-example-for-the-redirect-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-12-multilevel-sca-approach-example-for-the-redirect-sca-approach-multilevel-sca-approach-example-for-the-redirect-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

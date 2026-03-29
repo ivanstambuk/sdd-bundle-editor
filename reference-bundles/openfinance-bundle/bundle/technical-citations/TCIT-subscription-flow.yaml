@@ -1,0 +1,88 @@
+{
+  "id": "TCIT-subscription-flow",
+  "title": "Subscription Flow OpenAPI Evidence",
+  "slug": "subscription-flow-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-subscription-flow",
+  "technicalTheme": "subscription-lifecycle",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-push-account-information-services-subscription-bg-ofa-pushais-subscription-recent-openapi-yaml-dfa86d6b56"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-push-account-information-services-subscription-delete-2508e814c9",
+    "OP-push-account-information-services-subscription-delete-7f79d80fe4",
+    "OP-push-account-information-services-subscription-get-1821b6879d",
+    "OP-push-account-information-services-subscription-get-1d2ae8e620",
+    "OP-push-account-information-services-subscription-get-88ad39fbfd",
+    "OP-push-account-information-services-subscription-get-a6e7b0df46",
+    "OP-push-account-information-services-subscription-get-e5b443a998",
+    "OP-push-account-information-services-subscription-post-0db632723d"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-push-account-information-services-subscription-6954331e78",
+    "SCHEMA-push-account-information-services-subscription-85899ab763"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-push-account-information-services-subscription-0192725978",
+    "FIELD-push-account-information-services-subscription-18a8dd0cb6",
+    "FIELD-push-account-information-services-subscription-1b0507a6ee",
+    "FIELD-push-account-information-services-subscription-2c733b2c34",
+    "FIELD-push-account-information-services-subscription-324dd66a80",
+    "FIELD-push-account-information-services-subscription-4096ad0b48",
+    "FIELD-push-account-information-services-subscription-43c75bd3b8",
+    "FIELD-push-account-information-services-subscription-59871aa1eb",
+    "FIELD-push-account-information-services-subscription-5e80c94061",
+    "FIELD-push-account-information-services-subscription-6ef28e6ce2",
+    "FIELD-push-account-information-services-subscription-98f444dc6e",
+    "FIELD-push-account-information-services-subscription-99e6d715ec",
+    "FIELD-push-account-information-services-subscription-b8cacdc61e",
+    "FIELD-push-account-information-services-subscription-c1eb21612c",
+    "FIELD-push-account-information-services-subscription-cad2a44ba8",
+    "FIELD-push-account-information-services-subscription-df348a69c8"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status",
+    "POST /v2/subscriptions/{push-accountinformation-subservice}"
+  ],
+  "schemaNames": [
+    "subscriptionEntry",
+    "subscriptionIdentificationAndLink"
+  ],
+  "fieldPaths": [
+    "_links",
+    "accountId",
+    "apiClientPrimaryPushURI",
+    "apiClientSecondaryPushURI",
+    "callbackWithLinkPreferred",
+    "callbackWithStaticTextPreferred",
+    "pushAccountEntryParameters",
+    "pushAccountStatementParameters",
+    "pushBalanceParameters",
+    "pushRtpParameters",
+    "staticCallbackText",
+    "subscriptionEntryId",
+    "subscriptionEntryName",
+    "subscriptionId",
+    "subscriptionStatus",
+    "validUntil"
+  ],
+  "samplePaths": [
+    "/v2/subscriptions/{push-accountinformation-subservice}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "DCAP-subscription-control",
+  "title": "Subscription Control",
+  "slug": "subscription-control",
+  "theme": "subscription-management",
+  "conceptFamilyId": "CCFAM-subscription-management",
+  "statement": "Controls push-subscription creation, retrieval, update, and removal for subscription-backed services. OpenAPI evidence: 8 operations, 2 schema objects, and 16 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "technicalCitationIds": [
+    "TCIT-subscription-control-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-capability",
+  "operationCount": 8,
+  "schemaObjectCount": 2,
+  "fieldCount": 16
+}

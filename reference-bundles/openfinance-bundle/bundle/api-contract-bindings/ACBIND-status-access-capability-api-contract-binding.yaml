@@ -1,0 +1,80 @@
+{
+  "id": "ACBIND-status-access-capability-api-contract-binding",
+  "title": "Status Access Capability API Contract Binding",
+  "slug": "status-access-capability-api-contract-binding",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "status-retrieval",
+  "conceptFamilyIds": [
+    "CCFAM-status-retrieval"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-status-access"
+  ],
+  "technicalCitationIds": [
+    "TCIT-status-access-capability"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/bulk-payments/{payment-product}/{paymentId}/extended-status",
+    "/v2/bulk-requests-for-payments/{payment-product}/{paymentId}/entries/{uetr}/status",
+    "/v2/bulk-requests-for-payments/{payment-product}/{paymentId}/status",
+    "/v2/consents/{consent-category}/{consentId}/status",
+    "/v2/documents/{documentResourceId}/status",
+    "/v2/mandates/{resourceId}/status",
+    "/v2/onboardings/{onboardingId}/status",
+    "/v2/requests-for-payments/{payment-product}/{paymentId}/status",
+    "/v2/signing-baskets/{basketId}/status",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status",
+    "/v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "/v2/{extended-payment-service5}/{payment-product}/{paymentId}/status",
+    "/v2/{extended-payment-service6}/{payment-product}/{paymentId}/initiations/{initiationId}/status",
+    "/v2/{payment-service}/{payment-product}/{paymentId}/status"
+  ],
+  "operationSignatures": [
+    "GET /v2/bulk-payments/{payment-product}/{paymentId}/extended-status",
+    "GET /v2/bulk-requests-for-payments/{payment-product}/{paymentId}/entries/{uetr}/status",
+    "GET /v2/bulk-requests-for-payments/{payment-product}/{paymentId}/status",
+    "GET /v2/consents/{consent-category}/{consentId}/status",
+    "GET /v2/documents/{documentResourceId}/status",
+    "GET /v2/mandates/{resourceId}/status",
+    "GET /v2/onboardings/{onboardingId}/status",
+    "GET /v2/requests-for-payments/{payment-product}/{paymentId}/status",
+    "GET /v2/signing-baskets/{basketId}/status",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/status",
+    "GET /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}/status",
+    "GET /v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "GET /v2/{extended-payment-service5}/{payment-product}/{paymentId}/status",
+    "GET /v2/{extended-payment-service6}/{payment-product}/{paymentId}/initiations/{initiationId}/status",
+    "GET /v2/{payment-service}/{payment-product}/{paymentId}/status"
+  ],
+  "apiSpecTitles": [
+    "Consent API for V2.x",
+    "Request to Pay Services API for V2.x",
+    "openFinance API Framework Data Dictionary",
+    "openFinance API Framework Extended Services Verification of Party (VOP)",
+    "openFinance API Framework Implementation Guidelines Administrative Services",
+    "openFinance API Framework Implementation Guidelines Document Services",
+    "openFinance API Framework Implementation Guidelines Mandate Services",
+    "openFinance API Framework Implementation Guidelines Protocol Functions and Security Measures for V2.x- Signing Basket API",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Payment Initiation Service"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-status-capability",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

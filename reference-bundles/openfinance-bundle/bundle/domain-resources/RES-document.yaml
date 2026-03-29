@@ -1,0 +1,37 @@
+{
+  "id": "RES-document",
+  "title": "Document",
+  "slug": "document",
+  "resourceName": "Document",
+  "kind": "document",
+  "conceptFamilyId": "CCFAM-document-services",
+  "aliases": [
+    "document",
+    "document resource",
+    "documents",
+    "electronic document"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-document"
+  ],
+  "technicalCitationIds": [
+    "TCIT-document-access-capability",
+    "TCIT-document-handling-flow",
+    "TCIT-document-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-document",
+  "notes": "Document transmission resource submitted, retrieved, withdrawn, and checked via document services."
+}

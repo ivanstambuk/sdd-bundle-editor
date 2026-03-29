@@ -1,0 +1,15 @@
+{
+  "id": "SECM-oauth2-sca-approach-implicit-start-of-the-authorisation-process-2",
+  "title": "OAuth2 SCA Approach: Implicit Start of the Authorisation Process",
+  "slug": "oauth2-sca-approach-implicit-start-of-the-authorisation-process",
+  "kind": "other",
+  "statement": "3.1.2 OAuth2 SCA Approach: Implicit Start of the Authorisation Process If the ASPSP supports the OAuth2 SCA Approach, the flow is very similar to the Redirect SCA Approach. Instead of redirecting the PSU directly to an authentication server, the OAuth2 Consent API Establish Consents Messages protocol is used for the transaction authorisation process. In the following, a flow is shown, where the Authorisation Process in the NextGenPSD2 API has been implicitly started. PSU AISP ASPSP PSU initiates an account information access via a TPP 1.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-oauth2-sca-approach-implicit-start-of-the-authorisation-process-2"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b28ecd8502-3-1-2-oauth2-sca-approach-implicit-start-of-the-authorisation-process-oauth2-sca-approach-implicit-start-of-the-authorisation-process",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

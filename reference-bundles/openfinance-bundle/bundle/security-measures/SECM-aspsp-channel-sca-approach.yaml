@@ -1,0 +1,15 @@
+{
+  "id": "SECM-aspsp-channel-sca-approach",
+  "title": "ASPSP Channel SCA Approach",
+  "slug": "aspsp-channel-sca-approach",
+  "kind": "other",
+  "statement": "8.9 ASPSP Channel SCA Approach The ASPSP might offer to authorise a transaction not within the session \u2022 started with the first resource data submission of the ASPSP within a Transaction Initiation procedure, or \u2022 started with the POST /authorisations request but instead later in other authorisation channels of the ASPSP like the online channels. This SCA approach is addressed by the API Client by using the term \"ASPSP-CHANNEL\" in the attribute \"Client-SCA-Approach-Preference\".2 NOTE: The new ASPSP-SCA-Approach \"ASPSP-CHANNEL\" might be changed later on dynamically to e.g. \"Redirect\" by the API Client in case of re-starting the authorisation procedure explicitly via the API. It just sticks to",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-aspsp-channel-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-9-aspsp-channel-sca-approach-aspsp-channel-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

@@ -1,0 +1,31 @@
+{
+  "id": "CCFAM-onboarding",
+  "title": "Onboarding Concept Family",
+  "slug": "onboarding-concept-family",
+  "theme": "onboarding",
+  "summary": "Technical domain grouping for onboarding resources, onboarding administration capabilities, and onboarding lifecycle flows.",
+  "domainCapabilityIds": [
+    "DCAP-onboarding-control"
+  ],
+  "processFlowIds": [
+    "DFLOW-onboarding"
+  ],
+  "domainResourceIds": [
+    "RES-onboarding"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet."
+}

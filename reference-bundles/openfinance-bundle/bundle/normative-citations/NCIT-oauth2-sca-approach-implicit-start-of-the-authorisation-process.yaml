@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-oauth2-sca-approach-implicit-start-of-the-authorisation-process",
+  "title": "OAuth2 SCA Approach: Implicit Start of the Authorisation Process Citation",
+  "slug": "oauth2-sca-approach-implicit-start-of-the-authorisation-process-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-3-1-5-oauth2-sca-approach-implicit-start-of-the-authorisation-process-oauth2-sca-approach-implicit-start-of-the-authorisation-process",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-1-5-oauth2-sca-approach-implicit-start-of-the-authorisation-process"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "OAuth2 SCA Approach: Implicit Start of the Authorisation Process"
+  ],
+  "pageSpans": [
+    "25-26"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "3.1.5 OAuth2 SCA Approach: Implicit Start of the Authorisation Process If the ASPSP supports the OAuth2 SCA Approach, the flow is very similar to the Redirect SCA Approach with implicit start of the Authorisation Process. Instead of redirecting the PSU directly openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service to an authentication server, the OAuth2 protocol is used for the transaction authorisation process. Remark: The OAuth2 SCA Approach with explicit start of the Authorisation Process is treated analogously. PSU PISP ASPSP PSU initiates a payment via a TPP 1.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

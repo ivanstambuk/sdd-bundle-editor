@@ -1,0 +1,32 @@
+{
+  "id": "RES-verification-of-party-request",
+  "title": "Verification of Party Request",
+  "slug": "verification-of-party-request",
+  "resourceName": "Verification of Party Request",
+  "kind": "verification-request",
+  "conceptFamilyId": "CCFAM-verification-of-party",
+  "aliases": [
+    "bulk verification of party request",
+    "verification of party request",
+    "vop request"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-verification-of-party-request"
+  ],
+  "technicalCitationIds": [
+    "TCIT-verification-of-party-capability",
+    "TCIT-verification-of-party-flow",
+    "TCIT-verification-of-party-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-verification-of-party-request",
+  "notes": "Verification-of-party request resource family covering dedicated and bulk VOP submissions and status retrieval."
+}

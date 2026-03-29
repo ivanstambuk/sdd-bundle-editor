@@ -1,0 +1,25 @@
+{
+  "id": "BR-explicit-authorisation-close-support",
+  "title": "Explicit Authorisation Close Support",
+  "slug": "explicit-authorisation-close-support",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "The procedure of explicitly closing an authorisation shall be supported by the ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-62b37182d29146f0`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-explicit-authorisation-close-support"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-62b37182d29146f0",
+  "sourceBootstrapClusterId": "NSTMT-62b37182d29146f0",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

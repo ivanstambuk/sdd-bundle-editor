@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-optional-usage-of-oauth2-for-psu-authentication-or-authorisation",
+  "title": "Optional Usage of OAuth2 for PSU Authentication or Authorisation Citation",
+  "slug": "optional-usage-of-oauth2-for-psu-authentication-or-authorisation-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-fd85673676-8-1-optional-usage-of-oauth2-for-psu-authentication-or-authorisation-optional-usage-of-oauth2-for-psu-authentication-or-authorisation",
+  "bootstrapSectionIds": [
+    "SEC-fd85673676-8-1-optional-usage-of-oauth2-for-psu-authentication-or-authorisation"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Optional Usage of OAuth2 for PSU Authentication or Authorisation"
+  ],
+  "pageSpans": [
+    "89-90"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "8.1 Optional Usage of OAuth2 for PSU Authentication or Authorisation The XS2A API respectively the openFinance APIs will allow an ASPSP to implement OAuth2 as a support for the authorisation of the PSU towards the API Client for several services. In this case, the API Client will be the client, the PSU the resource owner and the ASPSP will be the resource server in the abstract OAuth2 model. This specification supports two ways of integrating OAuth2. The first support is an authentication of a PSU in a pre-step, translating this authentication into an access token to be used at the XS2A interface or openFinance API afterwards.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

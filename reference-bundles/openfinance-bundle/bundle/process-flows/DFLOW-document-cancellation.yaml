@@ -1,0 +1,34 @@
+{
+  "id": "DFLOW-document-cancellation",
+  "title": "Document Cancellation",
+  "slug": "document-cancellation",
+  "kind": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "An electronic document shall not be cancelled if it has already been presented to the PSU.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-bd9959f23968fd8a` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-document-cancellation-prohibition"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-document-cancellation-prohibition"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-bd9959f23968fd8a",
+  "sourceBootstrapRuleCandidateId": "DRCAND-bd9959f23968fd8a",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate.",
+  "parentProcessFlowId": "DFLOW-document-handling",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because it is one constrained document-lifecycle path rather than the whole document lifecycle."
+}

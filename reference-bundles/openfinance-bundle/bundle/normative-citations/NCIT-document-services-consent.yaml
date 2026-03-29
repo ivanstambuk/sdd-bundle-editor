@@ -1,0 +1,33 @@
+{
+  "id": "NCIT-document-services-consent",
+  "title": "Document Services Consent Citation",
+  "slug": "document-services-consent-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-document-services-consent",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-7-1-establish-consent-on-document-services-request",
+    "SEC-b28ecd8502-3-7-2-get-consent-request"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Establish Consent on Document Services Request",
+    "Get Consent Request"
+  ],
+  "pageSpans": [
+    "59-66",
+    "66-76"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.7.1 Establish Consent on Document Services Request Call POST /v2/consents/document-services Creates a consent on document services resource at the ASPSP regarding explicitly confirming the consent to submit RTPs to (a) dedicated account(s). No Side Effects In difference to the Establish Consent on Account Information as defined in Section 3.4.1, there is no side effect by the Establish Consent on Generic Access Request. Query Parameters No specific query parameter.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "SECM-redirect-sca-approach",
+  "title": "Redirect SCA Approach",
+  "slug": "redirect-sca-approach",
+  "kind": "other",
+  "statement": "8.7 Redirect SCA Approach In the Redirect SCA Approach, the TPP will at some point receive a \"scaRedirect\" link in the response from the ASPSP. The link leads to an authorisation page related to the transaction to be authorised and to the TPP must redirect the PSU agent to that link as a next step. When accessing the page, the PSU will authenticate himself with the related PSU credentials, review the presented information of the transaction and can finalise the authorisation from there. When the authorisation has been finalised by the PSU, the PSU agent is redirected again by the ASPSP to the Client-Redirect-URI, which has been submitted within the related Transaction Initiation Request.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-redirect-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-7-redirect-sca-approach-redirect-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

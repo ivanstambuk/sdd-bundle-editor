@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-access-methods-2",
+  "title": "API Access Methods Citation",
+  "slug": "api-access-methods-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-2-1-api-access-methods-api-access-methods",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-2-1-api-access-methods"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "API Access Methods"
+  ],
+  "pageSpans": [
+    "10"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "2.1 API Access Methods The following tables gives an overview on the HTTP access methods supported by the API endpoints and by resources created through this API. Conditions in the following tables It is further defined, whether this method support is mandated for the ASPSP by this specification or whether it is an optional feature for the ASPSP. Please note that this condition is given relative to the parent node of the path, i.e. the condition e.g. on a method on /v2/payments/{payment-product}/{paymentId} applies only if the endpoint /v2/payments/{payment-product} is supported at all. NOTE:All methods submitted by a TPP, which are addressing dynamically created resources in this API, may o",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

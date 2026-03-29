@@ -1,0 +1,15 @@
+{
+  "id": "SECM-embedded-sca-approach-without-sca-method-e-g-creditor-in-exemption-list",
+  "title": "Embedded SCA Approach without SCA method (e.g. Creditor in Exemption List)",
+  "slug": "embedded-sca-approach-without-sca-method-e-g-creditor-in-exemption-list",
+  "kind": "other",
+  "statement": "3.1.8 Embedded SCA Approach without SCA method (e.g. Creditor in Exemption List) In the following, several exemplary flows are shown, where the ASPSP has chosen to process the SCA methods through the PISP \u2013 ASPSP interface. In any case, the PSU normally will need to authenticate himself with a first factor, before any account or SCA method details will be available to the PISP. So even in case where the Payment Initiation is accepted without an SCA method due e.g. to an exemption list, the PSU is asked via the PISP to provide the PSU Identification and e.g. a password or an OTP.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-embedded-sca-approach-without-sca-method-e-g-creditor-in-exemption-list"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-8-embedded-sca-approach-without-sca-method-e-g-creditor-in-exemption-list-embedded-sca-approach-without-sca-method-e-g-creditor-in-exemption-list",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

@@ -1,0 +1,57 @@
+{
+  "id": "ACBIND-consent-resource-api-contract-binding",
+  "title": "Consent Resource API Contract Binding",
+  "slug": "consent-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "consent",
+  "conceptFamilyIds": [
+    "CCFAM-consent-management"
+  ],
+  "domainResourceIds": [
+    "RES-consent",
+    "RES-account-access-consent",
+    "RES-funds-confirmation-consent",
+    "RES-user-parameters-consent",
+    "RES-document-services-consent"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/consents/account-access",
+    "/v2/consents/account-access/{consentId}",
+    "/v2/consents/document-services",
+    "/v2/consents/document-services/{consentId}",
+    "/v2/consents/funds-confirmations",
+    "/v2/consents/funds-confirmations/{consentId}",
+    "/v2/consents/user-parameters-access",
+    "/v2/consents/user-parameters-access/{consentId}",
+    "/v2/consents/{consent-category}/{consentId}",
+    "/v2/consents/{consent-category}/{consentId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/consents/{consent-category}/{consentId}",
+    "GET /v2/consents/account-access/{consentId}",
+    "GET /v2/consents/document-services/{consentId}",
+    "GET /v2/consents/funds-confirmations/{consentId}",
+    "GET /v2/consents/user-parameters-access/{consentId}",
+    "GET /v2/consents/{consent-category}/{consentId}/status",
+    "POST /v2/consents/account-access",
+    "POST /v2/consents/document-services",
+    "POST /v2/consents/funds-confirmations",
+    "POST /v2/consents/user-parameters-access"
+  ],
+  "apiSpecTitles": [
+    "Consent API for V2.x"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-consent-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

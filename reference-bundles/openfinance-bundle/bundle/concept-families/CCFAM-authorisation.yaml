@@ -1,0 +1,67 @@
+{
+  "id": "CCFAM-authorisation",
+  "title": "Authorisation Concept Family",
+  "slug": "authorisation-concept-family",
+  "theme": "authorisation",
+  "summary": "Aggregate derivation family for theme `authorisation` with 4 rule candidates, 4 capability candidates, and 4 flow candidates.",
+  "businessRuleIds": [
+    "BR-authorisation-closes-reservation",
+    "BR-explicit-authorisation-close-support",
+    "BR-payment-status-polling-requirement",
+    "BR-reservation-of-funds-closure-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-authorisation-control",
+    "DCAP-authorisation-driven-reservation-closure",
+    "DCAP-explicit-authorisation-closure-support",
+    "DCAP-payment-status-polling",
+    "DCAP-reservation-closure-handling"
+  ],
+  "processFlowIds": [
+    "DFLOW-authorisation",
+    "DFLOW-authorisation-driven-reservation-closure",
+    "DFLOW-explicit-authorisation-closure",
+    "DFLOW-payment-status-polling",
+    "DFLOW-reservation-closure"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-authorisation-sub-resource",
+    "RES-signing-basket"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-authorisation",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle.",
+  "valueObjectIds": [
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-client-message",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-authorisation-status-transition"
+  ]
+}

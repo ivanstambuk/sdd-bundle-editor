@@ -1,0 +1,90 @@
+{
+  "id": "NCIT-card-account",
+  "title": "Card Account Citation",
+  "slug": "card-account-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-card-account",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-2-1-3-card-accounts-endpoint",
+    "SEC-3d9e00add2-2-3-added-new-attribute-cardbrand-in-the-query-10-march-2025",
+    "SEC-3d9e00add2-4-2-data-overview-account-information-service",
+    "SEC-3d9e00add2-4-5-1-read-card-account-list",
+    "SEC-3d9e00add2-4-5-2-read-card-account-details",
+    "SEC-3d9e00add2-4-5-3-read-card-account-balance",
+    "SEC-3d9e00add2-4-5-4-read-card-account-transaction-list",
+    "SEC-3d9e00add2-4-5-read-card-account-data-requests",
+    "SEC-3d9e00add2-4-account-information-service",
+    "SEC-83af6a40e8-2-operational-rules",
+    "SEC-83af6a40e8-3-2-3-interpretation-and-support-of-balance-types",
+    "SEC-83af6a40e8-4-3-1-read-card-list",
+    "SEC-83af6a40e8-4-3-2-read-card-details",
+    "SEC-83af6a40e8-4-3-3-read-card-balances",
+    "SEC-83af6a40e8-4-3-4-read-card-transaction-list",
+    "SEC-86a5b497b6-2-1-service-description",
+    "SEC-b28ecd8502-3-7-2-get-consent-request"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-a-guide-to-the-openfinance-api-framework-v2-2-20250731-pdf-introduction-document-fe2d14ef43",
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5",
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "Card-accounts Endpoint",
+    "Added new attribute cardBrand in the query 10.March.2025",
+    "Data Overview Account Information Service",
+    "Read Card Account List",
+    "Read Card Account Details",
+    "Read Card Account Balance",
+    "Read Card Account Transaction List",
+    "Read Card Account Data Requests",
+    "Account Information Service",
+    "Operational Rules",
+    "Interpretation and Support of Balance Types",
+    "Read Card List",
+    "Read Card Details",
+    "Read Card Balances",
+    "Read Card Transaction List",
+    "Service Description",
+    "Get Consent Request"
+  ],
+  "pageSpans": [
+    "15-16",
+    "8",
+    "80-83",
+    "107-109",
+    "109-112",
+    "112-114",
+    "114-127",
+    "107",
+    "76-78",
+    "9-11",
+    "11-14",
+    "36-39",
+    "39-42",
+    "42-46",
+    "46-50",
+    "6-8",
+    "66-76"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "2.3 Added new attribute cardBrand in the query 10.March.2025 parameters of Read Transaction List and Read Card Account Transaction List",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

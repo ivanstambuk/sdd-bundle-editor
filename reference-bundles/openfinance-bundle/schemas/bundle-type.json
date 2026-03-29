@@ -1,0 +1,753 @@
+{
+  "bundleType": "openfinance",
+  "version": "1.0.0",
+  "categories": [
+    {
+      "name": "participant",
+      "displayName": "Participants",
+      "icon": "\ud83d\udc65",
+      "order": 10
+    },
+    {
+      "name": "resource",
+      "displayName": "Resources",
+      "icon": "\ud83e\uddf1",
+      "order": 20
+    },
+    {
+      "name": "product-surface",
+      "displayName": "Product Surfaces",
+      "icon": "\ud83c\udfe6",
+      "order": 30
+    },
+    {
+      "name": "security",
+      "displayName": "Security Measures",
+      "icon": "\ud83d\udee1\ufe0f",
+      "order": 40
+    },
+    {
+      "name": "rule",
+      "displayName": "Business Rules",
+      "icon": "\ud83d\udccf",
+      "order": 50
+    },
+    {
+      "name": "capability",
+      "displayName": "Capabilities",
+      "icon": "\u2699\ufe0f",
+      "order": 60
+    },
+    {
+      "name": "process-flow",
+      "displayName": "Process Flows",
+      "icon": "\ud83e\udded",
+      "order": 70
+    },
+    {
+      "name": "concept-family",
+      "displayName": "Concept Families",
+      "icon": "\ud83d\uddc2\ufe0f",
+      "order": 80
+    },
+    {
+      "name": "value-object",
+      "displayName": "Value Objects",
+      "icon": "\ud83e\udde9",
+      "order": 85
+    },
+    {
+      "name": "value-object-field",
+      "displayName": "Value Object Fields",
+      "icon": "\ud83e\udeb6",
+      "order": 86
+    },
+    {
+      "name": "status-transition",
+      "displayName": "Status Transitions",
+      "icon": "\ud83d\udd04",
+      "order": 88
+    },
+    {
+      "name": "normative-citation",
+      "displayName": "Normative Citations",
+      "icon": "\ud83d\udcda",
+      "order": 90
+    },
+    {
+      "name": "technical-citation",
+      "displayName": "Technical Citations",
+      "icon": "\ud83e\uddec",
+      "order": 100
+    },
+    {
+      "name": "contract-binding",
+      "displayName": "API Contract Bindings",
+      "icon": "\ud83d\udd17",
+      "order": 110
+    },
+    {
+      "name": "schema-contract",
+      "displayName": "Schema Contracts",
+      "icon": "\ud83d\udcd0",
+      "order": 120
+    }
+  ],
+  "entities": [
+    {
+      "entityType": "Participant",
+      "idField": "id",
+      "schemaPath": "schemas/Participant.schema.json",
+      "directory": "bundle/participants",
+      "filePattern": "{id}.yaml",
+      "category": "participant",
+      "order": 10
+    },
+    {
+      "entityType": "DomainResource",
+      "idField": "id",
+      "schemaPath": "schemas/DomainResource.schema.json",
+      "directory": "bundle/domain-resources",
+      "filePattern": "{id}.yaml",
+      "category": "resource",
+      "order": 20
+    },
+    {
+      "entityType": "ProductSurface",
+      "idField": "id",
+      "schemaPath": "schemas/ProductSurface.schema.json",
+      "directory": "bundle/product-surfaces",
+      "filePattern": "{id}.yaml",
+      "category": "product-surface",
+      "order": 30
+    },
+    {
+      "entityType": "SecurityMeasure",
+      "idField": "id",
+      "schemaPath": "schemas/SecurityMeasure.schema.json",
+      "directory": "bundle/security-measures",
+      "filePattern": "{id}.yaml",
+      "category": "security",
+      "order": 40
+    },
+    {
+      "entityType": "BusinessRule",
+      "idField": "id",
+      "schemaPath": "schemas/BusinessRule.schema.json",
+      "directory": "bundle/business-rules",
+      "filePattern": "{id}.yaml",
+      "category": "rule",
+      "order": 50
+    },
+    {
+      "entityType": "DomainCapability",
+      "idField": "id",
+      "schemaPath": "schemas/DomainCapability.schema.json",
+      "directory": "bundle/domain-capabilities",
+      "filePattern": "{id}.yaml",
+      "category": "capability",
+      "order": 60
+    },
+    {
+      "entityType": "ProcessFlow",
+      "idField": "id",
+      "schemaPath": "schemas/ProcessFlow.schema.json",
+      "directory": "bundle/process-flows",
+      "filePattern": "{id}.yaml",
+      "category": "process-flow",
+      "order": 70
+    },
+    {
+      "entityType": "ConceptFamily",
+      "idField": "id",
+      "schemaPath": "schemas/ConceptFamily.schema.json",
+      "directory": "bundle/concept-families",
+      "filePattern": "{id}.yaml",
+      "category": "concept-family",
+      "order": 80
+    },
+    {
+      "entityType": "ValueObject",
+      "idField": "id",
+      "schemaPath": "schemas/ValueObject.schema.json",
+      "directory": "bundle/value-objects",
+      "filePattern": "{id}.yaml",
+      "category": "value-object",
+      "order": 85
+    },
+    {
+      "entityType": "ValueObjectField",
+      "idField": "id",
+      "schemaPath": "schemas/ValueObjectField.schema.json",
+      "directory": "bundle/value-object-fields",
+      "filePattern": "{id}.yaml",
+      "category": "value-object-field",
+      "order": 86
+    },
+    {
+      "entityType": "StatusTransition",
+      "idField": "id",
+      "schemaPath": "schemas/StatusTransition.schema.json",
+      "directory": "bundle/status-transitions",
+      "filePattern": "{id}.yaml",
+      "category": "status-transition",
+      "order": 88
+    },
+    {
+      "entityType": "NormativeCitation",
+      "idField": "id",
+      "schemaPath": "schemas/NormativeCitation.schema.json",
+      "directory": "bundle/normative-citations",
+      "filePattern": "{id}.yaml",
+      "category": "normative-citation",
+      "order": 90
+    },
+    {
+      "entityType": "TechnicalCitation",
+      "idField": "id",
+      "schemaPath": "schemas/TechnicalCitation.schema.json",
+      "directory": "bundle/technical-citations",
+      "filePattern": "{id}.yaml",
+      "category": "technical-citation",
+      "order": 100
+    },
+    {
+      "entityType": "ApiContractBinding",
+      "idField": "id",
+      "schemaPath": "schemas/ApiContractBinding.schema.json",
+      "directory": "bundle/api-contract-bindings",
+      "filePattern": "{id}.yaml",
+      "category": "contract-binding",
+      "order": 110
+    },
+    {
+      "entityType": "SchemaContract",
+      "idField": "id",
+      "schemaPath": "schemas/SchemaContract.schema.json",
+      "directory": "bundle/schema-contracts",
+      "filePattern": "{id}.yaml",
+      "category": "schema-contract",
+      "order": 120
+    }
+  ],
+  "relations": [
+    {
+      "name": "ParticipantParent",
+      "fromEntity": "Participant",
+      "fromField": "parentParticipantId",
+      "toEntity": "Participant",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ParticipantCitedBy",
+      "fromEntity": "Participant",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainResourceParent",
+      "fromEntity": "DomainResource",
+      "fromField": "parentResourceId",
+      "toEntity": "DomainResource",
+      "multiplicity": "one"
+    },
+    {
+      "name": "DomainResourceFamily",
+      "fromEntity": "DomainResource",
+      "fromField": "conceptFamilyId",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "one"
+    },
+    {
+      "name": "DomainResourceActors",
+      "fromEntity": "DomainResource",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainResourceNormativeCitations",
+      "fromEntity": "DomainResource",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainResourceTechnicalCitations",
+      "fromEntity": "DomainResource",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SecurityMeasureActors",
+      "fromEntity": "SecurityMeasure",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SecurityMeasureCitations",
+      "fromEntity": "SecurityMeasure",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "BusinessRuleFamily",
+      "fromEntity": "BusinessRule",
+      "fromField": "conceptFamilyId",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "one"
+    },
+    {
+      "name": "BusinessRuleActors",
+      "fromEntity": "BusinessRule",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "BusinessRuleResources",
+      "fromEntity": "BusinessRule",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "BusinessRuleCitations",
+      "fromEntity": "BusinessRule",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainCapabilityFamily",
+      "fromEntity": "DomainCapability",
+      "fromField": "conceptFamilyId",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "one"
+    },
+    {
+      "name": "DomainCapabilityParent",
+      "fromEntity": "DomainCapability",
+      "fromField": "parentCapabilityId",
+      "toEntity": "DomainCapability",
+      "multiplicity": "one"
+    },
+    {
+      "name": "DomainCapabilityActors",
+      "fromEntity": "DomainCapability",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainCapabilityResources",
+      "fromEntity": "DomainCapability",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainCapabilityRules",
+      "fromEntity": "DomainCapability",
+      "fromField": "supportingBusinessRuleIds",
+      "toEntity": "BusinessRule",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainCapabilityCitations",
+      "fromEntity": "DomainCapability",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "DomainCapabilityTechnicalCitations",
+      "fromEntity": "DomainCapability",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProcessFlowFamily",
+      "fromEntity": "ProcessFlow",
+      "fromField": "conceptFamilyId",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ProcessFlowParent",
+      "fromEntity": "ProcessFlow",
+      "fromField": "parentProcessFlowId",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ProcessFlowActors",
+      "fromEntity": "ProcessFlow",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProcessFlowResources",
+      "fromEntity": "ProcessFlow",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProcessFlowRules",
+      "fromEntity": "ProcessFlow",
+      "fromField": "supportingBusinessRuleIds",
+      "toEntity": "BusinessRule",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProcessFlowCitations",
+      "fromEntity": "ProcessFlow",
+      "fromField": "normativeCitationIds",
+      "toEntity": "NormativeCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProcessFlowTechnicalCitations",
+      "fromEntity": "ProcessFlow",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyRules",
+      "fromEntity": "ConceptFamily",
+      "fromField": "businessRuleIds",
+      "toEntity": "BusinessRule",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyCapabilities",
+      "fromEntity": "ConceptFamily",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyFlows",
+      "fromEntity": "ConceptFamily",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyActors",
+      "fromEntity": "ConceptFamily",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyResources",
+      "fromEntity": "ConceptFamily",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyValueObjects",
+      "fromEntity": "ConceptFamily",
+      "fromField": "valueObjectIds",
+      "toEntity": "ValueObject",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ConceptFamilyStatusTransitions",
+      "fromEntity": "ConceptFamily",
+      "fromField": "statusTransitionIds",
+      "toEntity": "StatusTransition",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFamilies",
+      "fromEntity": "ValueObject",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFields",
+      "fromEntity": "ValueObject",
+      "fromField": "valueObjectFieldIds",
+      "toEntity": "ValueObjectField",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectResources",
+      "fromEntity": "ValueObject",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectCapabilities",
+      "fromEntity": "ValueObject",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFlows",
+      "fromEntity": "ValueObject",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectTechnicalCitations",
+      "fromEntity": "ValueObject",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectSchemaContracts",
+      "fromEntity": "ValueObject",
+      "fromField": "schemaContractIds",
+      "toEntity": "SchemaContract",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFieldOwner",
+      "fromEntity": "ValueObjectField",
+      "fromField": "valueObjectId",
+      "toEntity": "ValueObject",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ValueObjectFieldFamilies",
+      "fromEntity": "ValueObjectField",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFieldTechnicalCitations",
+      "fromEntity": "ValueObjectField",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ValueObjectFieldSchemaContracts",
+      "fromEntity": "ValueObjectField",
+      "fromField": "schemaContractIds",
+      "toEntity": "SchemaContract",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionFamilies",
+      "fromEntity": "StatusTransition",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionValueObjects",
+      "fromEntity": "StatusTransition",
+      "fromField": "valueObjectIds",
+      "toEntity": "ValueObject",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionResources",
+      "fromEntity": "StatusTransition",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionCapabilities",
+      "fromEntity": "StatusTransition",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionFlows",
+      "fromEntity": "StatusTransition",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionRules",
+      "fromEntity": "StatusTransition",
+      "fromField": "supportingBusinessRuleIds",
+      "toEntity": "BusinessRule",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionTechnicalCitations",
+      "fromEntity": "StatusTransition",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "StatusTransitionSchemaContracts",
+      "fromEntity": "StatusTransition",
+      "fromField": "schemaContractIds",
+      "toEntity": "SchemaContract",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceParent",
+      "fromEntity": "ProductSurface",
+      "fromField": "parentProductSurfaceId",
+      "toEntity": "ProductSurface",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ProductSurfaceActors",
+      "fromEntity": "ProductSurface",
+      "fromField": "participantIds",
+      "toEntity": "Participant",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceResources",
+      "fromEntity": "ProductSurface",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceRules",
+      "fromEntity": "ProductSurface",
+      "fromField": "businessRuleIds",
+      "toEntity": "BusinessRule",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceCapabilities",
+      "fromEntity": "ProductSurface",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceFlows",
+      "fromEntity": "ProductSurface",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceFamilies",
+      "fromEntity": "ProductSurface",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceValueObjects",
+      "fromEntity": "ProductSurface",
+      "fromField": "valueObjectIds",
+      "toEntity": "ValueObject",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceStatusTransitions",
+      "fromEntity": "ProductSurface",
+      "fromField": "statusTransitionIds",
+      "toEntity": "StatusTransition",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceApiBindings",
+      "fromEntity": "ProductSurface",
+      "fromField": "apiContractBindingIds",
+      "toEntity": "ApiContractBinding",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ProductSurfaceSchemaContracts",
+      "fromEntity": "ProductSurface",
+      "fromField": "schemaContractIds",
+      "toEntity": "SchemaContract",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ApiBindingFamilies",
+      "fromEntity": "ApiContractBinding",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ApiBindingResources",
+      "fromEntity": "ApiContractBinding",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ApiBindingCapabilities",
+      "fromEntity": "ApiContractBinding",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ApiBindingFlows",
+      "fromEntity": "ApiContractBinding",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ApiBindingTechnicalCitations",
+      "fromEntity": "ApiContractBinding",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SchemaContractFamilies",
+      "fromEntity": "SchemaContract",
+      "fromField": "conceptFamilyIds",
+      "toEntity": "ConceptFamily",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SchemaContractResources",
+      "fromEntity": "SchemaContract",
+      "fromField": "domainResourceIds",
+      "toEntity": "DomainResource",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SchemaContractCapabilities",
+      "fromEntity": "SchemaContract",
+      "fromField": "domainCapabilityIds",
+      "toEntity": "DomainCapability",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SchemaContractFlows",
+      "fromEntity": "SchemaContract",
+      "fromField": "processFlowIds",
+      "toEntity": "ProcessFlow",
+      "multiplicity": "many"
+    },
+    {
+      "name": "SchemaContractTechnicalCitations",
+      "fromEntity": "SchemaContract",
+      "fromField": "technicalCitationIds",
+      "toEntity": "TechnicalCitation",
+      "multiplicity": "many"
+    }
+  ]
+}

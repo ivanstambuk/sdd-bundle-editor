@@ -1,0 +1,43 @@
+{
+  "id": "ACBIND-verification-of-party-capability-api-contract-binding",
+  "title": "Verification Of Party Capability API Contract Binding",
+  "slug": "verification-of-party-capability-api-contract-binding",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "verification-of-party",
+  "conceptFamilyIds": [
+    "CCFAM-verification-of-party"
+  ],
+  "domainResourceIds": [
+    "RES-verification-of-party-request"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-verification-of-party"
+  ],
+  "technicalCitationIds": [
+    "TCIT-verification-of-party-capability"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "httpMethods": [
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/{bulk-party-verification-endpoint}",
+    "/v2/{bulk-party-verification-endpoint}/{vopBulkId}",
+    "/v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "/v2/{party-verification-endpoint}"
+  ],
+  "operationSignatures": [
+    "GET /v2/{bulk-party-verification-endpoint}/{vopBulkId}",
+    "GET /v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "POST /v2/{bulk-party-verification-endpoint}",
+    "POST /v2/{party-verification-endpoint}"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Services Verification of Party (VOP)"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-verification-capability",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

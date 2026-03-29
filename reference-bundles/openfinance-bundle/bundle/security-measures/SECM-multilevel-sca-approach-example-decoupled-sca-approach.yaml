@@ -1,0 +1,15 @@
+{
+  "id": "SECM-multilevel-sca-approach-example-decoupled-sca-approach",
+  "title": "Multilevel SCA Approach: Example Decoupled SCA Approach",
+  "slug": "multilevel-sca-approach-example-decoupled-sca-approach",
+  "kind": "other",
+  "statement": "3.1.6 Multilevel SCA Approach: Example Decoupled SCA Approach The multilevel SCA Approach flows for the Establish Consent Requests will follow exactly the same pattern as for the Payment Initiation Services. Whereas the Redirect SCA Approach Consent API Establish Consents Messages was used there as an example, the following flow will give an example for the Decoupled SCA Approach: PSU AISP ASPSP PSU initiates an account access consent via a TPP 1. Account Information Consent Request validate \u2022 eIDAS certificate \u2022 request syntax 2a. Account Information Consent Response (NOK) \u2022 tpp role END \u2022 semantics http Codes: 401, 400, 403 2b.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-multilevel-sca-approach-example-decoupled-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b28ecd8502-3-1-6-multilevel-sca-approach-example-decoupled-sca-approach-multilevel-sca-approach-example-decoupled-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

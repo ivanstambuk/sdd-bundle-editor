@@ -1,0 +1,77 @@
+{
+  "id": "NCIT-psu-initiated-request-requirement",
+  "title": "PSU-Initiated Request Requirement Citation",
+  "slug": "psu-initiated-request-requirement-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-3cb7a98c7f861646",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-4-4-2-read-account-details",
+    "SEC-3d9e00add2-4-4-3-read-balance",
+    "SEC-3d9e00add2-4-4-4-read-transaction-list",
+    "SEC-3d9e00add2-4-4-5-read-transaction-details",
+    "SEC-3d9e00add2-4-5-2-read-card-account-details",
+    "SEC-3d9e00add2-4-5-3-read-card-account-balance",
+    "SEC-3d9e00add2-4-5-4-read-card-account-transaction-list",
+    "SEC-83af6a40e8-4-3-1-read-card-list",
+    "SEC-83af6a40e8-4-4-1-read-account-list",
+    "SEC-83af6a40e8-4-4-4-read-transaction-list",
+    "SEC-83af6a40e8-4-5-1-read-account-list",
+    "SEC-83af6a40e8-4-5-4-read-transaction-list",
+    "SEC-83af6a40e8-4-6-1-read-account-list",
+    "SEC-f7326476a7-8-2-user-group-parameter-request"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-discovery-api-v1-1-20250124-pdf-implementation-guidelines-2f05960313",
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Discovery API v1.1 20250124.pdf",
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "Read Account Details",
+    "Read Balance",
+    "Read Transaction List",
+    "Read Transaction Details",
+    "Read Card Account Details",
+    "Read Card Account Balance",
+    "Read Card Account Transaction List",
+    "Read Card List",
+    "Read Account List",
+    "Read Transaction List",
+    "Read Account List",
+    "Read Transaction List",
+    "Read Account List",
+    "User Group Parameter Request"
+  ],
+  "pageSpans": [
+    "89-92",
+    "92-95",
+    "95-104",
+    "104-107",
+    "109-112",
+    "112-114",
+    "114-127",
+    "36-39",
+    "50-57",
+    "62-67",
+    "67-72",
+    "77-83",
+    "83-88",
+    "26-27"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Discovery API v1.1 20250124.pdf",
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "It shall be contained if and only if this request was actively initiated by the PSU.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

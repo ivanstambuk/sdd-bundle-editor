@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-access-methods-3",
+  "title": "API Access Methods Citation",
+  "slug": "api-access-methods-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-83af6a40e8-3-2-api-access-methods-api-access-methods",
+  "bootstrapSectionIds": [
+    "SEC-83af6a40e8-3-2-api-access-methods"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "API Access Methods"
+  ],
+  "pageSpans": [
+    "11"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "3.2 API Access Methods The table in section 3.2.5, \"Overview of Endpoints\", gives an overview on the HTTP access methods supported by the API endpoints for the Extended Account Information Services.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

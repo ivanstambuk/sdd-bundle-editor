@@ -1,0 +1,38 @@
+{
+  "id": "RES-signing-basket",
+  "title": "Signing Basket",
+  "slug": "signing-basket",
+  "resourceName": "Signing Basket",
+  "kind": "signing-basket",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "aliases": [
+    "signing basket",
+    "signing basket object",
+    "signing basket resource"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-signing-basket"
+  ],
+  "technicalCitationIds": [
+    "TCIT-signing-basket-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-signing-basket",
+  "notes": "Resource used to bundle multiple transactions for a common authorisation step."
+}

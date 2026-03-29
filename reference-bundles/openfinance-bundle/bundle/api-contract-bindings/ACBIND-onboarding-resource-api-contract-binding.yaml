@@ -1,0 +1,42 @@
+{
+  "id": "ACBIND-onboarding-resource-api-contract-binding",
+  "title": "Onboarding Resource API Contract Binding",
+  "slug": "onboarding-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "onboarding",
+  "conceptFamilyIds": [
+    "CCFAM-onboarding"
+  ],
+  "domainResourceIds": [
+    "RES-onboarding"
+  ],
+  "technicalCitationIds": [
+    "TCIT-onboarding-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/onboardings",
+    "/v2/onboardings/{onboardingId}",
+    "/v2/onboardings/{onboardingId}/certificates",
+    "/v2/onboardings/{onboardingId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/onboardings/{onboardingId}",
+    "GET /v2/onboardings/{onboardingId}",
+    "GET /v2/onboardings/{onboardingId}/status",
+    "POST /v2/onboardings",
+    "POST /v2/onboardings/{onboardingId}/certificates"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Administrative Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-onboarding-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

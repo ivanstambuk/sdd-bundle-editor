@@ -1,0 +1,41 @@
+{
+  "id": "TCIT-onboarding-resource",
+  "title": "Onboarding Resource OpenAPI Evidence",
+  "slug": "onboarding-resource-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-onboarding-resource",
+  "technicalTheme": "onboarding",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-admin-services-bg-ofa-admin-recent-openapi-yaml-0cea717792"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-admin-services-delete-558f5ad7c3",
+    "OP-admin-services-get-03cb16ea70",
+    "OP-admin-services-get-44fbdd1da7",
+    "OP-admin-services-post-10d3557343",
+    "OP-admin-services-post-afb5b1bbfb"
+  ],
+  "bootstrapApiSchemaObjectIds": [],
+  "bootstrapApiFieldIds": [],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Administrative Services"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/onboardings/{onboardingId}",
+    "GET /v2/onboardings/{onboardingId}",
+    "GET /v2/onboardings/{onboardingId}/status",
+    "POST /v2/onboardings",
+    "POST /v2/onboardings/{onboardingId}/certificates"
+  ],
+  "schemaNames": [],
+  "fieldPaths": [],
+  "samplePaths": [
+    "/v2/onboardings",
+    "/v2/onboardings/{onboardingId}",
+    "/v2/onboardings/{onboardingId}/certificates",
+    "/v2/onboardings/{onboardingId}/status"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

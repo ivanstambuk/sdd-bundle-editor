@@ -1,0 +1,45 @@
+{
+  "id": "TCIT-status-notification-flow",
+  "title": "Status Notification Flow OpenAPI Evidence",
+  "slug": "status-notification-flow-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-notification-flow",
+  "technicalTheme": "notification-flow",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-architecture-licencerestricted-resource-status-notification-bg-ofa-push-recent-openapi-yaml-bb34e74fe5",
+    "API-openfinance-v2-extended-services-licencerestricted-push-account-information-services-notification-bg-ofa-pushais-notification-recent-openapi-yaml-4105bd6078"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-push-account-information-services-notification-post-0f59c0c477",
+    "OP-push-account-information-services-notification-post-37786b3b68",
+    "OP-push-account-information-services-notification-post-5b22991d87",
+    "OP-push-account-information-services-notification-post-9094091516",
+    "OP-resource-status-notification-post-45fdbf4a0f"
+  ],
+  "bootstrapApiSchemaObjectIds": [],
+  "bootstrapApiFieldIds": [],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Protocol Functions and Security Measures for V2.x - Resource Status Notification",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services"
+  ],
+  "operationSignatures": [
+    "POST /Client-Notification-URL",
+    "POST /apiClientPrimaryPushURI1",
+    "POST /apiClientPrimaryPushURI2",
+    "POST /apiClientPrimaryPushURI3",
+    "POST /apiClientPrimaryPushURI4"
+  ],
+  "schemaNames": [],
+  "fieldPaths": [],
+  "samplePaths": [
+    "/Client-Notification-URL",
+    "/apiClientPrimaryPushURI1",
+    "/apiClientPrimaryPushURI2",
+    "/apiClientPrimaryPushURI3",
+    "/apiClientPrimaryPushURI4"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-resource-status-notification"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

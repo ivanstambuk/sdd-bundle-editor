@@ -1,0 +1,15 @@
+{
+  "id": "SECM-optional-usage-of-oauth2-for-psu-authentication-or-authorisation",
+  "title": "Optional Usage of OAuth2 for PSU Authentication or Authorisation",
+  "slug": "optional-usage-of-oauth2-for-psu-authentication-or-authorisation",
+  "kind": "other",
+  "statement": "8.1 Optional Usage of OAuth2 for PSU Authentication or Authorisation The XS2A API respectively the openFinance APIs will allow an ASPSP to implement OAuth2 as a support for the authorisation of the PSU towards the API Client for several services. In this case, the API Client will be the client, the PSU the resource owner and the ASPSP will be the resource server in the abstract OAuth2 model. This specification supports two ways of integrating OAuth2. The first support is an authentication of a PSU in a pre-step, translating this authentication into an access token to be used at the XS2A interface or openFinance API afterwards.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-optional-usage-of-oauth2-for-psu-authentication-or-authorisation"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-1-optional-usage-of-oauth2-for-psu-authentication-or-authorisation-optional-usage-of-oauth2-for-psu-authentication-or-authorisation",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

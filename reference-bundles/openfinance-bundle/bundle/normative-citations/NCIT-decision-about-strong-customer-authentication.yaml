@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-decision-about-strong-customer-authentication",
+  "title": "Decision about strong customer authentication Citation",
+  "slug": "decision-about-strong-customer-authentication-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-5fad211e96-5-7-decision-about-strong-customer-authentication-decision-about-strong-customer-authentication",
+  "bootstrapSectionIds": [
+    "SEC-5fad211e96-5-7-decision-about-strong-customer-authentication"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-push-account-information-services-v2-2-20251211-pdf-implementation-guidelines-e787073a55"
+  ],
+  "publicationTitles": [
+    "Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "sectionTitles": [
+    "Decision about strong customer authentication"
+  ],
+  "pageSpans": [
+    "28-29"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "excerpt": "5.7 Decision about strong customer authentication The ASPSP has to decide \u2022 if SCA has to be executed as part of a subscription transaction at the openFinance API for this extended service, \u2022 which method and personalised credentials have to be used for SCA, where the PSU will be involved in a selection process if several SCA procedures are available, and \u2022 which approach has to be used for executing SCA, taking into account the redirection preference of the API Client. The API Client has to follow the decision of the ASPSP. Push Account Information Service - Operational Rules Operational rules This rule explicitly applies to the decision of the ASPSP whether and for which content an Update",
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

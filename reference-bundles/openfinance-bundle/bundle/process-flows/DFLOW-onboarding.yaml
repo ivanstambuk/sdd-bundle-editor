@@ -1,0 +1,22 @@
+{
+  "id": "DFLOW-onboarding",
+  "title": "Onboarding",
+  "slug": "onboarding",
+  "kind": "onboarding-flow",
+  "conceptFamilyId": "CCFAM-onboarding",
+  "statement": "Represents the onboarding and administrative interaction sequence used to establish or manage participation. OpenAPI evidence: 5 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-onboarding"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services"
+  ],
+  "technicalCitationIds": [
+    "TCIT-onboarding-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-onboarding-flow",
+  "operationCount": 5
+}

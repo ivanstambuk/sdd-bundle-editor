@@ -1,0 +1,55 @@
+{
+  "id": "ACBIND-cancellation-capability-api-contract-binding",
+  "title": "Cancellation Capability API Contract Binding",
+  "slug": "cancellation-capability-api-contract-binding",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "cancellation",
+  "conceptFamilyIds": [
+    "CCFAM-cancellation"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-cancellation"
+  ],
+  "technicalCitationIds": [
+    "TCIT-cancellation-capability"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "httpMethods": [
+    "DELETE"
+  ],
+  "paths": [
+    "/v2/documents/{documentResourceId}",
+    "/v2/mandates/{resourceId}",
+    "/v2/onboardings/{onboardingId}",
+    "/v2/requests-for-payments/{payment-product}/{paymentId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "/v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/documents/{documentResourceId}",
+    "DELETE /v2/mandates/{resourceId}",
+    "DELETE /v2/onboardings/{onboardingId}",
+    "DELETE /v2/requests-for-payments/{payment-product}/{paymentId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "DELETE /v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}"
+  ],
+  "apiSpecTitles": [
+    "Request to Pay Services API for V2.x",
+    "openFinance API Framework Implementation Guidelines Administrative Services",
+    "openFinance API Framework Implementation Guidelines Document Services",
+    "openFinance API Framework Implementation Guidelines Mandate Services",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-cancellation-capability",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

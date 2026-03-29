@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-embedded-sca-approach-with-selection-of-an-sca-method",
+  "title": "Embedded SCA Approach with Selection of an SCA method Citation",
+  "slug": "embedded-sca-approach-with-selection-of-an-sca-method-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-3-1-10-embedded-sca-approach-with-selection-of-an-sca-method-embedded-sca-approach-with-selection-of-an-sca-method",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-1-10-embedded-sca-approach-with-selection-of-an-sca-method"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Embedded SCA Approach with Selection of an SCA method"
+  ],
+  "pageSpans": [
+    "30-31"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "3.1.10 Embedded SCA Approach with Selection of an SCA method In the following flow, there is a selection of an SCA method added in case of the ASPSP supporting several SCA methods for the corresponding PSU. The ASPSP transmits first the openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service available methods to the PISP. The PISP might filter them, if not all authentication methods can be technically supported. The available methods then are presented to the PSU for choice.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

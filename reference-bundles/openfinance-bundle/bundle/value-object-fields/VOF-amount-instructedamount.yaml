@@ -1,0 +1,44 @@
+{
+  "id": "VOF-amount-instructedamount",
+  "title": "Instructed Amount",
+  "slug": "amount-instructedamount",
+  "fieldName": "instructedAmount",
+  "valueObjectId": "VO-amount",
+  "summary": "Reusable `instructedAmount` field within the `Amount` value object family.",
+  "conceptFamilyIds": [
+    "CCFAM-account-information",
+    "CCFAM-payment-initiation",
+    "CCFAM-request-to-pay"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "technicalCitationIds": [
+    "TCIT-account-access-capability",
+    "TCIT-account-resource",
+    "TCIT-payment-flow",
+    "TCIT-payment-initiation-capability",
+    "TCIT-payment-initiation-resource",
+    "TCIT-request-to-pay-capability",
+    "TCIT-request-to-pay-flow",
+    "TCIT-request-to-pay-resource"
+  ],
+  "schemaContractIds": [
+    "SCON-account-access-capability-schema-contract",
+    "SCON-account-resource-schema-contract",
+    "SCON-payment-flow-schema-contract",
+    "SCON-payment-initiation-capability-schema-contract",
+    "SCON-payment-initiation-resource-schema-contract",
+    "SCON-request-to-pay-capability-schema-contract",
+    "SCON-request-to-pay-flow-schema-contract",
+    "SCON-request-to-pay-resource-schema-contract"
+  ],
+  "fieldPaths": [
+    "instructedAmount"
+  ],
+  "derivationBasis": "value-object-field-pattern",
+  "notes": "Derived from recurring top-level field heads inside a reusable value-object family."
+}

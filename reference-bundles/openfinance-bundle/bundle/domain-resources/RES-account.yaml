@@ -1,0 +1,45 @@
+{
+  "id": "RES-account",
+  "title": "Account",
+  "slug": "account",
+  "resourceName": "Account",
+  "kind": "account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "account",
+    "accounts",
+    "current account",
+    "payment account"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-account-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-account",
+  "notes": "Financial account resource used for account information access and payment-related interactions."
+}

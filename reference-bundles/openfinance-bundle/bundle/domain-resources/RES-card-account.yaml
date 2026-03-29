@@ -1,0 +1,36 @@
+{
+  "id": "RES-card-account",
+  "title": "Card Account",
+  "slug": "card-account",
+  "resourceName": "Card Account",
+  "kind": "card-account",
+  "parentResourceId": "RES-account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "card account",
+    "card accounts",
+    "card reconciliation account"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework"
+  ],
+  "normativeCitationIds": [
+    "NCIT-card-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-card-account-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-card-account",
+  "notes": "Account resource behind card reconciliation and card account information access."
+}

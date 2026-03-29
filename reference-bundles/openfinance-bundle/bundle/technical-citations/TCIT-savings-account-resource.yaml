@@ -1,0 +1,47 @@
+{
+  "id": "TCIT-savings-account-resource",
+  "title": "Savings Account Resource OpenAPI Evidence",
+  "slug": "savings-account-resource-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-savings-account-resource",
+  "technicalTheme": "savings-account",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-extended-account-information-services-bg-ofa-xais-recent-openapi-yaml-10c486d2cd"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-extended-account-information-services-get-716c95c63f",
+    "OP-extended-account-information-services-get-7a24ed3226",
+    "OP-extended-account-information-services-get-f90a0655ed",
+    "OP-extended-account-information-services-get-fc5b8a2775"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-extended-account-information-services-898f737a89"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-extended-account-information-services-6102ea2579"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services"
+  ],
+  "operationSignatures": [
+    "GET /v2/savings",
+    "GET /v2/savings/{account-id}",
+    "GET /v2/savings/{account-id}/balances",
+    "GET /v2/savings/{account-id}/transactions"
+  ],
+  "schemaNames": [
+    "_links_200_AISSAVINGSACCOUNTTXLIST"
+  ],
+  "fieldPaths": [
+    "download"
+  ],
+  "samplePaths": [
+    "/v2/savings",
+    "/v2/savings/{account-id}",
+    "/v2/savings/{account-id}/balances",
+    "/v2/savings/{account-id}/transactions"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

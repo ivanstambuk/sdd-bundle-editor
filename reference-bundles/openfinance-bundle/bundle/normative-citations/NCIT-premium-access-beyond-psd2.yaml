@@ -1,0 +1,47 @@
+{
+  "id": "NCIT-premium-access-beyond-psd2",
+  "title": "Premium Access Beyond PSD2 Citation",
+  "slug": "premium-access-beyond-psd2-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-4489702c8e9fff4e",
+  "bootstrapSectionIds": [
+    "SEC-2d10ee39f1-4-1-client-related-scenario",
+    "SEC-54c5ea50d9-4-1-client-related-scenario",
+    "SEC-e22ae5e40f-4-1-client-related-scenario",
+    "SEC-e67c097507-4-1-client-related-scenario"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-document-services-v1-0-20241216-pdf-implementation-guidelines-bc23424051",
+    "PUB-openfinance-document-services-v1-0-20241216-pdf-operational-rules-bc23424051",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "Document Services V1.0 20241216.pdf",
+    "Document Services V1.0 20241216.pdf",
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Client related scenario",
+    "Client related scenario",
+    "Client related scenario",
+    "Client related scenario"
+  ],
+  "pageSpans": [
+    "17",
+    "26",
+    "26",
+    "17"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Document Services V1.0 20241216.pdf",
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "In general, services offered by an ASPSP at his openFinance API may be accessed/used not only by API Clients registered by an NCA in the role of a TPP according to the PSD2 regulation.",
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

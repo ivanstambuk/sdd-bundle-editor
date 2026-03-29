@@ -1,0 +1,57 @@
+{
+  "id": "NCIT-verification-of-party-request",
+  "title": "Verification of Party Request Citation",
+  "slug": "verification-of-party-request-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-verification-of-party-request",
+  "bootstrapSectionIds": [
+    "SEC-37a95f45e3-2-2-2-service-types",
+    "SEC-37a95f45e3-2-2-3-consent-model-for-dedicated-vop-api",
+    "SEC-37a95f45e3-3-3-api-access-methods",
+    "SEC-37a95f45e3-3-4-1-verification-of-party-request",
+    "SEC-37a95f45e3-3-4-2-bulk-verification-of-party-request",
+    "SEC-37a95f45e3-3-4-3-retrieve-bulk-verification-of-party-request",
+    "SEC-37a95f45e3-3-4-4-get-status-of-bulk-verification-of-party-request",
+    "SEC-37a95f45e3-3-this-vop-check-could-be-processed-by-the-aspsp-e-g-to-fulfill-the-instant-payment-regulation-article",
+    "SEC-37a95f45e3-4-1-new-codes-for-transaction-status",
+    "SEC-37a95f45e3-4-2-changes-in-payment-initiation-request-and-response-messages"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-verification-of-party-services-v1-1-20250603-pdf-implementation-guidelines-9c0116dae1"
+  ],
+  "publicationTitles": [
+    "Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "sectionTitles": [
+    "Service Types",
+    "Consent model for dedicated VOP API",
+    "API Access Methods",
+    "Verification of Party Request",
+    "Bulk Verification of Party Request",
+    "Retrieve Bulk Verification of Party Request",
+    "Get Status of Bulk Verification of Party Request",
+    "This VOP check could be processed by the ASPSP e.g. to fulfill the Instant Payment Regulation, Article",
+    "New codes for transaction status",
+    "Changes in Payment Initiation Request and Response Messages"
+  ],
+  "pageSpans": [
+    "17-18",
+    "18-19",
+    "19-21",
+    "21-26",
+    "26-29",
+    "29-32",
+    "32-35",
+    "36-44",
+    "35",
+    "35-36"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "excerpt": "2.2.2 Service Types The following service types are supported for dedicated VOP services: Service Service Technical Functionalities PSU directly Type involved Single VOP request VOP-SNG Initiation of a related synchronous VOP No API request in the inter-bank sphere VOP bulk request VOP-BLK Initiation of related VOP API requests in No the inter-bank sphere. 03 June 2025 Berlin Group Business Processes and Operational Rules openFinance VOP Service Service Service Technical Functionalities PSU directly Type involved Retrieval of related VOP API responses if No not provided synchronously",
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

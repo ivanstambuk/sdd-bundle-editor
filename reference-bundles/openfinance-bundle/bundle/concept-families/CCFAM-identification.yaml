@@ -1,0 +1,31 @@
+{
+  "id": "CCFAM-identification",
+  "title": "Client Identification Concept Family",
+  "slug": "client-identification-concept-family",
+  "theme": "identification",
+  "summary": "Aggregate derivation family for theme `identification` with 1 rule candidates, 1 capability candidates, and 1 flow candidates.",
+  "businessRuleIds": [
+    "BR-tpp-ip-address-fallback-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-fallback-client-identification"
+  ],
+  "processFlowIds": [
+    "DFLOW-fallback-client-identification"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-identification",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

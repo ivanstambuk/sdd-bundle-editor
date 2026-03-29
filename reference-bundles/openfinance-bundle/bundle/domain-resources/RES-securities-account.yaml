@@ -1,0 +1,32 @@
+{
+  "id": "RES-securities-account",
+  "title": "Securities Account",
+  "slug": "securities-account",
+  "resourceName": "Securities Account",
+  "kind": "securities-account",
+  "parentResourceId": "RES-account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "securities account",
+    "securities accounts"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework"
+  ],
+  "normativeCitationIds": [
+    "NCIT-securities-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-securities-account-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-securities-account",
+  "notes": "Dedicated securities-account subtype used for securities positions, orders, and transaction access."
+}

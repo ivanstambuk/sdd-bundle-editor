@@ -1,0 +1,37 @@
+{
+  "id": "BR-rtp-cancellation-prohibition",
+  "title": "RTP Cancellation Prohibition",
+  "slug": "rtp-cancellation-prohibition",
+  "theme": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "An RTP shall not be cancelled if a corresponding payment has already been initiated.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-487295e3c4951c67`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-rtp-cancellation-prohibition"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-487295e3c4951c67",
+  "sourceBootstrapClusterId": "NSTMT-487295e3c4951c67",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

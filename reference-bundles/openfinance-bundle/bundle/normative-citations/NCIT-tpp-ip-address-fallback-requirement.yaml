@@ -1,0 +1,60 @@
+{
+  "id": "NCIT-tpp-ip-address-fallback-requirement",
+  "title": "TPP IP Address Fallback Requirement Citation",
+  "slug": "tpp-ip-address-fallback-requirement-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-2d1f855d0a4b77a6",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-4-1-payment-initiation-with-json-encoding-of-the-payment-instruction",
+    "SEC-b28ecd8502-3-4-1-consent-request-for-account-information",
+    "SEC-b28ecd8502-3-5-1-consent-on-funds-confirmation-request",
+    "SEC-b28ecd8502-3-6-1-consent-on-user-parameters-access-request",
+    "SEC-b28ecd8502-3-7-1-establish-consent-on-document-services-request",
+    "SEC-f7326476a7-8-7-example",
+    "SEC-fd85673676-11-2-establish-signing-basket-request"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5",
+    "PUB-openfinance-discovery-api-v1-1-20250124-pdf-implementation-guidelines-2f05960313",
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "Discovery API v1.1 20250124.pdf",
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Payment Initiation with JSON encoding of the Payment Instruction",
+    "Consent Request for Account Information",
+    "Consent on Funds Confirmation Request",
+    "Consent on User Parameters Access Request",
+    "Establish Consent on Document Services Request",
+    "Example",
+    "Establish Signing Basket Request"
+  ],
+  "pageSpans": [
+    "39-49",
+    "23-35",
+    "38-46",
+    "49-57",
+    "59-66",
+    "31-40",
+    "181-185"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "../downloads/pdfs/Discovery API v1.1 20250124.pdf",
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "If not available, the TPP shall use the IP Address used by the TPP when submitting this request.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

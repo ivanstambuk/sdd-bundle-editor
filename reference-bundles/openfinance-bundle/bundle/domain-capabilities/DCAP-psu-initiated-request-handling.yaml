@@ -1,0 +1,44 @@
+{
+  "id": "DCAP-psu-initiated-request-handling",
+  "title": "PSU-Initiated Request Handling",
+  "slug": "psu-initiated-request-handling",
+  "theme": "request-origin",
+  "conceptFamilyId": "CCFAM-request-origin",
+  "statement": "It shall be contained if and only if this request was actively initiated by the PSU.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-3cb7a98c7f861646` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-3cb7a98c7f861646`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-card-account",
+    "RES-consent",
+    "RES-loan-account",
+    "RES-mandate",
+    "RES-multicurrency-account",
+    "RES-onboarding",
+    "RES-savings-account",
+    "RES-securities-account"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-psu-initiated-request-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-psu-initiated-request-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-3cb7a98c7f861646",
+  "sourceBootstrapRuleCandidateId": "DRCAND-3cb7a98c7f861646",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

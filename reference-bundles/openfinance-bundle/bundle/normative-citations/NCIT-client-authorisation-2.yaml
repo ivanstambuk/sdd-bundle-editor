@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-client-authorisation-2",
+  "title": "Client Authorisation Citation",
+  "slug": "client-authorisation-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-9e4d1f906f-5-2-client-authorisation-client-authorisation",
+  "bootstrapSectionIds": [
+    "SEC-9e4d1f906f-5-2-client-authorisation"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-push-account-information-services-v2-2-20251211-pdf-operational-rules-e787073a55"
+  ],
+  "publicationTitles": [
+    "Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "sectionTitles": [
+    "Client Authorisation"
+  ],
+  "pageSpans": [
+    "27"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "excerpt": "5.2 Client Authorisation ASPSPs might refuse access to the openFinance API even if the related eIDAS certificate is valid, if not all related contract conditions are fulfilled. This might be controlled e.g. via a scheme directory.",
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

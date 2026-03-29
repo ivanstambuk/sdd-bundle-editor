@@ -1,0 +1,34 @@
+{
+  "id": "RES-funds-confirmation-consent",
+  "title": "Funds Confirmation Consent",
+  "slug": "funds-confirmation-consent",
+  "resourceName": "Funds Confirmation Consent",
+  "kind": "consent-subtype",
+  "parentResourceId": "RES-consent",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "aliases": [
+    "consent on funds confirmation",
+    "funds confirmation consent object",
+    "funds-confirmations consent"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-funds-confirmation-consent"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability",
+    "TCIT-consent-flow",
+    "TCIT-consent-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-funds-confirmation-consent",
+  "notes": "Consent subtype used for confirmation-of-funds registration and access."
+}

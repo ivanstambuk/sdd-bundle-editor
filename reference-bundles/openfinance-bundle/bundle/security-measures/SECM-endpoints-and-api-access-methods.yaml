@@ -1,0 +1,15 @@
+{
+  "id": "SECM-endpoints-and-api-access-methods",
+  "title": "Endpoints and API Access Methods",
+  "slug": "endpoints-and-api-access-methods",
+  "kind": "other",
+  "statement": "2.4 Endpoints and API Access Methods The following table gives an overview on the HTTP access methods supported by the API endpoints for the Administrative Services. The conditions are relative and are provided for the case that the related parent endpoint exists. Administrative Services Implementation Guidelines Endpoints/Resources Method Condition Description onboardings POST Mandatory Create an onboarding resource addressable under {onboardingId}. Note: All POST request messages sent to this endpoint shall be sealed by the API Client using his QSealC.",
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-endpoints-and-api-access-methods"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-65c38e235e-2-4-endpoints-and-api-access-methods-endpoints-and-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

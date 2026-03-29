@@ -1,0 +1,46 @@
+{
+  "id": "SCON-subscription-control-capability-schema-contract",
+  "title": "Subscription Control Capability Schema Contract",
+  "slug": "subscription-control-capability-schema-contract",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "subscription-management",
+  "conceptFamilyIds": [
+    "CCFAM-subscription-management"
+  ],
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-subscription-control"
+  ],
+  "technicalCitationIds": [
+    "TCIT-subscription-control-capability"
+  ],
+  "schemaNames": [
+    "subscriptionEntry",
+    "subscriptionIdentificationAndLink"
+  ],
+  "fieldPaths": [
+    "_links",
+    "accountId",
+    "apiClientPrimaryPushURI",
+    "apiClientSecondaryPushURI",
+    "callbackWithLinkPreferred",
+    "callbackWithStaticTextPreferred",
+    "pushAccountEntryParameters",
+    "pushAccountStatementParameters",
+    "pushBalanceParameters",
+    "pushRtpParameters",
+    "staticCallbackText",
+    "subscriptionEntryId",
+    "subscriptionEntryName",
+    "subscriptionId",
+    "subscriptionStatus",
+    "validUntil"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-capability",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

@@ -1,0 +1,40 @@
+{
+  "id": "RES-request-to-pay",
+  "title": "Request To Pay",
+  "slug": "request-to-pay",
+  "resourceName": "Request To Pay",
+  "kind": "request-to-pay",
+  "conceptFamilyId": "CCFAM-request-to-pay",
+  "aliases": [
+    "request to pay",
+    "rtp request"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-request-to-pay"
+  ],
+  "technicalCitationIds": [
+    "TCIT-request-to-pay-capability",
+    "TCIT-request-to-pay-flow",
+    "TCIT-request-to-pay-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-request-to-pay",
+  "notes": "Request-to-pay business resource established, retrieved, cancelled, and checked for status via the RTP service family."
+}

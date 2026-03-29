@@ -1,0 +1,43 @@
+{
+  "id": "DCAP-status-notification-callback-handling",
+  "title": "Status Notification Callback Handling",
+  "slug": "status-notification-callback-handling",
+  "theme": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "The ASPSP shall send status information to this URI if the Status Notification Service is supported by the ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-d08498b2b43ce110` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-d08498b2b43ce110`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-status-notification-callback-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-status-notification-callback-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-d08498b2b43ce110",
+  "sourceBootstrapRuleCandidateId": "DRCAND-d08498b2b43ce110",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-status-notification",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement defines the callback variant inside the broader notification-delivery surface."
+}

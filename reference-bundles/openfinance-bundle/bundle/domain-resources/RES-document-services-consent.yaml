@@ -1,0 +1,32 @@
+{
+  "id": "RES-document-services-consent",
+  "title": "Document Services Consent",
+  "slug": "document-services-consent",
+  "resourceName": "Document Services Consent",
+  "kind": "consent-subtype",
+  "parentResourceId": "RES-consent",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "aliases": [
+    "document serviceconsent object",
+    "document services resource"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-document-services-consent"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability",
+    "TCIT-consent-flow",
+    "TCIT-consent-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-document-services-consent",
+  "notes": "Consent subtype used for document-related premium services and generic access scenarios."
+}

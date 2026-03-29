@@ -1,0 +1,33 @@
+{
+  "id": "PART-tpp",
+  "title": "Third Party Payment Service Provider",
+  "slug": "third-party-payment-service-provider",
+  "participantName": "Third Party Payment Service Provider",
+  "abbreviation": "TPP",
+  "kind": "regulated-third-party",
+  "parentParticipantId": "PART-api-client",
+  "aliases": [
+    "TPP",
+    "TPPs",
+    "Third Party Payment Service Providers"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-third-party-payment-service-provider"
+  ],
+  "sourceBootstrapParticipantId": "PART-tpp",
+  "notes": "Regulated PSD2 third-party provider role. Within openFinance this remains a concrete subtype of the broader API Client role."
+}

@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-header-parameters-for-strong-customer-authentication",
+  "title": "Header Parameters for strong customer authentication Citation",
+  "slug": "header-parameters-for-strong-customer-authentication-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-fd85673676-8-4-header-parameters-for-strong-customer-authentication-header-parameters-for-strong-customer-authentication",
+  "bootstrapSectionIds": [
+    "SEC-fd85673676-8-4-header-parameters-for-strong-customer-authentication"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Header Parameters for strong customer authentication"
+  ],
+  "pageSpans": [
+    "93-95"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "8.4 Header Parameters for strong customer authentication Header parameters as defined in this section will not be repeated in the implementation guidelines of service specifications to enhance document readability, but the implementation guidelines will refer to this document in the relevant sections. However, the detailed specifications of service calls via the related Open API files will still contain all applicable headers. 8.4.1 Request Header Parameters Steering SCA Approaches The following request headers might be used by an API Client in a Transaction Initiation Request to communicate SCA preferences to the ASPSP for transaction authorisation. Attribute Type Condition Description Clie",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

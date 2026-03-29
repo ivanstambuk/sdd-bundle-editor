@@ -1,0 +1,24 @@
+{
+  "id": "BR-recurring-payment-execution-date-requirement",
+  "title": "Recurring Payment Execution-Date Requirement",
+  "slug": "recurring-payment-execution-date-requirement",
+  "theme": "payment-initiation",
+  "conceptFamilyId": "CCFAM-payment-initiation",
+  "statement": "The TPP shall use within the single recurring payment initiations the related regular execution date.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-068b17995dc33c2a`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-recurring-payment-execution-date-requirement"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-068b17995dc33c2a",
+  "sourceBootstrapClusterId": "NSTMT-068b17995dc33c2a",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

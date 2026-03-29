@@ -1,0 +1,32 @@
+{
+  "id": "STTR-notification-delivery-transition",
+  "title": "Notification Delivery Transition",
+  "slug": "notification-delivery-transition",
+  "kind": "notification-delivery",
+  "summary": "Tracks delivery progression between callback and fallback notification handling paths for status updates.",
+  "conceptFamilyIds": [
+    "CCFAM-notification"
+  ],
+  "valueObjectIds": [
+    "VO-status"
+  ],
+  "domainResourceIds": [
+    "RES-resource-status-notification"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-status-notification",
+    "DCAP-status-notification-callback-handling",
+    "DCAP-status-notification-fallback-handling"
+  ],
+  "processFlowIds": [
+    "DFLOW-status-notification",
+    "DFLOW-status-notification-callback",
+    "DFLOW-status-notification-fallback"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-status-notification-callback-requirement",
+    "BR-notification-fallback-usage"
+  ],
+  "derivationBasis": "status-value-object-pattern",
+  "notes": "Derived above the `Status` value object so domain behavior around status progression remains explicit without hardcoding transport-specific status-code schemas."
+}

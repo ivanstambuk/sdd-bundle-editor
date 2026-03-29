@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BusinessRule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "theme",
+    "statement"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^BR-[a-z0-9-]+$",
+      "x-sdd-entityType": "BusinessRule",
+      "x-sdd-idTemplate": "BR-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "theme": {
+      "type": "string"
+    },
+    "conceptFamilyId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "ConceptFamily"
+      ]
+    },
+    "statement": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "reviewPriority": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "participantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Participant"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainResource"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "normativeCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "NormativeCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceBootstrapRuleCandidateId": {
+      "type": "string"
+    },
+    "sourceBootstrapClusterId": {
+      "type": "string"
+    },
+    "occurrenceCount": {
+      "type": "integer"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

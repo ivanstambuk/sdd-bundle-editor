@@ -1,0 +1,47 @@
+{
+  "id": "NCIT-payment-status-polling-requirement",
+  "title": "Payment Status Polling Requirement Citation",
+  "slug": "payment-status-polling-requirement-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-6f6995dbd3cca114",
+  "bootstrapSectionIds": [
+    "SEC-b23f61406a-7-3-mandate-api-related-data-model",
+    "SEC-bacf2c1e24-6-17-signing-baskets",
+    "SEC-d9d1753974-6-17-signing-baskets",
+    "SEC-eec8827622-7-3-mandate-api-related-data-model"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-implementation-guidelines-b073dfbc8d",
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-operational-rules-b073dfbc8d",
+    "PUB-openfinance-mandate-services-v2-0-20250731-pdf-implementation-guidelines-8d021940b9",
+    "PUB-openfinance-mandate-services-v2-0-20250731-pdf-operational-rules-8d021940b9"
+  ],
+  "publicationTitles": [
+    "Extended Payment Initiation Services V2.1 20240731.pdf",
+    "Extended Payment Initiation Services V2.1 20240731.pdf",
+    "Mandate Services V2.0 20250731.pdf",
+    "Mandate Services V2.0 20250731.pdf"
+  ],
+  "sectionTitles": [
+    "Mandate API related data model",
+    "Signing baskets",
+    "Signing baskets",
+    "Mandate API related data model"
+  ],
+  "pageSpans": [
+    "26-27",
+    "31-41",
+    "31-41",
+    "26-27"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Extended Payment Initiation Services V2.1 20240731.pdf",
+    "../downloads/pdfs/Mandate Services V2.0 20250731.pdf"
+  ],
+  "excerpt": "For the Decoupled, Redirect SCA Approach or OAuth2 SCA approach, there must be at least another message pair Payment Status Request and Payment Status Response to retrieve the information whether the SCA method was successful.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

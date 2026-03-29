@@ -1,0 +1,47 @@
+{
+  "id": "SCON-consent-control-capability-schema-contract",
+  "title": "Consent Control Capability Schema Contract",
+  "slug": "consent-control-capability-schema-contract",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "consent-management",
+  "conceptFamilyIds": [
+    "CCFAM-consent-management"
+  ],
+  "domainResourceIds": [
+    "RES-consent",
+    "RES-account-access-consent",
+    "RES-funds-confirmation-consent",
+    "RES-user-parameters-consent",
+    "RES-document-services-consent"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-consent-control"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability"
+  ],
+  "schemaNames": [
+    "_links_201_CONSENT_ACCOUNT",
+    "_links_201_CONSENT_OTHER"
+  ],
+  "fieldPaths": [
+    "confirmation",
+    "encryptionCertificates",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "status"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-consent-capability",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

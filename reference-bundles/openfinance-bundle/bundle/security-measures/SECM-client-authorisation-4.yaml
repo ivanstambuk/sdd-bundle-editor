@@ -1,0 +1,15 @@
+{
+  "id": "SECM-client-authorisation-4",
+  "title": "Client Authorisation",
+  "slug": "client-authorisation",
+  "kind": "other",
+  "statement": "6.2 Client Authorisation ASPSPs might refuse access to the openFinance API even if the related eIDAS certificate is valid, if not all related contract conditions are fulfilled. This might be controlled e.g. via a scheme directory.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-client-authorisation-4"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-bacf2c1e24-6-2-client-authorisation-client-authorisation",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

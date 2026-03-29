@@ -1,0 +1,15 @@
+{
+  "id": "SECM-authorisation-data-model-3",
+  "title": "Authorisation Data Model",
+  "slug": "authorisation-data-model",
+  "kind": "other",
+  "statement": "7.2 Authorisation Data Model For transactions specific to this extended service which mandate authorisation, a uniform authorisation data model is used. To enable such a uniform authorisation, to each transaction to be authorised an authorisation sub-resource is associated. In cases where several authorisations are needed, this sub-resource is repeated. The related data model and specific authorisation related messaging is not described here.",
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-authorisation-data-model-3"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b23f61406a-7-2-authorisation-data-model-authorisation-data-model",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

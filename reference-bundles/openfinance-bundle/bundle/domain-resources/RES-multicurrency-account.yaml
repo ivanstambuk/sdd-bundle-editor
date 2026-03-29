@@ -1,0 +1,32 @@
+{
+  "id": "RES-multicurrency-account",
+  "title": "Multicurrency Account",
+  "slug": "multicurrency-account",
+  "resourceName": "Multicurrency Account",
+  "kind": "multicurrency-account",
+  "parentResourceId": "RES-account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "multi-currency account",
+    "multicurrency account",
+    "multicurrency accounts"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-multicurrency-account"
+  ],
+  "sourceBootstrapResourceId": "RES-multicurrency-account",
+  "notes": "Account aggregation resource consisting of sub-accounts in different currencies."
+}

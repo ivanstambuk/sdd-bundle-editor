@@ -1,0 +1,35 @@
+{
+  "id": "NCIT-status-notification-callback-requirement",
+  "title": "Status Notification Callback Requirement Citation",
+  "slug": "status-notification-callback-requirement-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-d08498b2b43ce110",
+  "bootstrapSectionIds": [
+    "SEC-54c5ea50d9-7-1-confirmation-of-the-consent-of-the-psu-towards-the-api-client",
+    "SEC-e22ae5e40f-7-1-confirmation-of-the-consent-of-the-psu-towards-the-api-client"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Confirmation of the consent of the PSU (towards the API Client)",
+    "Confirmation of the consent of the PSU (towards the API Client)"
+  ],
+  "pageSpans": [
+    "36-50",
+    "36-50"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "The ASPSP shall send status information to this URI if the Status Notification Service is supported by the ASPSP.",
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

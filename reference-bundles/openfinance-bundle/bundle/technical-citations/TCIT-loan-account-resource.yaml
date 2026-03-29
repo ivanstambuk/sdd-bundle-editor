@@ -1,0 +1,47 @@
+{
+  "id": "TCIT-loan-account-resource",
+  "title": "Loan Account Resource OpenAPI Evidence",
+  "slug": "loan-account-resource-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-loan-account-resource",
+  "technicalTheme": "loan-account",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-extended-account-information-services-bg-ofa-xais-recent-openapi-yaml-10c486d2cd"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-extended-account-information-services-get-5685b3ecc1",
+    "OP-extended-account-information-services-get-c612a89cb9",
+    "OP-extended-account-information-services-get-e8e2d89ec0",
+    "OP-extended-account-information-services-get-eedddd9ef1"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-extended-account-information-services-e8dd0d0709"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-extended-account-information-services-91b47b348c"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services"
+  ],
+  "operationSignatures": [
+    "GET /v2/loans",
+    "GET /v2/loans/{account-id}",
+    "GET /v2/loans/{account-id}/balances",
+    "GET /v2/loans/{account-id}/transactions"
+  ],
+  "schemaNames": [
+    "_links_200_AISLOANACCOUNTTXLIST"
+  ],
+  "fieldPaths": [
+    "download"
+  ],
+  "samplePaths": [
+    "/v2/loans",
+    "/v2/loans/{account-id}",
+    "/v2/loans/{account-id}/balances",
+    "/v2/loans/{account-id}/transactions"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

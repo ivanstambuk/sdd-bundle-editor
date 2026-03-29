@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TechnicalCitation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "bootstrapEntityId",
+    "technicalTheme"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^TCIT-[a-z0-9-]+$",
+      "x-sdd-entityType": "TechnicalCitation",
+      "x-sdd-idTemplate": "TCIT-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "bootstrapEntityId": {
+      "type": "string"
+    },
+    "technicalTheme": {
+      "type": "string"
+    },
+    "bootstrapApiSpecIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "bootstrapApiOperationIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "bootstrapApiSchemaObjectIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "bootstrapApiFieldIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "apiSpecTitles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "operationSignatures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "schemaNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "fieldPaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "samplePaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

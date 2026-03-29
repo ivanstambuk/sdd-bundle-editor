@@ -1,0 +1,62 @@
+{
+  "id": "ACBIND-authorisation-control-capability-api-contract-binding",
+  "title": "Authorisation Control Capability API Contract Binding",
+  "slug": "authorisation-control-capability-api-contract-binding",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "authorisation-management",
+  "conceptFamilyIds": [
+    "CCFAM-authorisation"
+  ],
+  "domainResourceIds": [
+    "RES-authorisation-sub-resource"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-authorisation-control"
+  ],
+  "technicalCitationIds": [
+    "TCIT-authorisation-control-capability"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "httpMethods": [
+    "GET",
+    "POST",
+    "PUT"
+  ],
+  "paths": [
+    "/v2/{extended-payment-service7}/{payment-product}/{paymentId}/cancellation-authorisations",
+    "/v2/{resource-path}/{resourceId}/{authorisation-category}",
+    "/v2/{resource-path}/{resourceId}/{authorisation-category}/{authorisationId}"
+  ],
+  "operationSignatures": [
+    "GET /v2/{extended-payment-service7}/{payment-product}/{paymentId}/cancellation-authorisations",
+    "GET /v2/{resource-path}/{resourceId}/{authorisation-category}",
+    "GET /v2/{resource-path}/{resourceId}/{authorisation-category}/{authorisationId}",
+    "POST /v2/{resource-path}/{resourceId}/{authorisation-category}",
+    "PUT /v2/{resource-path}/{resourceId}/{authorisation-category}/{authorisationId}"
+  ],
+  "apiSpecTitles": [
+    "Consent API for V2.x",
+    "openFinance API Framework Data Dictionary",
+    "openFinance API Framework Extended Account Information Services",
+    "openFinance API Framework Extended Services Verification of Party (VOP)",
+    "openFinance API Framework Implementation Guidelines Mandate Services",
+    "openFinance API Framework Implementation Guidelines Protocol Functions and Security Measures for V2.x- Signing Basket API",
+    "openFinance API Framework Implementation Guidelines for Discovery Services",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Account Information Service",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Payment Initiation Service"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-authorisation-capability",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

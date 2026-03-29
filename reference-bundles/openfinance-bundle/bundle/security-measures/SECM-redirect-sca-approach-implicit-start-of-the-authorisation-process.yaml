@@ -1,0 +1,15 @@
+{
+  "id": "SECM-redirect-sca-approach-implicit-start-of-the-authorisation-process",
+  "title": "Redirect SCA Approach: Implicit Start of the Authorisation Process",
+  "slug": "redirect-sca-approach-implicit-start-of-the-authorisation-process",
+  "kind": "other",
+  "statement": "3.1.3 Redirect SCA Approach: Implicit Start of the Authorisation Process ASPSPs might start the authorisation process implicitly in case of no additional data is needed from the TPP. This optimisation process results in the following flow (which is exactly the Redirect SCA Approach flow from the version 1.0 and 1.1 of the Implementation Guideline before authorisation sub-resources have been established). In this case, the redirection of the PSU browser session happens directly after the Payment Initiation Response. In addition an openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service SCA status request can be sent by the TPP to follow the SCA process (not shown in t",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-redirect-sca-approach-implicit-start-of-the-authorisation-process"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-3-redirect-sca-approach-implicit-start-of-the-authorisation-process-redirect-sca-approach-implicit-start-of-the-authorisation-process",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

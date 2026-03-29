@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SchemaContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "technicalTheme",
+    "targetDomainEntityType"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SCON-[a-z0-9-]+$",
+      "x-sdd-entityType": "SchemaContract",
+      "x-sdd-idTemplate": "SCON-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "targetDomainEntityType": {
+      "type": "string"
+    },
+    "technicalTheme": {
+      "type": "string"
+    },
+    "conceptFamilyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConceptFamily"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainResource"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainCapabilityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainCapability"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "processFlowIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ProcessFlow"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "technicalCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TechnicalCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "schemaNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "fieldPaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceBootstrapTechnicalCandidateId": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

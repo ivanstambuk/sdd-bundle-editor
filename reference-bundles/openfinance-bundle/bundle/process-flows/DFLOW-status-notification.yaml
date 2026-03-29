@@ -1,0 +1,23 @@
+{
+  "id": "DFLOW-status-notification",
+  "title": "Status Notification",
+  "slug": "status-notification",
+  "kind": "notification-flow",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "Represents the callback or fallback delivery sequence for status notifications. OpenAPI evidence: 5 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-resource-status-notification"
+  ],
+  "technicalCitationIds": [
+    "TCIT-status-notification-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-notification-flow",
+  "operationCount": 5
+}

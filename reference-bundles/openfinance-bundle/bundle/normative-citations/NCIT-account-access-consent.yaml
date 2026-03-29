@@ -1,0 +1,36 @@
+{
+  "id": "NCIT-account-access-consent",
+  "title": "Account Access Consent Citation",
+  "slug": "account-access-consent-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-account-access-consent",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-4-1-consent-request-for-account-information",
+    "SEC-b28ecd8502-3-4-2-get-consent-request",
+    "SEC-b28ecd8502-3-7-2-get-consent-request"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Consent Request for Account Information",
+    "Get Consent Request",
+    "Get Consent Request"
+  ],
+  "pageSpans": [
+    "23-35",
+    "35-38",
+    "66-76"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.4.1 Consent Request for Account Information Call POST /v2/consents/account-access Creates an account information consent resource at the ASPSP regarding access to account information to account types and accounts specified in this request. Side Effects When this Consent Request is a request where the \"recurringIndicator\" equals true, and if it exists already a former consent for recurring access on account information for the addressed PSU and potentially addressed corporate identification submitted by this API Client, then the former consent automatically expires as soon as the new consent",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

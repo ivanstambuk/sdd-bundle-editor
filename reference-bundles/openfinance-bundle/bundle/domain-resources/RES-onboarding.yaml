@@ -1,0 +1,45 @@
+{
+  "id": "RES-onboarding",
+  "title": "Onboarding",
+  "slug": "onboarding",
+  "resourceName": "Onboarding",
+  "kind": "onboarding",
+  "conceptFamilyId": "CCFAM-onboarding",
+  "aliases": [
+    "onboarding",
+    "onboarding resource"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-onboarding"
+  ],
+  "technicalCitationIds": [
+    "TCIT-onboarding-control-capability",
+    "TCIT-onboarding-flow",
+    "TCIT-onboarding-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-onboarding",
+  "notes": "Administrative onboarding resource used to establish, inspect, cancel, and manage onboarding state and certificates."
+}

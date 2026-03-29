@@ -1,0 +1,35 @@
+{
+  "id": "CCFAM-status-retrieval",
+  "title": "Status Retrieval Concept Family",
+  "slug": "status-retrieval-concept-family",
+  "theme": "status-retrieval",
+  "summary": "Technical domain grouping for cross-cutting status retrieval capabilities across openFinance service areas.",
+  "domainCapabilityIds": [
+    "DCAP-status-access"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet.",
+  "valueObjectIds": [
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-authorisation-status-transition",
+    "STTR-payment-status-transition",
+    "STTR-request-to-pay-status-transition"
+  ]
+}

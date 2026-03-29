@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-authorisation-data-model-2",
+  "title": "Authorisation Data Model Citation",
+  "slug": "authorisation-data-model-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-9e4d1f906f-6-2-authorisation-data-model-authorisation-data-model",
+  "bootstrapSectionIds": [
+    "SEC-9e4d1f906f-6-2-authorisation-data-model"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-push-account-information-services-v2-2-20251211-pdf-operational-rules-e787073a55"
+  ],
+  "publicationTitles": [
+    "Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "sectionTitles": [
+    "Authorisation Data Model"
+  ],
+  "pageSpans": [
+    "30"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Push Account Information Services V2.2 20251211.pdf"
+  ],
+  "excerpt": "6.2 Authorisation Data Model For transactions specific to this Extended Service which mandate authorisation as establish subscription, a uniform authorisation data model is used. To enable such a uniform authorisation, to each transaction to be authorised an authorisation sub-resource is associated. In cases where several authorisations are needed, this sub-resource is repeated.",
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

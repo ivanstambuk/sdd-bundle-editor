@@ -1,0 +1,43 @@
+{
+  "id": "ACBIND-request-to-pay-flow-api-contract-binding",
+  "title": "Request To Pay Flow API Contract Binding",
+  "slug": "request-to-pay-flow-api-contract-binding",
+  "targetDomainEntityType": "ProcessFlow",
+  "technicalTheme": "request-to-pay-lifecycle",
+  "conceptFamilyIds": [
+    "CCFAM-request-to-pay"
+  ],
+  "domainResourceIds": [
+    "RES-request-to-pay"
+  ],
+  "processFlowIds": [
+    "DFLOW-request-to-pay"
+  ],
+  "technicalCitationIds": [
+    "TCIT-request-to-pay-flow"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/requests-for-payments/{payment-product}",
+    "/v2/requests-for-payments/{payment-product}/{paymentId}",
+    "/v2/requests-for-payments/{payment-product}/{paymentId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/requests-for-payments/{payment-product}/{paymentId}",
+    "GET /v2/requests-for-payments/{payment-product}/{paymentId}",
+    "GET /v2/requests-for-payments/{payment-product}/{paymentId}/status",
+    "POST /v2/requests-for-payments/{payment-product}"
+  ],
+  "apiSpecTitles": [
+    "Request to Pay Services API for V2.x"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-request-to-pay-flow",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

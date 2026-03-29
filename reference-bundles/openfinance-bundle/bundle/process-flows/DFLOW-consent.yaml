@@ -1,0 +1,26 @@
+{
+  "id": "DFLOW-consent",
+  "title": "Consent",
+  "slug": "consent",
+  "kind": "consent-lifecycle",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "statement": "Represents the creation, retrieval, update, and closure sequence for consent handling. OpenAPI evidence: 10 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-consent",
+    "RES-account-access-consent",
+    "RES-funds-confirmation-consent",
+    "RES-user-parameters-consent",
+    "RES-document-services-consent"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-consent-flow",
+  "operationCount": 10
+}

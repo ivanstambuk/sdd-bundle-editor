@@ -1,0 +1,32 @@
+{
+  "id": "RES-loan-account",
+  "title": "Loan Account",
+  "slug": "loan-account",
+  "resourceName": "Loan Account",
+  "kind": "loan-account",
+  "parentResourceId": "RES-account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "loan account",
+    "loan accounts"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-loan-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-loan-account-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-loan-account",
+  "notes": "Dedicated loan-account subtype exposed by the extended account information services."
+}

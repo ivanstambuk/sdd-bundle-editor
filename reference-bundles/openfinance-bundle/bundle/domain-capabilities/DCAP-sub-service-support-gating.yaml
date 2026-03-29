@@ -1,0 +1,35 @@
+{
+  "id": "DCAP-sub-service-support-gating",
+  "title": "Sub-Service Support Gating",
+  "slug": "sub-service-support-gating",
+  "theme": "service-support",
+  "conceptFamilyId": "CCFAM-service-support",
+  "statement": "This openFinance API standard is not defining whether a service is to be supported in the openFinance API or not, but it might define a mandatory support of sub-services once a dedicated openFinance API service is offered.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-979a7c65bed2bd41` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-979a7c65bed2bd41`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-request-to-pay"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-service-support-gating"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-service-support-gating"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-979a7c65bed2bd41",
+  "sourceBootstrapRuleCandidateId": "DRCAND-979a7c65bed2bd41",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

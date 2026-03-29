@@ -8,3 +8,6 @@ bundles:
   - id: turboshake-k12-rfc9861-bundle
     path: ./reference-bundles/turboshake-k12-rfc9861-bundle
     description: "TurboSHAKE, KangarooTwelve, and HopMAC reference bundle"
+  - id: openfinance-bundle
+    path: ./reference-bundles/openfinance-bundle
+    description: "Berlin Group openFinance V2 suite bundle"

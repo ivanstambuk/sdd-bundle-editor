@@ -1,0 +1,102 @@
+{
+  "id": "TCIT-consent-control-capability",
+  "title": "Consent Control Capability OpenAPI Evidence",
+  "slug": "consent-control-capability-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-consent-capability",
+  "technicalTheme": "consent-management",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-architecture-licencerestricted-consent-api-bg-ofa-consent-recent-openapi-yaml-583c831921"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-consent-api-delete-53ad3ad96f",
+    "OP-consent-api-get-3f436a43fc",
+    "OP-consent-api-get-6ea3acdf5e",
+    "OP-consent-api-get-89a7477406",
+    "OP-consent-api-get-9916525e08",
+    "OP-consent-api-get-9f6fa34ee4",
+    "OP-consent-api-post-0704b130b7",
+    "OP-consent-api-post-8032477d29",
+    "OP-consent-api-post-82fd52df41",
+    "OP-consent-api-post-d310b0b115"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-consent-api-adf6614311",
+    "SCHEMA-consent-api-fb27790d7c"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-consent-api-03ba5af658",
+    "FIELD-consent-api-06b813e339",
+    "FIELD-consent-api-1a35e422c7",
+    "FIELD-consent-api-1a614347f8",
+    "FIELD-consent-api-1d26d90e7e",
+    "FIELD-consent-api-1faf095256",
+    "FIELD-consent-api-378c698848",
+    "FIELD-consent-api-399cf36bbd",
+    "FIELD-consent-api-3c29938be9",
+    "FIELD-consent-api-4155b9a5d1",
+    "FIELD-consent-api-4ca9a79517",
+    "FIELD-consent-api-5c6e92f642",
+    "FIELD-consent-api-5d97f61d15",
+    "FIELD-consent-api-6c0d772e87",
+    "FIELD-consent-api-759a0595b5",
+    "FIELD-consent-api-81c72148a5",
+    "FIELD-consent-api-83811671ad",
+    "FIELD-consent-api-89441fa4df",
+    "FIELD-consent-api-8de284848a",
+    "FIELD-consent-api-9712f7f0d1",
+    "FIELD-consent-api-9f556a6bce",
+    "FIELD-consent-api-acdfb4bd4e",
+    "FIELD-consent-api-b5d498b147",
+    "FIELD-consent-api-bc8a466ab0",
+    "FIELD-consent-api-ed79ee6f15",
+    "FIELD-consent-api-ee839c0226"
+  ],
+  "apiSpecTitles": [
+    "Consent API for V2.x"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/consents/{consent-category}/{consentId}",
+    "GET /v2/consents/account-access/{consentId}",
+    "GET /v2/consents/document-services/{consentId}",
+    "GET /v2/consents/funds-confirmations/{consentId}",
+    "GET /v2/consents/user-parameters-access/{consentId}",
+    "GET /v2/consents/{consent-category}/{consentId}/status",
+    "POST /v2/consents/account-access",
+    "POST /v2/consents/document-services",
+    "POST /v2/consents/funds-confirmations",
+    "POST /v2/consents/user-parameters-access"
+  ],
+  "schemaNames": [
+    "_links_201_CONSENT_ACCOUNT",
+    "_links_201_CONSENT_OTHER"
+  ],
+  "fieldPaths": [
+    "confirmation",
+    "encryptionCertificates",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "status"
+  ],
+  "samplePaths": [
+    "/v2/consents/account-access",
+    "/v2/consents/account-access/{consentId}",
+    "/v2/consents/document-services",
+    "/v2/consents/document-services/{consentId}",
+    "/v2/consents/funds-confirmations",
+    "/v2/consents/funds-confirmations/{consentId}",
+    "/v2/consents/user-parameters-access",
+    "/v2/consents/user-parameters-access/{consentId}"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

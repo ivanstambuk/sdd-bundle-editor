@@ -1,0 +1,43 @@
+{
+  "id": "ACBIND-document-handling-flow-api-contract-binding",
+  "title": "Document Handling Flow API Contract Binding",
+  "slug": "document-handling-flow-api-contract-binding",
+  "targetDomainEntityType": "ProcessFlow",
+  "technicalTheme": "document-lifecycle",
+  "conceptFamilyIds": [
+    "CCFAM-document-services"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "processFlowIds": [
+    "DFLOW-document-handling"
+  ],
+  "technicalCitationIds": [
+    "TCIT-document-handling-flow"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/documents",
+    "/v2/documents/{documentResourceId}",
+    "/v2/documents/{documentResourceId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}/status",
+    "POST /v2/documents"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Document Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-document-flow",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

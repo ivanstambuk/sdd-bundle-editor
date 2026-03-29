@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-decision-about-strong-customer-authentication-5",
+  "title": "Decision about strong customer authentication Citation",
+  "slug": "decision-about-strong-customer-authentication-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-d9d1753974-6-15-decision-about-strong-customer-authentication-decision-about-strong-customer-authentication",
+  "bootstrapSectionIds": [
+    "SEC-d9d1753974-6-15-decision-about-strong-customer-authentication"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-implementation-guidelines-b073dfbc8d"
+  ],
+  "publicationTitles": [
+    "Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "sectionTitles": [
+    "Decision about strong customer authentication"
+  ],
+  "pageSpans": [
+    "31"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "excerpt": "6.15 Decision about strong customer authentication The ASPSP has to decide \u2022 if SCA has to be executed as part of a payment transaction at the openFinance API interface for this extended service, \u2022 which method and personalised credentials have to be used for SCA, where the PSU will be involved in a selection process if several SCA procedures are available, and \u2022 which approach has to be used for executing SCA, taking into account the redirection preference of the TPP. The TPP has to follow the decision of the ASPSP.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

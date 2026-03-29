@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-access-methods-4",
+  "title": "API Access Methods Citation",
+  "slug": "api-access-methods-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-b28ecd8502-2-1-api-access-methods-api-access-methods",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-2-1-api-access-methods"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "API Access Methods"
+  ],
+  "pageSpans": [
+    "9-12"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "2.1 API Access Methods In the following, the API access methods of the openFinance consent API are presented in an overview. The following categories of consent are supported within {consent-category}: \u2022 account-access: consent for AIS access to addressed accounts (Service Type CONS- AIS for the XS2A interface, service type CONS-XAIS in case of access to any account type not necessarily covered by PSD2). \u2022 funds-confirmations: access consent for the funds-confirmations service for a dedicated account (Service Type CONS-FDC). \u2022 user-parameters-access: consent for user data access for addressed accounts (Service Type CONS-USP). \u2022 document-services: explicit consent to submit e.g. RTPs, documen",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

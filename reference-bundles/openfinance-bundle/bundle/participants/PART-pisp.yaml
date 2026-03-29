@@ -1,0 +1,32 @@
+{
+  "id": "PART-pisp",
+  "title": "Payment Initiation Service Provider",
+  "slug": "payment-initiation-service-provider",
+  "participantName": "Payment Initiation Service Provider",
+  "abbreviation": "PISP",
+  "kind": "payment-initiation-provider",
+  "parentParticipantId": "PART-tpp",
+  "aliases": [
+    "PISP",
+    "PISPs",
+    "Payment Initiation Service Provider"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-payment-initiation-service-provider"
+  ],
+  "sourceBootstrapParticipantId": "PART-pisp",
+  "notes": "TPP subtype operating payment initiation services on behalf of a PSU."
+}

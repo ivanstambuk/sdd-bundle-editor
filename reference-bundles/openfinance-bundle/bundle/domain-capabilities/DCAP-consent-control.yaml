@@ -1,0 +1,28 @@
+{
+  "id": "DCAP-consent-control",
+  "title": "Consent Control",
+  "slug": "consent-control",
+  "theme": "consent-management",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "statement": "Controls creation, retrieval, update, and revocation of consent surfaces used to authorize access or processing. OpenAPI evidence: 10 operations, 2 schema objects, and 26 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-consent",
+    "RES-account-access-consent",
+    "RES-funds-confirmation-consent",
+    "RES-user-parameters-consent",
+    "RES-document-services-consent"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-consent-capability",
+  "operationCount": 10,
+  "schemaObjectCount": 2,
+  "fieldCount": 26
+}

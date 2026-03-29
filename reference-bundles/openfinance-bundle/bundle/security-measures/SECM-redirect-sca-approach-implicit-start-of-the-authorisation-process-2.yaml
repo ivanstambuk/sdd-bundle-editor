@@ -1,0 +1,15 @@
+{
+  "id": "SECM-redirect-sca-approach-implicit-start-of-the-authorisation-process-2",
+  "title": "Redirect SCA Approach: Implicit Start of the Authorisation Process",
+  "slug": "redirect-sca-approach-implicit-start-of-the-authorisation-process",
+  "kind": "other",
+  "statement": "3.1.1 Redirect SCA Approach: Implicit Start of the Authorisation Process If the ASPSP supports the Redirect SCA Approach, the message flow within the Establishing Consent sub-service is simple. The Service Consent Request is followed by a redirection to the ASPSP SCA authorisation site. A status or content request on the created consent resource might be requested by the TPP after the session is re-redirected to the TPP\u2019s system. PSU AISP ASPSP PSU initiates an account information access via a TPP 1.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-redirect-sca-approach-implicit-start-of-the-authorisation-process-2"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b28ecd8502-3-1-1-redirect-sca-approach-implicit-start-of-the-authorisation-process-redirect-sca-approach-implicit-start-of-the-authorisation-process",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

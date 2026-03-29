@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-embedded-sca-approach-with-selection-of-a-sca-method",
+  "title": "Embedded SCA Approach with Selection of a SCA method Citation",
+  "slug": "embedded-sca-approach-with-selection-of-a-sca-method-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-b28ecd8502-3-1-5-embedded-sca-approach-with-selection-of-a-sca-method-embedded-sca-approach-with-selection-of-a-sca-method",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-1-5-embedded-sca-approach-with-selection-of-a-sca-method"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Embedded SCA Approach with Selection of a SCA method"
+  ],
+  "pageSpans": [
+    "17-18"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.1.5 Embedded SCA Approach with Selection of a SCA method In the following flow, there is a selection of an SCA method added in case of the ASPSP supporting several SCA methods for the corresponding PSU. The ASPSP transmits first the Consent API Establish Consents Messages available methods to the PISP. The PISP might filter them, if not all authentication methods can be technically supported. The available methods then are presented to the PSU for choice.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

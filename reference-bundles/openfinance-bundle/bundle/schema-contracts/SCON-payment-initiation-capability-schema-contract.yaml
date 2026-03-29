@@ -1,0 +1,50 @@
+{
+  "id": "SCON-payment-initiation-capability-schema-contract",
+  "title": "Payment Initiation Capability Schema Contract",
+  "slug": "payment-initiation-capability-schema-contract",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "payment-initiation",
+  "conceptFamilyIds": [
+    "CCFAM-payment-initiation"
+  ],
+  "domainResourceIds": [
+    "RES-payment-initiation"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-payment-initiation"
+  ],
+  "technicalCitationIds": [
+    "TCIT-payment-initiation-capability"
+  ],
+  "schemaNames": [
+    "_links_200_XPIS_Initiation_Status",
+    "_links_201_Multiple_Recurring_Initiation_XPIS",
+    "initiation"
+  ],
+  "fieldPaths": [
+    "_links",
+    "confirmInitiation",
+    "confirmation",
+    "encryptionCertificates",
+    "initiationId",
+    "instructedAmount",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "status",
+    "transactionStatus"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-payment-capability",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

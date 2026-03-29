@@ -1,0 +1,30 @@
+{
+  "id": "DFLOW-recurring-payment-scheduling",
+  "title": "Recurring Payment Scheduling",
+  "slug": "recurring-payment-scheduling",
+  "kind": "payment-initiation",
+  "conceptFamilyId": "CCFAM-payment-initiation",
+  "statement": "The TPP shall use within the single recurring payment initiations the related regular execution date.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-068b17995dc33c2a` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-recurring-payment-execution-date-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-recurring-payment-execution-date-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-068b17995dc33c2a",
+  "sourceBootstrapRuleCandidateId": "DRCAND-068b17995dc33c2a",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate.",
+  "parentProcessFlowId": "DFLOW-payment",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because it is one recurring scheduling path inside the broader payment lifecycle."
+}

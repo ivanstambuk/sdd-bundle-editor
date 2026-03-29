@@ -1,0 +1,32 @@
+{
+  "id": "CCFAM-statement-content",
+  "title": "Statement Content Concept Family",
+  "slug": "statement-content-concept-family",
+  "theme": "statement-content",
+  "summary": "Aggregate derivation family for theme `statement-content` with 2 rule candidates, 2 capability candidates, and 2 flow candidates.",
+  "businessRuleIds": [
+    "BR-pending-payment-camt-052-statement-inclusion",
+    "BR-pending-payment-mt942-statement-inclusion"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-pending-payment-camt-052-statement-content",
+    "DCAP-pending-payment-mt942-statement-content"
+  ],
+  "processFlowIds": [
+    "DFLOW-pending-payment-camt-052-statement-retrieval",
+    "DFLOW-pending-payment-mt942-statement-retrieval"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-statement-content",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "DCAP-document-access",
+  "title": "Document Access",
+  "slug": "document-access",
+  "theme": "document-services",
+  "conceptFamilyId": "CCFAM-document-services",
+  "statement": "Provides access to document retrieval and related document-service interactions. OpenAPI evidence: 4 operations, 9 schema objects, and 31 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "technicalCitationIds": [
+    "TCIT-document-access-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-document-capability",
+  "operationCount": 4,
+  "schemaObjectCount": 9,
+  "fieldCount": 31
+}

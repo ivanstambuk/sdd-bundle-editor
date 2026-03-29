@@ -31,6 +31,7 @@ export interface ValidateResponse {
 export class McpBundleApi {
     private client: McpClient;
     private bundleId: string | null = null;
+    private static readonly SNAPSHOT_MAX_ENTITIES = 25000;
 
     constructor(mcpServerUrl?: string) {
         this.client = createMcpClient(mcpServerUrl);
@@ -103,6 +104,7 @@ export class McpBundleApi {
             includeSchemas: true,
             includeRefGraph: true,
             includeDiagnostics: true,
+            maxEntities: McpBundleApi.SNAPSHOT_MAX_ENTITIES,
         });
 
         if (snapshotResult.isError || !snapshotResult.data?.data) {

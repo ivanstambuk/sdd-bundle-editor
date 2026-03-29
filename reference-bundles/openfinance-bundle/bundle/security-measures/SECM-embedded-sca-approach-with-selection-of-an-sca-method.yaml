@@ -1,0 +1,15 @@
+{
+  "id": "SECM-embedded-sca-approach-with-selection-of-an-sca-method",
+  "title": "Embedded SCA Approach with Selection of an SCA method",
+  "slug": "embedded-sca-approach-with-selection-of-an-sca-method",
+  "kind": "other",
+  "statement": "3.1.10 Embedded SCA Approach with Selection of an SCA method In the following flow, there is a selection of an SCA method added in case of the ASPSP supporting several SCA methods for the corresponding PSU. The ASPSP transmits first the openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service available methods to the PISP. The PISP might filter them, if not all authentication methods can be technically supported. The available methods then are presented to the PSU for choice.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-embedded-sca-approach-with-selection-of-an-sca-method"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-10-embedded-sca-approach-with-selection-of-an-sca-method-embedded-sca-approach-with-selection-of-an-sca-method",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

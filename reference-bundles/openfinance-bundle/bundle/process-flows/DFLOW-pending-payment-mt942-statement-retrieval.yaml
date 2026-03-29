@@ -1,0 +1,38 @@
+{
+  "id": "DFLOW-pending-payment-mt942-statement-retrieval",
+  "title": "Pending Payment MT942 Statement Retrieval",
+  "slug": "pending-payment-mt942-statement-retrieval",
+  "kind": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The MT942 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-eabe79e60ff535cc` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding",
+    "RES-savings-account"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-pending-payment-mt942-statement-inclusion"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-mt942-statement-inclusion"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-eabe79e60ff535cc",
+  "sourceBootstrapRuleCandidateId": "DRCAND-eabe79e60ff535cc",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate."
+}

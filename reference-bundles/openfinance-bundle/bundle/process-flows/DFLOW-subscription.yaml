@@ -1,0 +1,22 @@
+{
+  "id": "DFLOW-subscription",
+  "title": "Subscription",
+  "slug": "subscription",
+  "kind": "subscription-lifecycle",
+  "conceptFamilyId": "CCFAM-subscription-management",
+  "statement": "Represents the subscription setup, maintenance, and closure interaction sequence. OpenAPI evidence: 8 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "technicalCitationIds": [
+    "TCIT-subscription-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-flow",
+  "operationCount": 8
+}

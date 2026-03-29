@@ -1,0 +1,15 @@
+{
+  "id": "SECM-oauth2-sca-approach-implicit-start-of-the-authorisation-process-with",
+  "title": "OAuth2 SCA Approach: Implicit Start of the Authorisation Process with",
+  "slug": "oauth2-sca-approach-implicit-start-of-the-authorisation-process-with",
+  "kind": "other",
+  "statement": "3.1.6 OAuth2 SCA Approach: Implicit Start of the Authorisation Process with Confirmation Code In addition to the scenario above, an authorisation confirmation request might be requested by the ASPSP from the TPP after the session is re-redirected to the TPP\u2019s system and after the openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service TPP's control on session fixation. In the end, a payment status request might be needed by the TPP to control the exact status of the payment initiation. Remark: The OAuth2 SCA Approach with explicit start of the Authorisation Process and with transaction confirmation step is treated analogously. PSU PISP ASPSP PSU initiates a payment v",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-oauth2-sca-approach-implicit-start-of-the-authorisation-process-with"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-6-oauth2-sca-approach-implicit-start-of-the-authorisation-process-with-oauth2-sca-approach-implicit-start-of-the-authorisation-process-with",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

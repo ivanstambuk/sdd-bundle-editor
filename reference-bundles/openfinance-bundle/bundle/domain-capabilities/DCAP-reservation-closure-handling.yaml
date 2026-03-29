@@ -1,0 +1,31 @@
+{
+  "id": "DCAP-reservation-closure-handling",
+  "title": "Reservation Closure Handling",
+  "slug": "reservation-closure-handling",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "In addition, the ASPSP shall then close the related reservation of funds, if applicable.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-a82eeb5e7dd0620e` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-a82eeb5e7dd0620e`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-reservation-of-funds-closure-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-reservation-of-funds-closure-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-a82eeb5e7dd0620e",
+  "sourceBootstrapRuleCandidateId": "DRCAND-a82eeb5e7dd0620e",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-authorisation-control",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement constrains one reservation-closure action inside the broader authorisation-management surface."
+}

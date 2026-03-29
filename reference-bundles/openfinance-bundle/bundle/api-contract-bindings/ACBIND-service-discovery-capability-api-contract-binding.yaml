@@ -1,0 +1,41 @@
+{
+  "id": "ACBIND-service-discovery-capability-api-contract-binding",
+  "title": "Service Discovery Capability API Contract Binding",
+  "slug": "service-discovery-capability-api-contract-binding",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "discovery",
+  "conceptFamilyIds": [
+    "CCFAM-discovery"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-service-discovery"
+  ],
+  "technicalCitationIds": [
+    "TCIT-service-discovery-capability"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/api-planned-downtimes",
+    "/v2/aspsp-contacts",
+    "/v2/aspsp-parameters",
+    "/v2/user-parameters",
+    "/v2/user-parameters/{userParameterId}"
+  ],
+  "operationSignatures": [
+    "GET /v2/api-planned-downtimes",
+    "GET /v2/aspsp-contacts",
+    "GET /v2/aspsp-parameters",
+    "GET /v2/user-parameters",
+    "GET /v2/user-parameters/{userParameterId}"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines for Discovery Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-discovery-capability",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

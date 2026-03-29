@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-client-and-corporate-authentication-for-corporate-direct-access",
+  "title": "API Client and Corporate Authentication for Corporate Direct Access Citation",
+  "slug": "api-client-and-corporate-authentication-for-corporate-direct-access-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-37a95f45e3-2-2-1-api-client-and-corporate-authentication-for-corporate-direct-access-api-client-and-corporate-authentication-for-corporate-direct-access",
+  "bootstrapSectionIds": [
+    "SEC-37a95f45e3-2-2-1-api-client-and-corporate-authentication-for-corporate-direct-access"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-verification-of-party-services-v1-1-20250603-pdf-implementation-guidelines-9c0116dae1"
+  ],
+  "publicationTitles": [
+    "Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "sectionTitles": [
+    "API Client and Corporate Authentication for Corporate Direct Access"
+  ],
+  "pageSpans": [
+    "17"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "excerpt": "2.2.1 API Client and Corporate Authentication for Corporate Direct Access If the VOP API is used in a Corporate Direct Access model, the following requirements apply on the certificate usage: \u2022 The TLS web site certificate of the API Client is either a certificate of the corporate or of an ERP cloud provider. This certificate authenticates the API Client. \u2022 If the ASPSP mandates message signing, the sealing certificate needs to be owned by the corporate to provide corporate authentication. As a minimum, the ASPSP shall accept QWACs or QSEALs certificates as defined by [eIDAS]. The ASPSP might accept other certificates in bilateral agreements with the corporate.",
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

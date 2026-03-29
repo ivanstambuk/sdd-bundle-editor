@@ -1,0 +1,22 @@
+{
+  "id": "DCAP-account-access",
+  "title": "Account Access",
+  "slug": "account-access",
+  "theme": "account-information",
+  "conceptFamilyId": "CCFAM-account-information",
+  "statement": "Provides access to account, balance, transaction, and related account-information surfaces. OpenAPI evidence: 25 operations, 24 schema objects, and 282 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "technicalCitationIds": [
+    "TCIT-account-access-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-account-capability",
+  "operationCount": 25,
+  "schemaObjectCount": 24,
+  "fieldCount": 282
+}

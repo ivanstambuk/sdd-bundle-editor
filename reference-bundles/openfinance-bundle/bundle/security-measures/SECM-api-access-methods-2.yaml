@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-access-methods-2",
+  "title": "API Access Methods",
+  "slug": "api-access-methods",
+  "kind": "other",
+  "statement": "2.1 API Access Methods The following tables gives an overview on the HTTP access methods supported by the API endpoints and by resources created through this API. Conditions in the following tables It is further defined, whether this method support is mandated for the ASPSP by this specification or whether it is an optional feature for the ASPSP. Please note that this condition is given relative to the parent node of the path, i.e. the condition e.g. on a method on /v2/payments/{payment-product}/{paymentId} applies only if the endpoint /v2/payments/{payment-product} is supported at all. NOTE:All methods submitted by a TPP, which are addressing dynamically created resources in this API, may o",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-access-methods-2"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-2-1-api-access-methods-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

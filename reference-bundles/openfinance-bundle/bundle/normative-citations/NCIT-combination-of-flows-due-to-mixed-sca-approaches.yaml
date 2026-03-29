@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-combination-of-flows-due-to-mixed-sca-approaches",
+  "title": "Combination of Flows due to mixed SCA Approaches Citation",
+  "slug": "combination-of-flows-due-to-mixed-sca-approaches-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-3-1-11-combination-of-flows-due-to-mixed-sca-approaches-combination-of-flows-due-to-mixed-sca-approaches",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-1-11-combination-of-flows-due-to-mixed-sca-approaches"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Combination of Flows due to mixed SCA Approaches"
+  ],
+  "pageSpans": [
+    "31-32"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "3.1.11 Combination of Flows due to mixed SCA Approaches If an ASPSP supports for a PSU at least one decoupled SCA method and at the same time at least one SCA method that is not decoupled, then the above flows might be mixed as follows, since the ASPSP then needs to start the process with the assumption of one specific SCA approach to offer all available SCA methods to the PSU. openFinance PSD2 XSZA API \u2013 Implementation Guidelines Payment Initiation Service In case the ASPSP is starting the payment initiation flow with a redirect the PSU can choose on the authentication site of the ASPSP the decoupled authentication method. This is then transparent for the TPP and has no influence on the flo",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

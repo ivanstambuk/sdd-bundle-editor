@@ -1,0 +1,35 @@
+{
+  "id": "BR-pending-payment-mt942-statement-inclusion",
+  "title": "Pending Payment MT942 Statement Inclusion",
+  "slug": "pending-payment-mt942-statement-inclusion",
+  "theme": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The MT942 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-eabe79e60ff535cc`. The statement repeats 3 times across 2 publications and 2 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding",
+    "RES-savings-account"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-mt942-statement-inclusion"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-eabe79e60ff535cc",
+  "sourceBootstrapClusterId": "NSTMT-eabe79e60ff535cc",
+  "occurrenceCount": 3,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

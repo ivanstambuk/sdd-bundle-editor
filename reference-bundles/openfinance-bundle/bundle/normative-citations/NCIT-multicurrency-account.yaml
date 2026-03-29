@@ -1,0 +1,77 @@
+{
+  "id": "NCIT-multicurrency-account",
+  "title": "Multicurrency Account Citation",
+  "slug": "multicurrency-account-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-multicurrency-account",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-2-2-multicurrency-accounts-specifics-for-compliance-services",
+    "SEC-3d9e00add2-3-3-payment-initiation-specifics-for-multi-currency-accounts",
+    "SEC-3d9e00add2-4-3-multi-currency-account-specifics-for-account-information",
+    "SEC-3d9e00add2-4-4-1-read-account-list",
+    "SEC-3d9e00add2-4-4-2-read-account-details",
+    "SEC-3d9e00add2-4-4-3-read-balance",
+    "SEC-3d9e00add2-4-4-4-read-transaction-list",
+    "SEC-3d9e00add2-4-5-4-read-card-account-transaction-list",
+    "SEC-b28ecd8502-1-3-document-structure",
+    "SEC-b28ecd8502-2-2-1-submission-of-consents-on-account-access",
+    "SEC-b28ecd8502-2-2-2-submission-of-consents-on-confirmation-of-funds",
+    "SEC-b28ecd8502-2-2-multi-currency-account-specifics-for-consents",
+    "SEC-b28ecd8502-3-3-multicurrency-accounts-in-submission-of-consents",
+    "SEC-fd85673676-3-10-multicurrency-accounts"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5",
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Multicurrency Accounts Specifics for Compliance Services",
+    "Payment Initiation Specifics for Multi-currency Accounts",
+    "Multi-currency Account Specifics for Account Information",
+    "Read Account List",
+    "Read Account Details",
+    "Read Balance",
+    "Read Transaction List",
+    "Read Card Account Transaction List",
+    "Document Structure",
+    "Submission of Consents on Account Access",
+    "Submission of Consents on Confirmation of Funds",
+    "Multi-currency Account Specifics for Consents",
+    "Multicurrency Accounts in Submission of Consents",
+    "Multicurrency Accounts"
+  ],
+  "pageSpans": [
+    "16-17",
+    "39",
+    "83-85",
+    "85-89",
+    "89-92",
+    "92-95",
+    "95-104",
+    "114-127",
+    "7-8",
+    "12",
+    "12",
+    "12",
+    "23",
+    "35"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf",
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "2.2 Multicurrency Accounts Specifics for Compliance Services The concept of a multicurrency account is introduced in [oFA PFSM]. Remark: The multi-currency account product is in use in some markets in Europe, e.g. in Online-Banking products within the Belgium market. The support of this functionality in the XS2A API is only applicable in these markets. openFinance PSD2 XSZA API \u2013 Implementation Guidelines Application Layer: Guiding Principles",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

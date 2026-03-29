@@ -1,0 +1,86 @@
+{
+  "id": "NCIT-payment-initiation",
+  "title": "Payment Initiation Citation",
+  "slug": "payment-initiation-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-payment-initiation",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-2-1-1-payments-endpoints",
+    "SEC-3d9e00add2-2-3-1-status-information-for-pis",
+    "SEC-3d9e00add2-3-2-data-overview-payment-initiation-service",
+    "SEC-3d9e00add2-3-4-1-payment-initiation-with-json-encoding-of-the-payment-instruction",
+    "SEC-3d9e00add2-3-5-get-transaction-status-request",
+    "SEC-3d9e00add2-3-7-get-payment-request",
+    "SEC-54c5ea50d9-6-example-complete-flow-for-rtp-and-corresponding-payment",
+    "SEC-86a5b497b6-4-major-changes-openfinance-api-framework-from-v2-0-to-2-1",
+    "SEC-e22ae5e40f-6-example-complete-flow-for-rtp-and-corresponding-payment",
+    "SEC-fd85673676-12-4-communicate-notification-uri-of-api-clients-to-the-aspsp",
+    "SEC-fd85673676-3-6-api-steering-process-by-hyperlinks-hateoas",
+    "SEC-fd85673676-3-8-http-response-codes",
+    "SEC-fd85673676-8-8-oauth-sca-approach",
+    "SEC-fd85673676-9-1-authorisation-endpoints",
+    "SEC-fd85673676-9-4-start-authorisation-process"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-a-guide-to-the-openfinance-api-framework-v2-2-20250731-pdf-introduction-document-fe2d14ef43",
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Protocol Functions and Security Measures V2.3 20251031.pdf",
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Payments Endpoints",
+    "Status Information for PIS",
+    "Data Overview Payment Initiation Service",
+    "Payment Initiation with JSON encoding of the Payment Instruction",
+    "Get Transaction Status Request",
+    "Get Payment Request",
+    "Example: Complete flow for RTP and corresponding payment",
+    "Major Changes openFinance API Framework from V2.0 to 2.1",
+    "Example: Complete flow for RTP and corresponding payment",
+    "Communicate Notification URI of API Clients to the ASPSP",
+    "API Steering Process by Hyperlinks (HATEOAS)",
+    "HTTP Response Codes",
+    "OAuth SCA Approach",
+    "Authorisation Endpoints",
+    "Start Authorisation Process"
+  ],
+  "pageSpans": [
+    "10-13",
+    "17-20",
+    "35-38",
+    "39-49",
+    "60-65",
+    "69-71",
+    "34-36",
+    "11-12",
+    "34-36",
+    "193-208",
+    "27-30",
+    "33-34",
+    "96-102",
+    "104-107",
+    "111-141"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf",
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "2.1.1 Payments Endpoints Endpoints/Resources Method Condition Description payments/{payment- POST Mandatory Create a payment initiation resource product} addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment. Section 3.4.1 and 3.4.2 payments/{payment- GET Mandatory Read the details of an initiated product}/{paymentId} payment.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

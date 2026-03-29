@@ -1,0 +1,70 @@
+{
+  "id": "SCON-push-ais-subscription-resource-schema-contract",
+  "title": "Push AIS Subscription Resource Schema Contract",
+  "slug": "push-ais-subscription-resource-schema-contract",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "subscription",
+  "conceptFamilyIds": [
+    "CCFAM-subscription-management"
+  ],
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "technicalCitationIds": [
+    "TCIT-push-ais-subscription-resource"
+  ],
+  "schemaNames": [
+    "_links_200_Push_AIS_Status",
+    "_links_201_Push_AIS",
+    "_links_201_Push_AIS_Entry",
+    "clientMessageInformation_400_Push_AIS",
+    "clientMessageInformation_401_Push_AIS",
+    "clientMessageInformation_403_Push_AIS",
+    "clientMessageInformation_404_Push_AIS",
+    "clientMessageInformation_405_Push_AIS",
+    "clientMessageInformation_409_Push_AIS",
+    "messageCode_PushAisSpecific",
+    "subscriptionEntry",
+    "subscriptionIdentificationAndLink"
+  ],
+  "fieldPaths": [
+    "_links",
+    "accountId",
+    "apiClientPrimaryPushURI",
+    "apiClientSecondaryPushURI",
+    "callbackWithLinkPreferred",
+    "callbackWithStaticTextPreferred",
+    "category",
+    "code",
+    "confirmation",
+    "encryptionCertificates",
+    "path",
+    "pushAccountEntryParameters",
+    "pushAccountStatementParameters",
+    "pushBalanceParameters",
+    "pushRtpParameters",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "staticCallbackText",
+    "status",
+    "subscriptionEntryId",
+    "subscriptionEntryName",
+    "subscriptionId",
+    "subscriptionStatus",
+    "text",
+    "validUntil"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-resource",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

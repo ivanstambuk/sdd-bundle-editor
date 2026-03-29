@@ -1,0 +1,41 @@
+{
+  "id": "RES-authorisation-sub-resource",
+  "title": "Authorisation Sub-Resource",
+  "slug": "authorisation-sub-resource",
+  "resourceName": "Authorisation Sub-Resource",
+  "kind": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "aliases": [
+    "authorisation resource",
+    "authorisation sub-resource",
+    "cancellation authorisation sub-resource"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-authorisation-sub-resource"
+  ],
+  "technicalCitationIds": [
+    "TCIT-authorisation-control-capability",
+    "TCIT-authorisation-flow",
+    "TCIT-authorisation-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-authorisation-sub-resource",
+  "notes": "Authorisation resource subordinate to an underlying business transaction resource such as a payment or consent."
+}

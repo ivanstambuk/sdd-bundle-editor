@@ -1,0 +1,33 @@
+{
+  "id": "PART-api-client",
+  "title": "API Client",
+  "slug": "api-client",
+  "participantName": "API Client",
+  "kind": "technical-client",
+  "aliases": [
+    "API Client",
+    "API Clients",
+    "access client",
+    "access clients"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-client"
+  ],
+  "sourceBootstrapParticipantId": "PART-api-client",
+  "notes": "Generic technical access role used by the openFinance framework. In compliance scenarios this role can be fulfilled by a TPP; in premium scenarios it can also cover other access clients such as corporates."
+}

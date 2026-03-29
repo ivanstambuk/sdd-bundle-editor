@@ -1,0 +1,15 @@
+{
+  "id": "SECM-decoupled-sca-approach",
+  "title": "Decoupled SCA Approach",
+  "slug": "decoupled-sca-approach",
+  "kind": "other",
+  "statement": "8.6 Decoupled SCA Approach The Decoupled SCA Approach differs from the Embedded SCA Approach by using an ASPSP authentication app for the strong customer authentication and dynamic linking if applicable. The app is used by the PSU also for authentication of transaction in the online channels. Since the XS2A API resp. the openFinance API is not involved in this app authentication, no authentication specific API support is defined in this case. NOTE: A more standardised security profile based on re-direct like the FAPI CIBA profile are not supported yet by the openFinance API Framework.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-decoupled-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-6-decoupled-sca-approach-decoupled-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

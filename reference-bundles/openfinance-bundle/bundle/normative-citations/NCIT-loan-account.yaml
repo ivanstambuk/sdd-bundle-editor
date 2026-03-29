@@ -1,0 +1,52 @@
+{
+  "id": "NCIT-loan-account",
+  "title": "Loan Account Citation",
+  "slug": "loan-account-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-loan-account",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-4-account-information-service",
+    "SEC-83af6a40e8-1-2-extended-account-information-services",
+    "SEC-83af6a40e8-2-operational-rules",
+    "SEC-83af6a40e8-4-5-1-read-account-list",
+    "SEC-83af6a40e8-4-5-2-read-account-details",
+    "SEC-83af6a40e8-4-5-3-read-account-balances",
+    "SEC-83af6a40e8-4-5-4-read-transaction-list"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b",
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "Account Information Service",
+    "Extended Account Information Services",
+    "Operational Rules",
+    "Read Account List",
+    "Read Account Details",
+    "Read Account Balances",
+    "Read Transaction List"
+  ],
+  "pageSpans": [
+    "76-78",
+    "6-7",
+    "9-11",
+    "67-72",
+    "72-75",
+    "75-77",
+    "77-83"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf",
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "4 Account Information Service Supported Sub-Services This specification foresees different types of account information services: \u2022 Transaction lists for a given account with transactions with booking status booked or pending including balances if applicable, \u2022 List of standing orders of a given account, reported as transactions with booking status information, \u2022 Balances of a given account, \u2022 A list of addressable accounts, \u2022 Account details of a given account or of the list of all accessible accounts relative to a granted consent, and \u2022 Account details might include the account owner name, w",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

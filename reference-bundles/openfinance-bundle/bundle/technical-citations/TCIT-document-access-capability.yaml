@@ -1,0 +1,100 @@
+{
+  "id": "TCIT-document-access-capability",
+  "title": "Document Access Capability OpenAPI Evidence",
+  "slug": "document-access-capability-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-document-capability",
+  "technicalTheme": "document-services",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-document-services-bg-ofa-document-recent-openapi-yaml-2d12def5d0"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-document-services-delete-3995b55575",
+    "OP-document-services-get-1bf6add599",
+    "OP-document-services-get-93d939adec",
+    "OP-document-services-post-e07278e565"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-document-services-4223b3f1a8",
+    "SCHEMA-document-services-47af3f8ee3",
+    "SCHEMA-document-services-539bd07a0f",
+    "SCHEMA-document-services-6d42a8f8c9",
+    "SCHEMA-document-services-89a2aa7e80",
+    "SCHEMA-document-services-a07b83e3d8",
+    "SCHEMA-document-services-baa698deba",
+    "SCHEMA-document-services-c23920e410",
+    "SCHEMA-document-services-f5662237bf"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-document-services-00e0b85f00",
+    "FIELD-document-services-047666686b",
+    "FIELD-document-services-05338c2829",
+    "FIELD-document-services-09f3bb30f4",
+    "FIELD-document-services-139fe9ede0",
+    "FIELD-document-services-165e91491c",
+    "FIELD-document-services-1b576c0038",
+    "FIELD-document-services-39394a3474",
+    "FIELD-document-services-3dee59a024",
+    "FIELD-document-services-426a07968b",
+    "FIELD-document-services-49c1f507e9",
+    "FIELD-document-services-4b2e05d970",
+    "FIELD-document-services-5763d1ee53",
+    "FIELD-document-services-5d5cd14f7b",
+    "FIELD-document-services-5ed244b5c9",
+    "FIELD-document-services-757897b853",
+    "FIELD-document-services-81bc00c346",
+    "FIELD-document-services-8c9f1bac4a",
+    "FIELD-document-services-9d79d2e85b",
+    "FIELD-document-services-9fa2c0bfe4",
+    "FIELD-document-services-ac66a4ff76",
+    "FIELD-document-services-acf8b316c1",
+    "FIELD-document-services-b64c6ff4f0",
+    "FIELD-document-services-b6ee95a19c",
+    "FIELD-document-services-c4db8870ce",
+    "FIELD-document-services-c5a137093e",
+    "FIELD-document-services-d5e9e1d872",
+    "FIELD-document-services-d6ec650c07",
+    "FIELD-document-services-e49e436a64",
+    "FIELD-document-services-f308df1f17",
+    "FIELD-document-services-f7a0c49721"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Document Services"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}",
+    "GET /v2/documents/{documentResourceId}/status",
+    "POST /v2/documents"
+  ],
+  "schemaNames": [
+    "_links_200_Documents",
+    "_links_201_Documents",
+    "clientMessageInformation_400_Documents",
+    "clientMessageInformation_401_Documents",
+    "clientMessageInformation_403_Documents",
+    "clientMessageInformation_404_Documents",
+    "clientMessageInformation_405_Documents",
+    "clientMessageInformation_409_Documents",
+    "relatedDocumentInformation"
+  ],
+  "fieldPaths": [
+    "category",
+    "code",
+    "path",
+    "relationCode",
+    "relationProprietary",
+    "resourceId",
+    "self",
+    "status",
+    "text"
+  ],
+  "samplePaths": [
+    "/v2/documents",
+    "/v2/documents/{documentResourceId}",
+    "/v2/documents/{documentResourceId}/status"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

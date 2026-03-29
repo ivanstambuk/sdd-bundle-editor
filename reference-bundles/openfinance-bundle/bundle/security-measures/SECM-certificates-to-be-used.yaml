@@ -1,0 +1,15 @@
+{
+  "id": "SECM-certificates-to-be-used",
+  "title": "Certificates to be used",
+  "slug": "certificates-to-be-used",
+  "kind": "other",
+  "statement": "6.1 Certificates to be used For the case of an XS2A API: For signing an HTTP request message at application level, the API Client has to use a qualified certificate for electronic seals (QSealC). This qualified certificate has to be issued by a qualified trust service provider according to the eIDAS regulation [eIDAS]. The content of the certificate has to be compliant with the requirements of [EBA-RTS] and the technical specification of ETSI [ETSI TS 119 495] . The certificate of the API Client has to indicate all roles the API Client is authorised to use (according to [PSD2] and [EBA-RTS].",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-certificates-to-be-used"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-6-1-certificates-to-be-used-certificates-to-be-used",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

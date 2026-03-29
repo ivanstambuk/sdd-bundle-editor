@@ -1,0 +1,31 @@
+{
+  "id": "DCAP-reservation-variant-support",
+  "title": "Reservation Variant Support",
+  "slug": "reservation-variant-support",
+  "theme": "service-support",
+  "conceptFamilyId": "CCFAM-service-support",
+  "statement": "So, if e.g. a reservation of funds is offered by an ASPSP within the XPIS service, then all variants (one deferred payment, two deferred payment etc) shall be supported by this ASPSP.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-f3672665a61d6e00` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-f3672665a61d6e00`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-reservation-variant-support"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-reservation-variant-support"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-f3672665a61d6e00",
+  "sourceBootstrapRuleCandidateId": "DRCAND-f3672665a61d6e00",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

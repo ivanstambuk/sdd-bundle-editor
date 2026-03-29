@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-api-access-methods",
+  "title": "API Access Methods Citation",
+  "slug": "api-access-methods-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-37a95f45e3-3-3-api-access-methods-api-access-methods",
+  "bootstrapSectionIds": [
+    "SEC-37a95f45e3-3-3-api-access-methods"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-verification-of-party-services-v1-1-20250603-pdf-implementation-guidelines-9c0116dae1"
+  ],
+  "publicationTitles": [
+    "Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "sectionTitles": [
+    "API Access Methods"
+  ],
+  "pageSpans": [
+    "19-21"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Verification of Party Services V1.1 20250603.pdf"
+  ],
+  "excerpt": "3.3 API Access Methods The following tables gives an overview on the HTTP access methods supported by the API endpoints and by resources created through this API. 03 June 2025 Berlin Group Dedicated VOP API Definition openFinance VOP Service Conditions in the following tables It is further defined, whether this method support is mandated for the ASPSP by this specifica- tion or whether it is an optional feature for the ASPSP. Please note that this condition is given relative to the parent node of the path, i.e. the condition e.g. on a method on /v2/pay- ments/{payment-product}/{paymentId} applies only if the endpoint /v2/payments/{payment- product} is supported at all. Endpoints/Resources Me",
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

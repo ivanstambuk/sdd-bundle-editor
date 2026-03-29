@@ -1,0 +1,111 @@
+{
+  "id": "PROD-openfinance-v2-core-psd2-compliance",
+  "title": "openFinance V2 Core-PSD2 Compliance",
+  "slug": "openfinance-v2-core-psd2-compliance",
+  "productName": "openFinance V2 Core-PSD2 Compliance",
+  "kind": "suite",
+  "parentProductSurfaceId": "PROD-openfinance",
+  "sourceCategories": [
+    "V2 Core-PSD2 Compliance"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-authorisation-sub-resource",
+    "RES-card-account",
+    "RES-consent",
+    "RES-loan-account",
+    "RES-mandate",
+    "RES-multicurrency-account",
+    "RES-payment-initiation"
+  ],
+  "businessRuleIds": [
+    "BR-pending-payment-camt-052-statement-inclusion",
+    "BR-pending-payment-mt942-statement-inclusion",
+    "BR-psu-initiated-request-requirement",
+    "BR-tpp-ip-address-fallback-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-account-access",
+    "DCAP-authorisation-control",
+    "DCAP-fallback-client-identification",
+    "DCAP-payment-initiation",
+    "DCAP-pending-payment-camt-052-statement-content",
+    "DCAP-pending-payment-mt942-statement-content",
+    "DCAP-psu-initiated-request-handling",
+    "DCAP-status-access"
+  ],
+  "processFlowIds": [
+    "DFLOW-authorisation",
+    "DFLOW-fallback-client-identification",
+    "DFLOW-payment",
+    "DFLOW-pending-payment-camt-052-statement-retrieval",
+    "DFLOW-pending-payment-mt942-statement-retrieval",
+    "DFLOW-psu-initiated-request"
+  ],
+  "conceptFamilyIds": [
+    "CCFAM-account-information",
+    "CCFAM-authorisation",
+    "CCFAM-consent-management",
+    "CCFAM-identification",
+    "CCFAM-mandate-management",
+    "CCFAM-payment-initiation",
+    "CCFAM-request-origin",
+    "CCFAM-statement-content",
+    "CCFAM-status-retrieval"
+  ],
+  "valueObjectIds": [
+    "VO-amount",
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-client-message",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-authorisation-status-transition",
+    "STTR-consent-status-transition",
+    "STTR-document-status-transition",
+    "STTR-payment-status-transition",
+    "STTR-request-to-pay-status-transition"
+  ],
+  "apiContractBindingIds": [
+    "ACBIND-account-access-capability-api-contract-binding",
+    "ACBIND-account-resource-api-contract-binding",
+    "ACBIND-authorisation-control-capability-api-contract-binding",
+    "ACBIND-authorisation-flow-api-contract-binding",
+    "ACBIND-authorisation-resource-api-contract-binding",
+    "ACBIND-card-account-resource-api-contract-binding",
+    "ACBIND-payment-flow-api-contract-binding",
+    "ACBIND-payment-initiation-capability-api-contract-binding",
+    "ACBIND-payment-initiation-resource-api-contract-binding",
+    "ACBIND-signing-basket-resource-api-contract-binding",
+    "ACBIND-status-access-capability-api-contract-binding"
+  ],
+  "schemaContractIds": [
+    "SCON-account-access-capability-schema-contract",
+    "SCON-account-resource-schema-contract",
+    "SCON-authorisation-control-capability-schema-contract",
+    "SCON-authorisation-flow-schema-contract",
+    "SCON-authorisation-resource-schema-contract",
+    "SCON-card-account-resource-schema-contract",
+    "SCON-payment-flow-schema-contract",
+    "SCON-payment-initiation-capability-schema-contract",
+    "SCON-payment-initiation-resource-schema-contract",
+    "SCON-signing-basket-resource-schema-contract",
+    "SCON-status-access-capability-schema-contract"
+  ],
+  "notes": "Compliance service surface covering PSD2-aligned XS2A services within the openFinance V2 family."
+}

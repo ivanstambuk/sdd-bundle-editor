@@ -1,0 +1,25 @@
+{
+  "id": "DCAP-status-notification",
+  "title": "Status Notification",
+  "slug": "status-notification",
+  "theme": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "Supports status-notification delivery and callback-oriented interaction surfaces. OpenAPI evidence: 5 operations, 0 schema objects, and 0 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-resource-status-notification"
+  ],
+  "technicalCitationIds": [
+    "TCIT-status-notification-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-notification-capability",
+  "operationCount": 5,
+  "schemaObjectCount": 0,
+  "fieldCount": 0
+}

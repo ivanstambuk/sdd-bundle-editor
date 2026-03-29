@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-decoupled-sca-approach-explicit-start-of-the-authorisation-process",
+  "title": "Decoupled SCA Approach: Explicit Start of the Authorisation Process Citation",
+  "slug": "decoupled-sca-approach-explicit-start-of-the-authorisation-process-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-b28ecd8502-3-1-3-decoupled-sca-approach-explicit-start-of-the-authorisation-process-decoupled-sca-approach-explicit-start-of-the-authorisation-process",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-1-3-decoupled-sca-approach-explicit-start-of-the-authorisation-process"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Decoupled SCA Approach: Explicit Start of the Authorisation Process"
+  ],
+  "pageSpans": [
+    "15-16"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.1.3 Decoupled SCA Approach: Explicit Start of the Authorisation Process The transaction flow in the Decoupled SCA Approach is similar to the Redirect SCA Approach. The difference is that the ASPSP is asking the PSU to authorise the account access consent e.g. via a dedicated mobile app. The ASPSP is asking the TPP to inform the PSU about this authentication by sending a corresponding PSU Message like \"Please use your xxx App to authorise the account access\". Consent API Establish Consents Messages After the SCA between ASPSP and PSU, the TPP then needs to ask for the result of the transaction.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

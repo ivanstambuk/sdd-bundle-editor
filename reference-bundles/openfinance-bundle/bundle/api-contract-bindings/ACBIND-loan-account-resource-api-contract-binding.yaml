@@ -1,0 +1,39 @@
+{
+  "id": "ACBIND-loan-account-resource-api-contract-binding",
+  "title": "Loan Account Resource API Contract Binding",
+  "slug": "loan-account-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "loan-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-loan-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-loan-account-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/loans",
+    "/v2/loans/{account-id}",
+    "/v2/loans/{account-id}/balances",
+    "/v2/loans/{account-id}/transactions"
+  ],
+  "operationSignatures": [
+    "GET /v2/loans",
+    "GET /v2/loans/{account-id}",
+    "GET /v2/loans/{account-id}/balances",
+    "GET /v2/loans/{account-id}/transactions"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-loan-account-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

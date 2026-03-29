@@ -1,0 +1,27 @@
+{
+  "id": "SCON-savings-account-resource-schema-contract",
+  "title": "Savings Account Resource Schema Contract",
+  "slug": "savings-account-resource-schema-contract",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "savings-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-savings-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-savings-account-resource"
+  ],
+  "schemaNames": [
+    "_links_200_AISSAVINGSACCOUNTTXLIST"
+  ],
+  "fieldPaths": [
+    "download"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-savings-account-resource",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

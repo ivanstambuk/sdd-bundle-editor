@@ -1,0 +1,33 @@
+{
+  "id": "RES-savings-account",
+  "title": "Savings Account",
+  "slug": "savings-account",
+  "resourceName": "Savings Account",
+  "kind": "savings-account",
+  "parentResourceId": "RES-account",
+  "conceptFamilyId": "CCFAM-account-information",
+  "aliases": [
+    "savings account",
+    "savings accounts"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework"
+  ],
+  "normativeCitationIds": [
+    "NCIT-savings-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-savings-account-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-savings-account",
+  "notes": "Dedicated savings-account subtype exposed by the extended account information services."
+}

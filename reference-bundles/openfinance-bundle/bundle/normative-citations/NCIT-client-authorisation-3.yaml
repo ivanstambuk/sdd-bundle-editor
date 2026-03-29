@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-client-authorisation-3",
+  "title": "Client Authorisation Citation",
+  "slug": "client-authorisation-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-b23f61406a-6-2-client-authorisation-client-authorisation",
+  "bootstrapSectionIds": [
+    "SEC-b23f61406a-6-2-client-authorisation"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-mandate-services-v2-0-20250731-pdf-implementation-guidelines-8d021940b9"
+  ],
+  "publicationTitles": [
+    "Mandate Services V2.0 20250731.pdf"
+  ],
+  "sectionTitles": [
+    "Client Authorisation"
+  ],
+  "pageSpans": [
+    "24"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Mandate Services V2.0 20250731.pdf"
+  ],
+  "excerpt": "6.2 Client Authorisation ASPSPs might refuse access to the openFinance API even if the related eIDAS certificate is valid, if not all related contract conditions are fulfilled. This might be controlled e.g. via a scheme directory.",
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

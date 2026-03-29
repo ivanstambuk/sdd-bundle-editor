@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-certificates-to-be-used",
+  "title": "Certificates to be used Citation",
+  "slug": "certificates-to-be-used-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-fd85673676-6-1-certificates-to-be-used-certificates-to-be-used",
+  "bootstrapSectionIds": [
+    "SEC-fd85673676-6-1-certificates-to-be-used"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Certificates to be used"
+  ],
+  "pageSpans": [
+    "45-46"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "6.1 Certificates to be used For the case of an XS2A API: For signing an HTTP request message at application level, the API Client has to use a qualified certificate for electronic seals (QSealC). This qualified certificate has to be issued by a qualified trust service provider according to the eIDAS regulation [eIDAS]. The content of the certificate has to be compliant with the requirements of [EBA-RTS] and the technical specification of ETSI [ETSI TS 119 495] . The certificate of the API Client has to indicate all roles the API Client is authorised to use (according to [PSD2] and [EBA-RTS].",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

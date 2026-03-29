@@ -1,0 +1,15 @@
+{
+  "id": "SECM-header-parameters-for-psu-identification-data",
+  "title": "Header Parameters for PSU Identification Data",
+  "slug": "header-parameters-for-psu-identification-data",
+  "kind": "other",
+  "statement": "8.3 Header Parameters for PSU Identification Data The openFinance API Framework supports the transmission of PSU identification data within request parameters for all Transaction Initiation Request messages. The ASPSP might mandate these elements, which then needs to be reflected in the related ASPSP documentation. Header parameters as defined in this section will not be repeated in the implementation guidelines of service specifications to enhance document readability, but the implementation guidelines will refer to this document in the relevant sections. However, the detailed specifications of service calls via the related OpenAPI files will still contain all applicable headers.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-header-parameters-for-psu-identification-data"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-3-header-parameters-for-psu-identification-data-header-parameters-for-psu-identification-data",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

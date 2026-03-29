@@ -1,0 +1,22 @@
+{
+  "id": "DFLOW-mandate",
+  "title": "Mandate",
+  "slug": "mandate",
+  "kind": "mandate-lifecycle",
+  "conceptFamilyId": "CCFAM-mandate-management",
+  "statement": "Represents the creation and lifecycle progression sequence for mandate-service interactions. OpenAPI evidence: 4 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-mandate"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "technicalCitationIds": [
+    "TCIT-mandate-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-mandate-flow",
+  "operationCount": 4
+}

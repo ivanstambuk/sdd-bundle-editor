@@ -1,0 +1,20 @@
+{
+  "id": "CCFAM-verification-of-party",
+  "title": "Verification Of Party Concept Family",
+  "slug": "verification-of-party-concept-family",
+  "theme": "verification-of-party",
+  "summary": "Technical domain grouping for verification-of-party resources, capabilities, and flows.",
+  "domainCapabilityIds": [
+    "DCAP-verification-of-party"
+  ],
+  "processFlowIds": [
+    "DFLOW-verification-of-party"
+  ],
+  "domainResourceIds": [
+    "RES-verification-of-party-request"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet."
+}

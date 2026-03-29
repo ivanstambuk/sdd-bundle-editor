@@ -1,0 +1,36 @@
+{
+  "id": "NCIT-user-parameters-consent",
+  "title": "User Parameters Consent Citation",
+  "slug": "user-parameters-consent-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-user-parameters-consent",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-6-1-consent-on-user-parameters-access-request",
+    "SEC-b28ecd8502-3-6-2-get-consent-request",
+    "SEC-b28ecd8502-3-6-establish-consent-on-user-parameters-access"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Consent on User Parameters Access Request",
+    "Get Consent Request",
+    "Establish Consent on User Parameters Access"
+  ],
+  "pageSpans": [
+    "49-57",
+    "57-58",
+    "49"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.6 Establish Consent on User Parameters Access In this section, the Establish Consent on User Parameters Access is defined for the openFinance API Framework. User parameters are user related technical access data which is needed for the API Client so steer the user frontend e.g. for authorisation processes. This data is specifically addressing use cases for direct access of the API by API client software.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "DCAP-pending-payment-camt-052-statement-content",
+  "title": "Pending Payment CAMT.052 Statement Content",
+  "slug": "pending-payment-camt-052-statement-content",
+  "theme": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The camt.052 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-7f01126b5101c76b` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-7f01126b5101c76b`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-pending-payment-camt-052-statement-inclusion"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-camt-052-statement-inclusion"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-7f01126b5101c76b",
+  "sourceBootstrapRuleCandidateId": "DRCAND-7f01126b5101c76b",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

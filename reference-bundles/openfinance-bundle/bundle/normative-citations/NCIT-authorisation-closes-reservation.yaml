@@ -1,0 +1,35 @@
+{
+  "id": "NCIT-authorisation-closes-reservation",
+  "title": "Authorisation Closes Reservation Citation",
+  "slug": "authorisation-closes-reservation-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-f430b05d835fa621",
+  "bootstrapSectionIds": [
+    "SEC-bacf2c1e24-6-11-closing-of-an-authorisation-and-the-related-reservation-of-funds-by-the-tpp",
+    "SEC-d9d1753974-6-11-closing-of-an-authorisation-and-the-related-reservation-of-funds-by-the-tpp"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-implementation-guidelines-b073dfbc8d",
+    "PUB-openfinance-extended-payment-initiation-services-v2-1-20240731-pdf-operational-rules-b073dfbc8d"
+  ],
+  "publicationTitles": [
+    "Extended Payment Initiation Services V2.1 20240731.pdf",
+    "Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "sectionTitles": [
+    "Closing of an authorisation and the related reservation of funds by the TPP",
+    "Closing of an authorisation and the related reservation of funds by the TPP"
+  ],
+  "pageSpans": [
+    "30",
+    "30"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Extended Payment Initiation Services V2.1 20240731.pdf"
+  ],
+  "excerpt": "The closing of the authorisation shall also imply a closing of the related reservation of funds, if applicable.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

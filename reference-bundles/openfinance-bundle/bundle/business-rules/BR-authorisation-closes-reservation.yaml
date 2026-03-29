@@ -1,0 +1,25 @@
+{
+  "id": "BR-authorisation-closes-reservation",
+  "title": "Authorisation Closes Reservation",
+  "slug": "authorisation-closes-reservation",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "The closing of the authorisation shall also imply a closing of the related reservation of funds, if applicable.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-f430b05d835fa621`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-authorisation-closes-reservation"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-f430b05d835fa621",
+  "sourceBootstrapClusterId": "NSTMT-f430b05d835fa621",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

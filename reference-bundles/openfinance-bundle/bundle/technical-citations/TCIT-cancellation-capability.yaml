@@ -1,0 +1,63 @@
+{
+  "id": "TCIT-cancellation-capability",
+  "title": "Cancellation Capability OpenAPI Evidence",
+  "slug": "cancellation-capability-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-cancellation-capability",
+  "technicalTheme": "cancellation",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-admin-services-bg-ofa-admin-recent-openapi-yaml-0cea717792",
+    "API-openfinance-v2-extended-services-licencerestricted-document-services-bg-ofa-document-recent-openapi-yaml-2d12def5d0",
+    "API-openfinance-v2-extended-services-licencerestricted-extended-payment-initiation-services-bg-ofa-xpis-recent-openapi-yaml-eda16121ef",
+    "API-openfinance-v2-extended-services-licencerestricted-mandate-services-bg-ofa-mandates-recent-openapi-yaml-81de828f36",
+    "API-openfinance-v2-extended-services-licencerestricted-push-account-information-services-subscription-bg-ofa-pushais-subscription-recent-openapi-yaml-dfa86d6b56",
+    "API-openfinance-v2-extended-services-licencerestricted-request-to-pay-bg-ofa-rtp-recent-openapi-yaml-3a822017f6"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-admin-services-delete-558f5ad7c3",
+    "OP-document-services-delete-3995b55575",
+    "OP-extended-payment-initiation-services-delete-8c85bff81c",
+    "OP-mandate-services-delete-afd5e71317",
+    "OP-push-account-information-services-subscription-delete-2508e814c9",
+    "OP-push-account-information-services-subscription-delete-7f79d80fe4",
+    "OP-request-to-pay-delete-d097e70e4b"
+  ],
+  "bootstrapApiSchemaObjectIds": [],
+  "bootstrapApiFieldIds": [],
+  "apiSpecTitles": [
+    "Request to Pay Services API for V2.x",
+    "openFinance API Framework Implementation Guidelines Administrative Services",
+    "openFinance API Framework Implementation Guidelines Document Services",
+    "openFinance API Framework Implementation Guidelines Mandate Services",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services",
+    "openFinance API Framework XS2A API as PSD2 Interface Implementation Guidelines - Extended Payment Initiation Service"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/documents/{documentResourceId}",
+    "DELETE /v2/mandates/{resourceId}",
+    "DELETE /v2/onboardings/{onboardingId}",
+    "DELETE /v2/requests-for-payments/{payment-product}/{paymentId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "DELETE /v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "DELETE /v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}"
+  ],
+  "schemaNames": [],
+  "fieldPaths": [],
+  "samplePaths": [
+    "/v2/documents/{documentResourceId}",
+    "/v2/mandates/{resourceId}",
+    "/v2/onboardings/{onboardingId}",
+    "/v2/requests-for-payments/{payment-product}/{paymentId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}",
+    "/v2/subscriptions/{push-accountinformation-subservice}}/{subscriptionId}/subscription-entries/{subscriptionEntryId}",
+    "/v2/{extended-payment-service4}/{payment-product}/{paymentId}/initiations/{initiationId}"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

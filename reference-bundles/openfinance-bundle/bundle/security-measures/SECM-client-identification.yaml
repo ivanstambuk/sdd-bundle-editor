@@ -1,0 +1,15 @@
+{
+  "id": "SECM-client-identification",
+  "title": "Client Identification",
+  "slug": "client-identification",
+  "kind": "other",
+  "statement": "5.1 Client Identification Accessing clients are identified based on eIDAS certificates in analogy to the Core XS2A Interface, but without mandating PSD2 specific attributes in the certificate.",
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-client-identification"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-5fad211e96-5-1-client-identification-client-identification",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

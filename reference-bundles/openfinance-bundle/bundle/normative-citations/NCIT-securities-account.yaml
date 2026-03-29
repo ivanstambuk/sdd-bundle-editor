@@ -1,0 +1,67 @@
+{
+  "id": "NCIT-securities-account",
+  "title": "Securities Account Citation",
+  "slug": "securities-account-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-securities-account",
+  "bootstrapSectionIds": [
+    "SEC-83af6a40e8-1-2-extended-account-information-services",
+    "SEC-83af6a40e8-2-operational-rules",
+    "SEC-83af6a40e8-3-2-5-overview-of-endpoints",
+    "SEC-83af6a40e8-4-6-1-read-account-list",
+    "SEC-83af6a40e8-4-6-2-read-account-details",
+    "SEC-83af6a40e8-4-6-3-read-account-positions",
+    "SEC-83af6a40e8-4-6-4-read-transaction-list",
+    "SEC-83af6a40e8-4-6-5-read-transaction-details",
+    "SEC-83af6a40e8-4-6-6-read-securities-order-list",
+    "SEC-83af6a40e8-4-6-7-read-securities-order-details",
+    "SEC-83af6a40e8-4-6-endpoints-for-securities-accounts-xais-sec",
+    "SEC-86a5b497b6-2-1-service-description"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-a-guide-to-the-openfinance-api-framework-v2-2-20250731-pdf-introduction-document-fe2d14ef43",
+    "PUB-openfinance-extended-account-information-services-v2-2-20250417-pdf-implementation-guidelines-d98103bf50"
+  ],
+  "publicationTitles": [
+    "A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "sectionTitles": [
+    "Extended Account Information Services",
+    "Operational Rules",
+    "Overview of Endpoints",
+    "Read Account List",
+    "Read Account Details",
+    "Read Account Positions",
+    "Read Transaction List",
+    "Read Transaction Details",
+    "Read Securities Order List",
+    "Read Securities Order Details",
+    "Endpoints for Securities Accounts (XAIS-SEC)",
+    "Service Description"
+  ],
+  "pageSpans": [
+    "6-7",
+    "9-11",
+    "15-19",
+    "83-88",
+    "88-91",
+    "91-94",
+    "94-98",
+    "98-101",
+    "101-104",
+    "104-107",
+    "83",
+    "6-8"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/A guide to the openFinance API Framework V2.2. 20250731.pdf",
+    "../downloads/pdfs/Extended Account Information Services V2.2 20250417.pdf"
+  ],
+  "excerpt": "1.2 Extended Account Information Services The core XS2A Interface as introduced above is already supporting Account Information Services (AIS) for current accounts and card reconciliation accounts. These services follow the functionality of online channels of the related ASPSP: Via the services, information on accounts, balances and transactions can be requested for the supported account types. Each request must refer to an underlying consent from the PSU that grants the TPP access to the requested information.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

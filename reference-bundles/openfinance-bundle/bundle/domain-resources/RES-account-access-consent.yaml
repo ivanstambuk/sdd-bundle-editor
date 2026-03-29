@@ -1,0 +1,32 @@
+{
+  "id": "RES-account-access-consent",
+  "title": "Account Access Consent",
+  "slug": "account-access-consent",
+  "resourceName": "Account Access Consent",
+  "kind": "consent-subtype",
+  "parentResourceId": "RES-consent",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "aliases": [
+    "account information consent resource",
+    "consent object of category account-access"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-account-access-consent"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability",
+    "TCIT-consent-flow",
+    "TCIT-consent-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-account-access-consent",
+  "notes": "Consent subtype governing access to account information data and related account scopes."
+}

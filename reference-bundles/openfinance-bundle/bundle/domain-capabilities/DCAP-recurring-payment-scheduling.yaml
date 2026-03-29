@@ -1,0 +1,30 @@
+{
+  "id": "DCAP-recurring-payment-scheduling",
+  "title": "Recurring Payment Scheduling",
+  "slug": "recurring-payment-scheduling",
+  "theme": "payment-initiation",
+  "conceptFamilyId": "CCFAM-payment-initiation",
+  "statement": "The TPP shall use within the single recurring payment initiations the related regular execution date.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-068b17995dc33c2a` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-068b17995dc33c2a`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-recurring-payment-execution-date-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-recurring-payment-execution-date-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-068b17995dc33c2a",
+  "sourceBootstrapRuleCandidateId": "DRCAND-068b17995dc33c2a",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-payment-initiation",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement governs one scheduling variant within the broader payment-initiation surface."
+}

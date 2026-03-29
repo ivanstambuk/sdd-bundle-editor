@@ -1,0 +1,46 @@
+{
+  "id": "SCON-document-access-capability-schema-contract",
+  "title": "Document Access Capability Schema Contract",
+  "slug": "document-access-capability-schema-contract",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "document-services",
+  "conceptFamilyIds": [
+    "CCFAM-document-services"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-document-access"
+  ],
+  "technicalCitationIds": [
+    "TCIT-document-access-capability"
+  ],
+  "schemaNames": [
+    "_links_200_Documents",
+    "_links_201_Documents",
+    "clientMessageInformation_400_Documents",
+    "clientMessageInformation_401_Documents",
+    "clientMessageInformation_403_Documents",
+    "clientMessageInformation_404_Documents",
+    "clientMessageInformation_405_Documents",
+    "clientMessageInformation_409_Documents",
+    "relatedDocumentInformation"
+  ],
+  "fieldPaths": [
+    "category",
+    "code",
+    "path",
+    "relationCode",
+    "relationProprietary",
+    "resourceId",
+    "self",
+    "status",
+    "text"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-document-capability",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

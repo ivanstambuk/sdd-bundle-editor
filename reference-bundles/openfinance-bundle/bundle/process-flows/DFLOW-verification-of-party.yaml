@@ -1,0 +1,22 @@
+{
+  "id": "DFLOW-verification-of-party",
+  "title": "Verification Of Party",
+  "slug": "verification-of-party",
+  "kind": "verification-of-party-flow",
+  "conceptFamilyId": "CCFAM-verification-of-party",
+  "statement": "Represents the verification request and response interaction sequence. OpenAPI evidence: 4 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-verification-of-party-request"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "technicalCitationIds": [
+    "TCIT-verification-of-party-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-verification-flow",
+  "operationCount": 4
+}

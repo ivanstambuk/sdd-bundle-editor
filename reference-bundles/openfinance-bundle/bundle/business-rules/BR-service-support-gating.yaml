@@ -1,0 +1,32 @@
+{
+  "id": "BR-service-support-gating",
+  "title": "Service Support Gating",
+  "slug": "service-support-gating",
+  "theme": "service-support",
+  "conceptFamilyId": "CCFAM-service-support",
+  "statement": "This openFinance API standard is not defining whether a service is to be supported in the openFinance API or not, but it might define a mandatory support of sub-services once a dedicated openFinance API service is offered.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-979a7c65bed2bd41`. The statement repeats 6 times across 6 publications and 3 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-request-to-pay"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-service-support-gating"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-979a7c65bed2bd41",
+  "sourceBootstrapClusterId": "NSTMT-979a7c65bed2bd41",
+  "occurrenceCount": 6,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

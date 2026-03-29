@@ -1,0 +1,27 @@
+{
+  "id": "SCON-loan-account-resource-schema-contract",
+  "title": "Loan Account Resource Schema Contract",
+  "slug": "loan-account-resource-schema-contract",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "loan-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-loan-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-loan-account-resource"
+  ],
+  "schemaNames": [
+    "_links_200_AISLOANACCOUNTTXLIST"
+  ],
+  "fieldPaths": [
+    "download"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-loan-account-resource",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

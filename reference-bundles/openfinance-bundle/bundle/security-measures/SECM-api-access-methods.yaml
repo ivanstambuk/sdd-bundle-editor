@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-access-methods",
+  "title": "API Access Methods",
+  "slug": "api-access-methods",
+  "kind": "other",
+  "statement": "3.3 API Access Methods The following tables gives an overview on the HTTP access methods supported by the API endpoints and by resources created through this API. 03 June 2025 Berlin Group Dedicated VOP API Definition openFinance VOP Service Conditions in the following tables It is further defined, whether this method support is mandated for the ASPSP by this specifica- tion or whether it is an optional feature for the ASPSP. Please note that this condition is given relative to the parent node of the path, i.e. the condition e.g. on a method on /v2/pay- ments/{payment-product}/{paymentId} applies only if the endpoint /v2/payments/{payment- product} is supported at all. Endpoints/Resources Me",
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-access-methods"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-37a95f45e3-3-3-api-access-methods-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

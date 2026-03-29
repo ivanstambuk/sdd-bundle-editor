@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-embedded-sca-approach-with-only-one-sca-method-available-2",
+  "title": "Embedded SCA Approach with only one SCA method available Citation",
+  "slug": "embedded-sca-approach-with-only-one-sca-method-available-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-b28ecd8502-3-1-4-embedded-sca-approach-with-only-one-sca-method-available-embedded-sca-approach-with-only-one-sca-method-available",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-1-4-embedded-sca-approach-with-only-one-sca-method-available"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Embedded SCA Approach with only one SCA method available"
+  ],
+  "pageSpans": [
+    "16-17"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.1.4 Embedded SCA Approach with only one SCA method available In the following, several exemplary flows are shown, where the ASPSP has chosen to process the SCA methods for the consent approval through the PISP \u2013 ASPSP interface. In any case, the PSU normally will need to authenticate himself with a first factor, before any account or SCA method details will be available to the PISP. Remark: In case where OAuth2 is requested by the ASPSP as a pre-step to replace the PSU- and password by an access token, the sequence of the PSU authentication Consent API Establish Consents Messages with the first authentication factor is omitted. This applies for all examples for the Embedded SCA Approach.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

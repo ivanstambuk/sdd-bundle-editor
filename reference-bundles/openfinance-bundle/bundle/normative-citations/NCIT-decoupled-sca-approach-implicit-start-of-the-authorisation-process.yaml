@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-decoupled-sca-approach-implicit-start-of-the-authorisation-process",
+  "title": "Decoupled SCA Approach: Implicit Start of the Authorisation Process Citation",
+  "slug": "decoupled-sca-approach-implicit-start-of-the-authorisation-process-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-3-1-7-decoupled-sca-approach-implicit-start-of-the-authorisation-process-decoupled-sca-approach-implicit-start-of-the-authorisation-process",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-1-7-decoupled-sca-approach-implicit-start-of-the-authorisation-process"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Decoupled SCA Approach: Implicit Start of the Authorisation Process"
+  ],
+  "pageSpans": [
+    "28"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "3.1.7 Decoupled SCA Approach: Implicit Start of the Authorisation Process The transaction flow in the Decoupled SCA Approach is similar to the Redirect SCA Approach. The difference is that the ASPSP is asking the PSU to authorise the payment e.g. via a dedicated mobile app, or any other application or device which is independent from the online banking frontend. The ASPSP is asking the TPP to inform the PSU about this authentication by sending a corresponding PSU Message like \"Please use your xxx App to authorise the payment\". After the SCA having been processed between ASPSP and PSU, the TPP then needs to ask for the result of the transaction.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

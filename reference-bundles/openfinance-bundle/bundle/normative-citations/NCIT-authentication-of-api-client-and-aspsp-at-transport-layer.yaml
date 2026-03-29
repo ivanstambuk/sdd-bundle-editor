@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-authentication-of-api-client-and-aspsp-at-transport-layer",
+  "title": "Authentication of API Client and ASPSP at transport layer Citation",
+  "slug": "authentication-of-api-client-and-aspsp-at-transport-layer-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-fd85673676-5-authentication-of-api-client-and-aspsp-at-transport-layer-authentication-of-api-client-and-aspsp-at-transport-layer",
+  "bootstrapSectionIds": [
+    "SEC-fd85673676-5-authentication-of-api-client-and-aspsp-at-transport-layer"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Authentication of API Client and ASPSP at transport layer"
+  ],
+  "pageSpans": [
+    "42"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "5 Authentication of API Client and ASPSP at transport layer The communication between an API Client and an ASPSP is always secured by using a TLS- secured connection. Client authentication is always used, i.e. a mutual authentication between the API Client and the ASPSP will be part of the setup of the TLS-secured connection. TLS version 1.2 or higher has to be used. For the choice of cipher suite selections, NIST recommendations on the cryptographical strength should be followed.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-access-methods-3",
+  "title": "API Access Methods",
+  "slug": "api-access-methods",
+  "kind": "other",
+  "statement": "3.2 API Access Methods The table in section 3.2.5, \"Overview of Endpoints\", gives an overview on the HTTP access methods supported by the API endpoints for the Extended Account Information Services.",
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-access-methods-3"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-83af6a40e8-3-2-api-access-methods-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

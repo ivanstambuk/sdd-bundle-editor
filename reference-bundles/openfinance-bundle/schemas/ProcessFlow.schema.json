@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProcessFlow",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "kind",
+    "statement"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DFLOW-[a-z0-9-]+$",
+      "x-sdd-entityType": "ProcessFlow",
+      "x-sdd-idTemplate": "DFLOW-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "conceptFamilyId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "ConceptFamily"
+      ]
+    },
+    "parentProcessFlowId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "ProcessFlow"
+      ]
+    },
+    "statement": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "reviewPriority": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "specializationDecision": {
+      "type": "string",
+      "enum": [
+        "keep-hierarchical"
+      ]
+    },
+    "specializationRationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "participantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Participant"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainResource"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "supportingBusinessRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "BusinessRule"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "normativeCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "NormativeCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "technicalCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TechnicalCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "derivationBasis": {
+      "type": "string",
+      "enum": [
+        "normative-candidate",
+        "technical-candidate"
+      ]
+    },
+    "sourceBootstrapProcessFlowCandidateId": {
+      "type": "string"
+    },
+    "sourceBootstrapRuleCandidateId": {
+      "type": "string"
+    },
+    "sourceBootstrapTechnicalCandidateId": {
+      "type": "string"
+    },
+    "operationCount": {
+      "type": "integer"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "DFLOW-pending-payment-camt-052-statement-retrieval",
+  "title": "Pending Payment CAMT.052 Statement Retrieval",
+  "slug": "pending-payment-camt-052-statement-retrieval",
+  "kind": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The camt.052 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-7f01126b5101c76b` to represent a possible future `ProcessFlow`. This candidate is limited to themes that imply execution or interaction sequencing.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-pending-payment-camt-052-statement-inclusion"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-camt-052-statement-inclusion"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapProcessFlowCandidateId": "PFCAND-7f01126b5101c76b",
+  "sourceBootstrapRuleCandidateId": "DRCAND-7f01126b5101c76b",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible process flow anchored to a high-priority business-rule candidate."
+}

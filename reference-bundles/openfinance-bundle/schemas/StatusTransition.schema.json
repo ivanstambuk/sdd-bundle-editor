@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StatusTransition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "kind",
+    "summary"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^STTR-[a-z0-9-]+$",
+      "x-sdd-entityType": "StatusTransition",
+      "x-sdd-idTemplate": "STTR-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    },
+    "conceptFamilyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConceptFamily"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "valueObjectIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ValueObject"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainResource"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainCapabilityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainCapability"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "processFlowIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ProcessFlow"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "supportingBusinessRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "BusinessRule"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "technicalCitationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TechnicalCitation"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "schemaContractIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "SchemaContract"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "derivationBasis": {
+      "type": "string",
+      "enum": [
+        "status-value-object-pattern"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

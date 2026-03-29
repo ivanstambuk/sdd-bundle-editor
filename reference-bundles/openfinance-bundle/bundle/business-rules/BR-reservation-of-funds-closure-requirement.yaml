@@ -1,0 +1,25 @@
+{
+  "id": "BR-reservation-of-funds-closure-requirement",
+  "title": "Reservation-Of-Funds Closure Requirement",
+  "slug": "reservation-of-funds-closure-requirement",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "In addition, the ASPSP shall then close the related reservation of funds, if applicable.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-a82eeb5e7dd0620e`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-reservation-of-funds-closure-requirement"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-a82eeb5e7dd0620e",
+  "sourceBootstrapClusterId": "NSTMT-a82eeb5e7dd0620e",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

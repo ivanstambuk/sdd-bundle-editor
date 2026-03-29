@@ -1,0 +1,15 @@
+{
+  "id": "SECM-decision-about-strong-customer-authentication-3",
+  "title": "Decision about strong customer authentication",
+  "slug": "decision-about-strong-customer-authentication",
+  "kind": "other",
+  "statement": "6.7 Decision about strong customer authentication Establishing a mandate via the Mandate Service always require SCA see above. The ASPSP has to decide \u2022 if SCA has to be executed as part of a mandate cancellation process. The TPP shall follow the decisions of the TPP.",
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-decision-about-strong-customer-authentication-3"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-b23f61406a-6-7-decision-about-strong-customer-authentication-decision-about-strong-customer-authentication",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

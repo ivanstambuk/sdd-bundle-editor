@@ -1,0 +1,15 @@
+{
+  "id": "SECM-decoupled-sca-approach-implicit-start-of-the-authorisation-process",
+  "title": "Decoupled SCA Approach: Implicit Start of the Authorisation Process",
+  "slug": "decoupled-sca-approach-implicit-start-of-the-authorisation-process",
+  "kind": "other",
+  "statement": "3.1.7 Decoupled SCA Approach: Implicit Start of the Authorisation Process The transaction flow in the Decoupled SCA Approach is similar to the Redirect SCA Approach. The difference is that the ASPSP is asking the PSU to authorise the payment e.g. via a dedicated mobile app, or any other application or device which is independent from the online banking frontend. The ASPSP is asking the TPP to inform the PSU about this authentication by sending a corresponding PSU Message like \"Please use your xxx App to authorise the payment\". After the SCA having been processed between ASPSP and PSU, the TPP then needs to ask for the result of the transaction.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "normativeCitationIds": [
+    "NCIT-decoupled-sca-approach-implicit-start-of-the-authorisation-process"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-3d9e00add2-3-1-7-decoupled-sca-approach-implicit-start-of-the-authorisation-process-decoupled-sca-approach-implicit-start-of-the-authorisation-process",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

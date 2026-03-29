@@ -1,0 +1,25 @@
+{
+  "id": "BR-funds-availability-and-reservation",
+  "title": "Funds Availability And Reservation",
+  "slug": "funds-availability-and-reservation",
+  "theme": "funds-reservation",
+  "conceptFamilyId": "CCFAM-funds-reservation",
+  "statement": "The ASPSP checks each time whether the funds for the amount are available and shall reserve the funds, if in addition the reservation of funds was authorised.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-dee0633dcfa42d36`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-funds-availability-and-reservation"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-dee0633dcfa42d36",
+  "sourceBootstrapClusterId": "NSTMT-dee0633dcfa42d36",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

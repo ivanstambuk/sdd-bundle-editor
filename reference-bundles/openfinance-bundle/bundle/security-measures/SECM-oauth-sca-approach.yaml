@@ -1,0 +1,15 @@
+{
+  "id": "SECM-oauth-sca-approach",
+  "title": "OAuth SCA Approach",
+  "slug": "oauth-sca-approach",
+  "kind": "other",
+  "statement": "8.8 OAuth SCA Approach The OAuth2 protocol as used optionally for this API is defined in [RFC6749]. In this section, additional requirements on the protocol are defined. The related protocol shall be used by the TPP, if the ASPSP is transmitting the link of type \"scaOAuth\". NOTE: A more standardised security profile based on re-direct like the FAPI PAR profile are not supported yet by the openFinance API Framework.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-oauth-sca-approach"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-8-oauth-sca-approach-oauth-sca-approach",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

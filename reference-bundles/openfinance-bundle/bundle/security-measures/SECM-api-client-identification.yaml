@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-client-identification",
+  "title": "API-Client identification",
+  "slug": "api-client-identification",
+  "kind": "other",
+  "statement": "7.2 API-Client identification Accessing clients are identified based on eIDAS certificates (QWAC) in analogy to the Core XS2A Interface, but without mandating PSD2 specific attributes in the certificate. These certificates are only used for the identification of the API client. In general these certificates will not contain any scheme or service specific data. See also [oFA-OR-ADM].",
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-client-identification"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-2d10ee39f1-7-2-api-client-identification-api-client-identification",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "DCAP-pending-payment-mt942-statement-content",
+  "title": "Pending Payment MT942 Statement Content",
+  "slug": "pending-payment-mt942-statement-content",
+  "theme": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The MT942 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-eabe79e60ff535cc` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-eabe79e60ff535cc`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding",
+    "RES-savings-account"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-pending-payment-mt942-statement-inclusion"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-mt942-statement-inclusion"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-eabe79e60ff535cc",
+  "sourceBootstrapRuleCandidateId": "DRCAND-eabe79e60ff535cc",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

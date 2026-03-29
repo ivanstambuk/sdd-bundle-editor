@@ -1,0 +1,46 @@
+{
+  "id": "RES-mandate",
+  "title": "Mandate",
+  "slug": "mandate",
+  "resourceName": "Mandate",
+  "kind": "mandate",
+  "conceptFamilyId": "CCFAM-mandate-management",
+  "aliases": [
+    "mandate",
+    "mandate resource",
+    "mandates"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-mandate"
+  ],
+  "technicalCitationIds": [
+    "TCIT-mandate-control-capability",
+    "TCIT-mandate-flow",
+    "TCIT-mandate-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-mandate",
+  "notes": "Mandate business resource established, retrieved, cancelled, and tracked through the mandate services API."
+}

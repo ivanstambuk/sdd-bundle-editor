@@ -1,0 +1,46 @@
+{
+  "id": "SCON-subscription-flow-schema-contract",
+  "title": "Subscription Flow Schema Contract",
+  "slug": "subscription-flow-schema-contract",
+  "targetDomainEntityType": "ProcessFlow",
+  "technicalTheme": "subscription-lifecycle",
+  "conceptFamilyIds": [
+    "CCFAM-subscription-management"
+  ],
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "processFlowIds": [
+    "DFLOW-subscription"
+  ],
+  "technicalCitationIds": [
+    "TCIT-subscription-flow"
+  ],
+  "schemaNames": [
+    "subscriptionEntry",
+    "subscriptionIdentificationAndLink"
+  ],
+  "fieldPaths": [
+    "_links",
+    "accountId",
+    "apiClientPrimaryPushURI",
+    "apiClientSecondaryPushURI",
+    "callbackWithLinkPreferred",
+    "callbackWithStaticTextPreferred",
+    "pushAccountEntryParameters",
+    "pushAccountStatementParameters",
+    "pushBalanceParameters",
+    "pushRtpParameters",
+    "staticCallbackText",
+    "subscriptionEntryId",
+    "subscriptionEntryName",
+    "subscriptionId",
+    "subscriptionStatus",
+    "validUntil"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-subscription-flow",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

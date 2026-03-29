@@ -1,0 +1,32 @@
+{
+  "id": "RES-user-parameters-consent",
+  "title": "User Parameters Consent",
+  "slug": "user-parameters-consent",
+  "resourceName": "User Parameters Consent",
+  "kind": "consent-subtype",
+  "parentResourceId": "RES-consent",
+  "conceptFamilyId": "CCFAM-consent-management",
+  "aliases": [
+    "consent on user parameters access",
+    "user parameters consent object"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "normativeCitationIds": [
+    "NCIT-user-parameters-consent"
+  ],
+  "technicalCitationIds": [
+    "TCIT-consent-control-capability",
+    "TCIT-consent-flow",
+    "TCIT-consent-resource"
+  ],
+  "sourceBootstrapResourceId": "RES-user-parameters-consent",
+  "notes": "Consent subtype used to grant access to technical and PSU user parameter data."
+}

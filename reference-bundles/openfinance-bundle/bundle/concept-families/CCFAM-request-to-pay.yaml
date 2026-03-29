@@ -1,0 +1,38 @@
+{
+  "id": "CCFAM-request-to-pay",
+  "title": "Request To Pay Concept Family",
+  "slug": "request-to-pay-concept-family",
+  "theme": "request-to-pay",
+  "summary": "Technical domain grouping for request-to-pay resources, request-to-pay capabilities, and request-to-pay lifecycle flows.",
+  "domainCapabilityIds": [
+    "DCAP-request-to-pay"
+  ],
+  "processFlowIds": [
+    "DFLOW-request-to-pay"
+  ],
+  "domainResourceIds": [
+    "RES-request-to-pay"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet.",
+  "valueObjectIds": [
+    "VO-amount",
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-client-message",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-request-to-pay-status-transition"
+  ]
+}

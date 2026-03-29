@@ -1,0 +1,41 @@
+{
+  "id": "RES-push-ais-subscription",
+  "title": "Push AIS Subscription",
+  "slug": "push-ais-subscription",
+  "resourceName": "Push AIS Subscription",
+  "kind": "subscription",
+  "conceptFamilyId": "CCFAM-subscription-management",
+  "aliases": [
+    "push account information service subscription",
+    "subscription",
+    "subscription entry",
+    "subscriptions"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-push-ais-subscription"
+  ],
+  "technicalCitationIds": [
+    "TCIT-push-ais-subscription-resource",
+    "TCIT-subscription-control-capability",
+    "TCIT-subscription-flow"
+  ],
+  "sourceBootstrapResourceId": "RES-push-ais-subscription",
+  "notes": "Subscription resource family used to establish, update, inspect, and cancel push account information services."
+}

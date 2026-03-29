@@ -1,0 +1,36 @@
+{
+  "id": "NCIT-funds-confirmation-consent",
+  "title": "Funds Confirmation Consent Citation",
+  "slug": "funds-confirmation-consent-citation",
+  "sourceEntityType": "DomainResource",
+  "bootstrapEntityId": "RES-funds-confirmation-consent",
+  "bootstrapSectionIds": [
+    "SEC-b28ecd8502-3-5-1-consent-on-funds-confirmation-request",
+    "SEC-b28ecd8502-3-5-2-get-consent-request",
+    "SEC-b28ecd8502-3-5-establish-consent-on-funds-confirmation"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-consent-api-implementation-guidelines-v2-2-20251031-pdf-implementation-guidelines-408b6b47b5"
+  ],
+  "publicationTitles": [
+    "Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Consent on Funds Confirmation Request",
+    "Get Consent Request",
+    "Establish Consent on Funds Confirmation"
+  ],
+  "pageSpans": [
+    "38-46",
+    "46-49",
+    "38"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Consent API Implementation Guidelines V2.2 20251031.pdf"
+  ],
+  "excerpt": "3.5 Establish Consent on Funds Confirmation In this section, the Establish Consent on Funds Confirmation process is defined for the openFinance API Framework.",
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

@@ -1,0 +1,31 @@
+{
+  "id": "BR-notification-fallback-usage",
+  "title": "Notification Fallback Usage",
+  "slug": "notification-fallback-usage",
+  "theme": "notification",
+  "conceptFamilyId": "CCFAM-notification",
+  "statement": "The first alternative shall only be used by an API Client if the Resource Status Notification function is not useable by the API Client.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-1544381ac0d8eb94`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu"
+  ],
+  "domainResourceIds": [
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-notification-fallback-usage"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-1544381ac0d8eb94",
+  "sourceBootstrapClusterId": "NSTMT-1544381ac0d8eb94",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

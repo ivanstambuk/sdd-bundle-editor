@@ -1,0 +1,23 @@
+{
+  "id": "DFLOW-payment",
+  "title": "Payment",
+  "slug": "payment",
+  "kind": "payment-lifecycle",
+  "conceptFamilyId": "CCFAM-payment-initiation",
+  "statement": "Represents the payment initiation, follow-up, and status interaction sequence exposed by the contract. OpenAPI evidence: 15 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-payment-initiation"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-payment-initiation-services"
+  ],
+  "technicalCitationIds": [
+    "TCIT-payment-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-payment-flow",
+  "operationCount": 15
+}

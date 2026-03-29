@@ -1,0 +1,31 @@
+{
+  "id": "PART-piisp",
+  "title": "Payment Instrument Issuing Service Provider",
+  "slug": "payment-instrument-issuing-service-provider",
+  "participantName": "Payment Instrument Issuing Service Provider",
+  "abbreviation": "PIISP",
+  "kind": "funds-confirmation-provider",
+  "parentParticipantId": "PART-tpp",
+  "aliases": [
+    "PIISP",
+    "Payment Instrument Issuing Service Provider"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "normativeCitationIds": [
+    "NCIT-payment-instrument-issuing-service-provider"
+  ],
+  "sourceBootstrapParticipantId": "PART-piisp",
+  "notes": "TPP subtype using confirmation-of-funds functionality for payment instruments."
+}

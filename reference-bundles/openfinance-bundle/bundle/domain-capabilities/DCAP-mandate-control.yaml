@@ -1,0 +1,24 @@
+{
+  "id": "DCAP-mandate-control",
+  "title": "Mandate Control",
+  "slug": "mandate-control",
+  "theme": "mandate-management",
+  "conceptFamilyId": "CCFAM-mandate-management",
+  "statement": "Controls mandate creation, retrieval, amendment, and lifecycle handling across mandate-service interactions. OpenAPI evidence: 4 operations, 9 schema objects, and 51 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-mandate"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "technicalCitationIds": [
+    "TCIT-mandate-control-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-mandate-capability",
+  "operationCount": 4,
+  "schemaObjectCount": 9,
+  "fieldCount": 51
+}

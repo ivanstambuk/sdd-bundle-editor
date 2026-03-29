@@ -1,0 +1,15 @@
+{
+  "id": "SECM-strong-customer-authentication-of-a-psu",
+  "title": "Strong customer authentication of a PSU",
+  "slug": "strong-customer-authentication-of-a-psu",
+  "kind": "other",
+  "statement": "8 Strong customer authentication of a PSU Remark: The term PSU is used for the user of a services even in the case of services which are not related to a payment service.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-strong-customer-authentication-of-a-psu"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-8-strong-customer-authentication-of-a-psu-strong-customer-authentication-of-a-psu",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

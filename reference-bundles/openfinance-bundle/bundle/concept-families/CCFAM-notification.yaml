@@ -1,0 +1,49 @@
+{
+  "id": "CCFAM-notification",
+  "title": "Notification Concept Family",
+  "slug": "notification-concept-family",
+  "theme": "notification",
+  "summary": "Aggregate derivation family for theme `notification` with 2 rule candidates, 2 capability candidates, and 2 flow candidates.",
+  "businessRuleIds": [
+    "BR-notification-fallback-usage",
+    "BR-status-notification-callback-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-status-notification",
+    "DCAP-status-notification-callback-handling",
+    "DCAP-status-notification-fallback-handling"
+  ],
+  "processFlowIds": [
+    "DFLOW-status-notification",
+    "DFLOW-status-notification-callback",
+    "DFLOW-status-notification-fallback"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-resource-status-notification"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-resource-status-notification",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-notification",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle.",
+  "statusTransitionIds": [
+    "STTR-notification-delivery-transition"
+  ]
+}

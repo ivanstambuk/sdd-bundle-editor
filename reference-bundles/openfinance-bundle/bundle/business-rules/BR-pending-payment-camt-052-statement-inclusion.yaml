@@ -1,0 +1,34 @@
+{
+  "id": "BR-pending-payment-camt-052-statement-inclusion",
+  "title": "Pending Payment CAMT.052 Statement Inclusion",
+  "slug": "pending-payment-camt-052-statement-inclusion",
+  "theme": "statement-content",
+  "conceptFamilyId": "CCFAM-statement-content",
+  "statement": "The camt.052 may include pending payments which are not yet finally booked.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-7f01126b5101c76b`. The statement repeats 2 times across 2 publications and 2 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-onboarding"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "normativeCitationIds": [
+    "NCIT-pending-payment-camt-052-statement-inclusion"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-7f01126b5101c76b",
+  "sourceBootstrapClusterId": "NSTMT-7f01126b5101c76b",
+  "occurrenceCount": 2,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

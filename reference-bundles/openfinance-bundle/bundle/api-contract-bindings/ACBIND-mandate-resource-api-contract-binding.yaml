@@ -1,0 +1,40 @@
+{
+  "id": "ACBIND-mandate-resource-api-contract-binding",
+  "title": "Mandate Resource API Contract Binding",
+  "slug": "mandate-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "mandate",
+  "conceptFamilyIds": [
+    "CCFAM-mandate-management"
+  ],
+  "domainResourceIds": [
+    "RES-mandate"
+  ],
+  "technicalCitationIds": [
+    "TCIT-mandate-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "httpMethods": [
+    "DELETE",
+    "GET",
+    "POST"
+  ],
+  "paths": [
+    "/v2/mandates",
+    "/v2/mandates/{resourceId}",
+    "/v2/mandates/{resourceId}/status"
+  ],
+  "operationSignatures": [
+    "DELETE /v2/mandates/{resourceId}",
+    "GET /v2/mandates/{resourceId}",
+    "GET /v2/mandates/{resourceId}/status",
+    "POST /v2/mandates"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Mandate Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-mandate-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

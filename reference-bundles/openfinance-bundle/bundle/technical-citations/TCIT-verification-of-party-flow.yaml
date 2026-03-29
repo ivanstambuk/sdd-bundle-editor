@@ -1,0 +1,91 @@
+{
+  "id": "TCIT-verification-of-party-flow",
+  "title": "Verification Of Party Flow OpenAPI Evidence",
+  "slug": "verification-of-party-flow-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-verification-flow",
+  "technicalTheme": "verification-of-party-flow",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-verification-of-party-vop-bg-ofa-vop-recent-openapi-yaml-295086acad"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-verification-of-party-vop-get-2d435f22df",
+    "OP-verification-of-party-vop-get-c3c1e98a11",
+    "OP-verification-of-party-vop-post-bed84f5ffb",
+    "OP-verification-of-party-vop-post-ee35fbb6d8"
+  ],
+  "bootstrapApiSchemaObjectIds": [
+    "SCHEMA-verification-of-party-vop-29fb5aee94",
+    "SCHEMA-verification-of-party-vop-516f2f3fdd",
+    "SCHEMA-verification-of-party-vop-66933df7a2",
+    "SCHEMA-verification-of-party-vop-8fed1c849d",
+    "SCHEMA-verification-of-party-vop-9eafb82652",
+    "SCHEMA-verification-of-party-vop-b84e51281d"
+  ],
+  "bootstrapApiFieldIds": [
+    "FIELD-verification-of-party-vop-3252f6d6ad",
+    "FIELD-verification-of-party-vop-46a34e8af1",
+    "FIELD-verification-of-party-vop-4c43daee3f",
+    "FIELD-verification-of-party-vop-4d079b6d1f",
+    "FIELD-verification-of-party-vop-577682792a",
+    "FIELD-verification-of-party-vop-59ba843a77",
+    "FIELD-verification-of-party-vop-5be99cafa4",
+    "FIELD-verification-of-party-vop-61828baaa4",
+    "FIELD-verification-of-party-vop-68df17f66b",
+    "FIELD-verification-of-party-vop-693a29e7bb",
+    "FIELD-verification-of-party-vop-778586cddc",
+    "FIELD-verification-of-party-vop-8520bf1f06",
+    "FIELD-verification-of-party-vop-8e608e5c16",
+    "FIELD-verification-of-party-vop-917d6946e4",
+    "FIELD-verification-of-party-vop-97fa03e02c",
+    "FIELD-verification-of-party-vop-9d60f5c714",
+    "FIELD-verification-of-party-vop-aaa5a82ff3",
+    "FIELD-verification-of-party-vop-b1b7f3274f",
+    "FIELD-verification-of-party-vop-b4e91f528f",
+    "FIELD-verification-of-party-vop-d2562d8be4",
+    "FIELD-verification-of-party-vop-dac1c8250d",
+    "FIELD-verification-of-party-vop-dc6d589a08",
+    "FIELD-verification-of-party-vop-ea61347e7d"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Services Verification of Party (VOP)"
+  ],
+  "operationSignatures": [
+    "GET /v2/{bulk-party-verification-endpoint}/{vopBulkId}",
+    "GET /v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "POST /v2/{bulk-party-verification-endpoint}",
+    "POST /v2/{party-verification-endpoint}"
+  ],
+  "schemaNames": [
+    "partyDescription2",
+    "partyDescription4",
+    "partyIdentification",
+    "partyVerificationRequest",
+    "partyVerificationRequestAndResponse",
+    "partyVerificationResponse"
+  ],
+  "fieldPaths": [
+    "additionalInformation",
+    "identification",
+    "matchedName",
+    "name",
+    "organisationId",
+    "party",
+    "partyAccount",
+    "partyAgent",
+    "partyIdMatch",
+    "partyNameMatch",
+    "postaladdress",
+    "privateId",
+    "uetr"
+  ],
+  "samplePaths": [
+    "/v2/{bulk-party-verification-endpoint}",
+    "/v2/{bulk-party-verification-endpoint}/{vopBulkId}",
+    "/v2/{bulk-party-verification-endpoint}/{vopBulkId}/status",
+    "/v2/{party-verification-endpoint}"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

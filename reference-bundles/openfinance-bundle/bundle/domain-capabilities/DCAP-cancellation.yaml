@@ -1,0 +1,26 @@
+{
+  "id": "DCAP-cancellation",
+  "title": "Cancellation",
+  "slug": "cancellation",
+  "theme": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "Supports cancellation handling across payment, document, and request-to-pay interaction families where the contract exposes cancellation paths. OpenAPI evidence: 7 operations, 0 schema objects, and 0 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "technicalCitationIds": [
+    "TCIT-cancellation-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-cancellation-capability",
+  "operationCount": 7,
+  "schemaObjectCount": 0,
+  "fieldCount": 0
+}

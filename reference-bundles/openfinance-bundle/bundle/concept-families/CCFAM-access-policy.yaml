@@ -1,0 +1,27 @@
+{
+  "id": "CCFAM-access-policy",
+  "title": "Access Policy Concept Family",
+  "slug": "access-policy-concept-family",
+  "theme": "access-policy",
+  "summary": "Aggregate derivation family for theme `access-policy` with 1 rule candidates, 1 capability candidates, and 1 flow candidates.",
+  "businessRuleIds": [
+    "BR-premium-access-beyond-psd2"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-premium-api-client-access"
+  ],
+  "processFlowIds": [
+    "DFLOW-premium-access-beyond-psd2-rule"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-access-policy",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

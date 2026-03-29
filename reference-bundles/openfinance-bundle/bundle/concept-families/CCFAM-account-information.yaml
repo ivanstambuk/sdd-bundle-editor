@@ -1,0 +1,41 @@
+{
+  "id": "CCFAM-account-information",
+  "title": "Account Information Concept Family",
+  "slug": "account-information-concept-family",
+  "theme": "account-information",
+  "summary": "Technical domain grouping for account, card-account, savings, loan, and securities-account retrieval and representation concerns.",
+  "domainCapabilityIds": [
+    "DCAP-account-access"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-card-account",
+    "RES-loan-account",
+    "RES-multicurrency-account",
+    "RES-savings-account",
+    "RES-securities-account"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-request-to-pay",
+    "SRV-openfinance-verification-of-party-payee"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet.",
+  "valueObjectIds": [
+    "VO-amount",
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ]
+}

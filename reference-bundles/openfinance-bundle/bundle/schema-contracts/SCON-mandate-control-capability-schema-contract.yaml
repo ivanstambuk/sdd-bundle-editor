@@ -1,0 +1,68 @@
+{
+  "id": "SCON-mandate-control-capability-schema-contract",
+  "title": "Mandate Control Capability Schema Contract",
+  "slug": "mandate-control-capability-schema-contract",
+  "targetDomainEntityType": "DomainCapability",
+  "technicalTheme": "mandate-management",
+  "conceptFamilyIds": [
+    "CCFAM-mandate-management"
+  ],
+  "domainResourceIds": [
+    "RES-mandate"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-mandate-control"
+  ],
+  "technicalCitationIds": [
+    "TCIT-mandate-control-capability"
+  ],
+  "schemaNames": [
+    "_links_201_Mandates",
+    "clientMessageInformation_400_Mandates",
+    "clientMessageInformation_401_Mandates",
+    "clientMessageInformation_403_Mandates",
+    "clientMessageInformation_404_Mandates",
+    "clientMessageInformation_405_Mandates",
+    "clientMessageInformation_409_Mandates",
+    "mandateType",
+    "referredMandateDocumentInformation"
+  ],
+  "fieldPaths": [
+    "category",
+    "categoryPurposeCode",
+    "categoryPurposeProprietary",
+    "classificationCode",
+    "classificationProprietary",
+    "code",
+    "confirmation",
+    "creditorReference",
+    "encryptionCertificates",
+    "localInstrumentCode",
+    "localInstrumentProprietary",
+    "number",
+    "path",
+    "relatedDate",
+    "scaOAuth",
+    "scaRedirect",
+    "scaStatus",
+    "self",
+    "serviceLevelCode",
+    "serviceLevelProprietary",
+    "startAuthorisation",
+    "startAuthorisationWithAuthenticationMethodSelection",
+    "startAuthorisationWithEncryptedPsuAuthentication",
+    "startAuthorisationWithPsuAuthentication",
+    "startAuthorisationWithPsuIdentification",
+    "startAuthorisationWithTransactionAuthorisation",
+    "status",
+    "text",
+    "typeCode",
+    "typeIssuer",
+    "typeProprietary"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-mandate-capability",
+  "notes": "Schema contract derived from the bootstrap technical-domain candidate layer. This captures the official schema and field surface that a conforming implementation must satisfy."
+}

@@ -1,0 +1,43 @@
+{
+  "id": "ACBIND-notification-endpoint-resource-api-contract-binding",
+  "title": "Notification Endpoint Resource API Contract Binding",
+  "slug": "notification-endpoint-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "notification",
+  "conceptFamilyIds": [
+    "CCFAM-notification"
+  ],
+  "domainResourceIds": [
+    "RES-resource-status-notification"
+  ],
+  "technicalCitationIds": [
+    "TCIT-notification-endpoint-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-resource-status-notification"
+  ],
+  "httpMethods": [
+    "POST"
+  ],
+  "paths": [
+    "/Client-Notification-URL",
+    "/apiClientPrimaryPushURI1",
+    "/apiClientPrimaryPushURI2",
+    "/apiClientPrimaryPushURI3",
+    "/apiClientPrimaryPushURI4"
+  ],
+  "operationSignatures": [
+    "POST /Client-Notification-URL",
+    "POST /apiClientPrimaryPushURI1",
+    "POST /apiClientPrimaryPushURI2",
+    "POST /apiClientPrimaryPushURI3",
+    "POST /apiClientPrimaryPushURI4"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines Protocol Functions and Security Measures for V2.x - Resource Status Notification",
+    "openFinance API Framework Implementation Guidelines for Extended Services Push Account Information Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-notification-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

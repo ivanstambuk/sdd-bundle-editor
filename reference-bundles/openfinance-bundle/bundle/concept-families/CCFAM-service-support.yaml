@@ -1,0 +1,30 @@
+{
+  "id": "CCFAM-service-support",
+  "title": "Service Support Concept Family",
+  "slug": "service-support-concept-family",
+  "theme": "service-support",
+  "summary": "Aggregate derivation family for theme `service-support` with 2 rule candidates, 2 capability candidates, and 0 flow candidates.",
+  "businessRuleIds": [
+    "BR-reservation-variant-support",
+    "BR-service-support-gating"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-reservation-variant-support",
+    "DCAP-sub-service-support-gating"
+  ],
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "sourceBootstrapConceptFamilyId": "CCFAM-service-support",
+  "notes": "Theme-level aggregate over the current derivation-candidate layers. Intended to help move from one-candidate-per-cluster into grouped domain concepts for the future bundle."
+}

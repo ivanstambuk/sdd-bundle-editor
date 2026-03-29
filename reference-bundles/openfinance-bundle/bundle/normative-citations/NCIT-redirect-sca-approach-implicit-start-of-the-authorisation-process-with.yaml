@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-redirect-sca-approach-implicit-start-of-the-authorisation-process-with",
+  "title": "Redirect SCA Approach: Implicit Start of the Authorisation Process with Citation",
+  "slug": "redirect-sca-approach-implicit-start-of-the-authorisation-process-with-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-3d9e00add2-3-1-4-redirect-sca-approach-implicit-start-of-the-authorisation-process-with-redirect-sca-approach-implicit-start-of-the-authorisation-process-with",
+  "bootstrapSectionIds": [
+    "SEC-3d9e00add2-3-1-4-redirect-sca-approach-implicit-start-of-the-authorisation-process-with"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-compliance-services-xs2a-api-implementation-guidelines-v2-4-20251031-pdf-implementation-guidelines-984b204f6b"
+  ],
+  "publicationTitles": [
+    "Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Redirect SCA Approach: Implicit Start of the Authorisation Process with"
+  ],
+  "pageSpans": [
+    "25"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Compliance Services XS2A API Implementation Guidelines V2.4 20251031.pdf"
+  ],
+  "excerpt": "3.1.4 Redirect SCA Approach: Implicit Start of the Authorisation Process with Confirmation Code In addition to the scenario above, an authorisation confirmation request might be requested by the ASPSP from the TPP after the session is re-redirected to the TPP\u2019s system and after the TPP's control on session fixation. In the end, a payment status request might be needed by the TPP to control the exact status of the payment initiation. PSU PISP ASPSP PSU initiates a payment via a TPP 1. Payment-Initiation Request validate \u2022 eIDAS certificate \u2022 request syntax \u2022 tpp role 2a.",
+  "sourceServiceIds": [
+    "SRV-openfinance-core-psd2-compliance"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

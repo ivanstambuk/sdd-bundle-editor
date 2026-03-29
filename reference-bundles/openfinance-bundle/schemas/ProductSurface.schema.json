@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProductSurface",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "productName",
+    "kind"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^PROD-[a-z0-9-]+$",
+      "x-sdd-entityType": "ProductSurface",
+      "x-sdd-idTemplate": "PROD-{slug}"
+    },
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "productName": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "parentProductSurfaceId": {
+      "type": "string",
+      "format": "sdd-ref",
+      "x-sdd-refTargets": [
+        "ProductSurface"
+      ]
+    },
+    "sourceCategories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "sourceServiceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "participantIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Participant"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainResource"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "businessRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "BusinessRule"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "domainCapabilityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DomainCapability"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "processFlowIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ProcessFlow"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "conceptFamilyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConceptFamily"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "valueObjectIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ValueObject"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "statusTransitionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "StatusTransition"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "apiContractBindingIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ApiContractBinding"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "schemaContractIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "SchemaContract"
+        ]
+      },
+      "x-sdd-displayHint": "chips"
+    },
+    "notes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown"
+    }
+  }
+}

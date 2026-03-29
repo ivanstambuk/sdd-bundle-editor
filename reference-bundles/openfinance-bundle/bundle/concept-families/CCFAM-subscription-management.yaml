@@ -1,0 +1,34 @@
+{
+  "id": "CCFAM-subscription-management",
+  "title": "Subscription Management Concept Family",
+  "slug": "subscription-management-concept-family",
+  "theme": "subscription-management",
+  "summary": "Technical domain grouping for push-AIS subscription resources, subscription-management capabilities, and subscription lifecycle flows.",
+  "domainCapabilityIds": [
+    "DCAP-subscription-control"
+  ],
+  "processFlowIds": [
+    "DFLOW-subscription"
+  ],
+  "domainResourceIds": [
+    "RES-push-ais-subscription"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api",
+    "SRV-openfinance-extended-account-information-services",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-push-account-information-services",
+    "SRV-openfinance-push-account-information-services-v2",
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Technical fallback concept family added so OpenAPI-derived domain concepts remain organized when no normative seed family exists yet.",
+  "valueObjectIds": [
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-client-message",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ]
+}

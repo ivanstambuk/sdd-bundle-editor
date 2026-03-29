@@ -1,0 +1,45 @@
+{
+  "id": "DCAP-fallback-client-identification",
+  "title": "Fallback Client Identification",
+  "slug": "fallback-client-identification",
+  "theme": "identification",
+  "conceptFamilyId": "CCFAM-identification",
+  "statement": "If not available, the TPP shall use the IP Address used by the TPP when submitting this request.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-2d1f855d0a4b77a6` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-2d1f855d0a4b77a6`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-account-access-consent",
+    "RES-authorisation-sub-resource",
+    "RES-consent",
+    "RES-document-services-consent",
+    "RES-funds-confirmation-consent",
+    "RES-mandate",
+    "RES-payment-initiation",
+    "RES-signing-basket",
+    "RES-user-parameters-consent"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-tpp-ip-address-fallback-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-core-psd2-compliance",
+    "SRV-openfinance-discovery-api",
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-tpp-ip-address-fallback-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-2d1f855d0a4b77a6",
+  "sourceBootstrapRuleCandidateId": "DRCAND-2d1f855d0a4b77a6",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate."
+}

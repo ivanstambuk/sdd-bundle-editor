@@ -1,0 +1,43 @@
+{
+  "id": "DCAP-rtp-cancellation-handling",
+  "title": "RTP Cancellation Handling",
+  "slug": "rtp-cancellation-handling",
+  "theme": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "An RTP shall not be cancelled if a corresponding payment has already been initiated.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-487295e3c4951c67` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-487295e3c4951c67`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-rtp-cancellation-prohibition"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "normativeCitationIds": [
+    "NCIT-rtp-cancellation-prohibition"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-487295e3c4951c67",
+  "sourceBootstrapRuleCandidateId": "DRCAND-487295e3c4951c67",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-cancellation",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement constrains one request-to-pay cancellation scenario within the broader cancellation contract surface."
+}

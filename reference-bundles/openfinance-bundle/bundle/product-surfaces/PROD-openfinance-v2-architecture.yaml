@@ -1,0 +1,122 @@
+{
+  "id": "PROD-openfinance-v2-architecture",
+  "title": "openFinance V2 Architecture",
+  "slug": "openfinance-v2-architecture",
+  "productName": "openFinance V2 Architecture",
+  "kind": "suite",
+  "parentProductSurfaceId": "PROD-openfinance",
+  "sourceCategories": [
+    "V2 Architecture"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-administrative-services",
+    "SRV-openfinance-basic-operational-rules",
+    "SRV-openfinance-consent-management",
+    "SRV-openfinance-data-dictionary-v2-suite",
+    "SRV-openfinance-domestic-ais-pis-definitions",
+    "SRV-openfinance-overview-openfinance-api-framework",
+    "SRV-openfinance-payment-formats-and-domestic-ais-pis-definitions",
+    "SRV-openfinance-protocol-functions-and-security-measures",
+    "SRV-openfinance-transactions-data-model-and-account-statements"
+  ],
+  "participantIds": [
+    "PART-aisp",
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-account-access-consent",
+    "RES-authorisation-sub-resource",
+    "RES-card-account",
+    "RES-consent",
+    "RES-document-services-consent",
+    "RES-funds-confirmation-consent",
+    "RES-mandate",
+    "RES-multicurrency-account",
+    "RES-onboarding",
+    "RES-payment-initiation",
+    "RES-push-ais-subscription",
+    "RES-request-to-pay",
+    "RES-resource-status-notification",
+    "RES-savings-account",
+    "RES-securities-account",
+    "RES-signing-basket",
+    "RES-user-parameters-consent"
+  ],
+  "businessRuleIds": [
+    "BR-tpp-ip-address-fallback-requirement"
+  ],
+  "domainCapabilityIds": [
+    "DCAP-authorisation-control",
+    "DCAP-cancellation",
+    "DCAP-consent-control",
+    "DCAP-fallback-client-identification",
+    "DCAP-onboarding-control",
+    "DCAP-status-access"
+  ],
+  "processFlowIds": [
+    "DFLOW-authorisation",
+    "DFLOW-consent",
+    "DFLOW-fallback-client-identification",
+    "DFLOW-onboarding"
+  ],
+  "conceptFamilyIds": [
+    "CCFAM-account-information",
+    "CCFAM-authorisation",
+    "CCFAM-cancellation",
+    "CCFAM-consent-management",
+    "CCFAM-identification",
+    "CCFAM-mandate-management",
+    "CCFAM-notification",
+    "CCFAM-onboarding",
+    "CCFAM-payment-initiation",
+    "CCFAM-request-to-pay",
+    "CCFAM-status-retrieval",
+    "CCFAM-subscription-management"
+  ],
+  "valueObjectIds": [
+    "VO-authorisation-method",
+    "VO-certificate-set",
+    "VO-client-message",
+    "VO-confirmation",
+    "VO-link-set",
+    "VO-status"
+  ],
+  "statusTransitionIds": [
+    "STTR-authorisation-status-transition",
+    "STTR-consent-status-transition",
+    "STTR-document-status-transition",
+    "STTR-payment-status-transition",
+    "STTR-request-to-pay-status-transition"
+  ],
+  "apiContractBindingIds": [
+    "ACBIND-authorisation-control-capability-api-contract-binding",
+    "ACBIND-authorisation-flow-api-contract-binding",
+    "ACBIND-authorisation-resource-api-contract-binding",
+    "ACBIND-cancellation-capability-api-contract-binding",
+    "ACBIND-consent-control-capability-api-contract-binding",
+    "ACBIND-consent-flow-api-contract-binding",
+    "ACBIND-consent-resource-api-contract-binding",
+    "ACBIND-onboarding-control-capability-api-contract-binding",
+    "ACBIND-onboarding-flow-api-contract-binding",
+    "ACBIND-onboarding-resource-api-contract-binding",
+    "ACBIND-signing-basket-resource-api-contract-binding",
+    "ACBIND-status-access-capability-api-contract-binding"
+  ],
+  "schemaContractIds": [
+    "SCON-authorisation-control-capability-schema-contract",
+    "SCON-authorisation-flow-schema-contract",
+    "SCON-authorisation-resource-schema-contract",
+    "SCON-consent-control-capability-schema-contract",
+    "SCON-consent-flow-schema-contract",
+    "SCON-consent-resource-schema-contract",
+    "SCON-signing-basket-resource-schema-contract",
+    "SCON-status-access-capability-schema-contract"
+  ],
+  "notes": "Framework building-block surface covering architecture, protocol/security foundation, and shared technical conventions."
+}

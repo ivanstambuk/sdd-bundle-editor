@@ -1,0 +1,42 @@
+{
+  "id": "TCIT-service-discovery-capability",
+  "title": "Service Discovery Capability OpenAPI Evidence",
+  "slug": "service-discovery-capability-openapi-evidence",
+  "bootstrapEntityId": "TDCAND-discovery-capability",
+  "technicalTheme": "discovery",
+  "bootstrapApiSpecIds": [
+    "API-openfinance-v2-extended-services-licencerestricted-discovery-services-bg-ofa-discovery-recent-openapi-yaml-ef35c3f7f5"
+  ],
+  "bootstrapApiOperationIds": [
+    "OP-discovery-services-get-35e9fede56",
+    "OP-discovery-services-get-4a0c434e9a",
+    "OP-discovery-services-get-ae0721a34d",
+    "OP-discovery-services-get-b884b2dbb5",
+    "OP-discovery-services-get-f4a92a0914"
+  ],
+  "bootstrapApiSchemaObjectIds": [],
+  "bootstrapApiFieldIds": [],
+  "apiSpecTitles": [
+    "openFinance API Framework Implementation Guidelines for Discovery Services"
+  ],
+  "operationSignatures": [
+    "GET /v2/api-planned-downtimes",
+    "GET /v2/aspsp-contacts",
+    "GET /v2/aspsp-parameters",
+    "GET /v2/user-parameters",
+    "GET /v2/user-parameters/{userParameterId}"
+  ],
+  "schemaNames": [],
+  "fieldPaths": [],
+  "samplePaths": [
+    "/v2/api-planned-downtimes",
+    "/v2/aspsp-contacts",
+    "/v2/aspsp-parameters",
+    "/v2/user-parameters",
+    "/v2/user-parameters/{userParameterId}"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "notes": "Technical citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

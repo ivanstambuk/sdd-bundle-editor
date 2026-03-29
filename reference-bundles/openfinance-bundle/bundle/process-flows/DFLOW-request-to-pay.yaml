@@ -1,0 +1,22 @@
+{
+  "id": "DFLOW-request-to-pay",
+  "title": "Request To Pay",
+  "slug": "request-to-pay",
+  "kind": "request-to-pay-lifecycle",
+  "conceptFamilyId": "CCFAM-request-to-pay",
+  "statement": "Represents the request-to-pay creation, follow-up, and closure interaction sequence. OpenAPI evidence: 4 operations in the same interaction family.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "domainResourceIds": [
+    "RES-request-to-pay"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "technicalCitationIds": [
+    "TCIT-request-to-pay-flow"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-request-to-pay-flow",
+  "operationCount": 4
+}

@@ -1,0 +1,45 @@
+{
+  "id": "ACBIND-securities-account-resource-api-contract-binding",
+  "title": "Securities Account Resource API Contract Binding",
+  "slug": "securities-account-resource-api-contract-binding",
+  "targetDomainEntityType": "DomainResource",
+  "technicalTheme": "securities-account",
+  "conceptFamilyIds": [
+    "CCFAM-account-information"
+  ],
+  "domainResourceIds": [
+    "RES-securities-account"
+  ],
+  "technicalCitationIds": [
+    "TCIT-securities-account-resource"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-account-information-services"
+  ],
+  "httpMethods": [
+    "GET"
+  ],
+  "paths": [
+    "/v2/securities-accounts",
+    "/v2/securities-accounts/{account-id}",
+    "/v2/securities-accounts/{account-id}/orders",
+    "/v2/securities-accounts/{account-id}/orders/{orderId}",
+    "/v2/securities-accounts/{account-id}/positions",
+    "/v2/securities-accounts/{account-id}/transactions",
+    "/v2/securities-accounts/{account-id}/transactions/{transactionId}"
+  ],
+  "operationSignatures": [
+    "GET /v2/securities-accounts",
+    "GET /v2/securities-accounts/{account-id}",
+    "GET /v2/securities-accounts/{account-id}/orders",
+    "GET /v2/securities-accounts/{account-id}/orders/{orderId}",
+    "GET /v2/securities-accounts/{account-id}/positions",
+    "GET /v2/securities-accounts/{account-id}/transactions",
+    "GET /v2/securities-accounts/{account-id}/transactions/{transactionId}"
+  ],
+  "apiSpecTitles": [
+    "openFinance API Framework Extended Account Information Services"
+  ],
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-securities-account-resource",
+  "notes": "API contract binding derived from the bootstrap technical-domain candidate layer. This binding keeps the official OpenAPI transport surface attached to the domain bundle without exposing raw OpenAPI entities as the primary domain layer."
+}

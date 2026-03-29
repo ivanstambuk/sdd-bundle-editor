@@ -1,0 +1,30 @@
+{
+  "id": "NCIT-certificate-requirements-on-redirect-uris",
+  "title": "Certificate Requirements on Redirect URIs Citation",
+  "slug": "certificate-requirements-on-redirect-uris-citation",
+  "sourceEntityType": "SecurityMeasure",
+  "bootstrapEntityId": "SECM-sec-fd85673676-5-3-certificate-requirements-on-redirect-uris-certificate-requirements-on-redirect-uris",
+  "bootstrapSectionIds": [
+    "SEC-fd85673676-5-3-certificate-requirements-on-redirect-uris"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-protocol-functions-and-security-measures-v2-3-20251031-pdf-implementation-guidelines-2976a805c8"
+  ],
+  "publicationTitles": [
+    "Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "sectionTitles": [
+    "Certificate Requirements on Redirect URIs"
+  ],
+  "pageSpans": [
+    "44-45"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/Protocol Functions and Security Measures V2.3 20251031.pdf"
+  ],
+  "excerpt": "5.3 Certificate Requirements on Redirect URIs The TPP can provide several URIs to the ASPSP as parameters for succeeding protocol steps. For security reasons, it should be ensured that these URIs are secured by the TPP eIDAS QWAC used for identification of the TPP. The following applies: URIs which are provided by TPPs in Client-Redirect-URI or Client-Nok-Redirect-URI should comply with the domain secured by the eIDAS QWAC certificate of the TPP in the field CN or SubjectAltName of the certificate. Please note that in case of example-TPP.com as certificate entry Client-Redirect-URI like \u2022 www.example-TPP.com/xs2a-client/v2/ASPSPidentifcation/mytransaction-id or \u2022 redirections.example-TPP.com",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

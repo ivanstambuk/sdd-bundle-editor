@@ -94,7 +94,7 @@ export function registerBundleTools(ctx: ToolContext): void {
             includeSchemas: z.boolean().default(true).describe("Include JSON schemas for each entity type"),
             includeRefGraph: z.boolean().default(true).describe("Include reference graph edges"),
             includeDiagnostics: z.boolean().default(true).describe("Include validation diagnostics"),
-            maxEntities: z.number().max(10000).default(5000).describe("Maximum entities to return before truncation (default: 5000, max: 10000)"),
+            maxEntities: z.number().max(50000).default(5000).describe("Maximum entities to return before truncation (default: 5000, max: 50000)"),
         },
         async ({ bundleId, entityTypes, includeEntityData, includeSchemas, includeRefGraph, includeDiagnostics, maxEntities }) => {
             const TOOL_NAME = "get_bundle_snapshot";

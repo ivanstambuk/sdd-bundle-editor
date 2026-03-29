@@ -1,0 +1,42 @@
+{
+  "id": "DCAP-payment-status-polling",
+  "title": "Payment Status Polling",
+  "slug": "payment-status-polling",
+  "theme": "authorisation",
+  "conceptFamilyId": "CCFAM-authorisation",
+  "statement": "For the Decoupled, Redirect SCA Approach or OAuth2 SCA approach, there must be at least another message pair Payment Status Request and Payment Status Response to retrieve the information whether the SCA method was successful.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-6f6995dbd3cca114` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-6f6995dbd3cca114`.",
+  "participantIds": [
+    "PART-aisp",
+    "PART-aspsp",
+    "PART-piisp",
+    "PART-pisp",
+    "PART-psu",
+    "PART-tpp"
+  ],
+  "domainResourceIds": [
+    "RES-account",
+    "RES-authorisation-sub-resource",
+    "RES-mandate",
+    "RES-onboarding",
+    "RES-signing-basket"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-payment-status-polling-requirement"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-extended-payment-initiation-services",
+    "SRV-openfinance-mandate-service-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-payment-status-polling-requirement"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-6f6995dbd3cca114",
+  "sourceBootstrapRuleCandidateId": "DRCAND-6f6995dbd3cca114",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-status-access",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because it describes one specific status-retrieval interaction used during payment authorisation rather than the whole status-retrieval capability family."
+}

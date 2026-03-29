@@ -1,0 +1,28 @@
+{
+  "id": "BR-document-cancellation-prohibition",
+  "title": "Document Cancellation Prohibition",
+  "slug": "document-cancellation-prohibition",
+  "theme": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "An electronic document shall not be cancelled if it has already been presented to the PSU.",
+  "reviewPriority": "high",
+  "rationale": "Derived from high-priority normative statement cluster `NSTMT-bd9959f23968fd8a`. The statement repeats 4 times across 2 publications and 1 services, which makes it a strong candidate for a future domain-level `BusinessRule`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-document-cancellation-prohibition"
+  ],
+  "sourceBootstrapRuleCandidateId": "DRCAND-bd9959f23968fd8a",
+  "sourceBootstrapClusterId": "NSTMT-bd9959f23968fd8a",
+  "occurrenceCount": 4,
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This does not replace the underlying evidence entities."
+}

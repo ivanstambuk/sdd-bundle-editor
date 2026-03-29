@@ -1,0 +1,15 @@
+{
+  "id": "SECM-authentication-of-api-client-and-aspsp-at-transport-layer",
+  "title": "Authentication of API Client and ASPSP at transport layer",
+  "slug": "authentication-of-api-client-and-aspsp-at-transport-layer",
+  "kind": "other",
+  "statement": "5 Authentication of API Client and ASPSP at transport layer The communication between an API Client and an ASPSP is always secured by using a TLS- secured connection. Client authentication is always used, i.e. a mutual authentication between the API Client and the ASPSP will be part of the setup of the TLS-secured connection. TLS version 1.2 or higher has to be used. For the choice of cipher suite selections, NIST recommendations on the cryptographical strength should be followed.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-authentication-of-api-client-and-aspsp-at-transport-layer"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-5-authentication-of-api-client-and-aspsp-at-transport-layer-authentication-of-api-client-and-aspsp-at-transport-layer",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

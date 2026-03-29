@@ -1,0 +1,21 @@
+{
+  "id": "DCAP-service-discovery",
+  "title": "Service Discovery",
+  "slug": "service-discovery",
+  "theme": "discovery",
+  "conceptFamilyId": "CCFAM-discovery",
+  "statement": "Exposes discovery and service-directory style lookup capabilities so clients can identify available openFinance services. OpenAPI evidence: 5 operations, 0 schema objects, and 0 fields.",
+  "reviewPriority": "medium",
+  "rationale": "Bootstrap-layer technical derivation candidate. This does not replace the raw API inventory; it groups the interface contract into domain-shaping concepts that can later influence the domain-driven bundle.",
+  "sourceServiceIds": [
+    "SRV-openfinance-discovery-api"
+  ],
+  "technicalCitationIds": [
+    "TCIT-service-discovery-capability"
+  ],
+  "derivationBasis": "technical-candidate",
+  "sourceBootstrapTechnicalCandidateId": "TDCAND-discovery-capability",
+  "operationCount": 5,
+  "schemaObjectCount": 0,
+  "fieldCount": 0
+}

@@ -1,0 +1,35 @@
+{
+  "id": "NCIT-notification-fallback-usage",
+  "title": "Notification Fallback Usage Citation",
+  "slug": "notification-fallback-usage-citation",
+  "sourceEntityType": "NormativeStatementCluster",
+  "bootstrapEntityId": "NSTMT-1544381ac0d8eb94",
+  "bootstrapSectionIds": [
+    "SEC-54c5ea50d9-2-3-mapping-of-rtp-to-the-openfinance-api-framework-for-receiver-rtpsp",
+    "SEC-e22ae5e40f-2-3-mapping-of-rtp-to-the-openfinance-api-framework-for-receiver-rtpsp"
+  ],
+  "bootstrapPublicationIds": [
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-implementation-guidelines-8a848fd76d",
+    "PUB-openfinance-rtp-v2-1-20241018-pdf-operational-rules-8a848fd76d"
+  ],
+  "publicationTitles": [
+    "RTP V2.1. 20241018.pdf",
+    "RTP V2.1. 20241018.pdf"
+  ],
+  "sectionTitles": [
+    "Mapping of RTP to the openFinance API Framework for Receiver-RTPSP",
+    "Mapping of RTP to the openFinance API Framework for Receiver-RTPSP"
+  ],
+  "pageSpans": [
+    "13-17",
+    "13-17"
+  ],
+  "sourcePdfPaths": [
+    "../downloads/pdfs/RTP V2.1. 20241018.pdf"
+  ],
+  "excerpt": "The first alternative shall only be used by an API Client if the Resource Status Notification function is not useable by the API Client.",
+  "sourceServiceIds": [
+    "SRV-openfinance-request-to-pay"
+  ],
+  "notes": "Normative citation carried forward from the bootstrap/evidence bundle into the derived domain bundle."
+}

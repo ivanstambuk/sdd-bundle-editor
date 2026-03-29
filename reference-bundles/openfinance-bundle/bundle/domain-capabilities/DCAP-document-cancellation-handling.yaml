@@ -1,0 +1,34 @@
+{
+  "id": "DCAP-document-cancellation-handling",
+  "title": "Document Cancellation Handling",
+  "slug": "document-cancellation-handling",
+  "theme": "cancellation",
+  "conceptFamilyId": "CCFAM-cancellation",
+  "statement": "An electronic document shall not be cancelled if it has already been presented to the PSU.",
+  "reviewPriority": "high",
+  "rationale": "Derived from domain rule candidate `DRCAND-bd9959f23968fd8a` to represent a potential future `DomainCapability`. The source rule candidate is high-priority and is already anchored to evidence through its source cluster `NSTMT-bd9959f23968fd8a`.",
+  "participantIds": [
+    "PART-api-client",
+    "PART-aspsp",
+    "PART-psu"
+  ],
+  "domainResourceIds": [
+    "RES-document"
+  ],
+  "supportingBusinessRuleIds": [
+    "BR-document-cancellation-prohibition"
+  ],
+  "sourceServiceIds": [
+    "SRV-openfinance-document-services-api"
+  ],
+  "normativeCitationIds": [
+    "NCIT-document-cancellation-prohibition"
+  ],
+  "derivationBasis": "normative-candidate",
+  "sourceBootstrapCapabilityCandidateId": "DCCAND-bd9959f23968fd8a",
+  "sourceBootstrapRuleCandidateId": "DRCAND-bd9959f23968fd8a",
+  "notes": "Bootstrap-layer derivation candidate for the future domain-driven bundle. This candidate proposes a possible domain capability anchored to a high-priority business-rule candidate.",
+  "parentCapabilityId": "DCAP-cancellation",
+  "specializationDecision": "keep-hierarchical",
+  "specializationRationale": "Kept as a specialization because the normative statement constrains one cancellation scenario within the broader cancellation surface rather than replacing document cancellation as a complete contract family."
+}

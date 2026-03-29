@@ -1,0 +1,15 @@
+{
+  "id": "SECM-api-access-methods-6",
+  "title": "API Access Methods",
+  "slug": "api-access-methods",
+  "kind": "other",
+  "statement": "12.1 API Access Methods The following table gives an overview on the HTTP access methods supported by the notification API endpoints of the API Client for receiving notification messages on resource status changes by the ASPSP. Endpoint Method Condition Description <Client-Notification-URI> POST Conditional Notification initiated by ASPSP, endpoint provided by the API Client. This command posts notification content to the provided endpoint. This access method shall be supported by the API Client if a Client-Notification-URI is provided by the API Client in a previous call to the XS2A Interface or openFinance API of the ASPSP.",
+  "sourceServiceIds": [
+    "SRV-openfinance-protocol-functions-and-security-measures"
+  ],
+  "normativeCitationIds": [
+    "NCIT-api-access-methods-6"
+  ],
+  "sourceBootstrapSecurityMeasureId": "SECM-sec-fd85673676-12-1-api-access-methods-api-access-methods",
+  "notes": "Security measure extracted from the protocol/security guide for explicitly named SCA approaches."
+}

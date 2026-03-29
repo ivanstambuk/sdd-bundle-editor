@@ -3,11 +3,13 @@ kind: HeaderField
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "typ (Type) Header Parameter"
+title: typ (Type) Header Parameter
 description: >
-  Used by JWT applications to declare the media type of this complete JWT. 
-  Helps disambiguate when multiple kinds of tokens might be processed at the same endpoint.
-tags: [header]
+  Used by JWT applications to declare the media type of this complete
+  JWT.  Helps disambiguate when multiple kinds of tokens might be processed at
+  the same endpoint.
+tags:
+  - header
 name: typ
 handlingPolicy: profile-controlled
 dataType: string

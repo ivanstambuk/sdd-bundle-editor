@@ -22,6 +22,15 @@ import {
 } from '@sdd-bundle-editor/core-schema';
 import { loadLintConfig, runLintRules } from '@sdd-bundle-editor/core-lint';
 
+function getValueAtPath(record: Record<string, unknown>, fieldPath: string): unknown {
+  return fieldPath.split('.').reduce<unknown>((current, part) => {
+    if (!current || typeof current !== 'object') {
+      return undefined;
+    }
+    return (current as Record<string, unknown>)[part];
+  }, record);
+}
+
 export async function loadManifest(manifestPath: string): Promise<BundleManifest> {
   const raw = await fs.readFile(manifestPath, 'utf8');
   const manifest = parseYaml(raw) as unknown;
@@ -101,7 +110,7 @@ async function discoverEntities(
       }
 
       const record = data as Record<string, unknown>;
-      const idValue = record[entityConfig.idField];
+      const idValue = getValueAtPath(record, entityConfig.idField);
       if (typeof idValue !== 'string') {
         diagnostics.push({
           severity: 'error',

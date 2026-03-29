@@ -3,9 +3,12 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Validate Subject Claim"
-description: If an expected subject is configured in the runtime policy, the `sub` claim MUST exact-match it.
-tags: [validation, security]
+title: Validate Subject Claim
+description: If an expected subject is configured in the runtime policy, the
+  `sub` claim MUST exact-match it.
+tags:
+  - validation
+  - security
 severity: ERROR
 ruleType: StringMatch
 throwsErrorCodeId: ERR-invalid-subject
@@ -13,4 +16,4 @@ implementsReferenceIds:
   - RFC-7519
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
-  - ADR-profile-governs-claim-requirements
+  - ADR-0010-profile-governs-claim-requirements

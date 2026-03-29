@@ -3,10 +3,14 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Verify Unambiguous Key Resolution"
-description: If a `kid` maps to multiple matching keys within the given key material, the validator MUST treat the outcome as indeterminate rather than guessing.
-tags: [validation, crypto]
+title: Verify Unambiguous Key Resolution
+description: If a `kid` maps to multiple matching keys within the given key
+  material, the validator MUST treat the outcome as indeterminate rather than
+  guessing.
+tags:
+  - validation
+  - crypto
 severity: FATAL
 throwsErrorCodeId: ERR-kid-ambiguous
 governedByAdrIds:
-  - ADR-key-resolution-fails-closed
+  - ADR-0008-key-resolution-fails-closed

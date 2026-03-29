@@ -4,13 +4,16 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Remote JWKS Validation Profile
-description: Conformance class for implementations that extend the local JWT core with direct HTTPS JWKS retrieval.
-tags: [compliance, remote]
+description: Conformance class for implementations that extend the local JWT
+  core with direct HTTPS JWKS retrieval.
+tags:
+  - compliance
+  - remote
 requiresOperationIds:
   - OP-validate-jwt
 targetsProfileIds:
   - PROF-JWT-REMOTE-JWKS
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-remote-jwks-over-https
-  - ADR-conformance-is-executable
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0005-remote-jwks-over-https
+  - ADR-0014-conformance-is-executable

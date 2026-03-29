@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: Conformance Audit Request
-description: Harness request identifying which conformance suite to execute and which validator operation should be exercised during the audit run.
-tags: [data, input, conformance]
+description: Harness request identifying which conformance suite to execute and
+  which validator operation should be exercised during the audit run.
+tags:
+  - data
+  - input
+  - conformance
 composesStructureIds:
   - STRUCT-suite-selection
   - STRUCT-validator-operation-selection

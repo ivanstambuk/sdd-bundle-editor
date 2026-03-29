@@ -1,0 +1,133 @@
+adr:
+  id: ADR-0013-validation-result-is-a-structured-contract
+  title: Return a structured validation result instead of a boolean or prose error
+  y_statement: >-
+    **In the context of** The validator serves both application callers and a
+    conformance harness. Those users
+
+    need more than pass/fail: they need to know which profile was evaluated,
+    where
+
+    failure occurred, and whether trust ended in rejection, malformed input, or
+
+    indeterminate state. **facing** What should the primary contract of the
+    validate operation look like? **we decided for** Structured result contract
+    **and neglected** Boolean plus free-form message **to achieve** Applications
+    and conformance tooling can consume the same output model.; Diagnostics
+    remain testable without log scraping. **accepting** The result structure is
+    more detailed than a minimal validator API. **because** `OP-validate-jwt`
+    returns a structured `STRUCT-validation-result` document capturing
+
+    outcome class, selected profile, key-selection status, trust decision,
+    terminal step,
+
+    failed rule, and structured diagnostics.
+  status: accepted
+  created_at: 2024-10-08T09:00:00Z
+  last_modified: 2024-10-09T11:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Validation Result API
+  tags:
+    - api
+    - result
+    - contract
+  priority: medium
+  decision_type: technology
+  decision_level: tactical
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-10-09T11:00:00Z
+context:
+  description: >-
+    The validator serves both application callers and a conformance harness.
+    Those users
+
+    need more than pass/fail: they need to know which profile was evaluated,
+    where
+
+    failure occurred, and whether trust ended in rejection, malformed input, or
+
+    indeterminate state.
+
+
+    ## Decision Question
+
+
+    What should the primary contract of the validate operation look like?
+  assumptions:
+    - Consumers benefit from machine-readable failure semantics.
+    - Conformance tooling should not have to parse log text.
+alternatives:
+  - name: Structured result contract
+    description: Return a typed result object with explicit status fields.
+    pros:
+      - Better for automation and auditing.
+      - Supports conformance harnesses directly.
+    cons:
+      - More fields to maintain.
+    estimated_cost: medium
+    risk: low
+  - name: Boolean plus free-form message
+    description: Return success or failure with a textual explanation.
+    pros:
+      - Smaller API surface.
+    cons:
+      - Hard to automate reliably.
+      - Loses nuance around malformed vs rejected vs indeterminate.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: The bundle is specifically trying to make validator
+      behavior machine-readable.
+decision:
+  chosen_alternative: Structured result contract
+  rationale: >
+    `OP-validate-jwt` returns a structured `STRUCT-validation-result` document
+    capturing
+
+    outcome class, selected profile, key-selection status, trust decision,
+    terminal step,
+
+    failed rule, and structured diagnostics.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - The result structure is more detailed than a minimal validator API.
+  decision_date: 2024-10-09
+  confidence: high
+consequences:
+  positive:
+    - Applications and conformance tooling can consume the same output model.
+    - Diagnostics remain testable without log scraping.
+  negative:
+    - The result structure is more detailed than a minimal validator API.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts (OP-validate-jwt,
+    STRUCT-validation-result) and by strict JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - OP-validate-jwt
+    - STRUCT-validation-result
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-10-08T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-10-09T11:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-10-09T11:00:00Z

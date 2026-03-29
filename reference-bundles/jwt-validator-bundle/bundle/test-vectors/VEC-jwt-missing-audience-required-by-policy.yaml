@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Token Missing Audience Required By Policy"
-description: Token lacks the `aud` claim even though the runtime policy requires a specific audience expectation to be evaluated.
-tags: [test, policy, claim]
+title: Token Missing Audience Required By Policy
+description: Token lacks the `aud` claim even though the runtime policy requires
+  a specific audience expectation to be evaluated.
+tags:
+  - test
+  - policy
+  - claim
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE

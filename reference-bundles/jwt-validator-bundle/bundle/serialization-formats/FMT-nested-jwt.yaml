@@ -4,12 +4,16 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Nested JWT
-description: Nested JWT form where one JWT is carried inside another JOSE container. This bundle does not currently support nested processing in the authoritative validator contract.
-tags: [nested, unsupported]
+description: Nested JWT form where one JWT is carried inside another JOSE
+  container. This bundle does not currently support nested processing in the
+  authoritative validator contract.
+tags:
+  - nested
+  - unsupported
 formatName: Nested JWT
 containerType: JWT
 serializationVariant: nested
 supportStatus: unsupported
 governedByAdrIds:
-  - ADR-compact-jws-only-v1
-  - ADR-unsupported-jose-variants-are-explicitly-modeled
+  - ADR-0002-compact-jws-only-v1
+  - ADR-0015-unsupported-jose-variants-are-explicitly-modeled

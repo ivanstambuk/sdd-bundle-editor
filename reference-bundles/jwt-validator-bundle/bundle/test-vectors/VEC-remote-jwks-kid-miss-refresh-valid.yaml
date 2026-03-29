@@ -3,9 +3,15 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Kid Miss Refresh Valid Token"
-description: Remote-JWKS profile encounters a cache miss for the token `kid`, refreshes the JWKS endpoint, and then accepts the token using the newly returned key.
-tags: [test, remote, refresh, success]
+title: Remote JWKS Kid Miss Refresh Valid Token
+description: Remote-JWKS profile encounters a cache miss for the token `kid`,
+  refreshes the JWKS endpoint, and then accepts the token using the newly
+  returned key.
+tags:
+  - test
+  - remote
+  - refresh
+  - success
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS

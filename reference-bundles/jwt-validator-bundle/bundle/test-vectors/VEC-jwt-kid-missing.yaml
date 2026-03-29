@@ -3,9 +3,12 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Key Identifier Not Found"
-description: Providing a JWT with a kid that simply doesn't exist within the targeted Static JWKS block.
-tags: [test, crypto]
+title: Key Identifier Not Found
+description: Providing a JWT with a kid that simply doesn't exist within the
+  targeted Static JWKS block.
+tags:
+  - test
+  - crypto
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,9 +23,11 @@ validationContext:
 expectedOutcomeClass: indeterminate
 expectedKeySelectionStatus: missing
 expectedTrustDecision: indeterminate
-expectsErrorCodeIds: [ERR-kid-not-found]
+expectsErrorCodeIds:
+  - ERR-kid-not-found
 expectedPrimaryErrorCodeId: ERR-kid-not-found
 expectedFailedRuleId: RULE-KID-RESOLVE
 expectedTerminalStepId: STEP-2
-validatesRuleIds: [RULE-KID-RESOLVE]
+validatesRuleIds:
+  - RULE-KID-RESOLVE
 usesMockKeyId: MOCK-hs256-static-1

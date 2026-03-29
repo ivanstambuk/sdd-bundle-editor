@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Unsupported Nested JWT"
-description: A compact signed token indicating nested JWT content through header typing, which the active profile does not support.
-tags: [test, format, boundary]
+title: Unsupported Nested JWT
+description: A compact signed token indicating nested JWT content through header
+  typing, which the active profile does not support.
+tags:
+  - test
+  - format
+  - boundary
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -19,8 +23,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: not-applicable
 expectedTrustDecision: rejected
-expectsErrorCodeIds: [ERR-unsupported-format]
+expectsErrorCodeIds:
+  - ERR-unsupported-format
 expectedPrimaryErrorCodeId: ERR-unsupported-format
 expectedFailedRuleId: RULE-COMPACT-JWS-ONLY
 expectedTerminalStepId: STEP-1
-validatesRuleIds: [RULE-COMPACT-JWS-ONLY]
+validatesRuleIds:
+  - RULE-COMPACT-JWS-ONLY

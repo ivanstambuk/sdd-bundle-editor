@@ -3,9 +3,14 @@ kind: DataStructure
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Conformance Audit Report"
-description: Summary of how an implementation behaved across a standardized conformance test run, with per-vector expected versus observed outcomes and rule-level failure metadata.
-tags: [data, output, conformance]
+title: Conformance Audit Report
+description: Summary of how an implementation behaved across a standardized
+  conformance test run, with per-vector expected versus observed outcomes and
+  rule-level failure metadata.
+tags:
+  - data
+  - output
+  - conformance
 formatType: json
 schemaDefinition:
   type: object

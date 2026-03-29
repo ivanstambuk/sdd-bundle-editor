@@ -1,0 +1,136 @@
+adr:
+  id: ADR-0015-unsupported-jose-variants-are-explicitly-modeled
+  title: Model unsupported JOSE variants explicitly rather than omitting them
+  y_statement: >-
+    **In the context of** The bundle deliberately excludes several JOSE forms
+    from the supported validator
+
+    boundary, but that boundary is easier to understand if the excluded variants
+    are
+
+    still visible as modeled entities and negative vectors. **facing** Should
+    unsupported formats be absent from the bundle, or present as explicit
+    rejected
+
+    cases? **we decided for** Explicitly model unsupported variants **and
+    neglected** Omit unsupported formats entirely **to achieve** The validator
+    boundary is explicit.; Negative vectors have named targets. **accepting**
+    The bundle is slightly larger than a support-only catalog. **because** Keep
+    unsupported JOSE variants as first-class `SerializationFormat` entities with
+
+    `supportStatus: unsupported`, and connect them to profiles and vectors that
+    prove the
+
+    rejection boundary.
+  status: accepted
+  created_at: 2024-10-14T09:00:00Z
+  last_modified: 2024-10-15T12:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Unsupported Boundary Modeling
+  tags:
+    - formats
+    - scope
+    - boundary
+  priority: medium
+  decision_type: technology
+  decision_level: tactical
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-10-15T12:00:00Z
+context:
+  description: >-
+    The bundle deliberately excludes several JOSE forms from the supported
+    validator
+
+    boundary, but that boundary is easier to understand if the excluded variants
+    are
+
+    still visible as modeled entities and negative vectors.
+
+
+    ## Decision Question
+
+
+    Should unsupported formats be absent from the bundle, or present as explicit
+    rejected
+
+    cases?
+  assumptions:
+    - Seeing unsupported cases helps both implementers and auditors.
+    - Explicit negative examples are valuable conformance assets.
+alternatives:
+  - name: Explicitly model unsupported variants
+    description: Keep unsupported formats in the ontology and test them as negative cases.
+    pros:
+      - Makes bundle boundaries legible.
+      - Supports richer conformance suites.
+    cons:
+      - Adds entities for things the validator does not support.
+    estimated_cost: medium
+    risk: medium
+  - name: Omit unsupported formats entirely
+    description: Only model supported input types.
+    pros:
+      - Smaller bundle.
+    cons:
+      - Readers must infer the unsupported surface indirectly.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: Clear rejection boundaries are part of the value of this reference bundle.
+decision:
+  chosen_alternative: Explicitly model unsupported variants
+  rationale: >
+    Keep unsupported JOSE variants as first-class `SerializationFormat` entities
+    with
+
+    `supportStatus: unsupported`, and connect them to profiles and vectors that
+    prove the
+
+    rejection boundary.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - The bundle is slightly larger than a support-only catalog.
+  decision_date: 2024-10-15
+  confidence: medium
+consequences:
+  positive:
+    - The validator boundary is explicit.
+    - Negative vectors have named targets.
+  negative:
+    - The bundle is slightly larger than a support-only catalog.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts
+    (RULE-COMPACT-JWS-ONLY, FMT-jws-compact, FMT-jws-json, FMT-jwe-compact,
+    FMT-nested-jwt) and by strict JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - RULE-COMPACT-JWS-ONLY
+    - FMT-jws-compact
+    - FMT-jws-json
+    - FMT-jwe-compact
+    - FMT-nested-jwt
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-10-14T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-10-15T12:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-10-15T12:00:00Z

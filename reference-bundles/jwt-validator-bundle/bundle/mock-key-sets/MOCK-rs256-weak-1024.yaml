@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: Weak RS256 1024-bit Fixture
-description: Static RSA key material representing an intentionally undersized 1024-bit RS256 signing key for weak-key rejection tests.
-tags: [fixture, crypto, rsa]
+description: Static RSA key material representing an intentionally undersized
+  1024-bit RS256 signing key for weak-key rejection tests.
+tags:
+  - fixture
+  - crypto
+  - rsa
 fixtureMode: static-keyset
 jwks:
   keys:

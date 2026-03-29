@@ -4,12 +4,17 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWE Compact Serialization
-description: Compact encrypted JOSE serialization using five dot-delimited segments. This validator ontology does not treat encrypted JWE input as part of the supported validation contract.
-tags: [encoding, encrypted, unsupported]
+description: Compact encrypted JOSE serialization using five dot-delimited
+  segments. This validator ontology does not treat encrypted JWE input as part
+  of the supported validation contract.
+tags:
+  - encoding
+  - encrypted
+  - unsupported
 formatName: JWE Compact
 containerType: JWE
 serializationVariant: compact
 supportStatus: unsupported
 governedByAdrIds:
-  - ADR-compact-jws-only-v1
-  - ADR-unsupported-jose-variants-are-explicitly-modeled
+  - ADR-0002-compact-jws-only-v1
+  - ADR-0015-unsupported-jose-variants-are-explicitly-modeled

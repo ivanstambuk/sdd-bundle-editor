@@ -3,10 +3,16 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Verify Compact Serialization Syntax"
-description: The validator MUST ensure the input string contains exactly three parts delimited by periods, and that all parts are valid Base64url-encoded strings.
-tags: [validation, parse]
+title: Verify Compact Serialization Syntax
+description: The validator MUST ensure the input string contains exactly three
+  parts delimited by periods, and that all parts are valid Base64url-encoded
+  strings.
+tags:
+  - validation
+  - parse
 severity: FATAL
 throwsErrorCodeId: ERR-malformed
-implementsReferenceIds: [RFC-7515]
-implementsConstraintIds: [CON-safe-diagnostics]
+implementsReferenceIds:
+  - RFC-7515
+implementsConstraintIds:
+  - CON-safe-diagnostics

@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Unsupported Critical Header Extension"
-description: JWT includes a `crit` declaration for a header extension outside the active profile.
-tags: [test, header, security]
+title: Unsupported Critical Header Extension
+description: JWT includes a `crit` declaration for a header extension outside
+  the active profile.
+tags:
+  - test
+  - header
+  - security
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -19,8 +23,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: not-applicable
 expectedTrustDecision: rejected
-expectsErrorCodeIds: [ERR-unsupported-header]
+expectsErrorCodeIds:
+  - ERR-unsupported-header
 expectedPrimaryErrorCodeId: ERR-unsupported-header
 expectedFailedRuleId: RULE-CRIT-HEADER-POLICY
 expectedTerminalStepId: STEP-2
-validatesRuleIds: [RULE-CRIT-HEADER-POLICY]
+validatesRuleIds:
+  - RULE-CRIT-HEADER-POLICY

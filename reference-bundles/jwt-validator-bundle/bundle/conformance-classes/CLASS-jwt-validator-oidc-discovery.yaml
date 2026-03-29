@@ -4,13 +4,16 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: OIDC Discovery Validation Profile
-description: Conformance class for implementations that extend JWT validation with OpenID Connect discovery and issuer-bound key resolution.
-tags: [compliance, oidc]
+description: Conformance class for implementations that extend JWT validation
+  with OpenID Connect discovery and issuer-bound key resolution.
+tags:
+  - compliance
+  - oidc
 requiresOperationIds:
   - OP-validate-jwt
 targetsProfileIds:
   - PROF-JWT-OIDC-DISCOVERY
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-oidc-discovery-binds-issuer-to-key-source
-  - ADR-conformance-is-executable
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0006-oidc-discovery-binds-issuer-to-key-source
+  - ADR-0014-conformance-is-executable

@@ -3,9 +3,11 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Missing Expected Audience"
+title: Missing Expected Audience
 description: JWT intended for a different backend microservice.
-tags: [test, security]
+tags:
+  - test
+  - security
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,8 +22,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-invalid-audience]
+expectsErrorCodeIds:
+  - ERR-invalid-audience
 expectedPrimaryErrorCodeId: ERR-invalid-audience
 expectedFailedRuleId: RULE-AUD-MATCH
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-AUD-MATCH]
+validatesRuleIds:
+  - RULE-AUD-MATCH

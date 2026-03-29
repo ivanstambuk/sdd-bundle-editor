@@ -1,0 +1,144 @@
+adr:
+  id: ADR-0006-oidc-discovery-binds-issuer-to-key-source
+  title: Use OIDC discovery only when issuer binding remains explicit
+  y_statement: >-
+    **In the context of** Some validators must resolve issuer metadata before
+    they know the correct JWKS URI.
+
+    OIDC discovery is a common pattern, but it is only safe if the discovered
+    metadata
+
+    remains bound to the issuer the caller intended to trust. **facing** How do
+    we support OIDC discovery without turning metadata lookup into an open-ended
+
+    network traversal problem? **we decided for** Issuer-bound discovery **and
+    neglected** Generic metadata discovery without issuer binding **to achieve**
+    OIDC-specific behavior is explicit instead of leaking into the core
+    profile.; Suites can target issuer mismatch and JWKS URI mismatch cases
+    directly. **accepting** The OIDC profile is more operationally complex than
+    the core profile. **because** Support OIDC discovery as a separate profile
+    extension. Discovery must remain issuer
+
+    bound: the configured or expected issuer anchors metadata lookup, and
+    mismatches
+
+    between issuer, discovered metadata, or JWKS URI are rejected.
+  status: accepted
+  created_at: 2024-09-17T09:00:00Z
+  last_modified: 2024-09-19T10:30:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: OIDC Discovery Trust Binding
+  tags:
+    - oidc
+    - discovery
+    - issuer
+  priority: high
+  decision_type: security
+  decision_level: operational
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-19T10:30:00Z
+context:
+  description: >-
+    Some validators must resolve issuer metadata before they know the correct
+    JWKS URI.
+
+    OIDC discovery is a common pattern, but it is only safe if the discovered
+    metadata
+
+    remains bound to the issuer the caller intended to trust.
+
+
+    ## Decision Question
+
+
+    How do we support OIDC discovery without turning metadata lookup into an
+    open-ended
+
+    network traversal problem?
+  assumptions:
+    - Discovery is useful for realistic OIDC deployments.
+    - Issuer mismatch should be a terminal trust failure.
+alternatives:
+  - name: Issuer-bound discovery
+    description: Discover metadata from the expected issuer and reject mismatches.
+    pros:
+      - Matches common OIDC deployment patterns.
+      - Preserves a clear trust anchor.
+    cons:
+      - Adds another cache and refresh layer.
+    estimated_cost: medium
+    risk: low
+  - name: Generic metadata discovery without issuer binding
+    description: Allow discovery results to define trust roots opportunistically.
+    pros:
+      - More flexible.
+    cons:
+      - Weakens the meaning of the issuer claim.
+      - Makes attack analysis much harder.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: The bundle treats issuer binding as a core security
+      property, not an optional optimization.
+decision:
+  chosen_alternative: Issuer-bound discovery
+  rationale: >
+    Support OIDC discovery as a separate profile extension. Discovery must
+    remain issuer
+
+    bound: the configured or expected issuer anchors metadata lookup, and
+    mismatches
+
+    between issuer, discovered metadata, or JWKS URI are rejected.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - The OIDC profile is more operationally complex than the core profile.
+  decision_date: 2024-09-19
+  confidence: high
+consequences:
+  positive:
+    - OIDC-specific behavior is explicit instead of leaking into the core
+      profile.
+    - Suites can target issuer mismatch and JWKS URI mismatch cases directly.
+  negative:
+    - The OIDC profile is more operationally complex than the core profile.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts
+    (PROF-JWT-OIDC-DISCOVERY, KEY-oidc-discovery, OIDC-CORE,
+    CLASS-jwt-validator-oidc-discovery, SUITE-oidc-discovery) and by strict JWT
+    bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - PROF-JWT-OIDC-DISCOVERY
+    - KEY-oidc-discovery
+    - OIDC-CORE
+    - CLASS-jwt-validator-oidc-discovery
+    - SUITE-oidc-discovery
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-17T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-19T10:30:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-19T10:30:00Z
+references:
+  - title: OpenID Connect Core 1.0
+    url: https://openid.net/specs/openid-connect-core-1_0.html

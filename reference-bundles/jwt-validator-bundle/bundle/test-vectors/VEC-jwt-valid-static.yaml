@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Valid Static-Key JWT
-description: A correctly signed compact JWT validated under the local static-key baseline with all required checks passing.
-tags: [test, success, baseline]
+description: A correctly signed compact JWT validated under the local static-key
+  baseline with all required checks passing.
+tags:
+  - test
+  - success
+  - baseline
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE

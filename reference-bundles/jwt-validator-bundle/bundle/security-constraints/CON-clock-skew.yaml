@@ -3,10 +3,14 @@ kind: SecurityConstraint
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Strict Clock Skew (Leeway) Limits"
-description: Implementations MUST place a hard, short upper bound (e.g., 5 minutes) on `allowedClockSkewSeconds` for time-based claim validations to mitigate replay attack windows.
-tags: [security, time]
+title: Strict Clock Skew (Leeway) Limits
+description: Implementations MUST place a hard, short upper bound (e.g., 5
+  minutes) on `allowedClockSkewSeconds` for time-based claim validations to
+  mitigate replay attack windows.
+tags:
+  - security
+  - time
 severity: HIGH
 mitigatesRiskIds: []
 governedByAdrIds:
-  - ADR-time-validation-uses-injected-clock
+  - ADR-0011-time-validation-uses-injected-clock

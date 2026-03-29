@@ -3,9 +3,13 @@ kind: DataStructure
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Claims View Report"
-description: Decoded header and claim observations bundled with field-level trust metadata so diagnostic tooling can expose what was parsed, what was verified, and what remains untrusted.
-tags: [data, output]
+title: Claims View Report
+description: Decoded header and claim observations bundled with field-level
+  trust metadata so diagnostic tooling can expose what was parsed, what was
+  verified, and what remains untrusted.
+tags:
+  - data
+  - output
 formatType: json
 schemaDefinition:
   type: object

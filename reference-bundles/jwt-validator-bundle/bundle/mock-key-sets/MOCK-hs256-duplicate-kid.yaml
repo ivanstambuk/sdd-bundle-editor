@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: Duplicate HS256 kid Fixture
-description: Static HS256 key material containing two distinct octet keys that intentionally share the same `kid` for ambiguity testing.
-tags: [fixture, crypto, kid]
+description: Static HS256 key material containing two distinct octet keys that
+  intentionally share the same `kid` for ambiguity testing.
+tags:
+  - fixture
+  - crypto
+  - kid
 fixtureMode: static-keyset
 jwks:
   keys:

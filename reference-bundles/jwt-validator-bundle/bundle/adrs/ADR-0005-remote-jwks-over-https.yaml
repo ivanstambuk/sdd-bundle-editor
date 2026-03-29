@@ -1,0 +1,157 @@
+adr:
+  id: ADR-0005-remote-jwks-over-https
+  title: Resolve remote keys only from explicitly configured HTTPS JWKS endpoints
+  y_statement: >-
+    **In the context of** Many JWT deployments rely on remote key rotation, but
+    a reference bundle should make
+
+    the trust boundary explicit. Remote resolution needs transport guarantees,
+    bounded
+
+    caching, and a clear owner for endpoint configuration. **facing** How should
+    the remote-JWKS profile acquire signing keys without allowing the token
+
+    itself to dictate trust-sensitive network behavior? **we decided for**
+    Configured HTTPS JWKS endpoint **and neglected** Header-driven remote key
+    endpoints **to achieve** The remote profile models realistic deployment
+    behavior without blurring trust roots.; TLS and cache expectations become
+    first-class artifacts. **accepting** Implementations need cache, refresh,
+    and retry behavior. **because** Remote JWKS resolution is supported only via
+    explicitly configured HTTPS endpoints.
+
+    The strategy may cache and refresh, but the trust root is the configured URI
+    plus
+
+    validated transport, not any signer-controlled header.
+  status: accepted
+  created_at: 2024-09-13T09:00:00Z
+  last_modified: 2024-09-16T10:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Remote Key Resolution
+  tags:
+    - jwks
+    - network
+    - tls
+  priority: high
+  decision_type: security
+  decision_level: operational
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-16T10:00:00Z
+context:
+  description: >-
+    Many JWT deployments rely on remote key rotation, but a reference bundle
+    should make
+
+    the trust boundary explicit. Remote resolution needs transport guarantees,
+    bounded
+
+    caching, and a clear owner for endpoint configuration.
+
+
+    ```mermaid
+
+    sequenceDiagram
+        participant Caller
+        participant Validator
+        participant Config as Trusted Config
+        participant JWKS as HTTPS JWKS Endpoint
+        Caller->>Validator: validate(token)
+        Validator->>Config: read configured JWKS URI
+        Validator->>JWKS: fetch over HTTPS
+        Validator->>Validator: cache, select key, continue validation
+    ```
+
+
+    ## Decision Question
+
+
+    How should the remote-JWKS profile acquire signing keys without allowing the
+    token
+
+    itself to dictate trust-sensitive network behavior?
+  assumptions:
+    - Remote JWKS is valuable enough to model, but only under strict transport
+      controls.
+    - Endpoint selection must come from trusted configuration, not token headers.
+alternatives:
+  - name: Configured HTTPS JWKS endpoint
+    description: Fetch keys from a trusted, configured HTTPS URI with bounded cache
+      behavior.
+    pros:
+      - Supports real-world rollover.
+      - Keeps the trust root in configuration.
+      - Aligns with TLS and issuer-allowlist constraints.
+    cons:
+      - Introduces network failure modes and cache semantics.
+    estimated_cost: medium
+    risk: low
+  - name: Header-driven remote key endpoints
+    description: Follow `jku` or similar headers directly from the token.
+    pros:
+      - Flexible for dynamic issuers.
+    cons:
+      - Trust boundary moves into attacker-controlled input.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: It violates the core security stance of the bundle.
+decision:
+  chosen_alternative: Configured HTTPS JWKS endpoint
+  rationale: >
+    Remote JWKS resolution is supported only via explicitly configured HTTPS
+    endpoints.
+
+    The strategy may cache and refresh, but the trust root is the configured URI
+    plus
+
+    validated transport, not any signer-controlled header.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - Implementations need cache, refresh, and retry behavior.
+  decision_date: 2024-09-16
+  confidence: high
+consequences:
+  positive:
+    - The remote profile models realistic deployment behavior without blurring
+      trust roots.
+    - TLS and cache expectations become first-class artifacts.
+  negative:
+    - Implementations need cache, refresh, and retry behavior.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts
+    (PROF-JWT-REMOTE-JWKS, KEY-https-jwks, CON-jwks-tls, RFC-8725) and by strict
+    JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - PROF-JWT-REMOTE-JWKS
+    - KEY-https-jwks
+    - CON-jwks-tls
+    - RFC-8725
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-13T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-16T10:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-16T10:00:00Z
+references:
+  - title: JSON Web Token Best Current Practices
+    url: https://datatracker.ietf.org/doc/html/rfc8725

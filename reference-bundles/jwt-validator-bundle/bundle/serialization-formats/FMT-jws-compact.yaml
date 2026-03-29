@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWS Compact Serialization
-description: Represents digitally signed or MACed content as a compact, URL-safe string. Consists of three Base64url-encoded parts separated by periods (`.`).
+description: Represents digitally signed or MACed content as a compact, URL-safe
+  string. Consists of three Base64url-encoded parts separated by periods (`.`).
 rationale: Required by RFC 7515 for web-safe transmission of tokens.
 tags:
   - encoding
@@ -14,4 +15,4 @@ containerType: JWS
 serializationVariant: compact
 supportStatus: supported
 governedByAdrIds:
-  - ADR-compact-jws-only-v1
+  - ADR-0002-compact-jws-only-v1

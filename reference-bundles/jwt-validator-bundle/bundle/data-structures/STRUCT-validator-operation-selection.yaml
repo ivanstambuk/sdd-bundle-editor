@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: Validator Operation Selection Fragment
-description: Authoritative input fragment for selecting the validator operation exercised by a harness request.
-tags: [data, input, fragment]
+description: Authoritative input fragment for selecting the validator operation
+  exercised by a harness request.
+tags:
+  - data
+  - input
+  - fragment
 schemaDefinition:
   type: object
   additionalProperties: false

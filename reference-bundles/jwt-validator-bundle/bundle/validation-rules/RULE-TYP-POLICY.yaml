@@ -3,9 +3,14 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Enforce JWT Type Policy"
-description: If an expected `typ` value is configured by the profile or runtime policy, the validator MUST exact-match it and reject unexpected media types or nested-token content types.
-tags: [validation, header, policy]
+title: Enforce JWT Type Policy
+description: If an expected `typ` value is configured by the profile or runtime
+  policy, the validator MUST exact-match it and reject unexpected media types or
+  nested-token content types.
+tags:
+  - validation
+  - header
+  - policy
 severity: ERROR
 ruleType: HeaderPolicy
 throwsErrorCodeId: ERR-type-mismatch
@@ -15,4 +20,4 @@ implementsReferenceIds:
   - OIDC-CORE
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
-  - ADR-profile-governs-claim-requirements
+  - ADR-0010-profile-governs-claim-requirements

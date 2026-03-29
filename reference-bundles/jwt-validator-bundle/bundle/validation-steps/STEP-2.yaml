@@ -4,7 +4,9 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Resolve Trusted Key and Verify Signature
-description: Enforce cryptographic prerequisites, reject unsafe trust-source headers, resolve a trusted key, and authenticate the signature before any claim-level policy checks run.
+description: Enforce cryptographic prerequisites, reject unsafe trust-source
+  headers, resolve a trusted key, and authenticate the signature before any
+  claim-level policy checks run.
 abortOnFailure: true
 executionOrder: 2
 executesRuleIds:

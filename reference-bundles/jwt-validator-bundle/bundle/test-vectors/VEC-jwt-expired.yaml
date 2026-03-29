@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Expired JWT Token Test
-description: A token signed correctly with the static hs256 mock key, but its exp claim is set to a time in the past.
+description: A token signed correctly with the static hs256 mock key, but its
+  exp claim is set to a time in the past.
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE

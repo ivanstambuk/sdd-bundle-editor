@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: Conformance Suite Selection Fragment
-description: Authoritative input fragment for selecting which conformance suite a harness invocation should execute.
-tags: [data, input, fragment]
+description: Authoritative input fragment for selecting which conformance suite
+  a harness invocation should execute.
+tags:
+  - data
+  - input
+  - fragment
 schemaDefinition:
   type: object
   additionalProperties: false

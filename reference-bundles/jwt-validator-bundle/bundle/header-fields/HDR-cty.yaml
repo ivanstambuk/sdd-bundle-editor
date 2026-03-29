@@ -3,9 +3,11 @@ kind: HeaderField
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "cty (Content Type) Header Parameter"
-description: Describes the media type of the secured content. The validator uses it to detect nested JWT posture and profile-specific typing.
-tags: [header]
+title: cty (Content Type) Header Parameter
+description: Describes the media type of the secured content. The validator uses
+  it to detect nested JWT posture and profile-specific typing.
+tags:
+  - header
 name: cty
 dataType: string
 semanticType: MediaType

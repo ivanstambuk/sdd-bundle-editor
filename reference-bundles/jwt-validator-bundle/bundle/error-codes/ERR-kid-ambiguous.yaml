@@ -3,9 +3,13 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Ambiguous Key ID"
-description: The specific `kid` from the token header maps to multiple distinct keys in the configured trusted JWKS.
-tags: [error, crypto, indeterminate]
+title: Ambiguous Key ID
+description: The specific `kid` from the token header maps to multiple distinct
+  keys in the configured trusted JWKS.
+tags:
+  - error
+  - crypto
+  - indeterminate
 codeName: indeterminate-kid-ambiguous
 messageTemplate: The token key identifier matches multiple trusted keys.
 outcomeClass: indeterminate

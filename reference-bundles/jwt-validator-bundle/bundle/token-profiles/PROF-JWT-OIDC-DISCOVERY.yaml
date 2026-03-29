@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWT OIDC Discovery Extension
-description: Extension profile for validators that resolve issuer metadata through OIDC discovery before locating the JWKS endpoint.
+description: Extension profile for validators that resolve issuer metadata
+  through OIDC discovery before locating the JWKS endpoint.
 profileType: OIDC
 profileFamily: OIDC
 replayProtectionMode: out-of-scope
@@ -36,7 +37,7 @@ optionalClaimIds:
   - CLAIM-jti
   - CLAIM-sub
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-oidc-discovery-binds-issuer-to-key-source
-  - ADR-key-resolution-fails-closed
-  - ADR-profile-governs-claim-requirements
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0006-oidc-discovery-binds-issuer-to-key-source
+  - ADR-0008-key-resolution-fails-closed
+  - ADR-0010-profile-governs-claim-requirements

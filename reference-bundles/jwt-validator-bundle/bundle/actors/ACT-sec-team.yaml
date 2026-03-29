@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: Security Architecture Team
-description: The core security maintainers responsible for cryptographic auditing and compliance of the validator logic.
+description: The core security maintainers responsible for cryptographic
+  auditing and compliance of the validator logic.
 rationale: Governs all security constraints and conformance validation suites.
 tags:
   - governance
@@ -12,5 +13,5 @@ tags:
 role: SecurityAuditor
 email: security-leads@specstudio.com
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-conformance-is-executable
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0014-conformance-is-executable

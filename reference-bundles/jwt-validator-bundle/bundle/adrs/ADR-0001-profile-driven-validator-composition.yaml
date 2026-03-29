@@ -1,0 +1,198 @@
+adr:
+  id: ADR-0001-profile-driven-validator-composition
+  title: Model the validator as composable profiles, strategies, rules, and suites
+  y_statement: >-
+    **In the context of** The reference bundle needs to describe more than one
+    validator shape. It covers a
+
+    local static-key validator, a remote JWKS validator, and an OIDC discovery
+    variant.
+
+    The same bundle also needs to capture operations, constraints, conformance
+    classes,
+
+    suites, and fixtures without duplicating large trees of nearly identical
+    entities. **facing** How do we represent validator variants and their shared
+    logic without creating a
+
+    separate bundle for every deployment mode or flattening everything into one
+    giant
+
+    profile that loses architectural boundaries? **we decided for** Composable
+    profile model **and neglected** One monolithic validator profile **to
+    achieve** The bundle can describe product-line style variation without
+    duplication.; Traceability can point from rules, suites, and operations to
+    concrete decisions. **accepting** The ontology is denser and requires more
+    cross-reference discipline.; Readers need to understand inheritance and
+    composition to navigate the model well. **because** Model the validator as a
+    composition of:
+
+
+    - token profiles for externally visible capability sets
+
+    - key strategies for trust-source behavior
+
+    - validation rules and steps for execution semantics
+
+    - conformance classes and suites for executable acceptance criteria
+
+
+    Profiles can inherit and narrow behavior rather than fork entire entity
+    sets.
+  status: accepted
+  created_at: 2024-09-02T09:00:00Z
+  last_modified: 2024-09-05T14:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Validator Architecture Model
+  tags:
+    - architecture
+    - model
+    - composition
+  priority: high
+  decision_type: technology
+  decision_level: tactical
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-05T14:00:00Z
+context:
+  description: >-
+    The reference bundle needs to describe more than one validator shape. It
+    covers a
+
+    local static-key validator, a remote JWKS validator, and an OIDC discovery
+    variant.
+
+    The same bundle also needs to capture operations, constraints, conformance
+    classes,
+
+    suites, and fixtures without duplicating large trees of nearly identical
+    entities.
+
+
+    ```mermaid
+
+    flowchart TD
+        Profile[Token Profiles] --> Strategy[Key Strategies]
+        Profile --> Step[Validation Steps]
+        Step --> Rule[Validation Rules]
+        Profile --> Suite[Conformance Suites]
+        Suite --> Vector[Test Vectors]
+    ```
+
+
+    ## Decision Question
+
+
+    How do we represent validator variants and their shared logic without
+    creating a
+
+    separate bundle for every deployment mode or flattening everything into one
+    giant
+
+    profile that loses architectural boundaries?
+  assumptions:
+    - Most validator variants share the same parsing and claim-validation
+      pipeline.
+    - Key resolution strategy is the main point of behavioral variation.
+    - Conformance should be traceable back to explicit bundle entities.
+alternatives:
+  - name: Composable profile model
+    description: Separate reusable entities with profile inheritance and explicit
+      traceability.
+    pros:
+      - Avoids duplication between core, remote JWKS, and OIDC variants.
+      - Keeps trust strategy concerns separate from claim policy concerns.
+      - Makes conformance artifacts first-class entities instead of comments.
+    cons:
+      - Requires more entity types and cross-links.
+    estimated_cost: medium
+    risk: low
+  - name: One monolithic validator profile
+    description: Model all behavior in a single profile with many optional branches.
+    pros:
+      - Fewer top-level documents.
+    cons:
+      - Makes capability boundaries ambiguous.
+      - Encourages undocumented optional behavior.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: It would hide the architectural differences that the
+      reference bundle is meant to make explicit.
+decision:
+  chosen_alternative: Composable profile model
+  rationale: >
+    Model the validator as a composition of:
+
+
+    - token profiles for externally visible capability sets
+
+    - key strategies for trust-source behavior
+
+    - validation rules and steps for execution semantics
+
+    - conformance classes and suites for executable acceptance criteria
+
+
+    Profiles can inherit and narrow behavior rather than fork entire entity
+    sets.
+  tradeoffs: >-
+    The team accepts the following tradeoffs:
+
+
+    - The ontology is denser and requires more cross-reference discipline.
+
+    - Readers need to understand inheritance and composition to navigate the
+    model well.
+  decision_date: 2024-09-05
+  confidence: high
+consequences:
+  positive:
+    - The bundle can describe product-line style variation without duplication.
+    - Traceability can point from rules, suites, and operations to concrete
+      decisions.
+  negative:
+    - The ontology is denser and requires more cross-reference discipline.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts (PROF-JWT-CORE,
+    PROF-JWT-REMOTE-JWKS, PROF-JWT-OIDC-DISCOVERY, OP-validate-jwt,
+    OP-run-conformance-audit, CLASS-jwt-validator-core,
+    CLASS-jwt-validator-remote-jwks, CLASS-jwt-validator-oidc-discovery,
+    SUITE-core-validation, SUITE-remote-jwks, SUITE-oidc-discovery) and by
+    strict JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - PROF-JWT-CORE
+    - PROF-JWT-REMOTE-JWKS
+    - PROF-JWT-OIDC-DISCOVERY
+    - OP-validate-jwt
+    - OP-run-conformance-audit
+    - CLASS-jwt-validator-core
+    - CLASS-jwt-validator-remote-jwks
+    - CLASS-jwt-validator-oidc-discovery
+    - SUITE-core-validation
+    - SUITE-remote-jwks
+    - SUITE-oidc-discovery
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-02T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-05T14:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-05T14:00:00Z

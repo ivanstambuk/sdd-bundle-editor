@@ -4,12 +4,17 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: Remote JWKS Retryable Network Failure Fixture
-description: Simulated JWKS fetch failure after a retryable transport error, used to prove fail-closed behavior when remote refresh does not succeed.
-tags: [fixture, remote, jwks, network-failure]
+description: Simulated JWKS fetch failure after a retryable transport error,
+  used to prove fail-closed behavior when remote refresh does not succeed.
+tags:
+  - fixture
+  - remote
+  - jwks
+  - network-failure
 fixtureMode: remote-jwks-response
 endpointUrl: https://example.com/jwks.json
 httpStatusCode: 503
 responseHeaders:
-  retry-after: '5'
+  retry-after: "5"
 cacheDisposition: refresh-target
 networkBehavior: retryable-failure

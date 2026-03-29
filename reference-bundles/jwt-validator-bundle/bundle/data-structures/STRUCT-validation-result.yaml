@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Validation Result Model
-description: The output object returned by `OP-validate-jwt`. Captures the evaluated profile, serialization boundary decision, key-selection and trust outcomes, and the terminal rule or step when validation fails.
-rationale: Provides a structured interface for callers and conformance harnesses to distinguish rejection, malformed input, indeterminate trust, and successful acceptance without relying on prose interpretation.
+description: The output object returned by `OP-validate-jwt`. Captures the
+  evaluated profile, serialization boundary decision, key-selection and trust
+  outcomes, and the terminal rule or step when validation fails.
+rationale: Provides a structured interface for callers and conformance harnesses
+  to distinguish rejection, malformed input, indeterminate trust, and successful
+  acceptance without relying on prose interpretation.
 tags:
   - output
   - dto
@@ -84,5 +88,5 @@ schemaDefinition:
     - trustDecision
     - errorCodes
 governedByAdrIds:
-  - ADR-validation-result-is-a-structured-contract
-  - ADR-safe-diagnostics-boundary
+  - ADR-0013-validation-result-is-a-structured-contract
+  - ADR-0012-safe-diagnostics-boundary

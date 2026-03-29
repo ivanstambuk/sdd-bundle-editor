@@ -3,9 +3,15 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Network Retry Fails Closed"
-description: Remote-JWKS profile retries a remote refresh after a network failure and still fails closed when trusted key material cannot be refreshed successfully.
-tags: [test, remote, network, indeterminate]
+title: Remote JWKS Network Retry Fails Closed
+description: Remote-JWKS profile retries a remote refresh after a network
+  failure and still fails closed when trusted key material cannot be refreshed
+  successfully.
+tags:
+  - test
+  - remote
+  - network
+  - indeterminate
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS

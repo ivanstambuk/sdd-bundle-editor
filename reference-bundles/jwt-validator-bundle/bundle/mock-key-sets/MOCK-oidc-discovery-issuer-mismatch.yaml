@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: OIDC Discovery Issuer Mismatch Fixture
-description: Simulated discovery metadata whose issuer does not match the issuer expected by the invocation policy or token.
-tags: [fixture, oidc, discovery, issuer]
+description: Simulated discovery metadata whose issuer does not match the issuer
+  expected by the invocation policy or token.
+tags:
+  - fixture
+  - oidc
+  - discovery
+  - issuer
 fixtureMode: oidc-discovery-document
 endpointUrl: https://example.com/.well-known/openid-configuration
 httpStatusCode: 200

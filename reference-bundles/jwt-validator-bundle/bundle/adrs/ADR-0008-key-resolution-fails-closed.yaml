@@ -1,0 +1,140 @@
+adr:
+  id: ADR-0008-key-resolution-fails-closed
+  title: Treat missing, ambiguous, or stale key resolution as fail-closed outcomes
+  y_statement: >-
+    **In the context of** Key resolution can fail in several ways: `kid` misses,
+    duplicate key identifiers,
+
+    stale cache entries, issuer mismatches, or remote fetch failures. Guessing
+    in those
+
+    cases would turn uncertainty into silent trust. **facing** How should the
+    validator respond when it cannot resolve one unambiguous trusted key? **we
+    decided for** Fail closed on key-resolution uncertainty **and neglected**
+    Best-effort acceptance **to achieve** `kid` ambiguity and remote refresh
+    failures have a principled outcome.; Strategy-specific retry behavior
+    remains bounded. **accepting** Remote profiles intentionally prefer secure
+    failure over graceful degradation. **because** Missing keys, ambiguous key
+    matches, stale remote material that cannot be refreshed,
+
+    and issuer-binding failures all resolve to rejection or indeterminate trust.
+    The
+
+    validator never guesses a key and never silently accepts stale uncertainty.
+  status: accepted
+  created_at: 2024-09-24T09:00:00Z
+  last_modified: 2024-09-25T14:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Key Resolution Failure Semantics
+  tags:
+    - keys
+    - trust
+    - fail-closed
+  priority: high
+  decision_type: security
+  decision_level: operational
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-25T14:00:00Z
+context:
+  description: >-
+    Key resolution can fail in several ways: `kid` misses, duplicate key
+    identifiers,
+
+    stale cache entries, issuer mismatches, or remote fetch failures. Guessing
+    in those
+
+    cases would turn uncertainty into silent trust.
+
+
+    ## Decision Question
+
+
+    How should the validator respond when it cannot resolve one unambiguous
+    trusted key?
+  assumptions:
+    - Security-relevant ambiguity should never be auto-healed by guesswork.
+    - Retry is acceptable only when it preserves fail-closed semantics.
+alternatives:
+  - name: Fail closed on key-resolution uncertainty
+    description: Reject or mark indeterminate whenever trusted key resolution is not crisp.
+    pros:
+      - Prevents accidental trust escalation.
+      - Keeps cache and refresh logic subordinate to security policy.
+    cons:
+      - Some transient outages cause hard failures.
+    estimated_cost: medium
+    risk: low
+  - name: Best-effort acceptance
+    description: Try alternate keys or stale cache entries until something verifies.
+    pros:
+      - Potentially fewer availability failures.
+    cons:
+      - Harder to reason about.
+      - Risks accepting the wrong trust path.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: Availability cannot outrank trust clarity in a
+      security-focused reference bundle.
+decision:
+  chosen_alternative: Fail closed on key-resolution uncertainty
+  rationale: >
+    Missing keys, ambiguous key matches, stale remote material that cannot be
+    refreshed,
+
+    and issuer-binding failures all resolve to rejection or indeterminate trust.
+    The
+
+    validator never guesses a key and never silently accepts stale uncertainty.
+  tradeoffs: >-
+    The team accepts the following tradeoffs:
+
+
+    - Remote profiles intentionally prefer secure failure over graceful
+    degradation.
+  decision_date: 2024-09-25
+  confidence: high
+consequences:
+  positive:
+    - "`kid` ambiguity and remote refresh failures have a principled outcome."
+    - Strategy-specific retry behavior remains bounded.
+  negative:
+    - Remote profiles intentionally prefer secure failure over graceful
+      degradation.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts
+    (RULE-KID-RESOLVE, RULE-KID-AMBIGUITY, KEY-https-jwks, KEY-oidc-discovery,
+    SUITE-remote-jwks, SUITE-oidc-discovery) and by strict JWT bundle
+    validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - RULE-KID-RESOLVE
+    - RULE-KID-AMBIGUITY
+    - KEY-https-jwks
+    - KEY-oidc-discovery
+    - SUITE-remote-jwks
+    - SUITE-oidc-discovery
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-24T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-25T14:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-25T14:00:00Z

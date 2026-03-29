@@ -3,9 +3,14 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Enforce Strict Claim Types"
-description: The validator MUST reject tokens that provide claims in the wrong primitive JSON types compared to standard (e.g., numeric time claims incorrectly passed as strings).
-tags: [validation, parse]
+title: Enforce Strict Claim Types
+description: The validator MUST reject tokens that provide claims in the wrong
+  primitive JSON types compared to standard (e.g., numeric time claims
+  incorrectly passed as strings).
+tags:
+  - validation
+  - parse
 severity: ERROR
 throwsErrorCodeId: ERR-type-mismatch
-implementsReferenceIds: [RFC-7519]
+implementsReferenceIds:
+  - RFC-7519

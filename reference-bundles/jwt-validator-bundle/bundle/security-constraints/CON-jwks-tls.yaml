@@ -3,10 +3,12 @@ kind: SecurityConstraint
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "JWKS over TLS Only"
+title: JWKS over TLS Only
 description: JWKS endpoints must only be fetched over validated `https://` connections.
-tags: [security, network]
+tags:
+  - security
+  - network
 severity: HIGH
 mitigatesRiskIds: []
 governedByAdrIds:
-  - ADR-remote-jwks-over-https
+  - ADR-0005-remote-jwks-over-https

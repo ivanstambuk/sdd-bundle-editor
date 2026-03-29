@@ -3,9 +3,13 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Unsupported JOSE Header"
-description: The token contains a JOSE header parameter that the active profile treats as unsupported or reject-by-default.
-tags: [error, header, security]
+title: Unsupported JOSE Header
+description: The token contains a JOSE header parameter that the active profile
+  treats as unsupported or reject-by-default.
+tags:
+  - error
+  - header
+  - security
 codeName: rejected-unsupported-header
 messageTemplate: The token contains an unsupported or disallowed JOSE header parameter.
 outcomeClass: rejected

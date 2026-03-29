@@ -3,14 +3,19 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Enforce Mandatory Claims"
-description: The validator MUST reject tokens that fail to include claims made mandatory either by the active profile itself or by an enabled runtime-policy expectation that cannot be evaluated when the claim is absent.
-tags: [validation, policy]
+title: Enforce Mandatory Claims
+description: The validator MUST reject tokens that fail to include claims made
+  mandatory either by the active profile itself or by an enabled runtime-policy
+  expectation that cannot be evaluated when the claim is absent.
+tags:
+  - validation
+  - policy
 severity: ERROR
 throwsErrorCodeId: ERR-missing-claim
-implementsReferenceIds: [RFC-7519]
+implementsReferenceIds:
+  - RFC-7519
 parameters:
   profileRequiredClaimField: requiresClaimIds
   claimRuntimePolicyField: requiredWhenRuntimePolicyFields
 governedByAdrIds:
-  - ADR-profile-governs-claim-requirements
+  - ADR-0010-profile-governs-claim-requirements

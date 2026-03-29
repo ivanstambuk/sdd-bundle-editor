@@ -3,9 +3,14 @@ kind: HeaderField
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "x5t#S256 (SHA-256 X.509 Thumbprint) Header Parameter"
-description: Carries a SHA-256 X.509 certificate thumbprint hint. This bundle rejects certificate-thumbprint trust shortcuts unless a future profile opts into them explicitly.
-tags: [header, certificate, security]
+title: x5t#S256 (SHA-256 X.509 Thumbprint) Header Parameter
+description: Carries a SHA-256 X.509 certificate thumbprint hint. This bundle
+  rejects certificate-thumbprint trust shortcuts unless a future profile opts
+  into them explicitly.
+tags:
+  - header
+  - certificate
+  - security
 name: x5t#S256
 dataType: string
 semanticType: CertificateThumbprint

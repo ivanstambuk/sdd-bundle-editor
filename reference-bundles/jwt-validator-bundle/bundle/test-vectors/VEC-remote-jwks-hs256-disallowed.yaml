@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Profile Rejects HS256"
-description: Remote-JWKS profile receives a token advertising `HS256`, which is outside the profile's asymmetric-only algorithm contract.
-tags: [test, remote, crypto]
+title: Remote JWKS Profile Rejects HS256
+description: Remote-JWKS profile receives a token advertising `HS256`, which is
+  outside the profile's asymmetric-only algorithm contract.
+tags:
+  - test
+  - remote
+  - crypto
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS
@@ -25,8 +29,10 @@ remoteResolutionScenario:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: not-applicable
 expectedTrustDecision: rejected
-expectsErrorCodeIds: [ERR-unsupported-alg]
+expectsErrorCodeIds:
+  - ERR-unsupported-alg
 expectedPrimaryErrorCodeId: ERR-unsupported-alg
 expectedFailedRuleId: RULE-ALG-ALLOWLIST
 expectedTerminalStepId: STEP-2
-validatesRuleIds: [RULE-ALG-ALLOWLIST]
+validatesRuleIds:
+  - RULE-ALG-ALLOWLIST

@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Expiration Time
-description: The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing.
+description: The "exp" (expiration time) claim identifies the expiration time on
+  or after which the JWT MUST NOT be accepted for processing.
 rationale: Mitigates token replay attacks.
 tags:
   - time-based

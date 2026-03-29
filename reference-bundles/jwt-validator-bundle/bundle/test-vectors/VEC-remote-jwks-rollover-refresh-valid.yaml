@@ -3,9 +3,14 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Rollover Refresh Valid Token"
-description: Remote-JWKS profile starts from a stale cached JWKS state, performs a rollover refresh, and validates a token signed with the replacement keyset.
-tags: [test, remote, rollover, success]
+title: Remote JWKS Rollover Refresh Valid Token
+description: Remote-JWKS profile starts from a stale cached JWKS state, performs
+  a rollover refresh, and validates a token signed with the replacement keyset.
+tags:
+  - test
+  - remote
+  - rollover
+  - success
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS

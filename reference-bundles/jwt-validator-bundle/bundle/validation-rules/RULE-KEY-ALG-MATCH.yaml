@@ -3,12 +3,21 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Algorithm and Key Type Compatibility"
-description: The validator MUST reject the token if the `alg` specified in the header or validation policy is cryptographically incompatible with the resolved key's `kty` (e.g., attempting an ECSDA algorithm with an RSA key).
-tags: [validation, crypto, policy]
+title: Algorithm and Key Type Compatibility
+description: The validator MUST reject the token if the `alg` specified in the
+  header or validation policy is cryptographically incompatible with the
+  resolved key's `kty` (e.g., attempting an ECSDA algorithm with an RSA key).
+tags:
+  - validation
+  - crypto
+  - policy
 severity: FATAL
 throwsErrorCodeId: ERR-unsupported-alg
-implementsReferenceIds: [RFC-7515]
-implementsConstraintIds: [CON-min-key-strength, CON-no-none-alg, CON-jwks-tls]
+implementsReferenceIds:
+  - RFC-7515
+implementsConstraintIds:
+  - CON-min-key-strength
+  - CON-no-none-alg
+  - CON-jwks-tls
 governedByAdrIds:
-  - ADR-algorithm-policy-is-allowlist-based
+  - ADR-0009-algorithm-policy-is-allowlist-based

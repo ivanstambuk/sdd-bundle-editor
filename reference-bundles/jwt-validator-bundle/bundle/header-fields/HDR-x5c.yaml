@@ -3,9 +3,14 @@ kind: HeaderField
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "x5c (X.509 Certificate Chain) Header Parameter"
-description: Carries an X.509 certificate chain in the token header. This bundle rejects it by default because certificate-path trust is outside the active contract.
-tags: [header, certificate, security]
+title: x5c (X.509 Certificate Chain) Header Parameter
+description: Carries an X.509 certificate chain in the token header. This bundle
+  rejects it by default because certificate-path trust is outside the active
+  contract.
+tags:
+  - header
+  - certificate
+  - security
 name: x5c
 dataType: array
 semanticType: CertificateChain

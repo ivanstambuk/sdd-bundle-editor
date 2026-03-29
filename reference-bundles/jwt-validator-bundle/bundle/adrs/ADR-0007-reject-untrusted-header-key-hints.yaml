@@ -1,0 +1,138 @@
+adr:
+  id: ADR-0007-reject-untrusted-header-key-hints
+  title: Reject trust-sensitive key-distribution hints carried in token headers
+  y_statement: >-
+    **In the context of** JOSE headers can carry values like `jku`, `jwk`,
+    `x5u`, `x5c`, `x5t`, and
+
+    `x5t#S256`. In loosely designed validators those fields can blur the line
+    between
+
+    signed input and trusted configuration. **facing** Should the validator
+    consume token headers that point at signing keys or supporting
+
+    certificate material? **we decided for** Reject untrusted header key hints
+    **and neglected** Honor header-provided trust hints by default **to
+    achieve** The validator has one consistent story for trust roots.; Negative
+    test vectors for header misuse remain clear and reproducible. **accepting**
+    Some JOSE features stay intentionally unsupported. **because** Reject
+    trust-sensitive key-distribution hints from token headers unless a future
+
+    profile explicitly opts into them under additional constraints. In this
+    bundle they
+
+    are modeled as unsupported header sources.
+  status: accepted
+  created_at: 2024-09-20T09:00:00Z
+  last_modified: 2024-09-23T11:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: JOSE Header Trust Policy
+  tags:
+    - security
+    - header
+    - trust
+  priority: high
+  decision_type: security
+  decision_level: operational
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-23T11:00:00Z
+context:
+  description: >-
+    JOSE headers can carry values like `jku`, `jwk`, `x5u`, `x5c`, `x5t`, and
+
+    `x5t#S256`. In loosely designed validators those fields can blur the line
+    between
+
+    signed input and trusted configuration.
+
+
+    ## Decision Question
+
+
+    Should the validator consume token headers that point at signing keys or
+    supporting
+
+    certificate material?
+  assumptions:
+    - The reference bundle is trying to establish conservative validator
+      defaults.
+    - Most deployments can operate without trusting header-provided key hints.
+alternatives:
+  - name: Reject untrusted header key hints
+    description: Treat header-based trust hints as unsupported by default.
+    pros:
+      - Keeps the trust root in configuration and profile design.
+      - Aligns with the remote-JWKS and OIDC security stance.
+    cons:
+      - Some advanced JOSE deployments are out of scope.
+    estimated_cost: medium
+    risk: low
+  - name: Honor header-provided trust hints by default
+    description: Allow tokens to suggest key URLs or certificates during validation.
+    pros:
+      - More flexible for dynamic ecosystems.
+    cons:
+      - Makes attacker-controlled input influence trust.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: That flexibility is not worth the ambiguity it introduces
+      into the validator's trust model.
+decision:
+  chosen_alternative: Reject untrusted header key hints
+  rationale: >
+    Reject trust-sensitive key-distribution hints from token headers unless a
+    future
+
+    profile explicitly opts into them under additional constraints. In this
+    bundle they
+
+    are modeled as unsupported header sources.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - Some JOSE features stay intentionally unsupported.
+  decision_date: 2024-09-23
+  confidence: high
+consequences:
+  positive:
+    - The validator has one consistent story for trust roots.
+    - Negative test vectors for header misuse remain clear and reproducible.
+  negative:
+    - Some JOSE features stay intentionally unsupported.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts
+    (RULE-UNTRUSTED-HEADER-SOURCES, RULE-CRIT-HEADER-POLICY, RFC-8725) and by
+    strict JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - RULE-UNTRUSTED-HEADER-SOURCES
+    - RULE-CRIT-HEADER-POLICY
+    - RFC-8725
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-20T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-23T11:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-23T11:00:00Z
+references:
+  - title: JSON Web Token Best Current Practices
+    url: https://datatracker.ietf.org/doc/html/rfc8725

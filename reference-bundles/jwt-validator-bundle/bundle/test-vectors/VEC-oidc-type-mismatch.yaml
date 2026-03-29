@@ -3,9 +3,14 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "OIDC Unexpected JWT Type Header"
-description: OIDC discovery profile token presents a `typ` header value that does not exact-match the runtime policy's expected media type.
-tags: [test, header, policy, oidc]
+title: OIDC Unexpected JWT Type Header
+description: OIDC discovery profile token presents a `typ` header value that
+  does not exact-match the runtime policy's expected media type.
+tags:
+  - test
+  - header
+  - policy
+  - oidc
 invocationProfileId: PROF-JWT-OIDC-DISCOVERY
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY
@@ -32,8 +37,10 @@ oidcDiscoveryScenario:
 expectedOutcomeClass: malformed
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-type-mismatch]
+expectsErrorCodeIds:
+  - ERR-type-mismatch
 expectedPrimaryErrorCodeId: ERR-type-mismatch
 expectedFailedRuleId: RULE-TYP-POLICY
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-TYP-POLICY]
+validatesRuleIds:
+  - RULE-TYP-POLICY

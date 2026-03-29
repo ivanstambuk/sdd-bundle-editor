@@ -3,12 +3,16 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Reject Premature Tokens"
-description: The validator MUST reject the token if the current system time is strictly earlier than the `nbf` claim (accounting for allowed clock skew).
-tags: [validation, time]
+title: Reject Premature Tokens
+description: The validator MUST reject the token if the current system time is
+  strictly earlier than the `nbf` claim (accounting for allowed clock skew).
+tags:
+  - validation
+  - time
 severity: ERROR
-implementsConstraintIds: [CON-timing-attack]
+implementsConstraintIds:
+  - CON-timing-attack
 throwsErrorCodeId: ERR-premature
 bindsToContextPropertyId: STRUCT-validation-context
 governedByAdrIds:
-  - ADR-time-validation-uses-injected-clock
+  - ADR-0011-time-validation-uses-injected-clock

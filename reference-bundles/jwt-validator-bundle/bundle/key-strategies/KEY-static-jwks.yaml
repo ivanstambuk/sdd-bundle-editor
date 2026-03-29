@@ -4,8 +4,10 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Static In-Memory JWKS
-description: A key resolution strategy that looks up keys (`kid`) from a hardcoded JSON Web Key Set provided at invocation time.
-rationale: Essential for unit testing and offline edge environments without network access.
+description: A key resolution strategy that looks up keys (`kid`) from a
+  hardcoded JSON Web Key Set provided at invocation time.
+rationale: Essential for unit testing and offline edge environments without
+  network access.
 tags:
   - resolution
   - offline
@@ -18,4 +20,4 @@ rolloverBehavior: manual-only
 networkFailureBehavior: fail-closed
 issuerBindingMode: none
 governedByAdrIds:
-  - ADR-static-jwks-as-baseline-trust-source
+  - ADR-0004-static-jwks-as-baseline-trust-source

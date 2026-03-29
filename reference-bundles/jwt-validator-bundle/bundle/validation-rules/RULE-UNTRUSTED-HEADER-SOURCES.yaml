@@ -3,9 +3,14 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Reject Trust-Sensitive Header Key Sources"
-description: The validator MUST reject trust-sensitive key-distribution headers such as `jku`, `jwk`, `x5u`, `x5c`, `x5t`, and `x5t#S256` unless the active profile explicitly opts into them.
-tags: [validation, header, security]
+title: Reject Trust-Sensitive Header Key Sources
+description: The validator MUST reject trust-sensitive key-distribution headers
+  such as `jku`, `jwk`, `x5u`, `x5c`, `x5t`, and `x5t#S256` unless the active
+  profile explicitly opts into them.
+tags:
+  - validation
+  - header
+  - security
 severity: FATAL
 ruleType: HeaderPolicy
 throwsErrorCodeId: ERR-unsupported-header
@@ -13,5 +18,5 @@ implementsReferenceIds:
   - RFC-8725
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
-  - ADR-reject-untrusted-header-key-hints
-  - ADR-key-resolution-fails-closed
+  - ADR-0007-reject-untrusted-header-key-hints
+  - ADR-0008-key-resolution-fails-closed

@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 title: JWT Parse Request
-description: Minimal parser request carrying a raw token string for structural decoding without trust decisions.
-tags: [data, input, parser]
+description: Minimal parser request carrying a raw token string for structural
+  decoding without trust decisions.
+tags:
+  - data
+  - input
+  - parser
 composesStructureIds:
   - STRUCT-token-input
 schemaDefinition:

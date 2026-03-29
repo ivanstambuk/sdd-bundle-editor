@@ -3,9 +3,12 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Token Missing Mandatory Sub"
-description: Token completely lacks the `sub` claim, violating an explicit `validation_policy` requirement.
-tags: [test, structure]
+title: Token Missing Mandatory Sub
+description: Token completely lacks the `sub` claim, violating an explicit
+  `validation_policy` requirement.
+tags:
+  - test
+  - structure
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,8 +23,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-missing-claim]
+expectsErrorCodeIds:
+  - ERR-missing-claim
 expectedPrimaryErrorCodeId: ERR-missing-claim
 expectedFailedRuleId: RULE-REQUIRED-CLAIMS
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-REQUIRED-CLAIMS]
+validatesRuleIds:
+  - RULE-REQUIRED-CLAIMS

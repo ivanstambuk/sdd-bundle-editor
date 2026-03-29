@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: OIDC Discovery JWKS URI Mismatch Fixture
-description: Simulated discovery metadata that points at an unexpected JWKS URI, forcing the validator to fail closed on discovery-to-JWKS linkage.
-tags: [fixture, oidc, discovery, jwks-uri]
+description: Simulated discovery metadata that points at an unexpected JWKS URI,
+  forcing the validator to fail closed on discovery-to-JWKS linkage.
+tags:
+  - fixture
+  - oidc
+  - discovery
+  - jwks-uri
 fixtureMode: oidc-discovery-document
 endpointUrl: https://example.com/.well-known/openid-configuration
 httpStatusCode: 200

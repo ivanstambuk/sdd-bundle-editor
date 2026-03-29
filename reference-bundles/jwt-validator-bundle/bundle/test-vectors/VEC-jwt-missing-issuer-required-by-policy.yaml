@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Token Missing Issuer Required By Policy"
-description: Token lacks the `iss` claim even though the runtime policy asks the validator to enforce an expected issuer.
-tags: [test, policy, claim]
+title: Token Missing Issuer Required By Policy
+description: Token lacks the `iss` claim even though the runtime policy asks the
+  validator to enforce an expected issuer.
+tags:
+  - test
+  - policy
+  - claim
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE

@@ -3,9 +3,12 @@ kind: CryptoAlgorithm
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "ES256 (ECDSA P-256)"
+title: ES256 (ECDSA P-256)
 description: ECDSA using P-256 and SHA-256. Highly efficient and modern signature scheme.
-tags: [crypto, asymmetric, ec]
+tags:
+  - crypto
+  - asymmetric
+  - ec
 joseName: ES256
 keyFamily: EC
 minKeySizeBits: 256

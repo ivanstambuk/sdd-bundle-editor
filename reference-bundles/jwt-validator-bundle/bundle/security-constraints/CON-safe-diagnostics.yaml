@@ -3,10 +3,15 @@ kind: SecurityConstraint
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Safe Diagnostics Mode"
-description: Implementations MUST NOT return populated or unverified `STRUCT-claims-view` payloads on signature failure unless the runtime policy explicitly enables `allowDiagnosticClaimsOnFailure`, to prevent downstream trust manipulation.
-tags: [security, boundary]
+title: Safe Diagnostics Mode
+description: Implementations MUST NOT return populated or unverified
+  `STRUCT-claims-view` payloads on signature failure unless the runtime policy
+  explicitly enables `allowDiagnosticClaimsOnFailure`, to prevent downstream
+  trust manipulation.
+tags:
+  - security
+  - boundary
 severity: CRITICAL
 mitigatesRiskIds: []
 governedByAdrIds:
-  - ADR-safe-diagnostics-boundary
+  - ADR-0012-safe-diagnostics-boundary

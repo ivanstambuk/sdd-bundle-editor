@@ -4,7 +4,9 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Core Execution Tests
-description: A comprehensive suite proving the logic of the Core Validation Profile against edge cases like expiration, signature tampering, and clock skews.
+description: A comprehensive suite proving the logic of the Core Validation
+  Profile against edge cases like expiration, signature tampering, and clock
+  skews.
 rationale: Automates security verification.
 tags:
   - test-plan
@@ -44,4 +46,4 @@ requiresEnvironmentCapabilities:
   - static-key-fixtures
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
-  - ADR-conformance-is-executable
+  - ADR-0014-conformance-is-executable

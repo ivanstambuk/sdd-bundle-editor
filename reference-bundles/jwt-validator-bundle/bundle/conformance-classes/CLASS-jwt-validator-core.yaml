@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Core Validation Profile
-description: The baseline requirements for an implementation to claim it can safely decode, verify, and validate standard signed JWTs.
+description: The baseline requirements for an implementation to claim it can
+  safely decode, verify, and validate standard signed JWTs.
 rationale: Standardizes what it means to be securely conformant to base RFCs.
 tags:
   - compliance
@@ -14,6 +15,6 @@ requiresOperationIds:
 targetsProfileIds:
   - PROF-JWT-CORE
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-compact-jws-only-v1
-  - ADR-conformance-is-executable
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0002-compact-jws-only-v1
+  - ADR-0014-conformance-is-executable

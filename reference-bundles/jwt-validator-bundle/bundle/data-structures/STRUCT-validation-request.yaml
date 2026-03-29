@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWT Validation Request
-description: Request envelope for the authoritative validation operation, carrying the compact token input, selected profile, and runtime policy overrides.
-tags: [data, input, request]
+description: Request envelope for the authoritative validation operation,
+  carrying the compact token input, selected profile, and runtime policy
+  overrides.
+tags:
+  - data
+  - input
+  - request
 composesStructureIds:
   - STRUCT-token-input
   - STRUCT-profile-invocation
@@ -25,9 +30,9 @@ schemaDefinition:
       x-sdd-refTargets:
         - TokenProfile
     runtimePolicy:
-      $ref: '#/$defs/runtimePolicy'
+      $ref: "#/$defs/runtimePolicy"
     validationContext:
-      $ref: '#/$defs/validationContext'
+      $ref: "#/$defs/validationContext"
   required:
     - token
     - invocationProfileId

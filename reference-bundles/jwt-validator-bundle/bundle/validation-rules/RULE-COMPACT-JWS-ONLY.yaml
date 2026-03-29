@@ -3,9 +3,14 @@ kind: ValidationRule
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Accept Only Compact Signed JWT Input"
-description: The validator MUST accept only compact signed JWT input and reject JWE, JWS JSON serialization, nested JWT, or any other JOSE container outside the active profile boundary.
-tags: [validation, format, boundary]
+title: Accept Only Compact Signed JWT Input
+description: The validator MUST accept only compact signed JWT input and reject
+  JWE, JWS JSON serialization, nested JWT, or any other JOSE container outside
+  the active profile boundary.
+tags:
+  - validation
+  - format
+  - boundary
 severity: FATAL
 ruleType: FormatCheck
 throwsErrorCodeId: ERR-unsupported-format
@@ -16,5 +21,5 @@ implementsReferenceIds:
 implementsConstraintIds:
   - CON-safe-diagnostics
 governedByAdrIds:
-  - ADR-compact-jws-only-v1
-  - ADR-unsupported-jose-variants-are-explicitly-modeled
+  - ADR-0002-compact-jws-only-v1
+  - ADR-0015-unsupported-jose-variants-are-explicitly-modeled

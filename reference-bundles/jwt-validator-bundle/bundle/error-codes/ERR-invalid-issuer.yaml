@@ -3,9 +3,12 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Invalid Issuer"
-description: The token's `iss` claim does not match the `expectedIssuer` defined in the runtime policy.
-tags: [error, security]
+title: Invalid Issuer
+description: The token's `iss` claim does not match the `expectedIssuer` defined
+  in the runtime policy.
+tags:
+  - error
+  - security
 codeName: rejected-invalid-issuer
 messageTemplate: The token issuer does not match the expected issuer.
 outcomeClass: rejected

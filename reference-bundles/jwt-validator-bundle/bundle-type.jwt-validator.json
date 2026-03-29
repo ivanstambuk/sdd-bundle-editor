@@ -177,7 +177,7 @@
     },
     {
       "entityType": "ADR",
-      "idField": "id",
+      "idField": "adr.id",
       "schemaPath": "schemas/ADR.schema.json",
       "directory": "bundle/adrs",
       "filePattern": "{id}.yaml",
@@ -200,20 +200,6 @@
     {
       "name": "ActorToADR_governedByAdrIds",
       "fromEntity": "Actor",
-      "toEntity": "ADR",
-      "fromField": "governedByAdrIds",
-      "multiplicity": "many"
-    },
-    {
-      "name": "ADRToActor_deciderActorIds",
-      "fromEntity": "ADR",
-      "toEntity": "Actor",
-      "fromField": "deciderActorIds",
-      "multiplicity": "many"
-    },
-    {
-      "name": "ADRToADR_governedByAdrIds",
-      "fromEntity": "ADR",
       "toEntity": "ADR",
       "fromField": "governedByAdrIds",
       "multiplicity": "many"

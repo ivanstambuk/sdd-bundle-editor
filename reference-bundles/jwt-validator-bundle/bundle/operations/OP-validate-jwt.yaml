@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Validate JWT
-description: The primary entrypoint for verifying a token against a defined token profile and dynamic runtime configurations.
+description: The primary entrypoint for verifying a token against a defined
+  token profile and dynamic runtime configurations.
 rationale: The core public API for any generated library.
 tags:
   - api-surface
@@ -15,6 +16,6 @@ acceptsStructureIds:
 producesDataStructureIds:
   - STRUCT-validation-result
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-parse-before-trust-pipeline
-  - ADR-validation-result-is-a-structured-contract
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0003-parse-before-trust-pipeline
+  - ADR-0013-validation-result-is-a-structured-contract

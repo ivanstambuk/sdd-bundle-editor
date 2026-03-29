@@ -4,7 +4,9 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWT Remote JWKS Extension
-description: Extension profile for validators that resolve trusted key material from a direct HTTPS JWKS endpoint instead of only invoker-supplied static keys.
+description: Extension profile for validators that resolve trusted key material
+  from a direct HTTPS JWKS endpoint instead of only invoker-supplied static
+  keys.
 profileType: Custom
 profileFamily: JWT-REMOTE
 replayProtectionMode: out-of-scope
@@ -33,7 +35,7 @@ allowsAlgorithmIds:
 usesKeyStrategyIds:
   - KEY-https-jwks
 governedByAdrIds:
-  - ADR-profile-driven-validator-composition
-  - ADR-remote-jwks-over-https
-  - ADR-key-resolution-fails-closed
-  - ADR-profile-governs-claim-requirements
+  - ADR-0001-profile-driven-validator-composition
+  - ADR-0005-remote-jwks-over-https
+  - ADR-0008-key-resolution-fails-closed
+  - ADR-0010-profile-governs-claim-requirements

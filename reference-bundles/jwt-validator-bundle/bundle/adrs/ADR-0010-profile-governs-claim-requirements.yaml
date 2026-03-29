@@ -1,0 +1,157 @@
+adr:
+  id: ADR-0010-profile-governs-claim-requirements
+  title: Make claim requirements and claim-matching policy profile dependent
+  y_statement: >-
+    **In the context of** The core, remote-JWKS, and OIDC variants do not have
+    identical claim semantics.
+
+    For example, OIDC discovery relies more heavily on issuer binding, and
+    runtime policy
+
+    may demand audience, subject, or type checks in specific contexts.
+    **facing** Should claim presence and exact-match behavior be global
+    validator defaults or part
+
+    of profile-driven policy? **we decided for** Profile-driven claim policy
+    **and neglected** One global claim policy **to achieve** OIDC and core
+    semantics can coexist without hidden exceptions.; Claim-related conformance
+    vectors have a clear source of truth. **accepting** Readers need to inspect
+    both profile and runtime policy to understand full behavior. **because**
+    Required claims, optional claims, and exact-match checks for `iss`, `aud`,
+    `sub`,
+
+    and `typ` are profile dependent. The bundle models them as explicit rules
+    bound to
+
+    runtime context and profile boundaries rather than as undocumented parser
+    behavior.
+  status: accepted
+  created_at: 2024-09-30T09:00:00Z
+  last_modified: 2024-10-01T13:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Claim Policy Modeling
+  tags:
+    - claims
+    - profile
+    - policy
+  priority: medium
+  decision_type: technology
+  decision_level: tactical
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-10-01T13:00:00Z
+context:
+  description: >-
+    The core, remote-JWKS, and OIDC variants do not have identical claim
+    semantics.
+
+    For example, OIDC discovery relies more heavily on issuer binding, and
+    runtime policy
+
+    may demand audience, subject, or type checks in specific contexts.
+
+
+    ## Decision Question
+
+
+    Should claim presence and exact-match behavior be global validator defaults
+    or part
+
+    of profile-driven policy?
+  assumptions:
+    - Different deployment profiles need different claim expectations.
+    - Runtime policy should narrow behavior, not replace profile semantics
+      entirely.
+alternatives:
+  - name: Profile-driven claim policy
+    description: Let profiles define the claim baseline and let runtime policy narrow it.
+    pros:
+      - Matches the differences between core and OIDC use cases.
+      - Keeps claim semantics visible in the bundle.
+    cons:
+      - Requires more cross-links between profiles, rules, and context
+        structures.
+    estimated_cost: medium
+    risk: low
+  - name: One global claim policy
+    description: Apply the same claim rules to all validator variants.
+    pros:
+      - Simpler to explain.
+    cons:
+      - Overconstrains some profiles and underconstrains others.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: The variants in this bundle are materially different enough
+      that a single claim policy would distort at least one of them.
+decision:
+  chosen_alternative: Profile-driven claim policy
+  rationale: >
+    Required claims, optional claims, and exact-match checks for `iss`, `aud`,
+    `sub`,
+
+    and `typ` are profile dependent. The bundle models them as explicit rules
+    bound to
+
+    runtime context and profile boundaries rather than as undocumented parser
+    behavior.
+  tradeoffs: >-
+    The team accepts the following tradeoffs:
+
+
+    - Readers need to inspect both profile and runtime policy to understand full
+    behavior.
+  decision_date: 2024-10-01
+  confidence: high
+consequences:
+  positive:
+    - OIDC and core semantics can coexist without hidden exceptions.
+    - Claim-related conformance vectors have a clear source of truth.
+  negative:
+    - Readers need to inspect both profile and runtime policy to understand full
+      behavior.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts (PROF-JWT-CORE,
+    PROF-JWT-REMOTE-JWKS, PROF-JWT-OIDC-DISCOVERY, RULE-REQUIRED-CLAIMS,
+    RULE-ISS-MATCH, RULE-AUD-MATCH, RULE-SUB-MATCH, RULE-TYP-POLICY, RFC-7519,
+    OIDC-CORE) and by strict JWT bundle validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - PROF-JWT-CORE
+    - PROF-JWT-REMOTE-JWKS
+    - PROF-JWT-OIDC-DISCOVERY
+    - RULE-REQUIRED-CLAIMS
+    - RULE-ISS-MATCH
+    - RULE-AUD-MATCH
+    - RULE-SUB-MATCH
+    - RULE-TYP-POLICY
+    - RFC-7519
+    - OIDC-CORE
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-30T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-10-01T13:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-10-01T13:00:00Z
+references:
+  - title: JSON Web Token (JWT)
+    url: https://datatracker.ietf.org/doc/html/rfc7519
+  - title: OpenID Connect Core 1.0
+    url: https://openid.net/specs/openid-connect-core-1_0.html

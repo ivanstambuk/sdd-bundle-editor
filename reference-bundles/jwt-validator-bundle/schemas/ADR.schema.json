@@ -1,410 +1,642 @@
 {
-  "$id": "sdd-bundle:jwt-validator:ADR",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ADR",
-  "description": "Architecture Decision Record for the JWT validator reference bundle.",
-  "type": "object",
-  "required": [
-    "id",
-    "kind",
-    "executionStatus",
-    "artifactClass",
-    "lifecycleStatus",
-    "title",
-    "status",
-    "createdDate",
-    "decidedDate",
-    "lastModifiedDate",
-    "lastModifiedBy",
-    "deciderActorIds",
-    "context",
-    "problem",
-    "alternativesConsidered",
-    "decision"
-  ],
-  "additionalProperties": false,
-  "properties": {
-    "id": {
-      "type": "string",
-      "pattern": "^ADR-[a-z][a-z0-9]*(-[a-z0-9]+)*$",
-      "x-sdd-idTemplate": "ADR-{slug}",
-      "x-sdd-entityType": "ADR",
-      "x-sdd-idScope": "bundle",
-      "x-sdd-displayHint": "hidden",
-      "x-sdd-layoutGroup": "overview"
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "sdd-bundle:jwt-validator:ADR",
+    "title": "ADR",
+    "description": "Self-contained ADR meta-model for governed architectural decisions. Each ADR embeds all context, architecturally significant requirements (ASRs), alternatives, consequences, and audit trails. All string fields support Markdown including embedded Mermaid diagrams via code fences.",
+    "version": "1.0.0",
+    "type": "object",
+    "required": [
+        "adr",
+        "authors",
+        "decision_owner",
+        "context",
+        "alternatives",
+        "decision",
+        "consequences",
+        "confirmation"
+    ],
+    "additionalProperties": false,
+    "patternProperties": {
+        "^x-": {
+            "description": "Extension fields. Teams may add custom metadata using the x- prefix without breaking schema validation."
+        }
     },
-    "kind": {
-      "type": "string",
-      "const": "ADR",
-      "x-sdd-displayHint": "hidden",
-      "x-sdd-layoutGroup": "overview"
-    },
-    "executionStatus": {
-      "type": "string",
-      "enum": [
-        "active",
-        "advisory",
-        "planned"
-      ],
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 1
-    },
-    "artifactClass": {
-      "type": "string",
-      "enum": [
-        "contract",
-        "support",
-        "fixture",
-        "documentation"
-      ],
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 2
-    },
-    "lifecycleStatus": {
-      "type": "string",
-      "enum": [
-        "draft",
-        "active",
-        "deprecated",
-        "superseded"
-      ],
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 3
-    },
-    "title": {
-      "type": "string",
-      "minLength": 5,
-      "maxLength": 140,
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-order": 10
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "draft",
-        "proposed",
-        "accepted",
-        "rejected",
-        "superseded"
-      ],
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 10
-    },
-    "createdDate": {
-      "type": "string",
-      "format": "date-time",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 11
-    },
-    "decidedDate": {
-      "type": "string",
-      "format": "date-time",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 12
-    },
-    "lastModifiedDate": {
-      "type": "string",
-      "format": "date-time",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 13
-    },
-    "lastModifiedBy": {
-      "type": "string",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 14
-    },
-    "confidence": {
-      "type": "string",
-      "enum": [
-        "low",
-        "medium",
-        "high"
-      ],
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 15
-    },
-    "deciderActorIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "Actor"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10
-    },
-    "context": {
-      "type": "string",
-      "x-sdd-displayHint": "markdown",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-order": 20
-    },
-    "problem": {
-      "type": "string",
-      "x-sdd-displayHint": "markdown",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-order": 30
-    },
-    "assumptions": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-layoutGroup": "decision",
-      "x-sdd-order": 10
-    },
-    "decision": {
-      "type": "string",
-      "x-sdd-displayHint": "markdown",
-      "x-sdd-layoutGroup": "decision",
-      "x-sdd-order": 20
-    },
-    "alternativesConsidered": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string",
-            "x-sdd-displayHint": "markdown"
-          },
-          "pros": {
-            "type": "array",
-            "items": {
-              "type": "string"
+    "properties": {
+        "adr": {
+            "type": "object",
+            "description": "Core ADR metadata and identification.",
+            "required": [
+                "id",
+                "title",
+                "status",
+                "created_at",
+                "version",
+                "project",
+                "decision_type"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^ADR-[0-9]{4}(-[a-z0-9]+)+$",
+                    "description": "Unique identifier in ADR-NNNN-slug format (slug is mandatory). Example: ADR-0001-dpop-over-mtls.",
+                    "x-sdd-displayHint": "hidden"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 200,
+                    "description": "Human-readable decision title."
+                },
+                "y_statement": {
+                    "type": "string",
+                    "description": "Zimmermann/Fairbanks Y-Statement (long form): 'In the context of [use case], facing [concern], we decided for [option] and neglected [alternatives], to achieve [benefits], accepting [tradeoffs], because [rationale].' Schema-optional but mandatory when status is accepted. See docs/glossary.md.",
+                    "x-sdd-displayHint": "markdown"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "draft",
+                        "proposed",
+                        "accepted",
+                        "superseded",
+                        "deprecated",
+                        "rejected",
+                        "deferred"
+                    ],
+                    "description": "Current lifecycle status of the decision."
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "ISO 8601 timestamp of initial creation."
+                },
+                "last_modified": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "ISO 8601 timestamp of last modification."
+                },
+                "version": {
+                    "type": "string",
+                    "pattern": "^[0-9]+\\.[0-9]+$",
+                    "description": "Document version of this ADR (MAJOR.MINOR). Not to be confused with schema_version."
+                },
+                "schema_version": {
+                    "type": "string",
+                    "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+                    "description": "Version of the ADR schema this document conforms to (MAJOR.MINOR.PATCH)."
+                },
+                "project": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Project or programme this decision belongs to."
+                },
+                "component": {
+                    "type": "string",
+                    "description": "Specific component, module, or subsystem affected."
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true,
+                    "description": "Categorization tags for discovery and filtering.",
+                    "x-sdd-displayHint": "chips"
+                },
+                "priority": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "critical"
+                    ],
+                    "description": "Priority level of the decision."
+                },
+                "decision_type": {
+                    "type": "string",
+                    "enum": [
+                        "technology",
+                        "process",
+                        "organizational",
+                        "vendor",
+                        "security",
+                        "compliance"
+                    ],
+                    "description": "Classification of the decision domain."
+                },
+                "decision_level": {
+                    "type": "string",
+                    "enum": [
+                        "strategic",
+                        "tactical",
+                        "operational"
+                    ],
+                    "description": "Architectural scope/altitude. 'strategic' = system landscape, bounded contexts, team/org boundaries, cross-cutting enterprise concerns, multi-year impact. 'tactical' = domain model, component design patterns, cross-cutting technical patterns, subsystem-scoped. 'operational' = specific technology/library/protocol/product choices, API design decisions, deployment configuration, usually swappable."
+                }
             }
-          },
-          "cons": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "isChosen": {
-            "type": "boolean"
-          },
-          "reasonRejected": {
-            "type": "string",
-            "x-sdd-displayHint": "markdown"
-          }
         },
-        "additionalProperties": false
-      },
-      "x-sdd-layoutGroup": "decision",
-      "x-sdd-order": 30
+        "authors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/$defs/person"
+            },
+            "description": "Authors who drafted this ADR."
+        },
+        "decision_owner": {
+            "$ref": "#/$defs/person",
+            "description": "Accountable owner for this decision."
+        },
+        "reviewers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/person"
+            },
+            "description": "Individuals who reviewed this ADR."
+        },
+        "approvals": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "role"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "identity": {
+                        "type": "string",
+                        "description": "Platform-resolvable handle for CI approval verification. Use the format your Git platform identifies approvers by: GitHub username (e.g., '@janedoe'), Azure DevOps email or UPN, GitLab username. CI pipelines use this field to verify that every listed approver actually approved the pull request before merge. Required when adr.status is 'proposed' or 'accepted'."
+                    },
+                    "approved_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "ISO 8601 timestamp when approval was given, null if pending."
+                    },
+                    "signature_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "External signature or ticket ID for audit trail."
+                    }
+                }
+            },
+            "description": "Formal approvals with optional timestamps, platform identity for CI verification, and signature references. Required when adr.status is 'proposed' or 'accepted'. The identity field enables CI pipelines to verify that every listed approver actually approved the pull request."
+        },
+        "context": {
+            "type": "object",
+            "required": [
+                "description"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "minLength": 20,
+                    "description": "Narrative description of the problem and context. Supports Markdown with embedded Mermaid diagrams, code blocks, and rich formatting.",
+                    "x-sdd-displayHint": "markdown"
+                },
+                "business_drivers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Business motivations behind this decision."
+                },
+                "technical_drivers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Technical motivations and quality attributes."
+                },
+                "constraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Non-negotiable constraints that bound the solution space."
+                },
+                "assumptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Assumptions made when evaluating alternatives."
+                }
+            },
+            "description": "Context, drivers, constraints, and assumptions."
+        },
+        "architecturally_significant_requirements": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "functional": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/architecturally_significant_requirement"
+                    },
+                    "description": "Functional ASRs addressed by this decision."
+                },
+                "non_functional": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/architecturally_significant_requirement"
+                    },
+                    "description": "Non-functional / quality attribute ASRs."
+                }
+            },
+            "description": "Architecturally Significant Requirements (ASRs) — the subset of requirements that directly shape this architectural decision. Only include requirements that influence the architecture; do not replicate the full requirements backlog."
+        },
+        "alternatives": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "description",
+                    "pros",
+                    "cons"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Short name for this alternative."
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 20,
+                        "description": "Thorough description of the alternative's architectural design. This is NOT a summary — write multiple paragraphs explaining how this option works, its architecture, data flows, and integration points. Embedding Mermaid diagrams (sequence, flowchart, C4) is strongly encouraged to visualize the design. Supports full Markdown with code blocks and rich formatting.",
+                        "x-sdd-displayHint": "markdown"
+                    },
+                    "pros": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "minItems": 1,
+                        "description": "Advantages of this alternative."
+                    },
+                    "cons": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "minItems": 1,
+                        "description": "Disadvantages or risks of this alternative."
+                    },
+                    "estimated_cost": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "description": "Relative cost estimate."
+                    },
+                    "risk": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "critical"
+                        ],
+                        "description": "Overall risk level of this alternative."
+                    },
+                    "rejection_rationale": {
+                        "type": "string",
+                        "description": "Why this alternative was not chosen. Only applicable to rejected alternatives. Inspired by Merson/DRF.",
+                        "x-sdd-displayHint": "markdown"
+                    }
+                }
+            },
+            "description": "At least two alternatives must be considered for every decision."
+        },
+        "decision": {
+            "type": "object",
+            "required": [
+                "chosen_alternative",
+                "rationale",
+                "decision_date"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "chosen_alternative": {
+                    "type": "string",
+                    "description": "Name of the selected alternative. Should match a name in the alternatives array (enforced by tooling, not schema)."
+                },
+                "rationale": {
+                    "type": "string",
+                    "minLength": 20,
+                    "description": "Reasons supporting this choice. Supports Markdown with embedded Mermaid diagrams, code blocks, and rich formatting.",
+                    "x-sdd-displayHint": "markdown"
+                },
+                "tradeoffs": {
+                    "type": "string",
+                    "description": "Acknowledged tradeoffs accepted with this decision. Supports Markdown.",
+                    "x-sdd-displayHint": "markdown"
+                },
+                "decision_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "ISO 8601 date when the decision was made."
+                },
+                "confidence": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "description": "Confidence level in this decision. Combined with decision_level, this influences lifecycle.review_cycle_months — low-confidence decisions should have shorter review cycles; strategic decisions should have longer ones."
+                }
+            },
+            "description": "The chosen alternative and its justification."
+        },
+        "consequences": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": false,
+            "properties": {
+                "positive": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Expected positive outcomes."
+                },
+                "negative": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Expected negative outcomes or costs."
+                }
+            },
+            "description": "Consequences and implications of the decision."
+        },
+        "confirmation": {
+            "type": "object",
+            "required": [
+                "description"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "How the implementation of this decision will be verified. Supports Markdown. E.g. code review, ArchUnit test, design review, load test.",
+                    "x-sdd-displayHint": "markdown"
+                },
+                "artifact_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "description": "Delivery artifact references that confirm implementation. E.g. Jira tickets, PR URLs, test suite IDs, sprint items."
+                }
+            },
+            "description": "How compliance with this ADR is confirmed. Links the decision to its verification evidence."
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "internal": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Internal service or team dependencies."
+                },
+                "external": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "External vendor or third-party dependencies."
+                }
+            },
+            "description": "Internal and external dependencies."
+        },
+        "references": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "url"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "description": "External references, standards, and evidence."
+        },
+        "lifecycle": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "review_cycle_months": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "How often (in months) this decision should be reviewed. Set to 0 for permanent decisions that do not require periodic review. Recommended values vary by decision level and confidence — see adr-process.md §9."
+                },
+                "next_review_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Next scheduled review date."
+                },
+                "superseded_by": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "pattern": "^ADR-[0-9]{4}(-[a-z0-9]+)+$",
+                    "description": "ADR ID that supersedes this one, if any."
+                },
+                "supersedes": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "pattern": "^ADR-[0-9]{4}(-[a-z0-9]+)+$",
+                    "description": "ADR ID that this one supersedes, if any."
+                },
+                "archival": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "archived_at": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date-time"
+                        },
+                        "archive_reason": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                }
+            },
+            "description": "Lifecycle management: review cadence, supersession chain, archival."
+        },
+        "audit_trail": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "event",
+                    "by",
+                    "at"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "enum": [
+                            "created",
+                            "updated",
+                            "reviewed",
+                            "approved",
+                            "rejected",
+                            "deferred",
+                            "superseded",
+                            "deprecated",
+                            "archived"
+                        ],
+                        "description": "Type of lifecycle event."
+                    },
+                    "by": {
+                        "type": "string",
+                        "description": "Person or system that triggered the event."
+                    },
+                    "at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "ISO 8601 timestamp."
+                    },
+                    "details": {
+                        "type": "string",
+                        "description": "Optional additional context."
+                    }
+                }
+            },
+            "description": "Immutable audit trail of all lifecycle events."
+        }
     },
-    "positiveConsequences": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-layoutGroup": "consequences",
-      "x-sdd-order": 10
-    },
-    "negativeConsequences": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-layoutGroup": "consequences",
-      "x-sdd-order": 20
-    },
-    "neutralConsequences": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-layoutGroup": "consequences",
-      "x-sdd-order": 30
-    },
-    "relatedProfileIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "TokenProfile"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 20
-    },
-    "relatedOperationIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "Operation"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 21
-    },
-    "relatedRuleIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "ValidationRule"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 22
-    },
-    "relatedStrategyIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "KeyStrategy"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 23
-    },
-    "relatedConstraintIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "SecurityConstraint"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 24
-    },
-    "relatedReferenceIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "NormativeReference"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 25
-    },
-    "relatedClassIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "ConformanceClass"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 26
-    },
-    "relatedSuiteIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "ConformanceSuite"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 27
-    },
-    "relatedFormatIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "SerializationFormat"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 28
-    },
-    "relatedDataStructureIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "DataStructure"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 29
-    },
-    "supersedesAdrIds": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "sdd-ref",
-        "x-sdd-refTargets": [
-          "ADR"
-        ]
-      },
-      "uniqueItems": true,
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 30
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true,
-      "x-sdd-displayHint": "chips",
-      "x-sdd-layoutGroup": "details",
-      "x-sdd-order": 99
+    "allOf": [
+        {
+            "if": {
+                "required": [
+                    "adr"
+                ],
+                "properties": {
+                    "adr": {
+                        "type": "object",
+                        "required": [
+                            "status"
+                        ],
+                        "properties": {
+                            "status": {
+                                "enum": [
+                                    "proposed",
+                                    "accepted"
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "approvals"
+                ],
+                "properties": {
+                    "approvals": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "name",
+                                "role",
+                                "identity"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "$defs": {
+        "person": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "role": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        },
+        "architecturally_significant_requirement": {
+            "type": "object",
+            "required": [
+                "id",
+                "description"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^(F|NF)-[0-9]{3}$",
+                    "description": "Functional (F-NNN) or Non-Functional (NF-NNN) requirement ID. Scoped per ADR — each ADR starts from F-001 / NF-001."
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        }
     }
-  },
-  "x-sdd-ui": {
-    "displayName": "ADR",
-    "displayNamePlural": "ADRs",
-    "icon": "ADR"
-  },
-  "x-sdd-layoutGroups": {
-    "overview": {
-      "title": "Overview",
-      "order": 1
-    },
-    "details": {
-      "title": "Metadata",
-      "order": 2
-    },
-    "decision": {
-      "title": "Decision",
-      "order": 3
-    },
-    "consequences": {
-      "title": "Consequences",
-      "order": 4
-    },
-    "traceability": {
-      "title": "Traceability",
-      "order": 5
-    }
-  }
 }

@@ -4,12 +4,16 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: JWS JSON Serialization
-description: JSON-based JWS serialization. This bundle currently models only compact signed JWT input for authoritative validation.
-tags: [encoding, json, unsupported]
+description: JSON-based JWS serialization. This bundle currently models only
+  compact signed JWT input for authoritative validation.
+tags:
+  - encoding
+  - json
+  - unsupported
 formatName: JWS JSON
 containerType: JWS
 serializationVariant: json
 supportStatus: unsupported
 governedByAdrIds:
-  - ADR-compact-jws-only-v1
-  - ADR-unsupported-jose-variants-are-explicitly-modeled
+  - ADR-0002-compact-jws-only-v1
+  - ADR-0015-unsupported-jose-variants-are-explicitly-modeled

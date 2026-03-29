@@ -3,9 +3,11 @@ kind: PayloadClaim
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "jti (JWT ID) Claim"
+title: jti (JWT ID) Claim
 description: Provides a unique identifier for the JWT to prevent replay attacks.
-tags: [security, claim]
+tags:
+  - security
+  - claim
 name: jti
 dataType: string
 semanticType: JWTID

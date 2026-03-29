@@ -3,9 +3,12 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Incorrect Issuer Mismatch"
-description: JWT holding an unknown or malicious `iss` field when the application expects a specific tenant URL.
-tags: [test, security]
+title: Incorrect Issuer Mismatch
+description: JWT holding an unknown or malicious `iss` field when the
+  application expects a specific tenant URL.
+tags:
+  - test
+  - security
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,8 +23,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-invalid-issuer]
+expectsErrorCodeIds:
+  - ERR-invalid-issuer
 expectedPrimaryErrorCodeId: ERR-invalid-issuer
 expectedFailedRuleId: RULE-ISS-MATCH
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-ISS-MATCH]
+validatesRuleIds:
+  - RULE-ISS-MATCH

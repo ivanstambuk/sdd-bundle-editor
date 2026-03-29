@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Issuer Mismatch"
-description: Remote-JWKS profile token carries an issuer outside the runtime policy's configured issuer expectation for the remote trust anchor.
-tags: [test, remote, security]
+title: Remote JWKS Issuer Mismatch
+description: Remote-JWKS profile token carries an issuer outside the runtime
+  policy's configured issuer expectation for the remote trust anchor.
+tags:
+  - test
+  - remote
+  - security
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS
@@ -26,8 +30,10 @@ remoteResolutionScenario:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-invalid-issuer]
+expectsErrorCodeIds:
+  - ERR-invalid-issuer
 expectedPrimaryErrorCodeId: ERR-invalid-issuer
 expectedFailedRuleId: RULE-ISS-MATCH
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-ISS-MATCH]
+validatesRuleIds:
+  - RULE-ISS-MATCH

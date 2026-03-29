@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: documentation
 lifecycleStatus: active
 title: OAuth 2.0 JWT Profile for Access Tokens
-description: Defines the profile for using JWT as an OAuth 2.0 access token and clarifies interoperable validation expectations.
-tags: [oauth, access-token, standard]
+description: Defines the profile for using JWT as an OAuth 2.0 access token and
+  clarifies interoperable validation expectations.
+tags:
+  - oauth
+  - access-token
+  - standard
 url: https://datatracker.ietf.org/doc/html/rfc9068
 referenceType: OAuth2
 publisher: IETF

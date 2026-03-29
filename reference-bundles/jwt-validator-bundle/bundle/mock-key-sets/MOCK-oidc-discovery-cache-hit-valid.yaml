@@ -4,14 +4,19 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: OIDC Discovery Cache Hit Fixture
-description: Simulated cached discovery metadata reused without fetching the `.well-known` document again.
-tags: [fixture, oidc, discovery, cache-hit]
+description: Simulated cached discovery metadata reused without fetching the
+  `.well-known` document again.
+tags:
+  - fixture
+  - oidc
+  - discovery
+  - cache-hit
 fixtureMode: oidc-discovery-document
 endpointUrl: https://example.com/.well-known/openid-configuration
 httpStatusCode: 200
 responseHeaders:
   cache-control: max-age=300
-  age: '120'
+  age: "120"
   etag: '"oidc-v1"'
 cacheDisposition: warm-cache
 networkBehavior: success

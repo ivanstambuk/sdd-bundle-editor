@@ -3,9 +3,11 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Token Premature"
+title: Token Premature
 description: The token `nbf` time is in the future.
-tags: [error, execution]
+tags:
+  - error
+  - execution
 codeName: rejected-premature
 messageTemplate: The token is not valid yet because the nbf time is in the future.
 outcomeClass: rejected

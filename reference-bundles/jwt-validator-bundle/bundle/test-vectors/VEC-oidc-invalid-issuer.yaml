@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "OIDC Issuer Mismatch"
-description: OIDC discovery profile token with an issuer that does not match the expected discovered issuer binding.
-tags: [test, oidc, security]
+title: OIDC Issuer Mismatch
+description: OIDC discovery profile token with an issuer that does not match the
+  expected discovered issuer binding.
+tags:
+  - test
+  - oidc
+  - security
 invocationProfileId: PROF-JWT-OIDC-DISCOVERY
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY
@@ -32,8 +36,10 @@ oidcDiscoveryScenario:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-invalid-issuer]
+expectsErrorCodeIds:
+  - ERR-invalid-issuer
 expectedPrimaryErrorCodeId: ERR-invalid-issuer
 expectedFailedRuleId: RULE-ISS-MATCH
 expectedTerminalStepId: STEP-3
-validatesRuleIds: [RULE-ISS-MATCH]
+validatesRuleIds:
+  - RULE-ISS-MATCH

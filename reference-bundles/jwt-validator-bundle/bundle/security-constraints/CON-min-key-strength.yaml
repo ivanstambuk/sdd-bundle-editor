@@ -3,10 +3,13 @@ kind: SecurityConstraint
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Minimum Security Strength (128-bit)"
-description: Deployments SHOULD ensure that algorithms and key sizes meet or exceed 128 bits of security strength (e.g., minimum RSA 2048, ECC P-256).
-tags: [security, crypto]
+title: Minimum Security Strength (128-bit)
+description: Deployments SHOULD ensure that algorithms and key sizes meet or
+  exceed 128 bits of security strength (e.g., minimum RSA 2048, ECC P-256).
+tags:
+  - security
+  - crypto
 severity: HIGH
 mitigatesRiskIds: []
 governedByAdrIds:
-  - ADR-algorithm-policy-is-allowlist-based
+  - ADR-0009-algorithm-policy-is-allowlist-based

@@ -16,6 +16,7 @@ export interface DocumentSchemaConfig {
 export async function loadSchemas(config: DocumentSchemaConfig): Promise<CompiledSchemaSet> {
   const ajv = new Ajv2020({
     strict: true,
+    strictRequired: false,
     allErrors: true,
     $data: true,
   });
@@ -39,8 +40,8 @@ export async function loadSchemas(config: DocumentSchemaConfig): Promise<Compile
     'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
     'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-valueStyle', 'x-sdd-labelStyle',
     'x-sdd-showLabelInBadge', 'x-sdd-enumTitles',
-    // Schema metadata keyword
-    'x-sdd-meta'
+    // Schema metadata keywords
+    'x-sdd-meta', 'version'
   ];
   for (const keyword of passthroughKeywords) {
     ajv.addKeyword({

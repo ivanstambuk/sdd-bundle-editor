@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Validation Context Model
-description: Resolved execution context supplied by the caller or harness for a specific validation run, separate from normative profile rules and caller policy preferences.
-tags: [data, input, context]
+description: Resolved execution context supplied by the caller or harness for a
+  specific validation run, separate from normative profile rules and caller
+  policy preferences.
+tags:
+  - data
+  - input
+  - context
 schemaDefinition:
   type: object
   additionalProperties: false

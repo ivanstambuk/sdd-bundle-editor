@@ -3,10 +3,16 @@ kind: Operation
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
-title: "Extract Claims Diagnostics"
-description: Diagnostic-only operation that decodes a JWT and returns a tagged `STRUCT-claims-view`, explicitly preserving unvalidated trust state when signature verification does not succeed.
-tags: [operation, diagnostic]
+title: Extract Claims Diagnostics
+description: Diagnostic-only operation that decodes a JWT and returns a tagged
+  `STRUCT-claims-view`, explicitly preserving unvalidated trust state when
+  signature verification does not succeed.
+tags:
+  - operation
+  - diagnostic
 operationRole: diagnostic
 systemComponent: DiagnosticCLI
-acceptsStructureIds: [STRUCT-validation-request]
-producesDataStructureIds: [STRUCT-claims-view]
+acceptsStructureIds:
+  - STRUCT-validation-request
+producesDataStructureIds:
+  - STRUCT-claims-view

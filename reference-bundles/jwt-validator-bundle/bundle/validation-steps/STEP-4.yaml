@@ -3,10 +3,18 @@ kind: ValidationStep
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Evaluate Time Window"
-description: Apply exp, nbf, and exact boundary semantics against the injected validation clock and allowed skew.
-tags: [step, time]
+title: Evaluate Time Window
+description: Apply exp, nbf, and exact boundary semantics against the injected
+  validation clock and allowed skew.
+tags:
+  - step
+  - time
 abortOnFailure: true
 executionOrder: 4
-executesRuleIds: [RULE-EXP-CHECK, RULE-NBF-CHECK, RULE-TIME-BOUNDARY-CHECK]
-producesErrorCodeIds: [ERR-expired, ERR-premature]
+executesRuleIds:
+  - RULE-EXP-CHECK
+  - RULE-NBF-CHECK
+  - RULE-TIME-BOUNDARY-CHECK
+producesErrorCodeIds:
+  - ERR-expired
+  - ERR-premature

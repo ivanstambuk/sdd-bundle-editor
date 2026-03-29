@@ -3,12 +3,15 @@ kind: PayloadClaim
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "nbf (Not Before) Claim"
+title: nbf (Not Before) Claim
 description: Identifies the time before which the JWT MUST NOT be accepted for processing.
-tags: [time, claim]
+tags:
+  - time
+  - claim
 name: nbf
 dataType: number
 semanticType: NumericDate
 comparisonSemantics: none
 isStandardRFC: true
-constrainedByRuleIds: [RULE-NBF-CHECK]
+constrainedByRuleIds:
+  - RULE-NBF-CHECK

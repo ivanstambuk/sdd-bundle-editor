@@ -3,9 +3,13 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Valid Token"
-description: Remote-JWKS profile accepts a token whose issuer and algorithm align with the configured remote trust profile and runtime policy.
-tags: [test, remote, success]
+title: Remote JWKS Valid Token
+description: Remote-JWKS profile accepts a token whose issuer and algorithm
+  align with the configured remote trust profile and runtime policy.
+tags:
+  - test
+  - remote
+  - success
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS

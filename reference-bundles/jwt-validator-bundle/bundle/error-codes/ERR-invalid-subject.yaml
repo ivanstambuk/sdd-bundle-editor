@@ -3,9 +3,12 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Invalid Subject"
-description: The token subject does not match the exact subject identifier required by the runtime policy.
-tags: [error, security]
+title: Invalid Subject
+description: The token subject does not match the exact subject identifier
+  required by the runtime policy.
+tags:
+  - error
+  - security
 codeName: rejected-invalid-subject
 messageTemplate: The token subject does not match the expected subject.
 outcomeClass: rejected

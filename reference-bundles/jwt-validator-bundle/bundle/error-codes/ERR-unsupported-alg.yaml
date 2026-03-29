@@ -3,9 +3,12 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Unsupported Algorithm"
-description: The token uses an algorithm that is either explicitly forbidden or not supported by the current profile.
-tags: [error, crypto]
+title: Unsupported Algorithm
+description: The token uses an algorithm that is either explicitly forbidden or
+  not supported by the current profile.
+tags:
+  - error
+  - crypto
 codeName: rejected-unsupported-alg
 messageTemplate: The token algorithm is not supported by the active profile.
 outcomeClass: rejected

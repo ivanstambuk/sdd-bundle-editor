@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Validate Issuer Claim
-description: If the expected issuer is configured in the RuntimePolicy, the iss claim MUST exact-match it.
+description: If the expected issuer is configured in the RuntimePolicy, the iss
+  claim MUST exact-match it.
 rationale: Mitigates cross-tenant injection.
 severity: ERROR
 ruleType: StringMatch
@@ -13,4 +14,4 @@ implementsReferenceIds:
   - RFC-7519
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
-  - ADR-profile-governs-claim-requirements
+  - ADR-0010-profile-governs-claim-requirements

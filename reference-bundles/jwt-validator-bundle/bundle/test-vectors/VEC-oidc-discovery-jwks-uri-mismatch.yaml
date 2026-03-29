@@ -3,9 +3,14 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "OIDC Discovery JWKS URI Mismatch"
-description: OIDC discovery profile fails closed when the discovery document points at an unexpected JWKS URI that breaks trusted discovery-to-key linkage.
-tags: [test, oidc, discovery, security]
+title: OIDC Discovery JWKS URI Mismatch
+description: OIDC discovery profile fails closed when the discovery document
+  points at an unexpected JWKS URI that breaks trusted discovery-to-key linkage.
+tags:
+  - test
+  - oidc
+  - discovery
+  - security
 invocationProfileId: PROF-JWT-OIDC-DISCOVERY
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-OIDC-DISCOVERY

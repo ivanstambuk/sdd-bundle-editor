@@ -3,9 +3,12 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Ambiguous Key Resolution"
-description: Providing a JWT signed by a kid "key-1", where the supplied JWKS holds two distinct keys sharing the identifier "key-1".
-tags: [test, crypto]
+title: Ambiguous Key Resolution
+description: Providing a JWT signed by a kid "key-1", where the supplied JWKS
+  holds two distinct keys sharing the identifier "key-1".
+tags:
+  - test
+  - crypto
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,9 +23,11 @@ validationContext:
 expectedOutcomeClass: indeterminate
 expectedKeySelectionStatus: ambiguous
 expectedTrustDecision: indeterminate
-expectsErrorCodeIds: [ERR-kid-ambiguous]
+expectsErrorCodeIds:
+  - ERR-kid-ambiguous
 expectedPrimaryErrorCodeId: ERR-kid-ambiguous
 expectedFailedRuleId: RULE-KID-AMBIGUITY
 expectedTerminalStepId: STEP-2
-validatesRuleIds: [RULE-KID-AMBIGUITY]
+validatesRuleIds:
+  - RULE-KID-AMBIGUITY
 usesMockKeyId: MOCK-hs256-duplicate-kid

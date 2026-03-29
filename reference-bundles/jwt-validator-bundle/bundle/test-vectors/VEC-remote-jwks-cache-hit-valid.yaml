@@ -3,9 +3,14 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Remote JWKS Cache Hit Valid Token"
-description: Remote-JWKS profile reuses a warm cached JWKS entry and accepts a token without performing an additional remote fetch.
-tags: [test, remote, cache, success]
+title: Remote JWKS Cache Hit Valid Token
+description: Remote-JWKS profile reuses a warm cached JWKS entry and accepts a
+  token without performing an additional remote fetch.
+tags:
+  - test
+  - remote
+  - cache
+  - success
 invocationProfileId: PROF-JWT-REMOTE-JWKS
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-REMOTE-JWKS

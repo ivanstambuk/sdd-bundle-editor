@@ -3,9 +3,12 @@ kind: ErrorCode
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Claim Type Mismatch"
-description: A claim or header value was parsed with a type or media-type shape that is incompatible with the active profile or runtime policy.
-tags: [error, validation]
+title: Claim Type Mismatch
+description: A claim or header value was parsed with a type or media-type shape
+  that is incompatible with the active profile or runtime policy.
+tags:
+  - error
+  - validation
 codeName: malformed-claim-type
 messageTemplate: A claim uses a JSON type that is not valid for the active profile.
 outcomeClass: malformed

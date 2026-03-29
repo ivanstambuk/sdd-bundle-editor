@@ -3,9 +3,12 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "Weak RSA 1024-bit Key"
-description: Token signed accurately, but signed using an impermissibly small 1024-bit RSA key.
-tags: [test, crypto]
+title: Weak RSA 1024-bit Key
+description: Token signed accurately, but signed using an impermissibly small
+  1024-bit RSA key.
+tags:
+  - test
+  - crypto
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,9 +23,11 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: rejected
-expectsErrorCodeIds: [ERR-unsupported-alg]
+expectsErrorCodeIds:
+  - ERR-unsupported-alg
 expectedPrimaryErrorCodeId: ERR-unsupported-alg
 expectedFailedRuleId: RULE-KEY-ALG-MATCH
 expectedTerminalStepId: STEP-2
-validatesRuleIds: [RULE-KEY-ALG-MATCH]
+validatesRuleIds:
+  - RULE-KEY-ALG-MATCH
 usesMockKeyId: MOCK-rs256-weak-1024

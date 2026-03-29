@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: Remote JWKS Cold Fetch RS256 Fixture
-description: Simulated HTTPS JWKS response for an initial cold-start fetch that returns a trusted RS256 signing key.
-tags: [fixture, remote, jwks, cold-start]
+description: Simulated HTTPS JWKS response for an initial cold-start fetch that
+  returns a trusted RS256 signing key.
+tags:
+  - fixture
+  - remote
+  - jwks
+  - cold-start
 fixtureMode: remote-jwks-response
 endpointUrl: https://example.com/jwks.json
 httpStatusCode: 200

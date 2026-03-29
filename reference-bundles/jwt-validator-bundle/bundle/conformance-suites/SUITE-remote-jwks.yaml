@@ -4,8 +4,12 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Remote JWKS Execution Tests
-description: Focused suite for validators that resolve trusted signing keys from a configured HTTPS JWKS endpoint, emphasizing remote-profile algorithm policy, issuer expectations, and rejection of signer-controlled trust sources.
-tags: [test-plan, remote]
+description: Focused suite for validators that resolve trusted signing keys from
+  a configured HTTPS JWKS endpoint, emphasizing remote-profile algorithm policy,
+  issuer expectations, and rejection of signer-controlled trust sources.
+tags:
+  - test-plan
+  - remote
 targetsClassIds:
   - CLASS-jwt-validator-remote-jwks
 containsVectorIds:
@@ -27,6 +31,6 @@ requiresEnvironmentCapabilities:
   - remote-jwks-endpoint
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
-  - ADR-conformance-is-executable
-  - ADR-remote-jwks-over-https
-  - ADR-key-resolution-fails-closed
+  - ADR-0014-conformance-is-executable
+  - ADR-0005-remote-jwks-over-https
+  - ADR-0008-key-resolution-fails-closed

@@ -3,10 +3,13 @@ kind: HeaderField
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "kid (Key ID) Header Parameter"
+title: kid (Key ID) Header Parameter
 description: >
-  A hint indicating which specific key owned by the signer was used to secure the JWS.
-tags: [header, crypto]
+  A hint indicating which specific key owned by the signer was used to secure
+  the JWS.
+tags:
+  - header
+  - crypto
 name: kid
 handlingPolicy: profile-controlled
 dataType: string

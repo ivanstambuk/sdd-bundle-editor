@@ -1,0 +1,154 @@
+adr:
+  id: ADR-0003-parse-before-trust-pipeline
+  title: Parse and harden the token envelope before any trust decision
+  y_statement: >-
+    **In the context of** Several failure modes happen before cryptography is
+    even relevant: malformed compact
+
+    structure, duplicate JSON keys, and unsupported container types. The bundle
+    already
+
+    models parsing as its own operation and the first pipeline step as a hard
+    boundary. **facing** When should low-level parse and structure checks run
+    relative to key resolution and
+
+    signature verification? **we decided for** Parse before trust **and
+    neglected** Fold parsing into signature verification **to achieve** The
+    parser operation and Step 1 have a crisp purpose.; Negative vectors for
+    malformed input stay easy to reason about. **accepting** Implementations
+    need a small amount of pre-crypto parsing infrastructure. **because** Treat
+    parsing and envelope hardening as the first stage of validation. The
+    validator
+
+    must reject malformed compact input, duplicate JSON keys, and unsupported
+    container
+
+    shapes before it considers keys, signatures, or claim policy.
+  status: accepted
+  created_at: 2024-09-09T09:00:00Z
+  last_modified: 2024-09-10T12:00:00Z
+  version: "1.0"
+  schema_version: 1.0.0
+  project: JWT Validator Reference Bundle
+  component: Validation Pipeline
+  tags:
+    - parsing
+    - pipeline
+    - hardening
+  priority: high
+  decision_type: security
+  decision_level: tactical
+authors:
+  - &a1
+    name: Security Architecture Team
+    role: SecurityAuditor
+    email: security-leads@specstudio.com
+decision_owner: *a1
+approvals:
+  - name: Security Architecture Team
+    role: SecurityAuditor
+    identity: ACT-sec-team
+    approved_at: 2024-09-10T12:00:00Z
+context:
+  description: >-
+    Several failure modes happen before cryptography is even relevant: malformed
+    compact
+
+    structure, duplicate JSON keys, and unsupported container types. The bundle
+    already
+
+    models parsing as its own operation and the first pipeline step as a hard
+    boundary.
+
+
+    ```mermaid
+
+    flowchart LR
+        Parse[Parse compact token] --> Harden[Reject malformed or duplicate JSON]
+        Harden --> Resolve[Resolve trusted key]
+        Resolve --> Verify[Verify signature]
+        Verify --> Claims[Evaluate claim policy]
+    ```
+
+
+    ## Decision Question
+
+
+    When should low-level parse and structure checks run relative to key
+    resolution and
+
+    signature verification?
+  assumptions:
+    - Rejecting malformed input early reduces exploit surface.
+    - Structure checks should not depend on network or trust context.
+alternatives:
+  - name: Parse before trust
+    description: Stage the pipeline so malformed input fails before trust-sensitive work.
+    pros:
+      - Shrinks attack surface.
+      - Produces deterministic early failures.
+      - Aligns with explicit validation steps in the bundle.
+    cons:
+      - Requires a dedicated parsing boundary in the model.
+    estimated_cost: medium
+    risk: low
+  - name: Fold parsing into signature verification
+    description: Let downstream verification stages absorb malformed-input handling.
+    pros:
+      - Fewer conceptual stages.
+    cons:
+      - Mixes syntax failures with trust failures.
+      - Makes error reporting less precise.
+    estimated_cost: high
+    risk: medium
+    rejection_rationale: The bundle benefits from a clean separation between
+      malformed input and failed trust decisions.
+decision:
+  chosen_alternative: Parse before trust
+  rationale: >
+    Treat parsing and envelope hardening as the first stage of validation. The
+    validator
+
+    must reject malformed compact input, duplicate JSON keys, and unsupported
+    container
+
+    shapes before it considers keys, signatures, or claim policy.
+  tradeoffs: |-
+    The team accepts the following tradeoffs:
+
+    - Implementations need a small amount of pre-crypto parsing infrastructure.
+  decision_date: 2024-09-10
+  confidence: high
+consequences:
+  positive:
+    - The parser operation and Step 1 have a crisp purpose.
+    - Negative vectors for malformed input stay easy to reason about.
+  negative:
+    - Implementations need a small amount of pre-crypto parsing infrastructure.
+confirmation:
+  description: >-
+    Implementation is confirmed by the linked bundle artifacts (OP-parse-jwt,
+    OP-validate-jwt, RULE-SYNTAX-CHECK, RULE-COMPACT-JWS-ONLY,
+    RULE-NO-DUPLICATE-KEYS, FMT-jws-compact) and by strict JWT bundle
+    validation.
+
+
+    Validation evidence should include bundle validation plus the conformance
+    suites or rules that exercise this decision boundary.
+  artifact_ids:
+    - OP-parse-jwt
+    - OP-validate-jwt
+    - RULE-SYNTAX-CHECK
+    - RULE-COMPACT-JWS-ONLY
+    - RULE-NO-DUPLICATE-KEYS
+    - FMT-jws-compact
+audit_trail:
+  - event: created
+    by: ACT-sec-team
+    at: 2024-09-09T09:00:00Z
+  - event: approved
+    by: ACT-sec-team
+    at: 2024-09-10T12:00:00Z
+  - event: updated
+    by: ACT-sec-team
+    at: 2024-09-10T12:00:00Z

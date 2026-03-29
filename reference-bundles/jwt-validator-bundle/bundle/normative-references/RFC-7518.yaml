@@ -5,7 +5,9 @@ artifactClass: documentation
 lifecycleStatus: active
 title: JSON Web Algorithms (JWA)
 description: Registers cryptographic algorithms and identifiers to be used with JWTs.
-tags: [crypto, standard]
-url: "https://datatracker.ietf.org/doc/html/rfc7518"
+tags:
+  - crypto
+  - standard
+url: https://datatracker.ietf.org/doc/html/rfc7518
 referenceType: RFC
 publisher: IETF

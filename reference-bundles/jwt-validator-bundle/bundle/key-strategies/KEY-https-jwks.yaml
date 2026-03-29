@@ -3,9 +3,13 @@ kind: KeyStrategy
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "HTTPS JWKS Endpoint"
-description: Dynamic resolution of key material from an explicitly configured HTTPS JWKS URI, with bounded cache and refresh behavior defined by the active profile.
-tags: [keys, network]
+title: HTTPS JWKS Endpoint
+description: Dynamic resolution of key material from an explicitly configured
+  HTTPS JWKS URI, with bounded cache and refresh behavior defined by the active
+  profile.
+tags:
+  - keys
+  - network
 strategyType: JWKS-URI
 cacheBehavior: HTTP-CACHE
 trustSourceType: DIRECT-JWKS-URI
@@ -17,5 +21,5 @@ rolloverBehavior: cache-refresh
 networkFailureBehavior: retry-then-fail
 issuerBindingMode: issuer-allowlist
 governedByAdrIds:
-  - ADR-remote-jwks-over-https
-  - ADR-key-resolution-fails-closed
+  - ADR-0005-remote-jwks-over-https
+  - ADR-0008-key-resolution-fails-closed

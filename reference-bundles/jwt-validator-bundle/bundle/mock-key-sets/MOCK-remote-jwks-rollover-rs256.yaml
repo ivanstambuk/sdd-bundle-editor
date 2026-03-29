@@ -4,8 +4,13 @@ executionStatus: active
 artifactClass: fixture
 lifecycleStatus: active
 title: Remote JWKS Rollover RS256 Fixture
-description: Simulated refresh target returned after key rollover, superseding the earlier remote JWKS state with a new signing key.
-tags: [fixture, remote, jwks, rollover]
+description: Simulated refresh target returned after key rollover, superseding
+  the earlier remote JWKS state with a new signing key.
+tags:
+  - fixture
+  - remote
+  - jwks
+  - rollover
 fixtureMode: remote-jwks-response
 endpointUrl: https://example.com/jwks.json
 httpStatusCode: 200

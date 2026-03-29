@@ -4,7 +4,8 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 title: Algorithm Header
-description: The "alg" (algorithm) header parameter identifies the cryptographic algorithm used to secure the JWS.
+description: The "alg" (algorithm) header parameter identifies the cryptographic
+  algorithm used to secure the JWS.
 rationale: Crucial for determining the verification execution path.
 tags:
   - security-critical

@@ -3,9 +3,11 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "NBF Claim in the Future"
+title: NBF Claim in the Future
 description: JWT signed perfectly but with an NBF set to next year.
-tags: [test, time]
+tags:
+  - test
+  - time
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -19,8 +21,10 @@ validationContext:
 expectedOutcomeClass: rejected
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
-expectsErrorCodeIds: [ERR-premature]
+expectsErrorCodeIds:
+  - ERR-premature
 expectedPrimaryErrorCodeId: ERR-premature
 expectedFailedRuleId: RULE-NBF-CHECK
 expectedTerminalStepId: STEP-4
-validatesRuleIds: [RULE-NBF-CHECK]
+validatesRuleIds:
+  - RULE-NBF-CHECK

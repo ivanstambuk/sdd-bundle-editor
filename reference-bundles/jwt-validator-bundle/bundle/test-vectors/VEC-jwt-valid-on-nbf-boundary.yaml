@@ -3,9 +3,14 @@ kind: TestVector
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
-title: "NBF Boundary Equals Now"
-description: A token whose `nbf` exactly equals the evaluation time. The contract treats this boundary as valid.
-tags: [test, time, boundary, success]
+title: NBF Boundary Equals Now
+description: A token whose `nbf` exactly equals the evaluation time. The
+  contract treats this boundary as valid.
+tags:
+  - test
+  - time
+  - boundary
+  - success
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
@@ -20,4 +25,5 @@ expectedOutcomeClass: accepted
 expectedKeySelectionStatus: resolved
 expectedTrustDecision: trusted
 expectedTerminalStepId: STEP-4
-validatesRuleIds: [RULE-TIME-BOUNDARY-CHECK]
+validatesRuleIds:
+  - RULE-TIME-BOUNDARY-CHECK

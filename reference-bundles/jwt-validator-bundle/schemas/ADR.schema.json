@@ -1,17 +1,35 @@
 {
   "$id": "sdd-bundle:jwt-validator:ADR",
-  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ADR",
+  "description": "Architecture Decision Record for the JWT validator reference bundle.",
+  "type": "object",
   "required": [
     "id",
     "kind",
-    "title"
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "title",
+    "status",
+    "createdDate",
+    "decidedDate",
+    "lastModifiedDate",
+    "lastModifiedBy",
+    "deciderActorIds",
+    "context",
+    "problem",
+    "alternativesConsidered",
+    "decision"
   ],
   "additionalProperties": false,
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^ADR-[0-9]{4}$",
+      "pattern": "^ADR-[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "x-sdd-idTemplate": "ADR-{slug}",
+      "x-sdd-entityType": "ADR",
+      "x-sdd-idScope": "bundle",
       "x-sdd-displayHint": "hidden",
       "x-sdd-layoutGroup": "overview"
     },
@@ -21,42 +39,8 @@
       "x-sdd-displayHint": "hidden",
       "x-sdd-layoutGroup": "overview"
     },
-    "title": {
-      "type": "string",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-order": 10
-    },
-    "description": {
-      "type": "string",
-      "x-sdd-displayHint": "markdown",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-prominence": "primary",
-      "x-sdd-prominenceLabel": "Description",
-      "x-sdd-prominenceIcon": "📝",
-      "x-sdd-order": 20
-    },
-    "rationale": {
-      "type": "string",
-      "x-sdd-displayHint": "markdown",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-prominence": "secondary",
-      "x-sdd-prominenceLabel": "Rationale",
-      "x-sdd-prominenceIcon": "🤔",
-      "x-sdd-order": 30
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-displayHint": "chips",
-      "x-sdd-layoutGroup": "overview",
-      "x-sdd-order": 99
-    },
     "executionStatus": {
       "type": "string",
-      "title": "Execution Status",
-      "description": "Whether this artifact is part of the active executable contract, advisory-only, or planned for later execution.",
       "enum": [
         "active",
         "advisory",
@@ -67,8 +51,6 @@
     },
     "artifactClass": {
       "type": "string",
-      "title": "Artifact Class",
-      "description": "Classifies whether this entity is part of the contract, a support artifact, fixture infrastructure, or documentation.",
       "enum": [
         "contract",
         "support",
@@ -80,8 +62,6 @@
     },
     "lifecycleStatus": {
       "type": "string",
-      "title": "Lifecycle Status",
-      "description": "Tracks whether this artifact is still draft, active, deprecated, or superseded.",
       "enum": [
         "draft",
         "active",
@@ -91,48 +71,319 @@
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 3
     },
-    "governedByAdrIds": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-sdd-refTargets": [
-        "ADR"
-      ],
-      "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 10,
-      "title": "Governed By Adr References",
-      "description": "References related ADR entity."
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 140,
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
     },
     "status": {
       "type": "string",
       "enum": [
-        "Proposed",
-        "Accepted",
-        "Rejected",
-        "Superseded"
+        "draft",
+        "proposed",
+        "accepted",
+        "rejected",
+        "superseded"
       ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 10
     },
+    "createdDate": {
+      "type": "string",
+      "format": "date-time",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "decidedDate": {
+      "type": "string",
+      "format": "date-time",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "lastModifiedDate": {
+      "type": "string",
+      "format": "date-time",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 13
+    },
+    "lastModifiedBy": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 14
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 15
+    },
     "deciderActorIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Actor"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10
+    },
+    "context": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 20
+    },
+    "problem": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 30
+    },
+    "assumptions": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "x-sdd-refTargets": [
-        "Actor"
-      ],
+      "x-sdd-layoutGroup": "decision",
+      "x-sdd-order": 10
+    },
+    "decision": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "decision",
+      "x-sdd-order": 20
+    },
+    "alternativesConsidered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "x-sdd-displayHint": "markdown"
+          },
+          "pros": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isChosen": {
+            "type": "boolean"
+          },
+          "reasonRejected": {
+            "type": "string",
+            "x-sdd-displayHint": "markdown"
+          }
+        },
+        "additionalProperties": false
+      },
+      "x-sdd-layoutGroup": "decision",
+      "x-sdd-order": 30
+    },
+    "positiveConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "consequences",
+      "x-sdd-order": 10
+    },
+    "negativeConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "consequences",
+      "x-sdd-order": 20
+    },
+    "neutralConsequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "consequences",
+      "x-sdd-order": 30
+    },
+    "relatedProfileIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "TokenProfile"
+        ]
+      },
+      "uniqueItems": true,
       "x-sdd-layoutGroup": "traceability",
-      "x-sdd-order": 20,
-      "title": "Decider Actor References",
-      "description": "References related Actor entity."
+      "x-sdd-order": 20
+    },
+    "relatedOperationIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "Operation"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 21
+    },
+    "relatedRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ValidationRule"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 22
+    },
+    "relatedStrategyIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "KeyStrategy"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 23
+    },
+    "relatedConstraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "SecurityConstraint"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 24
+    },
+    "relatedReferenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "NormativeReference"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 25
+    },
+    "relatedClassIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConformanceClass"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 26
+    },
+    "relatedSuiteIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ConformanceSuite"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 27
+    },
+    "relatedFormatIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "SerializationFormat"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 28
+    },
+    "relatedDataStructureIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "DataStructure"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 29
+    },
+    "supersedesAdrIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "sdd-ref",
+        "x-sdd-refTargets": [
+          "ADR"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 99
     }
   },
   "x-sdd-ui": {
     "displayName": "ADR",
     "displayNamePlural": "ADRs",
-    "icon": "📝"
+    "icon": "ADR"
   },
   "x-sdd-layoutGroups": {
     "overview": {
@@ -140,12 +391,20 @@
       "order": 1
     },
     "details": {
-      "title": "Properties & Configuration",
+      "title": "Metadata",
       "order": 2
     },
-    "traceability": {
-      "title": "Relationships",
+    "decision": {
+      "title": "Decision",
       "order": 3
+    },
+    "consequences": {
+      "title": "Consequences",
+      "order": 4
+    },
+    "traceability": {
+      "title": "Traceability",
+      "order": 5
     }
   }
 }

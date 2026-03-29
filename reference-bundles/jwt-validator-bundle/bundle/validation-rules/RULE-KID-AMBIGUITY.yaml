@@ -9,4 +9,4 @@ tags: [validation, crypto]
 severity: FATAL
 throwsErrorCodeId: ERR-kid-ambiguous
 governedByAdrIds:
-  - ADR-0001
+  - ADR-key-resolution-fails-closed

@@ -8,3 +8,5 @@ description: Deployments SHOULD ensure that algorithms and key sizes meet or exc
 tags: [security, crypto]
 severity: HIGH
 mitigatesRiskIds: []
+governedByAdrIds:
+  - ADR-algorithm-policy-is-allowlist-based

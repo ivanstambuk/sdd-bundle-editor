@@ -84,4 +84,5 @@ schemaDefinition:
     - trustDecision
     - errorCodes
 governedByAdrIds:
-  - ADR-0001
+  - ADR-validation-result-is-a-structured-contract
+  - ADR-safe-diagnostics-boundary

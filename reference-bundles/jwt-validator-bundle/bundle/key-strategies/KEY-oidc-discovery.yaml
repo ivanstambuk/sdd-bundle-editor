@@ -17,4 +17,5 @@ rolloverBehavior: discovery-refresh
 networkFailureBehavior: retry-then-fail
 issuerBindingMode: discovery-issuer-bound
 governedByAdrIds:
-  - ADR-0001
+  - ADR-oidc-discovery-binds-issuer-to-key-source
+  - ADR-key-resolution-fails-closed

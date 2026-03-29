@@ -11,4 +11,6 @@ requiresOperationIds:
 targetsProfileIds:
   - PROF-JWT-REMOTE-JWKS
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-driven-validator-composition
+  - ADR-remote-jwks-over-https
+  - ADR-conformance-is-executable

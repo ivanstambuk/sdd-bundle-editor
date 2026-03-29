@@ -10,4 +10,6 @@ operationRole: parser
 systemComponent: CoreValidator
 acceptsStructureIds: [STRUCT-parse-request]
 producesDataStructureIds: [STRUCT-parsed-token]
-governedByAdrIds: [ADR-0001]
+governedByAdrIds:
+  - ADR-parse-before-trust-pipeline
+  - ADR-unsupported-jose-variants-are-explicitly-modeled

@@ -11,4 +11,6 @@ requiresOperationIds:
 targetsProfileIds:
   - PROF-JWT-OIDC-DISCOVERY
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-driven-validator-composition
+  - ADR-oidc-discovery-binds-issuer-to-key-source
+  - ADR-conformance-is-executable

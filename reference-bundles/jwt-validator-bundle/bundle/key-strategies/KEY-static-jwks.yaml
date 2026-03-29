@@ -18,4 +18,4 @@ rolloverBehavior: manual-only
 networkFailureBehavior: fail-closed
 issuerBindingMode: none
 governedByAdrIds:
-  - ADR-0001
+  - ADR-static-jwks-as-baseline-trust-source

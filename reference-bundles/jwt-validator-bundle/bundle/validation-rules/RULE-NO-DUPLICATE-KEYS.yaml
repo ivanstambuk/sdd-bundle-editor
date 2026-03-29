@@ -9,3 +9,5 @@ tags: [validation, parse, security]
 severity: FATAL
 throwsErrorCodeId: ERR-malformed
 implementsReferenceIds: [RFC-8725]
+governedByAdrIds:
+  - ADR-parse-before-trust-pipeline

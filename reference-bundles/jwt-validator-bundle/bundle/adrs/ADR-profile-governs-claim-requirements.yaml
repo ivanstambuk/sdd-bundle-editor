@@ -1,0 +1,67 @@
+id: ADR-profile-governs-claim-requirements
+kind: ADR
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
+title: Make claim requirements and claim-matching policy profile dependent
+status: accepted
+createdDate: '2024-09-30T09:00:00Z'
+decidedDate: '2024-10-01T13:00:00Z'
+lastModifiedDate: '2024-10-01T13:00:00Z'
+lastModifiedBy: ACT-sec-team
+confidence: high
+deciderActorIds:
+  - ACT-sec-team
+context: |
+  The core, remote-JWKS, and OIDC variants do not have identical claim semantics.
+  For example, OIDC discovery relies more heavily on issuer binding, and runtime policy
+  may demand audience, subject, or type checks in specific contexts.
+problem: |
+  Should claim presence and exact-match behavior be global validator defaults or part
+  of profile-driven policy?
+assumptions:
+  - Different deployment profiles need different claim expectations.
+  - Runtime policy should narrow behavior, not replace profile semantics entirely.
+decision: |
+  Required claims, optional claims, and exact-match checks for `iss`, `aud`, `sub`,
+  and `typ` are profile dependent. The bundle models them as explicit rules bound to
+  runtime context and profile boundaries rather than as undocumented parser behavior.
+alternativesConsidered:
+  - name: Profile-driven claim policy
+    description: Let profiles define the claim baseline and let runtime policy narrow it.
+    pros:
+      - Matches the differences between core and OIDC use cases.
+      - Keeps claim semantics visible in the bundle.
+    cons:
+      - Requires more cross-links between profiles, rules, and context structures.
+    isChosen: true
+  - name: One global claim policy
+    description: Apply the same claim rules to all validator variants.
+    pros:
+      - Simpler to explain.
+    cons:
+      - Overconstrains some profiles and underconstrains others.
+    reasonRejected: The variants in this bundle are materially different enough that
+      a single claim policy would distort at least one of them.
+positiveConsequences:
+  - OIDC and core semantics can coexist without hidden exceptions.
+  - Claim-related conformance vectors have a clear source of truth.
+negativeConsequences:
+  - Readers need to inspect both profile and runtime policy to understand full behavior.
+relatedProfileIds:
+  - PROF-JWT-CORE
+  - PROF-JWT-REMOTE-JWKS
+  - PROF-JWT-OIDC-DISCOVERY
+relatedRuleIds:
+  - RULE-REQUIRED-CLAIMS
+  - RULE-ISS-MATCH
+  - RULE-AUD-MATCH
+  - RULE-SUB-MATCH
+  - RULE-TYP-POLICY
+relatedReferenceIds:
+  - RFC-7519
+  - OIDC-CORE
+tags:
+  - claims
+  - profile
+  - policy

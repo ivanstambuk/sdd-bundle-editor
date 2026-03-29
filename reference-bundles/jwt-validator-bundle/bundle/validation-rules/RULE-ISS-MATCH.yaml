@@ -13,4 +13,4 @@ implementsReferenceIds:
   - RFC-7519
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-governs-claim-requirements

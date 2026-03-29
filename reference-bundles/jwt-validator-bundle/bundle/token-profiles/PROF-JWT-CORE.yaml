@@ -43,6 +43,11 @@ definesPipelineStepIds:
 usesFormatId: FMT-jws-compact
 usesKeyStrategyIds:
   - KEY-static-jwks
+governedByAdrIds:
+  - ADR-profile-driven-validator-composition
+  - ADR-compact-jws-only-v1
+  - ADR-static-jwks-as-baseline-trust-source
+  - ADR-profile-governs-claim-requirements
 
 optionalHeaderIds:
   - HDR-kid

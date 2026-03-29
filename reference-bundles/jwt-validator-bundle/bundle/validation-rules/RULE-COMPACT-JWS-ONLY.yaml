@@ -15,3 +15,6 @@ implementsReferenceIds:
   - RFC-8725
 implementsConstraintIds:
   - CON-safe-diagnostics
+governedByAdrIds:
+  - ADR-compact-jws-only-v1
+  - ADR-unsupported-jose-variants-are-explicitly-modeled

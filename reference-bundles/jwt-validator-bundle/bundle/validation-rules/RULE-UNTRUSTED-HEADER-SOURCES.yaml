@@ -12,3 +12,6 @@ throwsErrorCodeId: ERR-unsupported-header
 implementsReferenceIds:
   - RFC-8725
 bindsToContextPropertyId: STRUCT-runtime-policy
+governedByAdrIds:
+  - ADR-reject-untrusted-header-key-hints
+  - ADR-key-resolution-fails-closed

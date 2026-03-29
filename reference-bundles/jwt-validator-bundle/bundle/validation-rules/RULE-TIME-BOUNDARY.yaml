@@ -11,3 +11,5 @@ throwsErrorCodeId: ERR-expired
 implementsReferenceIds: [RFC-7519]
 implementsConstraintIds: [CON-clock-skew]
 bindsToContextPropertyId: STRUCT-validation-context
+governedByAdrIds:
+  - ADR-time-validation-uses-injected-clock

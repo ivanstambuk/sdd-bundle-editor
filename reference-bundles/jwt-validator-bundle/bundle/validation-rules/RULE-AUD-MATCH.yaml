@@ -10,3 +10,5 @@ severity: ERROR
 throwsErrorCodeId: ERR-invalid-audience
 implementsReferenceIds: [RFC-7519]
 bindsToContextPropertyId: STRUCT-runtime-policy
+governedByAdrIds:
+  - ADR-profile-governs-claim-requirements

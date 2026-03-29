@@ -10,3 +10,5 @@ severity: ERROR
 implementsConstraintIds: [CON-timing-attack]
 throwsErrorCodeId: ERR-premature
 bindsToContextPropertyId: STRUCT-validation-context
+governedByAdrIds:
+  - ADR-time-validation-uses-injected-clock

@@ -14,4 +14,4 @@ referenceType: RFC
 publisher: IETF
 section: Section 4.1
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-governs-claim-requirements

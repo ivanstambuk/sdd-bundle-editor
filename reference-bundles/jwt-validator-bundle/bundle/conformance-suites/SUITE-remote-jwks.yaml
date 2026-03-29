@@ -27,4 +27,6 @@ requiresEnvironmentCapabilities:
   - remote-jwks-endpoint
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
-  - ADR-0001
+  - ADR-conformance-is-executable
+  - ADR-remote-jwks-over-https
+  - ADR-key-resolution-fails-closed

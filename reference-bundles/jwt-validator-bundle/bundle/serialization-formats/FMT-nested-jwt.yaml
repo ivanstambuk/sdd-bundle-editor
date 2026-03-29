@@ -11,4 +11,5 @@ containerType: JWT
 serializationVariant: nested
 supportStatus: unsupported
 governedByAdrIds:
-  - ADR-0001
+  - ADR-compact-jws-only-v1
+  - ADR-unsupported-jose-variants-are-explicitly-modeled

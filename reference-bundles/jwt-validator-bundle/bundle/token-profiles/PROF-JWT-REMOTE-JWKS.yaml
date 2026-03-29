@@ -32,3 +32,8 @@ allowsAlgorithmIds:
   - ALG-PS256
 usesKeyStrategyIds:
   - KEY-https-jwks
+governedByAdrIds:
+  - ADR-profile-driven-validator-composition
+  - ADR-remote-jwks-over-https
+  - ADR-key-resolution-fails-closed
+  - ADR-profile-governs-claim-requirements

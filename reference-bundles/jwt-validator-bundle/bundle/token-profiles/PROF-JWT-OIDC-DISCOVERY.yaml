@@ -35,3 +35,8 @@ optionalClaimIds:
   - CLAIM-iat
   - CLAIM-jti
   - CLAIM-sub
+governedByAdrIds:
+  - ADR-profile-driven-validator-composition
+  - ADR-oidc-discovery-binds-issuer-to-key-source
+  - ADR-key-resolution-fails-closed
+  - ADR-profile-governs-claim-requirements

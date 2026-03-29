@@ -8,3 +8,5 @@ description: JWKS endpoints must only be fetched over validated `https://` conne
 tags: [security, network]
 severity: HIGH
 mitigatesRiskIds: []
+governedByAdrIds:
+  - ADR-remote-jwks-over-https

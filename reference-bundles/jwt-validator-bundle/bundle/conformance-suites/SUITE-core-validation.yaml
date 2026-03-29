@@ -44,4 +44,4 @@ requiresEnvironmentCapabilities:
   - static-key-fixtures
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
-  - ADR-0001
+  - ADR-conformance-is-executable

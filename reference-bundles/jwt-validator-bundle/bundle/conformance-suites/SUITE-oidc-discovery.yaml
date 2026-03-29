@@ -29,4 +29,6 @@ requiresEnvironmentCapabilities:
   - oidc-discovery-endpoint
 ownedByActorId: ACT-sec-team
 governedByAdrIds:
-  - ADR-0001
+  - ADR-conformance-is-executable
+  - ADR-oidc-discovery-binds-issuer-to-key-source
+  - ADR-key-resolution-fails-closed

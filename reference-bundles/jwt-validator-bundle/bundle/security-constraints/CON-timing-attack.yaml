@@ -12,4 +12,4 @@ tags:
   - crypto
 mitigation: Use `crypto.timingSafeEqual` in Node.js or `subtle::ConstantTimeEq` in Rust.
 governedByAdrIds:
-  - ADR-0001
+  - ADR-algorithm-policy-is-allowlist-based

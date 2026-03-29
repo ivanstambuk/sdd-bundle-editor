@@ -17,4 +17,5 @@ rolloverBehavior: cache-refresh
 networkFailureBehavior: retry-then-fail
 issuerBindingMode: issuer-allowlist
 governedByAdrIds:
-  - ADR-0001
+  - ADR-remote-jwks-over-https
+  - ADR-key-resolution-fails-closed

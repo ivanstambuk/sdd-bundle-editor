@@ -10,3 +10,5 @@ severity: FATAL
 throwsErrorCodeId: ERR-unsupported-alg
 implementsReferenceIds: [RFC-7515]
 implementsConstraintIds: [CON-min-key-strength, CON-no-none-alg, CON-jwks-tls]
+governedByAdrIds:
+  - ADR-algorithm-policy-is-allowlist-based

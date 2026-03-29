@@ -1,0 +1,61 @@
+id: ADR-time-validation-uses-injected-clock
+kind: ADR
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
+title: Evaluate exp and nbf against an injected clock and bounded skew
+status: accepted
+createdDate: '2024-10-02T09:00:00Z'
+decidedDate: '2024-10-03T11:30:00Z'
+lastModifiedDate: '2024-10-03T11:30:00Z'
+lastModifiedBy: ACT-sec-team
+confidence: high
+deciderActorIds:
+  - ACT-sec-team
+context: |
+  Time validation is security critical and notoriously hard to test if implementations
+  consult wall-clock time directly. The bundle already models clock skew as a security
+  constraint and includes boundary-focused vectors.
+problem: |
+  How should the validator evaluate temporal claims in a way that is both testable and
+  operationally realistic?
+assumptions:
+  - Validators need deterministic tests for exp and nbf boundaries.
+  - Some bounded skew is operationally necessary in distributed systems.
+decision: |
+  Evaluate temporal claims against an injected validation clock plus explicit skew
+  policy. Boundary semantics are part of the bundle contract and are tested directly
+  through conformance vectors.
+alternativesConsidered:
+  - name: Injected clock with bounded skew
+    description: Provide a clock through validation context and apply explicit skew rules.
+    pros:
+      - Deterministic tests.
+      - Clear operational policy.
+    cons:
+      - Requires clock to be part of runtime context.
+    isChosen: true
+  - name: Read the system clock directly
+    description: Let the validator consult local time without explicit context.
+    pros:
+      - Simpler implementation.
+    cons:
+      - Harder to test.
+      - Makes clock semantics implicit.
+    reasonRejected: Time decisions need to be observable and reproducible in a reference
+      bundle.
+positiveConsequences:
+  - Boundary vectors are meaningful and stable.
+  - Clock skew becomes an explicit security tradeoff instead of hidden runtime behavior.
+negativeConsequences:
+  - Callers need to provide or mock a clock in advanced scenarios.
+relatedRuleIds:
+  - RULE-EXP-CHECK
+  - RULE-NBF-CHECK
+  - RULE-TIME-BOUNDARY-CHECK
+relatedConstraintIds:
+  - CON-clock-skew
+tags:
+  - time
+  - exp
+  - nbf

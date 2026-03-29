@@ -14,4 +14,4 @@ containerType: JWS
 serializationVariant: compact
 supportStatus: supported
 governedByAdrIds:
-  - ADR-0001
+  - ADR-compact-jws-only-v1

@@ -12,3 +12,5 @@ implementsReferenceIds: [RFC-7519]
 parameters:
   profileRequiredClaimField: requiresClaimIds
   claimRuntimePolicyField: requiredWhenRuntimePolicyFields
+governedByAdrIds:
+  - ADR-profile-governs-claim-requirements

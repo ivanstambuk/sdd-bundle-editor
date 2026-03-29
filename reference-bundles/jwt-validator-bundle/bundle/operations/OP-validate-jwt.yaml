@@ -15,4 +15,6 @@ acceptsStructureIds:
 producesDataStructureIds:
   - STRUCT-validation-result
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-driven-validator-composition
+  - ADR-parse-before-trust-pipeline
+  - ADR-validation-result-is-a-structured-contract

@@ -10,3 +10,5 @@ description: >
 tags: [security, core]
 severity: CRITICAL
 mitigatesRiskIds: []
+governedByAdrIds:
+  - ADR-algorithm-policy-is-allowlist-based

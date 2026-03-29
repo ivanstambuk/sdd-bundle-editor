@@ -14,4 +14,6 @@ requiresOperationIds:
 targetsProfileIds:
   - PROF-JWT-CORE
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-driven-validator-composition
+  - ADR-compact-jws-only-v1
+  - ADR-conformance-is-executable

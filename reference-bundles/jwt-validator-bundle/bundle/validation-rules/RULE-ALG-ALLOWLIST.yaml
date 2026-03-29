@@ -13,3 +13,5 @@ implementsConstraintIds:
   - CON-timing-attack
 implementsReferenceIds:
   - RFC-7518
+governedByAdrIds:
+  - ADR-algorithm-policy-is-allowlist-based

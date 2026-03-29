@@ -8,3 +8,5 @@ description: Implementations MUST NOT return populated or unverified `STRUCT-cla
 tags: [security, boundary]
 severity: CRITICAL
 mitigatesRiskIds: []
+governedByAdrIds:
+  - ADR-safe-diagnostics-boundary

@@ -1,0 +1,59 @@
+id: ADR-validation-result-is-a-structured-contract
+kind: ADR
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
+title: Return a structured validation result instead of a boolean or prose error
+status: accepted
+createdDate: '2024-10-08T09:00:00Z'
+decidedDate: '2024-10-09T11:00:00Z'
+lastModifiedDate: '2024-10-09T11:00:00Z'
+lastModifiedBy: ACT-sec-team
+confidence: high
+deciderActorIds:
+  - ACT-sec-team
+context: |
+  The validator serves both application callers and a conformance harness. Those users
+  need more than pass/fail: they need to know which profile was evaluated, where
+  failure occurred, and whether trust ended in rejection, malformed input, or
+  indeterminate state.
+problem: |
+  What should the primary contract of the validate operation look like?
+assumptions:
+  - Consumers benefit from machine-readable failure semantics.
+  - Conformance tooling should not have to parse log text.
+decision: |
+  `OP-validate-jwt` returns a structured `STRUCT-validation-result` document capturing
+  outcome class, selected profile, key-selection status, trust decision, terminal step,
+  failed rule, and structured diagnostics.
+alternativesConsidered:
+  - name: Structured result contract
+    description: Return a typed result object with explicit status fields.
+    pros:
+      - Better for automation and auditing.
+      - Supports conformance harnesses directly.
+    cons:
+      - More fields to maintain.
+    isChosen: true
+  - name: Boolean plus free-form message
+    description: Return success or failure with a textual explanation.
+    pros:
+      - Smaller API surface.
+    cons:
+      - Hard to automate reliably.
+      - Loses nuance around malformed vs rejected vs indeterminate.
+    reasonRejected: The bundle is specifically trying to make validator behavior
+      machine-readable.
+positiveConsequences:
+  - Applications and conformance tooling can consume the same output model.
+  - Diagnostics remain testable without log scraping.
+negativeConsequences:
+  - The result structure is more detailed than a minimal validator API.
+relatedOperationIds:
+  - OP-validate-jwt
+relatedDataStructureIds:
+  - STRUCT-validation-result
+tags:
+  - api
+  - result
+  - contract

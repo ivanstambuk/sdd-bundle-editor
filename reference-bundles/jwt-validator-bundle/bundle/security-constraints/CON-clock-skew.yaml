@@ -8,3 +8,5 @@ description: Implementations MUST place a hard, short upper bound (e.g., 5 minut
 tags: [security, time]
 severity: HIGH
 mitigatesRiskIds: []
+governedByAdrIds:
+  - ADR-time-validation-uses-injected-clock

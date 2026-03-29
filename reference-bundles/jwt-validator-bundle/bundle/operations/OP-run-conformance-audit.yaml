@@ -10,3 +10,5 @@ operationRole: harness
 systemComponent: ConformanceHarness
 acceptsStructureIds: [STRUCT-audit-request]
 producesDataStructureIds: [STRUCT-audit-report]
+governedByAdrIds:
+  - ADR-conformance-is-executable

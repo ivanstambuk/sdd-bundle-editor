@@ -1,0 +1,64 @@
+id: ADR-algorithm-policy-is-allowlist-based
+kind: ADR
+executionStatus: active
+artifactClass: documentation
+lifecycleStatus: active
+title: Enforce explicit algorithm allowlists and key compatibility checks
+status: accepted
+createdDate: '2024-09-26T09:00:00Z'
+decidedDate: '2024-09-27T15:00:00Z'
+lastModifiedDate: '2024-09-27T15:00:00Z'
+lastModifiedBy: ACT-sec-team
+confidence: high
+deciderActorIds:
+  - ACT-sec-team
+context: |
+  JWT validation failures often come from treating algorithm identifiers as advisory
+  rather than policy. The bundle already includes algorithm entities, minimum-strength
+  constraints, and a prohibition on `none`.
+problem: |
+  How should the validator decide whether an advertised algorithm is acceptable?
+assumptions:
+  - Accepting whatever the token advertises is unsafe.
+  - Key material and declared algorithm must agree.
+decision: |
+  Algorithm policy is allowlist based. Profiles declare acceptable algorithms, `none`
+  remains forbidden, key-algorithm compatibility is checked explicitly, and weak key
+  material remains rejectable even if it technically verifies.
+alternativesConsidered:
+  - name: Explicit allowlist with compatibility checks
+    description: Validate `alg` against profile policy and the selected key.
+    pros:
+      - Makes crypto policy auditable.
+      - Keeps algorithm confusion attacks in scope.
+    cons:
+      - Profiles must maintain explicit algorithm lists.
+    isChosen: true
+  - name: Accept any algorithm supported by the runtime library
+    description: Defer crypto policy to implementation defaults.
+    pros:
+      - Less bundle configuration.
+    cons:
+      - Runtime defaults vary.
+      - Harder to prove conformance.
+    reasonRejected: The reference bundle must state algorithm policy, not inherit it
+      implicitly from whichever crypto library happens to be in use.
+positiveConsequences:
+  - Crypto policy is visible in profiles and rules.
+  - Weak keys and `none` are rejected for principled reasons.
+negativeConsequences:
+  - Algorithm onboarding requires schema and fixture updates.
+relatedRuleIds:
+  - RULE-ALG-ALLOWLIST
+  - RULE-KEY-ALG-MATCH
+relatedConstraintIds:
+  - CON-no-none-alg
+  - CON-min-key-strength
+  - CON-timing-attack
+relatedReferenceIds:
+  - RFC-7518
+  - RFC-8725
+tags:
+  - crypto
+  - algorithm
+  - policy

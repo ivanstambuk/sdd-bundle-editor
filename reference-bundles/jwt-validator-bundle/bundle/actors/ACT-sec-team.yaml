@@ -12,4 +12,5 @@ tags:
 role: SecurityAuditor
 email: security-leads@specstudio.com
 governedByAdrIds:
-  - ADR-0001
+  - ADR-profile-driven-validator-composition
+  - ADR-conformance-is-executable

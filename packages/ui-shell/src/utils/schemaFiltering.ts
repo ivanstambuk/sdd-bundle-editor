@@ -12,6 +12,47 @@
 
 export type JsonSchema = Record<string, unknown>;
 
+function buildFieldPath(parentPath: string, fieldName: string): string {
+    return parentPath ? `${parentPath}.${fieldName}` : fieldName;
+}
+
+function stripHeaderFieldsRecursively(
+    schema: JsonSchema,
+    headerFieldNames: Set<string>,
+    parentPath = ''
+): JsonSchema {
+    if (!schema?.properties) return schema;
+
+    const props = schema.properties as Record<string, any>;
+    const filteredProps: Record<string, any> = {};
+    const filteredRequired: string[] = [];
+
+    for (const [fieldName, fieldSchema] of Object.entries(props)) {
+        const fieldPath = buildFieldPath(parentPath, fieldName);
+        if (headerFieldNames.has(fieldPath)) {
+            continue;
+        }
+
+        let filteredFieldSchema = fieldSchema;
+        if (fieldSchema?.type === 'object' && fieldSchema?.properties) {
+            filteredFieldSchema = stripHeaderFieldsRecursively(fieldSchema, headerFieldNames, fieldPath);
+        }
+
+        filteredProps[fieldName] = filteredFieldSchema;
+        if (Array.isArray(schema.required) && (schema.required as string[]).includes(fieldName)) {
+            filteredRequired.push(fieldName);
+        }
+    }
+
+    const schemaBase = stripConditionalKeywords(schema);
+    return {
+        ...schemaBase,
+        properties: filteredProps,
+        required: filteredRequired,
+        additionalProperties: schema.additionalProperties ?? false,
+    };
+}
+
 /**
  * Extracts field names that should be displayed in the entity header.
  * These fields have `x-sdd-displayLocation: "header"` set.
@@ -26,8 +67,15 @@ export function getHeaderFieldNames(schema: JsonSchema | null | undefined): Set<
 
     const props = schema.properties as Record<string, any>;
     for (const [fieldName, fieldSchema] of Object.entries(props)) {
+        const fieldPath = buildFieldPath('', fieldName);
         if (fieldSchema?.['x-sdd-displayLocation'] === 'header') {
-            headerFieldNames.add(fieldName);
+            headerFieldNames.add(fieldPath);
+        }
+        if (fieldSchema?.type === 'object' && fieldSchema?.properties) {
+            const nestedHeaderFields = getHeaderFieldNames(fieldSchema);
+            for (const nestedFieldName of nestedHeaderFields) {
+                headerFieldNames.add(buildFieldPath(fieldPath, nestedFieldName));
+            }
         }
     }
 
@@ -115,7 +163,11 @@ export function filterSchemaForLayoutGroup(
 
         // Only include fields in this group
         if (fieldToGroup[fieldName] === groupKey) {
-            filteredEntries.push([fieldName, fieldSchema]);
+            const filteredFieldSchema =
+                fieldSchema?.type === 'object' && fieldSchema?.properties
+                    ? stripHeaderFieldsRecursively(fieldSchema, headerFieldNames, fieldName)
+                    : fieldSchema;
+            filteredEntries.push([fieldName, filteredFieldSchema]);
             // Check if field is in required list
             if (Array.isArray(schema.required) && (schema.required as string[]).includes(fieldName)) {
                 filteredRequired.push(fieldName);
@@ -141,7 +193,7 @@ export function filterSchemaForLayoutGroup(
         ...schemaBase,
         properties: sortedProps,
         required: filteredRequired,
-        additionalProperties: false,
+        additionalProperties: schema.additionalProperties ?? false,
     };
 }
 
@@ -159,28 +211,7 @@ export function filterSchemaWithoutHeaderFields(
 ): JsonSchema | null | undefined {
     if (!schema || !schema.properties || headerFieldNames.size === 0) return schema;
 
-    const props = schema.properties as Record<string, any>;
-    const filteredProps: Record<string, any> = {};
-    const filteredRequired: string[] = [];
-
-    for (const [fieldName, fieldSchema] of Object.entries(props)) {
-        // Skip header metadata fields
-        if (headerFieldNames.has(fieldName)) continue;
-        filteredProps[fieldName] = fieldSchema;
-        if (Array.isArray(schema.required) && (schema.required as string[]).includes(fieldName)) {
-            filteredRequired.push(fieldName);
-        }
-    }
-
-    // Strip conditional keywords and build result
-    const schemaBase = stripConditionalKeywords(schema);
-
-    return {
-        ...schemaBase,
-        properties: filteredProps,
-        required: filteredRequired,
-        additionalProperties: false,
-    };
+    return stripHeaderFieldsRecursively(schema, headerFieldNames);
 }
 
 /**

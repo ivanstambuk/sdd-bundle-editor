@@ -25,6 +25,8 @@
         "adr": {
             "type": "object",
             "description": "Core ADR metadata and identification.",
+            "x-sdd-layoutGroup": "overview",
+            "x-sdd-order": 10,
             "required": [
                 "id",
                 "title",
@@ -46,7 +48,8 @@
                     "type": "string",
                     "minLength": 10,
                     "maxLength": 200,
-                    "description": "Human-readable decision title."
+                    "description": "Human-readable decision title.",
+                    "x-sdd-displayLocation": "title"
                 },
                 "y_statement": {
                     "type": "string",
@@ -64,17 +67,45 @@
                         "rejected",
                         "deferred"
                     ],
-                    "description": "Current lifecycle status of the decision."
+                    "description": "Current lifecycle status of the decision.",
+                    "x-sdd-displayLocation": "header",
+                    "x-sdd-enumStyles": {
+                        "draft": {
+                            "color": "neutral"
+                        },
+                        "proposed": {
+                            "color": "info"
+                        },
+                        "accepted": {
+                            "color": "success"
+                        },
+                        "superseded": {
+                            "color": "error"
+                        },
+                        "deprecated": {
+                            "color": "warning"
+                        },
+                        "rejected": {
+                            "color": "error"
+                        },
+                        "deferred": {
+                            "color": "warning"
+                        }
+                    }
                 },
                 "created_at": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "ISO 8601 timestamp of initial creation."
+                    "title": "Created Date",
+                    "description": "ISO 8601 timestamp of initial creation.",
+                    "x-sdd-displayLocation": "header"
                 },
                 "last_modified": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "ISO 8601 timestamp of last modification."
+                    "title": "Last Modified Date",
+                    "description": "ISO 8601 timestamp of last modification.",
+                    "x-sdd-displayLocation": "header"
                 },
                 "version": {
                     "type": "string",
@@ -143,18 +174,24 @@
             "items": {
                 "$ref": "#/$defs/person"
             },
-            "description": "Authors who drafted this ADR."
+            "description": "Authors who drafted this ADR.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 10
         },
         "decision_owner": {
             "$ref": "#/$defs/person",
-            "description": "Accountable owner for this decision."
+            "description": "Accountable owner for this decision.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 20
         },
         "reviewers": {
             "type": "array",
             "items": {
                 "$ref": "#/$defs/person"
             },
-            "description": "Individuals who reviewed this ADR."
+            "description": "Individuals who reviewed this ADR.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 30
         },
         "approvals": {
             "type": "array",
@@ -193,7 +230,9 @@
                     }
                 }
             },
-            "description": "Formal approvals with optional timestamps, platform identity for CI verification, and signature references. Required when adr.status is 'proposed' or 'accepted'. The identity field enables CI pipelines to verify that every listed approver actually approved the pull request."
+            "description": "Formal approvals with optional timestamps, platform identity for CI verification, and signature references. Required when adr.status is 'proposed' or 'accepted'. The identity field enables CI pipelines to verify that every listed approver actually approved the pull request.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 40
         },
         "context": {
             "type": "object",
@@ -237,7 +276,9 @@
                     "description": "Assumptions made when evaluating alternatives."
                 }
             },
-            "description": "Context, drivers, constraints, and assumptions."
+            "description": "Context, drivers, constraints, and assumptions.",
+            "x-sdd-layoutGroup": "overview",
+            "x-sdd-order": 20
         },
         "architecturally_significant_requirements": {
             "type": "object",
@@ -258,7 +299,9 @@
                     "description": "Non-functional / quality attribute ASRs."
                 }
             },
-            "description": "Architecturally Significant Requirements (ASRs) — the subset of requirements that directly shape this architectural decision. Only include requirements that influence the architecture; do not replicate the full requirements backlog."
+            "description": "Architecturally Significant Requirements (ASRs) — the subset of requirements that directly shape this architectural decision. Only include requirements that influence the architecture; do not replicate the full requirements backlog.",
+            "x-sdd-layoutGroup": "overview",
+            "x-sdd-order": 30
         },
         "alternatives": {
             "type": "array",
@@ -287,19 +330,23 @@
                         "type": "array",
                         "items": {
                             "type": "string",
-                            "minLength": 1
+                            "minLength": 1,
+                            "x-sdd-indicator": "✅"
                         },
                         "minItems": 1,
-                        "description": "Advantages of this alternative."
+                        "description": "Advantages of this alternative.",
+                        "x-sdd-layout": "bulletList"
                     },
                     "cons": {
                         "type": "array",
                         "items": {
                             "type": "string",
-                            "minLength": 1
+                            "minLength": 1,
+                            "x-sdd-indicator": "❌"
                         },
                         "minItems": 1,
-                        "description": "Disadvantages or risks of this alternative."
+                        "description": "Disadvantages or risks of this alternative.",
+                        "x-sdd-layout": "bulletList"
                     },
                     "estimated_cost": {
                         "type": "string",
@@ -327,7 +374,13 @@
                     }
                 }
             },
-            "description": "At least two alternatives must be considered for every decision."
+            "description": "At least two alternatives must be considered for every decision.",
+            "x-sdd-layout": "tabbedArray",
+            "x-sdd-tabLabelField": "name",
+            "x-sdd-choiceSourcePath": "decision.chosen_alternative",
+            "x-sdd-choiceMatchField": "name",
+            "x-sdd-layoutGroup": "alternatives",
+            "x-sdd-order": 10
         },
         "decision": {
             "type": "object",
@@ -365,10 +418,25 @@
                         "medium",
                         "high"
                     ],
-                    "description": "Confidence level in this decision. Combined with decision_level, this influences lifecycle.review_cycle_months — low-confidence decisions should have shorter review cycles; strategic decisions should have longer ones."
+                    "description": "Confidence level in this decision. Combined with decision_level, this influences lifecycle.review_cycle_months — low-confidence decisions should have shorter review cycles; strategic decisions should have longer ones.",
+                    "x-sdd-displayLocation": "header",
+                    "x-sdd-showLabelInBadge": true,
+                    "x-sdd-enumStyles": {
+                        "low": {
+                            "color": "warning"
+                        },
+                        "medium": {
+                            "color": "info"
+                        },
+                        "high": {
+                            "color": "success"
+                        }
+                    }
                 }
             },
-            "description": "The chosen alternative and its justification."
+            "description": "The chosen alternative and its justification.",
+            "x-sdd-layoutGroup": "overview",
+            "x-sdd-order": 40
         },
         "consequences": {
             "type": "object",
@@ -378,19 +446,25 @@
                 "positive": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "x-sdd-indicator": "✅"
                     },
-                    "description": "Expected positive outcomes."
+                    "description": "Expected positive outcomes.",
+                    "x-sdd-layout": "bulletList"
                 },
                 "negative": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "x-sdd-indicator": "❌"
                     },
-                    "description": "Expected negative outcomes or costs."
+                    "description": "Expected negative outcomes or costs.",
+                    "x-sdd-layout": "bulletList"
                 }
             },
-            "description": "Consequences and implications of the decision."
+            "description": "Consequences and implications of the decision.",
+            "x-sdd-layoutGroup": "consequences",
+            "x-sdd-order": 10
         },
         "confirmation": {
             "type": "object",
@@ -413,7 +487,9 @@
                     "description": "Delivery artifact references that confirm implementation. E.g. Jira tickets, PR URLs, test suite IDs, sprint items."
                 }
             },
-            "description": "How compliance with this ADR is confirmed. Links the decision to its verification evidence."
+            "description": "How compliance with this ADR is confirmed. Links the decision to its verification evidence.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 50
         },
         "dependencies": {
             "type": "object",
@@ -434,7 +510,9 @@
                     "description": "External vendor or third-party dependencies."
                 }
             },
-            "description": "Internal and external dependencies."
+            "description": "Internal and external dependencies.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 60
         },
         "references": {
             "type": "array",
@@ -455,7 +533,9 @@
                     }
                 }
             },
-            "description": "External references, standards, and evidence."
+            "description": "External references, standards, and evidence.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 70
         },
         "lifecycle": {
             "type": "object",
@@ -507,7 +587,9 @@
                     }
                 }
             },
-            "description": "Lifecycle management: review cadence, supersession chain, archival."
+            "description": "Lifecycle management: review cadence, supersession chain, archival.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 80
         },
         "audit_trail": {
             "type": "array",
@@ -550,7 +632,27 @@
                     }
                 }
             },
-            "description": "Immutable audit trail of all lifecycle events."
+            "description": "Immutable audit trail of all lifecycle events.",
+            "x-sdd-layoutGroup": "meta",
+            "x-sdd-order": 90
+        }
+    },
+    "x-sdd-layoutGroups": {
+        "overview": {
+            "title": "Overview",
+            "order": 1
+        },
+        "alternatives": {
+            "title": "Alternatives",
+            "order": 2
+        },
+        "consequences": {
+            "title": "Consequences",
+            "order": 3
+        },
+        "meta": {
+            "title": "Meta",
+            "order": 4
         }
     },
     "allOf": [

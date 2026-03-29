@@ -72,6 +72,80 @@ const makeBundleWithoutSchema = (): UiBundleSnapshot => {
   };
 };
 
+const makeNestedAdrEntity = (): UiEntity => ({
+  id: 'ADR-0001-example',
+  entityType: 'ADR',
+  filePath: 'adrs/ADR-0001-example.yaml',
+  data: {
+    adr: {
+      id: 'ADR-0001-example',
+      title: 'Nested ADR title',
+      status: 'accepted',
+      created_at: '2024-10-15T10:00:00Z',
+      last_modified: '2024-10-20T10:00:00Z',
+    },
+    decision: {
+      chosen_alternative: 'Preferred option',
+      confidence: 'high',
+    },
+    alternatives: [
+      { name: 'Preferred option' },
+      { name: 'Fallback option' },
+    ],
+  },
+});
+
+const makeNestedAdrBundle = (): UiBundleSnapshot => ({
+  manifest: {},
+  entities: {
+    ADR: [makeNestedAdrEntity()],
+  },
+  refGraph: { edges: [] },
+  schemas: {
+    ADR: {
+      type: 'object',
+      'x-sdd-layoutGroups': {
+        overview: { title: 'Overview', order: 1 },
+        alternatives: { title: 'Alternatives', order: 2 },
+        meta: { title: 'Meta', order: 3 },
+      },
+      properties: {
+        adr: {
+          type: 'object',
+          'x-sdd-layoutGroup': 'overview',
+          properties: {
+            title: { type: 'string', 'x-sdd-displayLocation': 'title' },
+            status: { type: 'string', 'x-sdd-displayLocation': 'header', 'x-sdd-enumStyles': { accepted: { color: 'success' } } },
+            created_at: { type: 'string', format: 'date-time', title: 'Created Date', 'x-sdd-displayLocation': 'header' },
+            last_modified: { type: 'string', format: 'date-time', title: 'Last Modified Date', 'x-sdd-displayLocation': 'header' },
+          },
+        },
+        decision: {
+          type: 'object',
+          'x-sdd-layoutGroup': 'overview',
+          properties: {
+            chosen_alternative: { type: 'string' },
+            confidence: { type: 'string', 'x-sdd-displayLocation': 'header', 'x-sdd-enumStyles': { high: { color: 'success' } }, 'x-sdd-showLabelInBadge': true },
+          },
+        },
+        alternatives: {
+          type: 'array',
+          'x-sdd-layoutGroup': 'alternatives',
+          'x-sdd-layout': 'tabbedArray',
+          'x-sdd-tabLabelField': 'name',
+          'x-sdd-choiceSourcePath': 'decision.chosen_alternative',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
 describe('EntityDetails', () => {
   it('renders placeholder when no bundle or entity is selected', () => {
     render(<EntityDetails bundle={null} entity={null} />);
@@ -124,5 +198,21 @@ describe('EntityDetails', () => {
     // Check for error and warning counts in the badge
     expect(screen.getByText('⛔ 1')).toBeInTheDocument();
     expect(screen.getByText('⚠️ 1')).toBeInTheDocument();
+  });
+
+  it('renders nested title, nested header metadata, and layout sub-tabs for governed ADRs', () => {
+    const bundle = makeNestedAdrBundle();
+    const entity = bundle.entities.ADR[0];
+
+    render(<EntityDetails bundle={bundle} entity={entity} />);
+
+    expect(screen.getByText('Nested ADR title')).toBeInTheDocument();
+    expect(screen.getByText('ADR-0001-example')).toBeInTheDocument();
+    expect(screen.getByText('accepted')).toBeInTheDocument();
+    expect(screen.getByText('Confidence: high')).toBeInTheDocument();
+    expect(screen.getByText('Created Date:')).toBeInTheDocument();
+    expect(screen.getByTestId('subtab-overview')).toBeInTheDocument();
+    expect(screen.getByTestId('subtab-alternatives')).toBeInTheDocument();
+    expect(screen.getByTestId('subtab-meta')).toBeInTheDocument();
   });
 });

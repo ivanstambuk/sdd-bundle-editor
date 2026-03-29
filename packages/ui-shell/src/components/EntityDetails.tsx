@@ -40,6 +40,95 @@ interface EntityDetailsProps {
 
 type EntityTab = 'properties' | 'graph' | 'yaml';
 
+interface HeaderMetadataField {
+  fieldName: string;
+  label: string;
+  value: any;
+  fieldSchema: any;
+}
+
+function getNestedValue(source: Record<string, any> | undefined, path: string): any {
+  if (!source) return undefined;
+  return path.split('.').reduce<any>((current, segment) => {
+    if (current && typeof current === 'object') {
+      return current[segment];
+    }
+    return undefined;
+  }, source);
+}
+
+function collectHeaderMetadataFields(
+  schema: Record<string, any> | undefined,
+  data: Record<string, any> | undefined,
+  formatLabel: (label: string) => string,
+  parentPath = ''
+): HeaderMetadataField[] {
+  if (!schema?.properties) return [];
+
+  const fields: HeaderMetadataField[] = [];
+  for (const [fieldName, fieldSchema] of Object.entries(schema.properties as Record<string, any>)) {
+    const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
+
+    if (fieldSchema?.['x-sdd-displayLocation'] === 'header') {
+      fields.push({
+        fieldName: fieldPath,
+        label: fieldSchema.title || formatLabel(fieldName),
+        value: getNestedValue(data, fieldPath),
+        fieldSchema,
+      });
+    }
+
+    if (fieldSchema?.type === 'object' && fieldSchema?.properties) {
+      fields.push(...collectHeaderMetadataFields(fieldSchema, data, formatLabel, fieldPath));
+    }
+  }
+
+  return fields;
+}
+
+function findDisplayTitle(
+  schema: Record<string, any> | undefined,
+  data: Record<string, any> | undefined,
+  parentPath = ''
+): string | undefined {
+  if (!schema?.properties || !data) return undefined;
+
+  for (const [fieldName, fieldSchema] of Object.entries(schema.properties as Record<string, any>)) {
+    const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
+    if (fieldSchema?.['x-sdd-displayLocation'] === 'title') {
+      const value = getNestedValue(data, fieldPath);
+      if (typeof value === 'string' && value.trim().length > 0) {
+        return value;
+      }
+    }
+  }
+
+  if (typeof data.title === 'string' && data.title.trim().length > 0) return data.title;
+  if (typeof data.name === 'string' && data.name.trim().length > 0) return data.name;
+
+  for (const [fieldName, fieldSchema] of Object.entries(schema.properties as Record<string, any>)) {
+    const nestedValue = getNestedValue(data, parentPath ? `${parentPath}.${fieldName}` : fieldName);
+    if (fieldSchema?.type === 'object' && fieldSchema?.properties && nestedValue && typeof nestedValue === 'object') {
+      const nestedTitle = findDisplayTitle(fieldSchema, data, parentPath ? `${parentPath}.${fieldName}` : fieldName);
+      if (nestedTitle) return nestedTitle;
+    }
+  }
+
+  return undefined;
+}
+
+function formatFieldLabel(label: string): string {
+  if (!label) return '';
+  return label
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/^./, s => s.toUpperCase())
+    .replace(/\bId\b/g, 'ID')
+    .replace(/\bIds\b/g, 'IDs')
+    .replace(/\bApi\b/g, 'API')
+    .replace(/\bUrl\b/g, 'URL');
+}
+
 export function EntityDetails(props: EntityDetailsProps) {
   if (!props.bundle || !props.entity) {
     return (
@@ -81,7 +170,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
         'x-sdd-displayHint', 'x-sdd-enumDescriptions',
         'x-sdd-refTargets', 'x-sdd-idTemplate', 'x-sdd-entityType', 'x-sdd-idScope',
         'x-sdd-widget', 'x-sdd-ui', 'x-sdd-layout', 'x-sdd-layoutGroup', 'x-sdd-layoutGroups', 'x-sdd-indicator',
-        'x-sdd-choiceField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
+        'x-sdd-choiceField', 'x-sdd-choiceSourcePath', 'x-sdd-choiceMatchField', 'x-sdd-chosenLabel', 'x-sdd-rejectedLabel', 'x-sdd-tabLabelField',
         'x-sdd-order', 'x-sdd-prominence', 'x-sdd-prominenceLabel', 'x-sdd-prominenceIcon',
         'x-sdd-enumStyles', 'x-sdd-displayLocation', 'x-sdd-valueStyle', 'x-sdd-labelStyle',
         'x-sdd-showLabelInBadge', 'x-sdd-enumTitles',
@@ -110,30 +199,12 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
   const headerFieldNames = useMemo(() => getHeaderFieldNames(schema as any), [schema]);
 
   // Extract header metadata fields for display in entity header
-  interface HeaderMetadataField {
-    fieldName: string;
-    label: string;
-    value: any;
-    fieldSchema: any;
-  }
   const headerMetadataFields: HeaderMetadataField[] = useMemo(() => {
-    if (!schema?.properties) return [];
-
-    const props = schema.properties as Record<string, any>;
-    const data = entity.data as Record<string, any>;
-    const fields: HeaderMetadataField[] = [];
-
-    for (const [fieldName, fieldSchema] of Object.entries(props)) {
-      if (fieldSchema?.['x-sdd-displayLocation'] === 'header') {
-        fields.push({
-          fieldName,
-          label: fieldSchema.title || fieldName.replace(/([A-Z])/g, ' $1').replace(/^./, (s: string) => s.toUpperCase()).trim(),
-          value: data?.[fieldName],
-          fieldSchema,
-        });
-      }
-    }
-    return fields;
+    return collectHeaderMetadataFields(
+      schema as Record<string, any> | undefined,
+      entity.data as Record<string, any>,
+      formatFieldLabel,
+    );
   }, [schema, entity.data]);
 
   // Wrapper for filterSchemaForLayoutGroup that uses component's memoized values
@@ -177,21 +248,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
   }
 
   // Convert camelCase/PascalCase to Title Case with proper word boundaries
-  const formatLabel = (label: string): string => {
-    if (!label) return '';
-    return label
-      // Insert space before uppercase letters (camelCase boundary)
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      // Insert space before sequences like "ID" or "API" followed by lowercase
-      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
-      // Capitalize first letter
-      .replace(/^./, s => s.toUpperCase())
-      // Handle common abbreviations
-      .replace(/\bId\b/g, 'ID')
-      .replace(/\bIds\b/g, 'IDs')
-      .replace(/\bApi\b/g, 'API')
-      .replace(/\bUrl\b/g, 'URL');
-  };
+  const formatLabel = formatFieldLabel;
 
   // Custom field template with tooltip descriptions
   const CustomFieldTemplate = (props: any) => {
@@ -463,7 +520,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
   // Dispatches to appropriate layout renderer based on schema hints
   // ========================================
   const CustomArrayFieldTemplate = (props: any) => {
-    const { items, canAdd, onAddClick, readonly, disabled, schema, formData, uiSchema } = props;
+    const { items, canAdd, onAddClick, readonly, disabled, schema, formData, uiSchema, formContext } = props;
     const showAddButton = canAdd && !readonly && !disabled;
     const displayHint = schema?.['x-sdd-displayHint'] || uiSchema?.['ui:options']?.displayHint;
     const isSteps = props.idSchema?.$id?.includes('steps') || props.title === 'Steps' || schema?.title === 'Steps';
@@ -497,6 +554,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
           items={items}
           formData={formData}
           schema={schema}
+          formContext={formContext}
           readOnly={readonly || disabled}
           canAdd={canAdd}
           onAddClick={onAddClick}
@@ -937,6 +995,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
               fields={fields}
               templates={templates}
               validator={validator}
+              formContext={{ rootData: entity.data as Record<string, unknown> }}
               readonly={readOnly}
               disabled={readOnly}
               onChange={() => { }}
@@ -987,6 +1046,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
               fields={fields}
               templates={templates}
               validator={validator}
+              formContext={{ rootData: entity.data as Record<string, unknown> }}
               readonly={readOnly}
               disabled={readOnly}
               onChange={() => { }}
@@ -1225,7 +1285,7 @@ function EntityDetailsContent({ bundle, entity, readOnly = true, onNavigate, dia
   );
 
   const entityData = entity.data as Record<string, any>;
-  const displayTitle = entityData?.title || entityData?.name;
+  const displayTitle = findDisplayTitle(schema as Record<string, any> | undefined, entityData);
 
   return (
     <div className={styles.container}>

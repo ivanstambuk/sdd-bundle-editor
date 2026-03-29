@@ -14,6 +14,20 @@ interface TabbedArrayFieldProps {
     canAdd?: boolean;
     /** Callback to add new item */
     onAddClick?: () => void;
+    /** Root form context passed through RJSF */
+    formContext?: {
+        rootData?: Record<string, unknown>;
+    };
+}
+
+function getValueAtPath(source: Record<string, unknown> | undefined, path: string | undefined): unknown {
+    if (!source || !path) return undefined;
+    return path.split('.').reduce<unknown>((current, segment) => {
+        if (current && typeof current === 'object' && segment in (current as Record<string, unknown>)) {
+            return (current as Record<string, unknown>)[segment];
+        }
+        return undefined;
+    }, source);
 }
 
 /**
@@ -33,20 +47,27 @@ export function TabbedArrayField({
     readOnly = true,
     canAdd = false,
     onAddClick,
+    formContext,
 }: TabbedArrayFieldProps) {
     // Read schema hints
     const tabLabelField = schema?.['x-sdd-tabLabelField'] || 'name';
     const choiceField = schema?.['x-sdd-choiceField'] || 'isChosen';
+    const choiceSourcePath = schema?.['x-sdd-choiceSourcePath'];
+    const choiceMatchField = schema?.['x-sdd-choiceMatchField'] || tabLabelField;
 
     // Sort items: chosen first, then by original order
     const sortedItems = useMemo(() => {
         if (!Array.isArray(formData) || formData.length === 0) return [];
 
+        const chosenValue = getValueAtPath(formContext?.rootData, choiceSourcePath);
+
         const itemsWithIndex = items.map((item, index) => ({
             item,
             index,
             data: formData[index],
-            isChosen: formData[index]?.[choiceField] === true,
+            isChosen:
+                formData[index]?.[choiceField] === true ||
+                (chosenValue !== undefined && formData[index]?.[choiceMatchField] === chosenValue),
         }));
 
         // Sort: chosen first, then preserve original order
@@ -55,7 +76,7 @@ export function TabbedArrayField({
             if (!a.isChosen && b.isChosen) return 1;
             return a.index - b.index;
         });
-    }, [items, formData, choiceField]);
+    }, [items, formData, choiceField, choiceMatchField, choiceSourcePath, formContext?.rootData]);
 
     // Find the default active tab (chosen one, or first)
     const defaultTabIndex = useMemo(() => {

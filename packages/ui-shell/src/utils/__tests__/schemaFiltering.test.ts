@@ -46,6 +46,34 @@ describe('schemaFiltering utilities', () => {
             expect(getHeaderFieldNames(null).size).toBe(0);
             expect(getHeaderFieldNames(undefined).size).toBe(0);
         });
+
+        it('extracts nested header field paths', () => {
+            const schema = {
+                properties: {
+                    adr: {
+                        type: 'object',
+                        properties: {
+                            status: { type: 'string', 'x-sdd-displayLocation': 'header' },
+                            created_at: { type: 'string', 'x-sdd-displayLocation': 'header' },
+                            title: { type: 'string' },
+                        },
+                    },
+                    decision: {
+                        type: 'object',
+                        properties: {
+                            confidence: { type: 'string', 'x-sdd-displayLocation': 'header' },
+                        },
+                    },
+                },
+            };
+
+            const headerFields = getHeaderFieldNames(schema);
+
+            expect(headerFields.has('adr.status')).toBe(true);
+            expect(headerFields.has('adr.created_at')).toBe(true);
+            expect(headerFields.has('decision.confidence')).toBe(true);
+            expect(headerFields.has('adr.title')).toBe(false);
+        });
     });
 
     describe('getFieldToGroupMap', () => {
@@ -237,6 +265,29 @@ describe('schemaFiltering utilities', () => {
             const filtered = filterSchemaWithoutHeaderFields(schema, headerFieldNames);
 
             expect(filtered!.required).toEqual(['title']);
+        });
+
+        it('removes nested header fields from nested object schemas', () => {
+            const schema = {
+                type: 'object',
+                properties: {
+                    adr: {
+                        type: 'object',
+                        required: ['status', 'title'],
+                        properties: {
+                            status: { type: 'string', 'x-sdd-displayLocation': 'header' },
+                            title: { type: 'string' },
+                        },
+                    },
+                },
+            };
+            const headerFieldNames = new Set(['adr.status']);
+
+            const filtered = filterSchemaWithoutHeaderFields(schema, headerFieldNames);
+            const nestedProps = (filtered!.properties as any).adr.properties;
+
+            expect(Object.keys(nestedProps)).toEqual(['title']);
+            expect((filtered!.properties as any).adr.required).toEqual(['title']);
         });
 
         it('sets additionalProperties: false', () => {

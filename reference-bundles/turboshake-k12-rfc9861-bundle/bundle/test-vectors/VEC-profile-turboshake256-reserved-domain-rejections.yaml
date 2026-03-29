@@ -1,0 +1,32 @@
+id: VEC-profile-turboshake256-reserved-domain-rejections
+kind: TestVector
+title: Profile TurboSHAKE256 Reserved Domain Rejections
+description: Confirms that the public TurboSHAKE256 surface rejects the KT-reserved domain bytes published in RFC 9861.
+vectorKind: concrete
+executionStatus: active
+artifactClass: contract
+lifecycleStatus: active
+primitiveId: PRIM-turboshake256
+invokesOperationId: OP-turboshake256
+normativeReferenceId: RFC-9861
+parameterModelId: STRUCT-test-vector-parameters
+parameters:
+  cases:
+    - M_hex: FF
+      D: 6
+      L: 64
+    - M_hex: FFFFFF
+      D: 7
+      L: 64
+    - M_hex: FFFFFFFFFFFFFF
+      D: 11
+      L: 64
+expectedResult:
+  expectedErrorCategoryId: ERRCAT-parameter
+  expectedErrorName: ParameterError
+  rejectionStage: parameter-validation
+notes: |
+  RFC 9861 publishes outputs for these domain values at the algorithm level, but
+  this profile reserves them for KT-internal use and requires public TurboSHAKE256
+  APIs to reject them before absorbing input.
+tags: [profile, turboshake256, domain, negative]

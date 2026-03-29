@@ -1,8 +1,8 @@
 id: VEC-rfc9861-turboshake256-domain-cases
 kind: TestVector
 title: RFC 9861 TurboSHAKE256 Domain Cases
-description: Aggregates the explicit TurboSHAKE256 FF/domain-byte cases, including the reserved KT domain values used for test coverage.
-vectorKind: external-family
+description: Bundles the explicit positive TurboSHAKE256 public-surface domain-byte cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -15,22 +15,21 @@ parameters:
     - M_hex: FFFFFF
       D: 1
       L: 64
-    - M_hex: FF
-      D: 6
-      L: 64
-    - M_hex: FFFFFF
-      D: 7
-      L: 64
-    - M_hex: FFFFFFFFFFFFFF
-      D: 11
-      L: 64
+      expectedHex: D21C6FBBF587FA2282F29AEA620175FB0257413AF78A0B1B2A87419CE031D933AE7A4D383327A8A17641A34F8A1D1003AD7DA6B72DBA84BB62FEF28F62F12424
     - M_hex: FF
       D: 48
       L: 64
+      expectedHex: F3FE12873D34BCBB2E608779D6B70E7F86BEC7E90BF113CBD4FDD0C4E2F4625E148DD7EE1A52776CF77F240514D9CCFC3B5DDAB8EE255E39EE389072962C111A
     - M_hex: FFFFFF
       D: 127
       L: 64
+      expectedHex: ABE569C1F77EC340F02705E7D37C9AB7E155516E4A6A150021D70B6FAC0BB40C069F9A9828A0D575CD99F9BAE435AB1ACF7ED9110BA97CE0388D074BAC768776
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-tags: [rfc, turboshake256, domain]
+notes: |
+  RFC 9861 also publishes algorithm-level examples for the KT-reserved domain values
+  `0x06`, `0x07`, and `0x0B`. This profile excludes those cases from public
+  TurboSHAKE conformance because `CON-turboshake-domain-byte` requires public
+  APIs to reject them.
+tags: [rfc, turboshake256, domain, concrete, public-surface]

@@ -23,3 +23,6 @@ inputStructureIds:
   - STRUCT-xof-call-input
 outputStructureIds:
   - STRUCT-byte-string
+notes: |
+  This profile treats KT128 as a direct XOF contract with explicit message,
+  customization, and output-length validation, rather than leaving those bounds implicit.

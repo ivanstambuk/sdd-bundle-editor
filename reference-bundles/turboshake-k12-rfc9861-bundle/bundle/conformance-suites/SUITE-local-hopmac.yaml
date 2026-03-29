@@ -1,7 +1,7 @@
 id: SUITE-local-hopmac
 kind: ConformanceSuite
-title: Local HopMAC Canonical Vectors
-description: Concrete local vectors for the profile-defined HopMAC128 and HopMAC256 named primitives.
+title: Local HopMAC Confirmed Canonical Vectors
+description: Confirmed concrete local vectors for the profile-defined HopMAC named primitives.
 suiteKind: local-canonical
 executionStatus: active
 artifactClass: contract

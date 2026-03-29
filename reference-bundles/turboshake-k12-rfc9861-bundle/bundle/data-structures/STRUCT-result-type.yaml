@@ -11,3 +11,15 @@ schemaDefinition:
   okVariant: Ok
   errVariant: Err
   errPayload: ErrorCategory
+  semantics:
+    - Stateful methods return `Ok(updated-state)` when the transition succeeds.
+    - Stateful methods return `Err(ErrorCategory)` when parameter or phase validation fails.
+samplePayload: |
+  ```yaml
+  Ok:
+    phase: SQUEEZING
+  ```
+
+  ```yaml
+  Err: ERRCAT-state
+  ```

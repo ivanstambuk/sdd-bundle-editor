@@ -8,5 +8,14 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 schemaDefinition:
+  type: object
+  required: [x]
+  additionalProperties: false
   properties:
-    x: Integer
+    x:
+      type: Integer
+      description: Non-negative integer in the profile-supported `0 .. 2^64 - 1` domain.
+samplePayload: |
+  ```yaml
+  x: 255
+  ```

@@ -11,7 +11,7 @@ scope: |
   while preserving the underlying TurboSHAKE and KangarooTwelve constructions.
 executionStatus: active
 artifactClass: contract
-lifecycleStatus: draft
+lifecycleStatus: active
 version: 1.0.0
 normativeReferenceIds:
   - RFC-9861
@@ -38,11 +38,13 @@ conformanceSuiteIds:
   - SUITE-rfc9861-turboshake
   - SUITE-rfc9861-k12
   - SUITE-local-hopmac
-knownIssues:
-  - hopmac256-canonical-output-needs-confirmation
 bundleNotes: |
   This bundle focuses on the normative profile contract, conformance structure,
   and test-vector coverage needed for implementation and review.
 
-  RFC vector families are currently stored as grouped test-vector entities,
-  while the local HopMAC vectors are stored as concrete entries.
+  RFC vector suites are stored as grouped concrete test-vector entities with
+  bundled expected outputs for the currently active conformance cases.
+  Public TurboSHAKE conformance excludes the KT-reserved domain values and
+  models them as explicit rejection coverage instead.
+
+  Confirmed local HopMAC vectors are stored as concrete entries.

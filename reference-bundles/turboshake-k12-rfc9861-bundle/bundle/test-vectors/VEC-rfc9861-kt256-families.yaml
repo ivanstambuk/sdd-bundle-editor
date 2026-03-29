@@ -1,8 +1,8 @@
 id: VEC-rfc9861-kt256-families
 kind: TestVector
-title: RFC 9861 KT256 Families
-description: Aggregates the RFC 9861 KT256 vector families for empty inputs, patterned messages, patterned customization, and the mixed 8192-byte cases.
-vectorKind: external-family
+title: RFC 9861 KT256 Cases
+description: Bundles the active RFC 9861 KT256 empty, patterned, and mixed-size cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -11,25 +11,107 @@ invokesOperationId: OP-kt256
 normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
-  families:
-    - empty:
-        M_len: 0
-        C_len: 0
-        L_values: [64, 128, 10064]
-    - patterned-message:
-        pattern: ptn
-        M_n_values: [1, 17, 17**2, 17**3, 17**4, 17**5]
-        C_len: 0
-        L: 64
-    - patterned-customization:
-        M_len: 0
-        C_n_values: [1, 41, 41**2, 41**3]
-        L: 64
-    - mixed-8192:
-        M_len: 8192
-        C_len_values: [0, 8189, 8190]
-        L: 64
+  cases:
+    - label: empty-64
+      M_len: 0
+      C_len: 0
+      L: 64
+      expectedHex: B23D2E9CEA9F4904E02BEC06817FC10CE38CE8E93EF4C89E6537076AF8646404E3E8B68107B8833A5D30490AA33482353FD4ADC7148ECB782855003AAEBDE4A9
+    - label: empty-128
+      M_len: 0
+      C_len: 0
+      L: 128
+      expectedHex: B23D2E9CEA9F4904E02BEC06817FC10CE38CE8E93EF4C89E6537076AF8646404E3E8B68107B8833A5D30490AA33482353FD4ADC7148ECB782855003AAEBDE4A9B0925319D8EA1E121A609821EC19EFEA89E6D08DAEE1662B69C840289F188BA860F55760B61F82114C030C97E5178449608CCD2CD2D919FC7829FF69931AC4D0
+    - label: empty-10064-last64
+      M_len: 0
+      C_len: 0
+      L: 10064
+      outputSlice:
+        kind: last
+        bytes: 64
+      expectedHex: AD4A1D718CF950506709A4C33396139B4449041FC79A05D68DA35F1E453522E056C64FE94958E7085F2964888259B9932752F3CCD855288EFEE5FCBB8B563069
+    - label: ptn-message-1
+      pattern: ptn
+      M_len: 1
+      C_len: 0
+      L: 64
+      expectedHex: 0D005A194085360217128CF17F91E1F71314EFA5564539D444912E3437EFA17F82DB6F6FFE76E781EAA068BCE01F2BBF81EACB983D7230F2FB02834A21B1DDD0
+    - label: ptn-message-17
+      pattern: ptn
+      M_len: 17
+      C_len: 0
+      L: 64
+      expectedHex: 1BA3C02B1FC514474F06C8979978A9056C8483F4A1B63D0DCCEFE3A28A2F323E1CDCCA40EBF006AC76EF0397152346837B1277D3E7FAA9C9653B19075098527B
+    - label: ptn-message-289
+      pattern: ptn
+      M_len: 289
+      C_len: 0
+      L: 64
+      expectedHex: DE8CCBC63E0F133EBB4416814D4C66F691BBF8B6A61EC0A7700F836B086CB029D54F12AC7159472C72DB118C35B4E6AA213C6562CAAA9DCC518959E69B10F3BA
+    - label: ptn-message-4913
+      pattern: ptn
+      M_len: 4913
+      C_len: 0
+      L: 64
+      expectedHex: 647EFB49FE9D717500171B41E7F11BD491544443209997CE1C2530D15EB1FFBB598935EF954528FFC152B1E4D731EE2683680674365CD191D562BAE753B84AA5
+    - label: ptn-message-83521
+      pattern: ptn
+      M_len: 83521
+      C_len: 0
+      L: 64
+      expectedHex: B06275D284CD1CF205BCBE57DCCD3EC1FF6686E3ED15776383E1F2FA3C6AC8F08BF8A162829DB1A44B2A43FF83DD89C3CF1CEB61EDE659766D5CCF817A62BA8D
+    - label: ptn-message-1419857
+      pattern: ptn
+      M_len: 1419857
+      C_len: 0
+      L: 64
+      expectedHex: 9473831D76A4C7BF77ACE45B59F1458B1673D64BCD877A7C66B2664AA6DD149E60EAB71B5C2BAB858C074DED81DDCE2B4022B5215935C0D4D19BF511AEEB0772
+    - label: ptn-customization-1
+      M_len: 0
+      C_pattern: ptn
+      C_len: 1
+      L: 64
+      expectedHex: 9280F5CC39B54A5A594EC63DE0BB99371E4609D44BF845C2F5B8C316D72B159811F748F23E3FABBE5C3226EC96C62186DF2D33E9DF74C5069CEECBB4DD10EFF6
+    - label: ptn-customization-41
+      M_hex: FF
+      C_pattern: ptn
+      C_len: 41
+      L: 64
+      expectedHex: 47EF96DD616F200937AA7847E34EC2FEAE8087E3761DC0F8C1A154F51DC9CCF845D7ADBCE57FF64B639722C6A1672E3BF5372D87E00AFF89BE97240756998853
+    - label: ptn-customization-1681
+      M_hex: FFFFFF
+      C_pattern: ptn
+      C_len: 1681
+      L: 64
+      expectedHex: 3B48667A5051C5966C53C5D42B95DE451E05584E7806E2FB765EDA959074172CB438A9E91DDE337C98E9C41BED94C4E0AEF431D0B64EF2324F7932CAA6F54969
+    - label: ptn-customization-68921
+      M_hex: FFFFFFFFFFFFFF
+      C_pattern: ptn
+      C_len: 68921
+      L: 64
+      expectedHex: E0911CC00025E1540831E266D94ADD9B98712142B80D2629E643AAC4EFAF5A3A30A88CBF4AC2A91A2432743054FBCC9897670E86BA8CEC2FC2ACE9C966369724
+    - label: mixed-8192-c0
+      pattern: ptn
+      M_len: 8192
+      C_len: 0
+      L: 64
+      expectedHex: C6EE8E2AD3200C018AC87AAA031CDAC22121B412D07DC6E0DCCBB53423747E9A1C18834D99DF596CF0CF4B8DFAFB7BF02D139D0C9035725ADC1A01B7230A41FA
+    - label: mixed-8192-c8189
+      pattern: ptn
+      M_len: 8192
+      C_pattern: ptn
+      C_len: 8189
+      L: 64
+      expectedHex: 74E47879F10A9C5D11BD2DA7E194FE57E86378BF3C3F7448EFF3C576A0F18C5CAAE0999979512090A7F348AF4260D4DE3C37F1ECAF8D2C2C96C1D16C64B12496
+    - label: mixed-8192-c8190
+      pattern: ptn
+      M_len: 8192
+      C_pattern: ptn
+      C_len: 8190
+      L: 64
+      expectedHex: F4B5908B929FFE01E0F79EC2F21243D41A396B2E7303A6AF1D6399CD6C7A0A2DD7C4F607E8277F9C9B1CB4AB9DDC59D4B92D1FC7558441F1832C3279A4241B8B
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-tags: [rfc, kt256, family]
+notes: Concrete expected outputs are bundled here so the active KT256 conformance cases are locally executable.
+tags: [rfc, kt256, concrete]

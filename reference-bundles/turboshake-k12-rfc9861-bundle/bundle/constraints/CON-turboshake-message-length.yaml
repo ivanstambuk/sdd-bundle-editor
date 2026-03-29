@@ -21,3 +21,4 @@ appliesToOperationIds:
   - OP-turboshake-context-absorb
 normativeReferenceIds:
   - RFC-9861
+rationale: Makes the profile's promised TurboSHAKE support window explicit for both one-shot and streaming APIs.

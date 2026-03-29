@@ -8,8 +8,39 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 schemaDefinition:
+  type: object
+  additionalProperties: false
   properties:
-    M: ByteString
-    C: ByteString
-    D: UInt8
-    L: UInt64
+    M:
+      type: ByteString
+      description: Message bytes to absorb before finalization.
+    C:
+      type: ByteString
+      description: Optional KT customization string.
+    D:
+      type: UInt8
+      description: TurboSHAKE domain byte. Required for public TurboSHAKE calls and omitted for KT calls.
+    L:
+      type: UInt64
+      description: Requested output length in bytes.
+  variants:
+    - primitiveFamily: TurboSHAKE
+      required: [M, D, L]
+    - primitiveFamily: KangarooTwelve
+      required: [M, C, L]
+samplePayload: |
+  TurboSHAKE example:
+
+  ```yaml
+  M: FFFFFF
+  D: 31
+  L: 64
+  ```
+
+  KangarooTwelve example:
+
+  ```yaml
+  M: A0A1A2A3
+  C: 6C6F63616C2D637573746F6D
+  L: 32
+  ```

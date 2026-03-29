@@ -8,7 +8,35 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 schemaDefinition:
+  type: object
+  additionalProperties: false
   properties:
-    D: UInt8
-    chunk: ByteString
-    len: UInt64
+    D:
+      type: UInt8
+      description: Domain byte accepted by `init`.
+    chunk:
+      type: ByteString
+      description: Absorb input chunk for `absorb`.
+    len:
+      type: UInt64
+      description: Requested output length for `squeeze`.
+  methodShapes:
+    - method: init
+      required: [D]
+    - method: absorb
+      required: [chunk]
+    - method: squeeze
+      required: [len]
+    - method: finalize
+      required: []
+    - method: reset
+      required: []
+samplePayload: |
+  ```yaml
+  init:
+    D: 31
+  absorb:
+    chunk: FFFFFF
+  squeeze:
+    len: 64
+  ```

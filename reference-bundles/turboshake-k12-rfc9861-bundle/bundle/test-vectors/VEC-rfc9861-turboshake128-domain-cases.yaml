@@ -1,8 +1,8 @@
 id: VEC-rfc9861-turboshake128-domain-cases
 kind: TestVector
 title: RFC 9861 TurboSHAKE128 Domain Cases
-description: Aggregates the explicit TurboSHAKE128 FF/domain-byte cases used by this bundle's conformance model.
-vectorKind: external-family
+description: Bundles the explicit positive TurboSHAKE128 public-surface domain-byte cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -15,10 +15,16 @@ parameters:
     - M_hex: FF
       D: 48
       L: 32
+      expectedHex: 553122E2135E363C3292BED2C6421FA232BAB03DAA07C7D6636603286506325B
     - M_hex: FFFFFF
       D: 127
       L: 32
+      expectedHex: 16274CC656D44CEFD422395D0F9053BDA6D28E122ABA15C765E5AD0E6EAF26F9
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-tags: [rfc, turboshake128, domain]
+notes: |
+  These are direct positive public-surface domain-byte examples. Reserved KT
+  values are intentionally excluded from this vector because the profile treats
+  them as parameter-validation failures.
+tags: [rfc, turboshake128, domain, concrete]

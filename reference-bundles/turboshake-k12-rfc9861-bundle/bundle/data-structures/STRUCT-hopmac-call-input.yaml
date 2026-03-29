@@ -8,8 +8,26 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 schemaDefinition:
+  type: object
+  required: [Key, M, C, L]
+  additionalProperties: false
   properties:
-    Key: ByteString
-    M: ByteString
-    C: ByteString
-    L: UInt64
+    Key:
+      type: ByteString
+      description: Secret HopMAC key after profile length validation.
+    M:
+      type: ByteString
+      description: Message bytes supplied to the underlying KT primitive.
+    C:
+      type: ByteString
+      description: Customization string passed through to KT.
+    L:
+      type: UInt64
+      description: Requested tag length in bytes.
+samplePayload: |
+  ```yaml
+  Key: 00112233445566778899AABBCCDDEEFF
+  M: A0A1A2A3
+  C: 486F704D41432064656D6F
+  L: 32
+  ```

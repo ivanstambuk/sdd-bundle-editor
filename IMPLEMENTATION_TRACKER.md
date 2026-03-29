@@ -49,7 +49,7 @@ The following major milestones have been completed:
 
 ### Richer Example Bundles
 - [ ] Protocol spec bundle (e.g., EC-OPRF/FHE-style)
-- [ ] Crypto profile reference bundle: port the sibling `sdd-specs` TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 profile into a dedicated bundle type. Planning scratch: `.agent/artifacts/turboshake-kt-rfc9861-port/`
+- [ ] Crypto profile reference bundle: port the sibling `sdd-specs` TurboSHAKE / KangarooTwelve / HopMAC RFC 9861 profile into a dedicated bundle type.
 - [ ] Feature-based project bundle (e.g., EUDIW simulator)
 
 ### VS Code Integration

@@ -16,3 +16,4 @@ appliesToOperationIds:
   - OP-hopmac128
 normativeReferenceIds:
   - RFC-9861
+rationale: Prevents undersized HopMAC128 tags that would undercut the named construction's minimum security target.

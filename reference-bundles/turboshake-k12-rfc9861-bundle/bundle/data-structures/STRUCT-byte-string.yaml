@@ -13,3 +13,7 @@ schemaDefinition:
     - length is measured in bytes
     - concatenation is ordered
     - indices are zero-based
+samplePayload: |
+  ```yaml
+  hex: FFFFFF
+  ```

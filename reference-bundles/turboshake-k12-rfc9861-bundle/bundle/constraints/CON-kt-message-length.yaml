@@ -22,3 +22,4 @@ appliesToOperationIds:
   - OP-hopmac256
 normativeReferenceIds:
   - RFC-9861
+rationale: Makes the profile's guaranteed KT and HopMAC message-support window explicit without requiring consumers to reason about larger conceptual RFC domains.

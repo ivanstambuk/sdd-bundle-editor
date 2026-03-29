@@ -1,7 +1,7 @@
 id: SUITE-rfc9861-turboshake
 kind: ConformanceSuite
 title: RFC 9861 TurboSHAKE Vectors
-description: External RFC vector coverage for TurboSHAKE128 and TurboSHAKE256, including empty, long-output, pattern, and domain-byte cases.
+description: Bundled concrete RFC 9861 vector coverage for public-surface TurboSHAKE128 and TurboSHAKE256 behavior, plus profile-level rejection coverage for KT-reserved domain bytes.
 suiteKind: rfc-external
 executionStatus: active
 artifactClass: contract
@@ -13,5 +13,6 @@ containsVectorIds:
   - VEC-rfc9861-turboshake128-domain-cases
   - VEC-rfc9861-turboshake256-core
   - VEC-rfc9861-turboshake256-domain-cases
+  - VEC-profile-turboshake256-reserved-domain-rejections
 normativeReferenceIds:
   - RFC-9861

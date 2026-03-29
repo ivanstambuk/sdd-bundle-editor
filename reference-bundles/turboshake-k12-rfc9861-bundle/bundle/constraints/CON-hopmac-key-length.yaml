@@ -19,3 +19,4 @@ appliesToOperationIds:
   - OP-hopmac256
 normativeReferenceIds:
   - RFC-9861
+rationale: Preserves the RFC validity domain while documenting the shorter-key operating point that can be implemented with a single-permutation side-channel advantage.

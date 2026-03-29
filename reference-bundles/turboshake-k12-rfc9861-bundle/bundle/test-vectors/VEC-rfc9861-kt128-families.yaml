@@ -1,8 +1,8 @@
 id: VEC-rfc9861-kt128-families
 kind: TestVector
-title: RFC 9861 KT128 Families
-description: Aggregates the RFC 9861 KT128 vector families for empty inputs, patterned messages, patterned customization, and the mixed 8192-byte cases.
-vectorKind: external-family
+title: RFC 9861 KT128 Cases
+description: Bundles the active RFC 9861 KT128 empty, patterned, and mixed-size cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -11,25 +11,113 @@ invokesOperationId: OP-kt128
 normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
-  families:
-    - empty:
-        M_len: 0
-        C_len: 0
-        L_values: [32, 64, 10032]
-    - patterned-message:
-        pattern: ptn
-        M_n_values: [1, 17, 17**2, 17**3, 17**4, 17**5, 17**6]
-        C_len: 0
-        L: 32
-    - patterned-customization:
-        M_len: 0
-        C_n_values: [1, 41, 41**2, 41**3]
-        L: 32
-    - mixed-8192:
-        M_len: 8192
-        C_len_values: [0, 8189, 8190]
-        L: 32
+  cases:
+    - label: empty-32
+      M_len: 0
+      C_len: 0
+      L: 32
+      expectedHex: 1AC2D450FC3B4205D19DA7BFCA1B37513C0803577AC7167F06FE2CE1F0EF39E5
+    - label: empty-64
+      M_len: 0
+      C_len: 0
+      L: 64
+      expectedHex: 1AC2D450FC3B4205D19DA7BFCA1B37513C0803577AC7167F06FE2CE1F0EF39E54269C056B8C82E48276038B6D292966CC07A3D4645272E31FF38508139EB0A71
+    - label: empty-10032-last32
+      M_len: 0
+      C_len: 0
+      L: 10032
+      outputSlice:
+        kind: last
+        bytes: 32
+      expectedHex: E8DC563642F7228C84684C898405D3A834799158C079B12880277A1D28E2FF6D
+    - label: ptn-message-1
+      pattern: ptn
+      M_len: 1
+      C_len: 0
+      L: 32
+      expectedHex: 2BDA92450E8B147F8A7CB629E784A058EFCA7CF7D8218E02D345DFAA65244A1F
+    - label: ptn-message-17
+      pattern: ptn
+      M_len: 17
+      C_len: 0
+      L: 32
+      expectedHex: 6BF75FA2239198DB4772E36478F8E19B0F371205F6A9A93A273F51DF37122888
+    - label: ptn-message-289
+      pattern: ptn
+      M_len: 289
+      C_len: 0
+      L: 32
+      expectedHex: 0C315EBCDEDBF61426DE7DCF8FB725D1E74675D7F5327A5067F367B108ECB67C
+    - label: ptn-message-4913
+      pattern: ptn
+      M_len: 4913
+      C_len: 0
+      L: 32
+      expectedHex: CB552E2EC77D9910701D578B457DDF772C12E322E4EE7FE417F92C758F0D59D0
+    - label: ptn-message-83521
+      pattern: ptn
+      M_len: 83521
+      C_len: 0
+      L: 32
+      expectedHex: 8701045E22205345FF4DDA05555CBB5C3AF1A771C2B89BAEF37DB43D9998B9FE
+    - label: ptn-message-1419857
+      pattern: ptn
+      M_len: 1419857
+      C_len: 0
+      L: 32
+      expectedHex: 844D610933B1B9963CBDEB5AE3B6B05CC7CBD67CEEDF883EB678A0A8E0371682
+    - label: ptn-message-24137569
+      pattern: ptn
+      M_len: 24137569
+      C_len: 0
+      L: 32
+      expectedHex: 3C390782A8A4E89FA6367F72FEAAF13255C8D95878481D3CD8CE85F58E880AF8
+    - label: ptn-customization-1
+      M_len: 0
+      C_pattern: ptn
+      C_len: 1
+      L: 32
+      expectedHex: FAB658DB63E94A246188BF7AF69A133045F46EE984C56E3C3328CAAF1AA1A583
+    - label: ptn-customization-41
+      M_hex: FF
+      C_pattern: ptn
+      C_len: 41
+      L: 32
+      expectedHex: D848C5068CED736F4462159B9867FD4C20B808ACC3D5BC48E0B06BA0A3762EC4
+    - label: ptn-customization-1681
+      M_hex: FFFFFF
+      C_pattern: ptn
+      C_len: 1681
+      L: 32
+      expectedHex: C389E5009AE57120854C2E8C64670AC01358CF4C1BAF89447A724234DC7CED74
+    - label: ptn-customization-68921
+      M_hex: FFFFFFFFFFFFFF
+      C_pattern: ptn
+      C_len: 68921
+      L: 32
+      expectedHex: 75D2F86A2E644566726B4FBCFC5657B9DBCF070C7B0DCA06450AB291D7443BCF
+    - label: mixed-8192-c0
+      pattern: ptn
+      M_len: 8192
+      C_len: 0
+      L: 32
+      expectedHex: 48F256F6772F9EDFB6A8B661EC92DC93B95EBD05A08A17B39AE3490870C926C3
+    - label: mixed-8192-c8189
+      pattern: ptn
+      M_len: 8192
+      C_pattern: ptn
+      C_len: 8189
+      L: 32
+      expectedHex: 3ED12F70FB05DDB58689510AB3E4D23C6C6033849AA01E1D8C220A297FEDCD0B
+    - label: mixed-8192-c8190
+      pattern: ptn
+      M_len: 8192
+      C_pattern: ptn
+      C_len: 8190
+      L: 32
+      expectedHex: 6A7C1B6A5CD0D8C9CA943A4A216CC64604559A2EA45F78570A15253D67BA00AE
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-tags: [rfc, kt128, family]
+notes: Concrete expected outputs are bundled here so the active KT128 conformance cases are locally executable.
+tags: [rfc, kt128, concrete]

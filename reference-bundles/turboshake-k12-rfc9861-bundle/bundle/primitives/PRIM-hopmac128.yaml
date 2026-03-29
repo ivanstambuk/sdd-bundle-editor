@@ -23,3 +23,6 @@ inputStructureIds:
   - STRUCT-hopmac-call-input
 outputStructureIds:
   - STRUCT-byte-string
+notes: |
+  The named HopMAC128 contract is modeled as a one-shot API surface, even though
+  its definition is expressed compositionally in terms of KT128.

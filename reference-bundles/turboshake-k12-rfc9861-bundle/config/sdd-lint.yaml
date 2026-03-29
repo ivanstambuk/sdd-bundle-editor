@@ -1,1 +1,112 @@
-rules: {}
+rules:
+  no-broken-ref:
+    type: no-broken-ref
+    severity: error
+
+  descriptive-ids:
+    type: descriptive-id
+    severity: warning
+
+  profile-supported-primitives:
+    type: coverage
+    fromEntity: CryptoProfile
+    toEntity: Primitive
+    viaField: supportedPrimitiveIds
+    minLinks: 1
+    severity: error
+
+  profile-conformance-classes:
+    type: coverage
+    fromEntity: CryptoProfile
+    toEntity: ConformanceClass
+    viaField: conformanceClassIds
+    minLinks: 1
+    severity: error
+
+  profile-conformance-suites:
+    type: coverage
+    fromEntity: CryptoProfile
+    toEntity: ConformanceSuite
+    viaField: conformanceSuiteIds
+    minLinks: 1
+    severity: error
+
+  suite-targets-class:
+    type: has-link
+    fromEntity: ConformanceSuite
+    viaField: targetsClassIds
+    minLinks: 1
+    severity: error
+
+  suite-contains-vectors:
+    type: has-link
+    fromEntity: ConformanceSuite
+    viaField: containsVectorIds
+    minLinks: 1
+    severity: error
+
+  primitive-exposes-operations:
+    type: has-link
+    fromEntity: Primitive
+    viaField: exposesOperationIds
+    minLinks: 1
+    severity: error
+
+  operation-accepts-structure:
+    type: has-link
+    fromEntity: Operation
+    viaField: acceptsStructureIds
+    minLinks: 1
+    severity: error
+
+  operation-produces-structure:
+    type: has-link
+    fromEntity: Operation
+    viaField: producesDataStructureIds
+    minLinks: 1
+    severity: error
+
+  constraints-require-rationale:
+    type: required-field
+    targetEntities: [Constraint]
+    field: rationale
+    severity: error
+
+  data-structures-require-sample-payload:
+    type: required-field
+    targetEntities: [DataStructure]
+    field: samplePayload
+    severity: error
+
+  primitives-require-notes:
+    type: required-field
+    targetEntities: [Primitive]
+    field: notes
+    severity: error
+
+  test-vectors-require-notes:
+    type: required-field
+    targetEntities: [TestVector]
+    field: notes
+    severity: error
+
+  no-empty-contract-arrays:
+    type: no-empty-array
+    targetEntities: [CryptoProfile, Primitive, Operation, ConformanceClass, ConformanceSuite, TestVector]
+    fields:
+      - normativeReferenceIds
+      - supportedPrimitiveIds
+      - conformanceClassIds
+      - conformanceSuiteIds
+      - governedByConstraintIds
+      - exposesOperationIds
+      - returnsErrorCategoryIds
+      - inputStructureIds
+      - outputStructureIds
+      - acceptsStructureIds
+      - producesDataStructureIds
+      - mayRaiseErrorCategoryIds
+      - targetsClassIds
+      - containsVectorIds
+      - tags
+    severity: error

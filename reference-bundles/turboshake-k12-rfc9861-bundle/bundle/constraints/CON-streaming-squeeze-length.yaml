@@ -16,3 +16,4 @@ appliesToOperationIds:
   - OP-turboshake-context-squeeze
 normativeReferenceIds:
   - RFC-9861
+rationale: Treats repeated squeeze calls as one logical XOF stream so per-call output requests cannot violate the prefix property expected by downstream consumers.

@@ -8,12 +8,48 @@ executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
 schemaDefinition:
-  fields:
+  required:
     - S
     - D
     - buffer
     - phase
+  fieldDescriptions:
+    S: 1600-bit sponge state after the last completed permutation step.
+    D: Public TurboSHAKE domain byte fixed at `init`.
+    buffer: Pending absorb bytes not yet permuted into the sponge state.
+    phase: Current lifecycle phase for legal method dispatch.
   phases:
     - INIT
     - ABSORBING
     - SQUEEZING
+  validTransitions:
+    - from: INIT
+      via: absorb
+      to: ABSORBING
+    - from: INIT
+      via: finalize
+      to: SQUEEZING
+    - from: ABSORBING
+      via: absorb
+      to: ABSORBING
+    - from: ABSORBING
+      via: finalize
+      to: SQUEEZING
+    - from: SQUEEZING
+      via: squeeze
+      to: SQUEEZING
+    - from: SQUEEZING
+      via: reset
+      to: INIT
+  illegalTransitions:
+    - phase: INIT
+      forbiddenMethods: [squeeze]
+    - phase: SQUEEZING
+      forbiddenMethods: [absorb, finalize]
+samplePayload: |
+  ```yaml
+  S: <1600-bit-state>
+  D: 31
+  buffer: FFFFFF
+  phase: ABSORBING
+  ```

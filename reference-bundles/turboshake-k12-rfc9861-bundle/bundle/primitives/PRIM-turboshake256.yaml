@@ -22,3 +22,6 @@ inputStructureIds:
   - STRUCT-xof-call-input
 outputStructureIds:
   - STRUCT-byte-string
+notes: |
+  Public callers must supply a non-reserved domain byte and may not use the
+  KT-internal bindings that RFC 9861 also documents at the algorithm level.

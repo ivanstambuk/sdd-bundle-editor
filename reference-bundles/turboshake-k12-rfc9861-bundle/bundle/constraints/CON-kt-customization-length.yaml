@@ -22,3 +22,4 @@ appliesToOperationIds:
   - OP-hopmac256
 normativeReferenceIds:
   - RFC-9861
+rationale: Keeps KT and HopMAC customization handling inside the profile's common 64-bit conceptual range for executable tooling and consistent validation behavior.

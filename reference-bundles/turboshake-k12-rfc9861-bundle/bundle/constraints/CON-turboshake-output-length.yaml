@@ -22,3 +22,4 @@ appliesToOperationIds:
   - OP-kt256
 normativeReferenceIds:
   - RFC-9861
+rationale: Rules out zero-length one-shot outputs while keeping the public XOF contract inside the profile's shared 64-bit support envelope.

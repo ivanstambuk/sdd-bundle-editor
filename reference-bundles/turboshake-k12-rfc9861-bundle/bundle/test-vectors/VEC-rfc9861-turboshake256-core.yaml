@@ -1,8 +1,8 @@
 id: VEC-rfc9861-turboshake256-core
 kind: TestVector
-title: RFC 9861 TurboSHAKE256 Core Families
-description: Aggregates the RFC 9861 TurboSHAKE256 empty, long-output, and patterned families defined for this profile.
-vectorKind: external-family
+title: RFC 9861 TurboSHAKE256 Core Cases
+description: Bundles the active RFC 9861 TurboSHAKE256 empty, long-output, and patterned cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -11,24 +11,64 @@ invokesOperationId: OP-turboshake256
 normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
-  families:
-    - empty:
-        M_len: 0
-        D: 31
-        L: 64
-    - empty-long:
-        M_len: 0
-        D: 31
-        L: 10032
-        outputSlice:
-          kind: last
-          bytes: 32
-    - patterned:
-        pattern: ptn
-        nValues: [17**0, 17**1, 17**2, 17**3, 17**4, 17**5, 17**6]
-        D: 31
-        L: 64
+  cases:
+    - label: empty
+      M_len: 0
+      D: 31
+      L: 64
+      expectedHex: 367A329DAFEA871C7802EC67F905AE13C57695DC2C6663C61035F59A18F8E7DB11EDC0E12E91EA60EB6B32DF06DD7F002FBAFABB6E13EC1CC20D995547600DB0
+    - label: empty-long-last32
+      M_len: 0
+      D: 31
+      L: 10032
+      outputSlice:
+        kind: last
+        bytes: 32
+      expectedHex: ABEFA11630C661269249742685EC082F207265DCCF2F43534E9C61BA0C9D1D75
+    - label: ptn-17**0
+      pattern: ptn
+      M_len: 1
+      D: 31
+      L: 64
+      expectedHex: 3E1712F928F8EAF1054632B2AA0A246ED8B0C378728F60BC970410155C28820E90CC90D8A3006AA2372C5C5EA176B0682BF22BAE7467AC94F74D43D39B0482E2
+    - label: ptn-17**1
+      pattern: ptn
+      M_len: 17
+      D: 31
+      L: 64
+      expectedHex: B3BAB0300E6A191FBE6137939835923578794EA54843F5011090FA2F3780A9E5CB22C59D78B40A0FBFF9E672C0FBE0970BD2C845091C6044D687054DA5D8E9C7
+    - label: ptn-17**2
+      pattern: ptn
+      M_len: 289
+      D: 31
+      L: 64
+      expectedHex: 66B810DB8E90780424C0847372FDC95710882FDE31C6DF75BEB9D4CD9305CFCAE35E7B83E8B7E6EB4B78605880116316FE2C078A09B94AD7B8213C0A738B65C0
+    - label: ptn-17**3
+      pattern: ptn
+      M_len: 4913
+      D: 31
+      L: 64
+      expectedHex: C74EBC919A5B3B0DD1228185BA02D29EF442D69D3D4276A93EFE0BF9A16A7DC0CD4EABADAB8CD7A5EDD96695F5D360ABE09E2C6511A3EC397DA3B76B9E1674FB
+    - label: ptn-17**4
+      pattern: ptn
+      M_len: 83521
+      D: 31
+      L: 64
+      expectedHex: 02CC3A8897E6F4F6CCB6FD46631B1F5207B66C6DE9C7B55B2D1A23134A170AFDAC234EABA9A77CFF88C1F020B73724618C5687B362C430B248CD38647F848A1D
+    - label: ptn-17**5
+      pattern: ptn
+      M_len: 1419857
+      D: 31
+      L: 64
+      expectedHex: ADD53B06543E584B5823F626996AEE50FE45ED15F20243A7165485ACB4AA76B4FFDA75CEDF6D8CDC95C332BD56F4B986B58BB17D1778BFC1B1A97545CDF4EC9F
+    - label: ptn-17**6
+      pattern: ptn
+      M_len: 24137569
+      D: 31
+      L: 64
+      expectedHex: 9E11BC59C24E73993C1484EC66358EF71DB74AEFD84E123F7800BA9C4853E02CFE701D9E6BB765A304F0DC34A4EE3BA82C410F0DA70E86BFBD90EA877C2D6104
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-tags: [rfc, turboshake256, family]
+notes: Concrete expected outputs are bundled here so the active TurboSHAKE256 conformance cases are locally executable.
+tags: [rfc, turboshake256, concrete]

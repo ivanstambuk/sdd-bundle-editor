@@ -1,8 +1,8 @@
 id: VEC-rfc9861-turboshake128-core
 kind: TestVector
-title: RFC 9861 TurboSHAKE128 Core Families
-description: Aggregates the RFC 9861 TurboSHAKE128 empty, long-output, and patterned families defined for this profile.
-vectorKind: external-family
+title: RFC 9861 TurboSHAKE128 Core Cases
+description: Bundles the active RFC 9861 TurboSHAKE128 empty, long-output, and patterned cases with concrete expected outputs.
+vectorKind: concrete
 executionStatus: active
 artifactClass: contract
 lifecycleStatus: active
@@ -11,25 +11,64 @@ invokesOperationId: OP-turboshake128
 normativeReferenceId: RFC-9861
 parameterModelId: STRUCT-test-vector-parameters
 parameters:
-  families:
-    - empty:
-        M_len: 0
-        D: 31
-        L: 32
-    - empty-long:
-        M_len: 0
-        D: 31
-        L: 10032
-        outputSlice:
-          kind: last
-          bytes: 32
-    - patterned:
-        pattern: ptn
-        nValues: [17**0, 17**1, 17**2, 17**3, 17**4, 17**5, 17**6]
-        D: 31
-        L: 32
+  cases:
+    - label: empty
+      M_len: 0
+      D: 31
+      L: 32
+      expectedHex: 1E415F1C5983AFF2169217277D17BB538CD945A397DDEC541F1CE41AF2C1B74C
+    - label: empty-long-last32
+      M_len: 0
+      D: 31
+      L: 10032
+      outputSlice:
+        kind: last
+        bytes: 32
+      expectedHex: A3B9B0385900CE761F22AED548E754DA10A5242D62E8C658E3F3A923A7555607
+    - label: ptn-17**0
+      pattern: ptn
+      M_len: 1
+      D: 31
+      L: 32
+      expectedHex: 55CEDD6F60AF7BB29A4042AE832EF3F58DB7299F893EBB9247247D856958DAA9
+    - label: ptn-17**1
+      pattern: ptn
+      M_len: 17
+      D: 31
+      L: 32
+      expectedHex: 9C97D036A3BAC819DB70EDE0CA554EC6E4C2A1A4FFBFD9EC269CA6A111161233
+    - label: ptn-17**2
+      pattern: ptn
+      M_len: 289
+      D: 31
+      L: 32
+      expectedHex: 96C77C279E0126F7FC07C9B07F5CDAE1E0BE60BDBE10620040E75D7223A624D2
+    - label: ptn-17**3
+      pattern: ptn
+      M_len: 4913
+      D: 31
+      L: 32
+      expectedHex: D4976EB56BCF118520582B709F73E1D6853E001FDAF80E1B13E0D0599D5FB372
+    - label: ptn-17**4
+      pattern: ptn
+      M_len: 83521
+      D: 31
+      L: 32
+      expectedHex: DA67C7039E98BF530CF7A37830C6664E14CBAB7F540F58403B1B82951318EE5C
+    - label: ptn-17**5
+      pattern: ptn
+      M_len: 1419857
+      D: 31
+      L: 32
+      expectedHex: B97A906FBF83EF7C812517ABF3B2D0AEA0C4F60318CE11CF103925127F59EECD
+    - label: ptn-17**6
+      pattern: ptn
+      M_len: 24137569
+      D: 31
+      L: 32
+      expectedHex: 35CD494ADEDED2F25239AF09A7B8EF0C4D1CA4FE2D1AC370FA63216FE7B4C2B1
 expectedResult:
-  resolution: normative-reference
+  resolution: bundled-cases
   normativeSection: "RFC 9861 §5"
-notes: Canonical hex outputs are referenced from RFC 9861 rather than duplicated here.
-tags: [rfc, turboshake128, family]
+notes: Concrete expected outputs are bundled here so the active TurboSHAKE128 conformance cases are locally executable.
+tags: [rfc, turboshake128, concrete]

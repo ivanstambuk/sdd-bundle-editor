@@ -20,3 +20,6 @@ inputStructureIds:
   - STRUCT-length-encode-input
 outputStructureIds:
   - STRUCT-byte-string
+notes: |
+  `length_encode` remains first-class because the profile narrows its accepted
+  integer domain and relies on that guarantee in KT-related contracts.

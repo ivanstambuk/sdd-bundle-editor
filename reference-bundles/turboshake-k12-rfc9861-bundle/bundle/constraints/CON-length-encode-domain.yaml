@@ -21,3 +21,4 @@ appliesToOperationIds:
   - OP-kt256
 normativeReferenceIds:
   - RFC-9861
+rationale: Narrows `length_encode` to the same 64-bit execution domain used throughout the profile so KT contracts remain machine-executable without unbounded integer support.

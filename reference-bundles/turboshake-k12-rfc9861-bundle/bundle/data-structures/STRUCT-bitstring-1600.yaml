@@ -11,3 +11,10 @@ schemaDefinition:
   type: fixed-bitstring
   bits: 1600
   interpretation: keccak-lanes
+samplePayload: |
+  ```yaml
+  lane0: 0000000000000000
+  lane1: 0000000000000000
+  ...
+  lane24: 0000000000000000
+  ```

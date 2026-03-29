@@ -30,3 +30,7 @@ inputStructureIds:
 outputStructureIds:
   - STRUCT-result-type
   - STRUCT-byte-string
+notes: |
+  The context primitive is the profile's authoritative model for phase-sensitive
+  streaming behavior. One-shot TurboSHAKE contracts should agree with the output
+  obtained by `init`, `absorb`, `finalize`, and `squeeze`.

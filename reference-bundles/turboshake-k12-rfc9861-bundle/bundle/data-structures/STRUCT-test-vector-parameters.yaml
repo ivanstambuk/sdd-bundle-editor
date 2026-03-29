@@ -1,14 +1,90 @@
 id: STRUCT-test-vector-parameters
 kind: DataStructure
 title: Test Vector Parameters
-description: Parameter payload for RFC family vectors and concrete local vectors.
+description: Parameter payload for grouped RFC vectors, profile-level negative cases, and concrete local vectors.
 structureKind: test-vector-model
 formatType: object
 executionStatus: active
 artifactClass: support
 lifecycleStatus: active
 schemaDefinition:
-  properties:
-    primitive: string
-    parameters: object
-    expected: object
+  oneOf:
+    - variant: symbolic-families
+      required: [families]
+      properties:
+        families:
+          type: array
+          items: object
+          description: |
+            Symbolic RFC family definitions. Exponent forms such as `17**6` and
+            `41**3` denote exact byte lengths from the published vector tables,
+            and `pattern: ptn` refers to the RFC's repeating patterned-byte input.
+    - variant: grouped-cases
+      required: [cases]
+      properties:
+        cases:
+          type: array
+          items: object
+          description: Concrete call instances grouped into one external family or negative-test batch.
+    - variant: concrete-call
+      required: [L]
+      properties:
+        key:
+          type: object
+          description: HopMAC key descriptor, usually pattern-, hex-, or utf8-encoded.
+        message:
+          type: object
+          description: Message descriptor for concrete local vectors.
+        customization:
+          type: object
+          description: Customization descriptor for KT and HopMAC vectors.
+        M_hex:
+          type: string
+          description: Hex-encoded message bytes for direct RFC one-shot vectors.
+        D:
+          type: integer
+          minimum: 1
+          maximum: 255
+          description: TurboSHAKE domain byte.
+        L:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          description: Requested output length in bytes.
+samplePayload: |
+  Symbolic family shape:
+
+  ```yaml
+  families:
+    - patterned:
+        pattern: ptn
+        nValues: [17**0, 17**1, 17**2]
+        D: 31
+        L: 32
+  ```
+
+  Grouped case shape:
+
+  ```yaml
+  cases:
+    - M_hex: FFFFFF
+      D: 31
+      L: 64
+  ```
+
+  Concrete local shape:
+
+  ```yaml
+  key:
+    kind: pattern
+    pattern: ptn
+    length: 16
+  message:
+    kind: pattern
+    pattern: ptn
+    length: 32
+  customization:
+    kind: utf8
+    value: HopMAC128 local test
+  L: 32
+  ```

@@ -25,4 +25,8 @@ parameters:
   L: 32
 expectedResult:
   expectedTagHex: 62BAAD516C2A3B392532F8E7BEED74328BCD0782409DB7EEB772315E83DE4051
+notes: |
+  This is the confirmed local HopMAC128 reference fixture for the profile. It is
+  kept concrete so downstream tooling can exercise the named primitive without
+  consulting RFC family tables.
 tags: [hopmac128, local, canonical]

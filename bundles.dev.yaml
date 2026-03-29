@@ -1,4 +1,9 @@
 bundles:
+  - id: openfinance-bundle
+    path: ./reference-bundles/openfinance-bundle
+    tags: [openfinance, berlin-group, finance, published]
+    description: "Berlin Group openFinance V2 suite bundle."
+
   - id: sample
     path: ./reference-bundles/sdd-sample-bundle
     tags: [demo, sample]
@@ -13,8 +18,3 @@ bundles:
     path: ./reference-bundles/turboshake-k12-rfc9861-bundle
     tags: [crypto, turboshake, kangarootwelve, hopmac, rfc9861]
     description: "TurboSHAKE, KangarooTwelve, and HopMAC reference crypto-profile bundle."
-
-  - id: openfinance-bundle
-    path: ./reference-bundles/openfinance-bundle
-    tags: [openfinance, berlin-group, finance, published]
-    description: "Berlin Group openFinance V2 suite bundle."

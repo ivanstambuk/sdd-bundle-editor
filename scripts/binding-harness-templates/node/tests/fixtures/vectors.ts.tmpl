@@ -1,0 +1,31 @@
+/**
+ * Frozen normative conformance vectors derived directly from bundle TestVector entities.
+ * Do not edit by hand; regenerate from the harness.
+ */
+
+export type FrozenRuntimePolicy = Record<string, unknown>;
+export type FrozenValidationContext = Record<string, unknown>;
+
+export interface FrozenTestVector {
+  id: string;
+  title?: string;
+  description?: string;
+  invocationProfileId: string;
+  expectedEvaluatedProfileId?: string;
+  rawJwtInput?: string;
+  payloadJson?: string;
+  headerJson?: string;
+  runtimePolicy: FrozenRuntimePolicy;
+  validationContext: FrozenValidationContext;
+  expectedOutcomeClass: string;
+  expectedIsValid: boolean;
+  expectedKeySelectionStatus?: string;
+  expectedTrustDecision?: string;
+  expectedPrimaryErrorCodeId?: string;
+  expectedFailedRuleId?: string;
+  expectedTerminalStepId?: string;
+  expectsErrorCodeIds: string[];
+  usesMockKeyId?: string;
+}
+
+export const CONFORMANCE_VECTORS: FrozenTestVector[] = __NORMALIZED_VECTORS_JSON__;

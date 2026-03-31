@@ -1,0 +1,253 @@
+import { createHmac, createSign, generateKeyPairSync, type KeyObject } from "node:crypto";
+import { importJWK, SignJWT, base64url, type JWK, type JWTHeaderParameters } from "jose";
+
+import { FIXTURES } from "./fixtures/keysets.js";
+import type { FrozenTestVector } from "./fixtures/vectors.js";
+
+type JwksKey = JWK & Record<string, unknown>;
+type ProtectedHeader = JWTHeaderParameters & Record<string, unknown>;
+type DerivedWeakRsaFixture = {
+  publicJwk: JwksKey;
+  privateKey: KeyObject;
+};
+
+let derivedWeakRsaFixturePromise: Promise<DerivedWeakRsaFixture> | undefined;
+
+function cloneObject<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function defaultFixtureIdForVector(vector: FrozenTestVector): string {
+  return vector.usesMockKeyId ?? "MOCK-hs256-static-1";
+}
+
+function resolveFixtureKey(vector: FrozenTestVector): JwksKey {
+  const fixture = FIXTURES[defaultFixtureIdForVector(vector)];
+  if (!fixture?.jwks?.keys?.length) {
+    throw new Error(`No JWKS fixture available for ${vector.id}`);
+  }
+
+  const requestedHeader = vector.headerJson ? JSON.parse(vector.headerJson) as Record<string, unknown> : {};
+  const requestedAlg = typeof requestedHeader.alg === "string" ? requestedHeader.alg : undefined;
+  const requestedKid = typeof requestedHeader.kid === "string" ? requestedHeader.kid : undefined;
+
+  const exactKid = requestedKid
+    ? fixture.jwks.keys.find((candidate: Record<string, unknown>) => candidate && typeof candidate === "object" && candidate.kid === requestedKid)
+    : undefined;
+  if (exactKid && typeof exactKid === "object") {
+    return cloneObject(exactKid as JwksKey);
+  }
+
+  const exactAlg = requestedAlg
+    ? fixture.jwks.keys.find((candidate: Record<string, unknown>) => candidate && typeof candidate === "object" && candidate.alg === requestedAlg)
+    : undefined;
+  if (exactAlg && typeof exactAlg === "object") {
+    return cloneObject(exactAlg as JwksKey);
+  }
+
+  return cloneObject(fixture.jwks.keys[0] as JwksKey);
+}
+
+async function getDerivedWeakRsaFixture(): Promise<DerivedWeakRsaFixture> {
+  if (!derivedWeakRsaFixturePromise) {
+    derivedWeakRsaFixturePromise = (async () => {
+      const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+        modulusLength: 1024,
+        publicExponent: 0x10001,
+      });
+      const publicJwk = publicKey.export({ format: "jwk" }) as JwksKey;
+
+      return {
+        publicJwk: {
+          ...publicJwk,
+          alg: "RS256",
+          use: "sig",
+          kid: "rsa-weak-1",
+        },
+        privateKey,
+      };
+    })();
+  }
+
+  return derivedWeakRsaFixturePromise;
+}
+
+function inferBasePayload(vector: FrozenTestVector): Record<string, unknown> {
+  const runtimePolicy = vector.runtimePolicy ?? {};
+  const overlay = vector.payloadJson ? JSON.parse(vector.payloadJson) as Record<string, unknown> : undefined;
+  const omitsRequiredClaim = (claimName: string, policyValue: unknown): boolean =>
+    vector.expectedFailedRuleId === "RULE-REQUIRED-CLAIMS"
+    && policyValue !== undefined
+    && (!overlay || !Object.prototype.hasOwnProperty.call(overlay, claimName));
+  const payload: Record<string, unknown> = {
+    iat: 1516239022,
+    exp: 2500000000,
+  };
+
+  if (!omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
+    payload.sub = "1234567890";
+  }
+
+  if (typeof runtimePolicy.expectedIssuer === "string" && !omitsRequiredClaim("iss", runtimePolicy.expectedIssuer)) {
+    payload.iss = runtimePolicy.expectedIssuer;
+  }
+
+  if (typeof runtimePolicy.expectedSubject === "string" && !omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
+    payload.sub = runtimePolicy.expectedSubject;
+  }
+
+  if (typeof runtimePolicy.expectedAudience === "string" && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
+    payload.aud = runtimePolicy.expectedAudience;
+  }
+
+  if (Array.isArray(runtimePolicy.expectedAudience) && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
+    payload.aud = runtimePolicy.expectedAudience;
+  }
+
+  return payload;
+}
+
+function inferBaseHeader(vector: FrozenTestVector, key: JwksKey): Record<string, unknown> {
+  const alg = typeof key.alg === "string"
+    ? key.alg
+    : (typeof key.kty === "string" && key.kty === "RSA" ? "RS256" : "HS256");
+
+  const header: ProtectedHeader = {
+    alg,
+    typ: "JWT",
+  };
+
+  if (typeof key.kid === "string") {
+    header.kid = key.kid;
+  }
+
+  return header;
+}
+
+function mergePayload(vector: FrozenTestVector): Record<string, unknown> {
+  const basePayload = inferBasePayload(vector);
+  if (!vector.payloadJson) {
+    return basePayload;
+  }
+
+  const overlay = JSON.parse(vector.payloadJson) as Record<string, unknown>;
+  return {
+    ...basePayload,
+    ...overlay,
+  };
+}
+
+function mergeHeader(vector: FrozenTestVector, key: JwksKey): ProtectedHeader {
+  const baseHeader = inferBaseHeader(vector, key);
+  if (!vector.headerJson) {
+    return baseHeader;
+  }
+
+  const overlay = JSON.parse(vector.headerJson) as Record<string, unknown>;
+  return {
+    ...baseHeader,
+    ...overlay,
+  } as ProtectedHeader;
+}
+
+function encodeJsonSegment(jsonText: string): string {
+  return Buffer.from(jsonText, "utf8").toString("base64url");
+}
+
+function signHs256RawCompact(header: Record<string, unknown>, payloadJsonText: string, secretBase64Url: string): string {
+  const encodedHeader = encodeJsonSegment(JSON.stringify(header));
+  const encodedPayload = encodeJsonSegment(payloadJsonText);
+  const signingInput = `${encodedHeader}.${encodedPayload}`;
+  const secret = Buffer.from(secretBase64Url, "base64url");
+  const signature = createHmac("sha256", secret).update(signingInput).digest("base64url");
+  return `${signingInput}.${signature}`;
+}
+
+function signRs256RawCompact(header: Record<string, unknown>, payloadJsonText: string, privateKey: KeyObject): string {
+  const encodedHeader = encodeJsonSegment(JSON.stringify(header));
+  const encodedPayload = encodeJsonSegment(payloadJsonText);
+  const signingInput = `${encodedHeader}.${encodedPayload}`;
+  const signer = createSign("RSA-SHA256");
+  signer.update(signingInput);
+  signer.end();
+  const signature = signer.sign(privateKey).toString("base64url");
+  return `${signingInput}.${signature}`;
+}
+
+async function signStructuredToken(payload: Record<string, unknown>, header: ProtectedHeader, key: JwksKey): Promise<string> {
+  if (typeof key.kty !== "string") {
+    throw new Error("Fixture key is missing kty");
+  }
+
+  if (key.kty === "oct") {
+    const secret = base64url.decode(String(key.k));
+    return new SignJWT(payload)
+      .setProtectedHeader(header)
+      .sign(secret);
+  }
+
+  if (key.kty === "RSA" && typeof key.d === "string") {
+    const privateKey = await importJWK(key as unknown as JWK, String(key.alg ?? header.alg ?? "RS256"));
+    return new SignJWT(payload)
+      .setProtectedHeader(header)
+      .sign(privateKey);
+  }
+
+  throw new Error(`Fixture key for ${String(header.kid ?? "unknown-kid")} is not signable in the frozen test pack`);
+}
+
+export function resolveTrustedJwks(vector: FrozenTestVector): { keys: Array<Record<string, unknown>> } {
+  if (vector.id === "VEC-jwt-weak-key") {
+    throw new Error("Use resolveTrustedJwksAsync for VEC-jwt-weak-key.");
+  }
+
+  const fixture = FIXTURES[defaultFixtureIdForVector(vector)];
+  if (!fixture?.jwks?.keys?.length) {
+    return { keys: [] };
+  }
+
+  return cloneObject(fixture.jwks);
+}
+
+export async function resolveTrustedJwksAsync(vector: FrozenTestVector): Promise<{ keys: Array<Record<string, unknown>> }> {
+  if (vector.id === "VEC-jwt-weak-key") {
+    const weakFixture = await getDerivedWeakRsaFixture();
+    return {
+      keys: [cloneObject(weakFixture.publicJwk)],
+    };
+  }
+
+  return resolveTrustedJwks(vector);
+}
+
+export async function prepareToken(vector: FrozenTestVector): Promise<string> {
+  if (typeof vector.rawJwtInput === "string" && vector.rawJwtInput.length > 0) {
+    return vector.rawJwtInput;
+  }
+
+  if (vector.id === "VEC-jwt-malformed") {
+    return "not.a.jwt";
+  }
+
+  const key = resolveFixtureKey(vector);
+  const header = mergeHeader(vector, key);
+  const payload = mergePayload(vector);
+
+  if ((vector.id === "VEC-jwt-duplicate-keys" || vector.id === "VEC-jwt-unsupported-header-crit") && typeof key.k === "string") {
+    const payloadJsonText = vector.id === "VEC-jwt-duplicate-keys" && typeof vector.payloadJson === "string"
+      ? vector.payloadJson
+      : JSON.stringify(payload);
+    return signHs256RawCompact(header, payloadJsonText, key.k);
+  }
+
+  if (vector.id === "VEC-jwt-weak-key") {
+    const weakFixture = await getDerivedWeakRsaFixture();
+    return signRs256RawCompact({
+      ...header,
+      alg: "RS256",
+      kid: "rsa-weak-1",
+    }, JSON.stringify(payload), weakFixture.privateKey);
+  }
+
+  return signStructuredToken(payload, header, key);
+}

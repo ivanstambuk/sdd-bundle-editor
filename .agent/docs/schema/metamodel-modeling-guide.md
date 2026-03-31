@@ -236,6 +236,10 @@ Example default:
 - builder: `gemini-3-flash` class model
 - critic: `gemini-3-pro` class model
 
+Current harness default on this repo:
+- builder: `gemini-3-flash-preview`
+- critic: `gemini-3-pro-preview`
+
 Do not collapse both phases onto the same weaker model by default unless
 availability or budget requires it.
 

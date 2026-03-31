@@ -133,6 +133,7 @@ The critic model should be a separate pass from the builder.
 Default policy:
 - use a stronger reasoning model than the builder
 - prefer `gemini-3-pro` class models for semantic validation
+- current harness default uses the CLI-available identifier `gemini-3-pro-preview`
 - do not default the critic to the same model as the builder unless cost or availability forces it
 
 Inputs:

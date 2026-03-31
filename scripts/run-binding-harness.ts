@@ -87,9 +87,10 @@ type CriticReport = {
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, ".scratch", "binding-runs");
+const TEMPLATE_ROOT = path.join(REPO_ROOT, "scripts", "binding-harness-templates");
 const DEFAULT_PORT = 3001;
 const DEFAULT_MODEL = "gemini-3-flash-preview";
-const DEFAULT_CRITIC_MODEL = "gemini-3-pro";
+const DEFAULT_CRITIC_MODEL = "gemini-3-pro-preview";
 const DEFAULT_BUNDLE = "jwt";
 const DEFAULT_BINDING = "BIND-node-jose-library";
 const DEFAULT_OPERATION = "OP-validate-jwt";
@@ -613,7 +614,15 @@ function stableStringify(value: unknown): string {
     return JSON.stringify(value, null, 2);
 }
 
-function renderNodeFixtureModule(fixtures: Array<Record<string, unknown>>): string {
+async function renderTemplate(relativePath: string, replacements: Record<string, string> = {}): Promise<string> {
+    let template = await readUtf8(path.join(TEMPLATE_ROOT, relativePath));
+    for (const [token, value] of Object.entries(replacements)) {
+        template = template.split(token).join(value);
+    }
+    return template;
+}
+
+async function renderNodeFixtureModule(fixtures: Array<Record<string, unknown>>): Promise<string> {
     const fixtureMap: Record<string, unknown> = {};
 
     for (const fixture of fixtures) {
@@ -628,20 +637,9 @@ function renderNodeFixtureModule(fixtures: Array<Record<string, unknown>>): stri
         };
     }
 
-    return `/**
- * Frozen normative key fixtures derived directly from bundle MockKeySet entities.
- * Do not edit by hand; regenerate from the harness.
- */
-
-export type FrozenKeyFixture = {
-  id: string;
-  jwks?: {
-    keys: Array<Record<string, unknown>>;
-  };
-};
-
-export const FIXTURES: Record<string, FrozenKeyFixture> = ${stableStringify(fixtureMap)};
-`;
+    return renderTemplate("node/tests/fixtures/keysets.ts.tmpl", {
+        "__FIXTURE_MAP_JSON__": stableStringify(fixtureMap),
+    });
 }
 
 function normalizeVectorForFrozenPack(vector: Record<string, unknown>): Record<string, unknown> {
@@ -672,357 +670,21 @@ function normalizeVectorForFrozenPack(vector: Record<string, unknown>): Record<s
     };
 }
 
-function renderNodeVectorsModule(vectors: Array<Record<string, unknown>>): string {
+async function renderNodeVectorsModule(vectors: Array<Record<string, unknown>>): Promise<string> {
     const normalizedVectors = vectors.map(normalizeVectorForFrozenPack);
-
-    return `/**
- * Frozen normative conformance vectors derived directly from bundle TestVector entities.
- * Do not edit by hand; regenerate from the harness.
- */
-
-export type FrozenRuntimePolicy = Record<string, unknown>;
-export type FrozenValidationContext = Record<string, unknown>;
-
-export interface FrozenTestVector {
-  id: string;
-  title?: string;
-  description?: string;
-  invocationProfileId: string;
-  expectedEvaluatedProfileId?: string;
-  rawJwtInput?: string;
-  payloadJson?: string;
-  headerJson?: string;
-  runtimePolicy: FrozenRuntimePolicy;
-  validationContext: FrozenValidationContext;
-  expectedOutcomeClass: string;
-  expectedIsValid: boolean;
-  expectedKeySelectionStatus?: string;
-  expectedTrustDecision?: string;
-  expectedPrimaryErrorCodeId?: string;
-  expectedFailedRuleId?: string;
-  expectedTerminalStepId?: string;
-  expectsErrorCodeIds: string[];
-  usesMockKeyId?: string;
-}
-
-export const CONFORMANCE_VECTORS: FrozenTestVector[] = ${stableStringify(normalizedVectors)};
-`;
-}
-
-function renderNodeTestUtilsModule(): string {
-    return `import { createHmac, createSign, generateKeyPairSync, type KeyObject } from "node:crypto";
-import { importJWK, SignJWT, base64url, type JWK, type JWTHeaderParameters } from "jose";
-
-import { FIXTURES } from "./fixtures/keysets.js";
-import type { FrozenTestVector } from "./fixtures/vectors.js";
-
-type JwksKey = JWK & Record<string, unknown>;
-type ProtectedHeader = JWTHeaderParameters & Record<string, unknown>;
-type DerivedWeakRsaFixture = {
-  publicJwk: JwksKey;
-  privateKey: KeyObject;
-};
-
-let derivedWeakRsaFixturePromise: Promise<DerivedWeakRsaFixture> | undefined;
-
-function cloneObject<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
-
-function defaultFixtureIdForVector(vector: FrozenTestVector): string {
-  return vector.usesMockKeyId ?? "MOCK-hs256-static-1";
-}
-
-function resolveFixtureKey(vector: FrozenTestVector): JwksKey {
-  const fixture = FIXTURES[defaultFixtureIdForVector(vector)];
-  if (!fixture?.jwks?.keys?.length) {
-    throw new Error(\`No JWKS fixture available for \${vector.id}\`);
-  }
-
-  const requestedHeader = vector.headerJson ? JSON.parse(vector.headerJson) as Record<string, unknown> : {};
-  const requestedAlg = typeof requestedHeader.alg === "string" ? requestedHeader.alg : undefined;
-  const requestedKid = typeof requestedHeader.kid === "string" ? requestedHeader.kid : undefined;
-
-  const exactKid = requestedKid
-    ? fixture.jwks.keys.find((candidate: Record<string, unknown>) => candidate && typeof candidate === "object" && candidate.kid === requestedKid)
-    : undefined;
-  if (exactKid && typeof exactKid === "object") {
-    return cloneObject(exactKid as JwksKey);
-  }
-
-  const exactAlg = requestedAlg
-    ? fixture.jwks.keys.find((candidate: Record<string, unknown>) => candidate && typeof candidate === "object" && candidate.alg === requestedAlg)
-    : undefined;
-  if (exactAlg && typeof exactAlg === "object") {
-    return cloneObject(exactAlg as JwksKey);
-  }
-
-  return cloneObject(fixture.jwks.keys[0] as JwksKey);
-}
-
-async function getDerivedWeakRsaFixture(): Promise<DerivedWeakRsaFixture> {
-  if (!derivedWeakRsaFixturePromise) {
-    derivedWeakRsaFixturePromise = (async () => {
-      const { publicKey, privateKey } = generateKeyPairSync("rsa", {
-        modulusLength: 1024,
-        publicExponent: 0x10001,
-      });
-      const publicJwk = publicKey.export({ format: "jwk" }) as JwksKey;
-
-      return {
-        publicJwk: {
-          ...publicJwk,
-          alg: "RS256",
-          use: "sig",
-          kid: "rsa-weak-1",
-        },
-        privateKey,
-      };
-    })();
-  }
-
-  return derivedWeakRsaFixturePromise;
-}
-
-function inferBasePayload(vector: FrozenTestVector): Record<string, unknown> {
-  const runtimePolicy = vector.runtimePolicy ?? {};
-  const overlay = vector.payloadJson ? JSON.parse(vector.payloadJson) as Record<string, unknown> : undefined;
-  const omitsRequiredClaim = (claimName: string, policyValue: unknown): boolean =>
-    vector.expectedFailedRuleId === "RULE-REQUIRED-CLAIMS"
-    && policyValue !== undefined
-    && (!overlay || !Object.prototype.hasOwnProperty.call(overlay, claimName));
-  const payload: Record<string, unknown> = {
-    iat: 1516239022,
-    exp: 2500000000,
-  };
-
-  if (!omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
-    payload.sub = "1234567890";
-  }
-
-  if (typeof runtimePolicy.expectedIssuer === "string" && !omitsRequiredClaim("iss", runtimePolicy.expectedIssuer)) {
-    payload.iss = runtimePolicy.expectedIssuer;
-  }
-
-  if (typeof runtimePolicy.expectedSubject === "string" && !omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
-    payload.sub = runtimePolicy.expectedSubject;
-  }
-
-  if (typeof runtimePolicy.expectedAudience === "string" && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
-    payload.aud = runtimePolicy.expectedAudience;
-  }
-
-  if (Array.isArray(runtimePolicy.expectedAudience) && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
-    payload.aud = runtimePolicy.expectedAudience;
-  }
-
-  return payload;
-}
-
-function inferBaseHeader(vector: FrozenTestVector, key: JwksKey): Record<string, unknown> {
-  const alg = typeof key.alg === "string"
-    ? key.alg
-    : (typeof key.kty === "string" && key.kty === "RSA" ? "RS256" : "HS256");
-
-  const header: ProtectedHeader = {
-    alg,
-    typ: "JWT",
-  };
-
-  if (typeof key.kid === "string") {
-    header.kid = key.kid;
-  }
-
-  return header;
-}
-
-function mergePayload(vector: FrozenTestVector): Record<string, unknown> {
-  const basePayload = inferBasePayload(vector);
-  if (!vector.payloadJson) {
-    return basePayload;
-  }
-
-  const overlay = JSON.parse(vector.payloadJson) as Record<string, unknown>;
-  return {
-    ...basePayload,
-    ...overlay,
-  };
-}
-
-function mergeHeader(vector: FrozenTestVector, key: JwksKey): ProtectedHeader {
-  const baseHeader = inferBaseHeader(vector, key);
-  if (!vector.headerJson) {
-    return baseHeader;
-  }
-
-  const overlay = JSON.parse(vector.headerJson) as Record<string, unknown>;
-  return {
-    ...baseHeader,
-    ...overlay,
-  } as ProtectedHeader;
-}
-
-function encodeJsonSegment(jsonText: string): string {
-  return Buffer.from(jsonText, "utf8").toString("base64url");
-}
-
-function signHs256RawCompact(header: Record<string, unknown>, payloadJsonText: string, secretBase64Url: string): string {
-  const encodedHeader = encodeJsonSegment(JSON.stringify(header));
-  const encodedPayload = encodeJsonSegment(payloadJsonText);
-  const signingInput = \`\${encodedHeader}.\${encodedPayload}\`;
-  const secret = Buffer.from(secretBase64Url, "base64url");
-  const signature = createHmac("sha256", secret).update(signingInput).digest("base64url");
-  return \`\${signingInput}.\${signature}\`;
-}
-
-function signRs256RawCompact(header: Record<string, unknown>, payloadJsonText: string, privateKey: KeyObject): string {
-  const encodedHeader = encodeJsonSegment(JSON.stringify(header));
-  const encodedPayload = encodeJsonSegment(payloadJsonText);
-  const signingInput = \`\${encodedHeader}.\${encodedPayload}\`;
-  const signer = createSign("RSA-SHA256");
-  signer.update(signingInput);
-  signer.end();
-  const signature = signer.sign(privateKey).toString("base64url");
-  return \`\${signingInput}.\${signature}\`;
-}
-
-async function signStructuredToken(payload: Record<string, unknown>, header: ProtectedHeader, key: JwksKey): Promise<string> {
-  if (typeof key.kty !== "string") {
-    throw new Error("Fixture key is missing kty");
-  }
-
-  if (key.kty === "oct") {
-    const secret = base64url.decode(String(key.k));
-    return new SignJWT(payload)
-      .setProtectedHeader(header)
-      .sign(secret);
-  }
-
-  if (key.kty === "RSA" && typeof key.d === "string") {
-    const privateKey = await importJWK(key as unknown as JWK, String(key.alg ?? header.alg ?? "RS256"));
-    return new SignJWT(payload)
-      .setProtectedHeader(header)
-      .sign(privateKey);
-  }
-
-  throw new Error(\`Fixture key for \${String(header.kid ?? "unknown-kid")} is not signable in the frozen test pack\`);
-}
-
-export function resolveTrustedJwks(vector: FrozenTestVector): { keys: Array<Record<string, unknown>> } {
-  if (vector.id === "VEC-jwt-weak-key") {
-    throw new Error("Use resolveTrustedJwksAsync for VEC-jwt-weak-key.");
-  }
-
-  const fixture = FIXTURES[defaultFixtureIdForVector(vector)];
-  if (!fixture?.jwks?.keys?.length) {
-    return { keys: [] };
-  }
-
-  return cloneObject(fixture.jwks);
-}
-
-export async function resolveTrustedJwksAsync(vector: FrozenTestVector): Promise<{ keys: Array<Record<string, unknown>> }> {
-  if (vector.id === "VEC-jwt-weak-key") {
-    const weakFixture = await getDerivedWeakRsaFixture();
-    return {
-      keys: [cloneObject(weakFixture.publicJwk)],
-    };
-  }
-
-  return resolveTrustedJwks(vector);
-}
-
-export async function prepareToken(vector: FrozenTestVector): Promise<string> {
-  if (typeof vector.rawJwtInput === "string" && vector.rawJwtInput.length > 0) {
-    return vector.rawJwtInput;
-  }
-
-  if (vector.id === "VEC-jwt-malformed") {
-    return "not.a.jwt";
-  }
-
-  const key = resolveFixtureKey(vector);
-  const header = mergeHeader(vector, key);
-  const payload = mergePayload(vector);
-
-  if ((vector.id === "VEC-jwt-duplicate-keys" || vector.id === "VEC-jwt-unsupported-header-crit") && typeof key.k === "string") {
-    const payloadJsonText = vector.id === "VEC-jwt-duplicate-keys" && typeof vector.payloadJson === "string"
-      ? vector.payloadJson
-      : JSON.stringify(payload);
-    return signHs256RawCompact(header, payloadJsonText, key.k);
-  }
-
-  if (vector.id === "VEC-jwt-weak-key") {
-    const weakFixture = await getDerivedWeakRsaFixture();
-    return signRs256RawCompact({
-      ...header,
-      alg: "RS256",
-      kid: "rsa-weak-1",
-    }, JSON.stringify(payload), weakFixture.privateKey);
-  }
-
-  return signStructuredToken(payload, header, key);
-}
-`;
-}
-
-function renderNodeConformanceTestModule(suiteId: string): string {
-    return `import { describe, expect, test } from "vitest";
-
-import { validateJwt } from "../src/index.js";
-import { CONFORMANCE_VECTORS } from "./fixtures/vectors.js";
-import { prepareToken, resolveTrustedJwksAsync } from "./test-utils.js";
-
-describe("JWT Conformance Suite: ${suiteId}", () => {
-  for (const vector of CONFORMANCE_VECTORS) {
-    test(\`\${vector.id}: \${vector.title ?? "Untitled Vector"}\`, async () => {
-      const token = await prepareToken(vector);
-      const trustedJwks = await resolveTrustedJwksAsync(vector);
-
-      const result = await validateJwt({
-        token,
-        invocationProfileId: vector.invocationProfileId,
-        runtimePolicy: vector.runtimePolicy,
-        validationContext: {
-          ...vector.validationContext,
-          trustedJwks,
-        },
-      });
-
-      expect(result.isValid, \`Vector \${vector.id} isValid mismatch\`).toBe(vector.expectedIsValid);
-      expect(result.outcomeClass, \`Vector \${vector.id} outcomeClass mismatch\`).toBe(vector.expectedOutcomeClass);
-
-      if (vector.expectedEvaluatedProfileId) {
-        expect(result.evaluatedProfileId, \`Vector \${vector.id} evaluatedProfileId mismatch\`).toBe(vector.expectedEvaluatedProfileId);
-      }
-
-      if (vector.expectedKeySelectionStatus) {
-        expect(result.keySelectionStatus, \`Vector \${vector.id} keySelectionStatus mismatch\`).toBe(vector.expectedKeySelectionStatus);
-      }
-
-      if (vector.expectedTrustDecision) {
-        expect(result.trustDecision, \`Vector \${vector.id} trustDecision mismatch\`).toBe(vector.expectedTrustDecision);
-      }
-
-      if (vector.expectedPrimaryErrorCodeId) {
-        expect(result.primaryErrorCode, \`Vector \${vector.id} primaryErrorCode mismatch\`).toBe(vector.expectedPrimaryErrorCodeId);
-      }
-
-      if (vector.expectedFailedRuleId) {
-        expect(result.failedRuleId, \`Vector \${vector.id} failedRuleId mismatch\`).toBe(vector.expectedFailedRuleId);
-      }
-
-      if (vector.expectedTerminalStepId) {
-        expect(result.terminalStepId, \`Vector \${vector.id} terminalStepId mismatch\`).toBe(vector.expectedTerminalStepId);
-      }
-
-      for (const expectedErrorCode of vector.expectsErrorCodeIds) {
-        expect(result.errorCodes, \`Vector \${vector.id} missing errorCode \${expectedErrorCode}\`).toContain(expectedErrorCode);
-      }
+    return renderTemplate("node/tests/fixtures/vectors.ts.tmpl", {
+        "__NORMALIZED_VECTORS_JSON__": stableStringify(normalizedVectors),
     });
-  }
-});
-`;
+}
+
+async function renderNodeTestUtilsModule(): Promise<string> {
+    return renderTemplate("node/tests/test-utils.ts.tmpl");
+}
+
+async function renderNodeConformanceTestModule(suiteId: string): Promise<string> {
+    return renderTemplate("node/tests/conformance.test.ts.tmpl", {
+        "__SUITE_ID_JSON__": JSON.stringify(suiteId),
+    });
 }
 
 async function tryMaterializeDeterministicFrozenTests(params: {
@@ -1093,19 +755,19 @@ async function tryMaterializeDeterministicFrozenTests(params: {
     const files = [
         {
             path: path.join(params.generatedDir, "tests", "fixtures", "keysets.ts"),
-            content: renderNodeFixtureModule(orderedFixtures),
+            content: await renderNodeFixtureModule(orderedFixtures),
         },
         {
             path: path.join(params.generatedDir, "tests", "fixtures", "vectors.ts"),
-            content: renderNodeVectorsModule(orderedVectors),
+            content: await renderNodeVectorsModule(orderedVectors),
         },
         {
             path: path.join(params.generatedDir, "tests", "test-utils.ts"),
-            content: renderNodeTestUtilsModule(),
+            content: await renderNodeTestUtilsModule(),
         },
         {
             path: path.join(params.generatedDir, "tests", "conformance.test.ts"),
-            content: renderNodeConformanceTestModule(params.suiteId),
+            content: await renderNodeConformanceTestModule(params.suiteId),
         },
     ];
 

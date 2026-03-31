@@ -709,25 +709,33 @@ async function getDerivedWeakRsaFixture(): Promise<DerivedWeakRsaFixture> {
 
 function inferBasePayload(vector: FrozenTestVector): Record<string, unknown> {
   const runtimePolicy = vector.runtimePolicy ?? {};
+  const overlay = vector.payloadJson ? JSON.parse(vector.payloadJson) as Record<string, unknown> : undefined;
+  const omitsRequiredClaim = (claimName: string, policyValue: unknown): boolean =>
+    vector.expectedFailedRuleId === "RULE-REQUIRED-CLAIMS"
+    && policyValue !== undefined
+    && (!overlay || !Object.prototype.hasOwnProperty.call(overlay, claimName));
   const payload: Record<string, unknown> = {
-    sub: "1234567890",
     iat: 1516239022,
     exp: 2500000000,
   };
 
-  if (typeof runtimePolicy.expectedIssuer === "string" && vector.id !== "VEC-jwt-missing-issuer-required-by-policy") {
+  if (!omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
+    payload.sub = "1234567890";
+  }
+
+  if (typeof runtimePolicy.expectedIssuer === "string" && !omitsRequiredClaim("iss", runtimePolicy.expectedIssuer)) {
     payload.iss = runtimePolicy.expectedIssuer;
   }
 
-  if (typeof runtimePolicy.expectedSubject === "string" && vector.id !== "VEC-jwt-missing-sub") {
+  if (typeof runtimePolicy.expectedSubject === "string" && !omitsRequiredClaim("sub", runtimePolicy.expectedSubject)) {
     payload.sub = runtimePolicy.expectedSubject;
   }
 
-  if (typeof runtimePolicy.expectedAudience === "string" && vector.id !== "VEC-jwt-missing-audience-required-by-policy") {
+  if (typeof runtimePolicy.expectedAudience === "string" && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
     payload.aud = runtimePolicy.expectedAudience;
   }
 
-  if (Array.isArray(runtimePolicy.expectedAudience) && vector.id !== "VEC-jwt-missing-audience-required-by-policy") {
+  if (Array.isArray(runtimePolicy.expectedAudience) && !omitsRequiredClaim("aud", runtimePolicy.expectedAudience)) {
     payload.aud = runtimePolicy.expectedAudience;
   }
 

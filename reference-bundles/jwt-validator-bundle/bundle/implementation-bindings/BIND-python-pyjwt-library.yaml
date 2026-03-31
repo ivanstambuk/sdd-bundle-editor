@@ -38,3 +38,7 @@ constraintIds:
   - BCON-runnable-generated-commands
 platformNotes: |
   Keep the public API small and test-oriented. Avoid web-framework assumptions.
+implementationHints:
+  - Keep the pilot package layout minimal and source-oriented, for example `src/validator.py` plus a small `src/types.py` companion when needed.
+  - The frozen Python conformance pack expects pytest-compatible tests and importable modules from `src/`.
+  - Provide a deterministic install path for the harness, preferably through `requirements.txt`.

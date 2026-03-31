@@ -33,6 +33,7 @@ Please keep the structure and internal dependencies consistent with what is alre
 | **Testing Guide** | [.agent/docs/testing/testing-guide.md](.agent/docs/testing/testing-guide.md) |
 | **Common Pitfalls** | [.agent/docs/pitfalls/common-pitfalls.md](.agent/docs/pitfalls/common-pitfalls.md) |
 | **MCP Tool Patterns** | [.agent/snippets/mcp-patterns.md](.agent/snippets/mcp-patterns.md) |
+| **OpenCode Diagnostics** | [.agent/snippets/opencode-diagnostics.md](.agent/snippets/opencode-diagnostics.md) |
 
 ---
 

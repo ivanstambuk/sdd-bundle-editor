@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from validator import validate_jwt  # type: ignore
+from tests.fixtures.vectors import CONFORMANCE_VECTORS
+from tests.test_utils import prepare_token, resolve_trusted_jwks
+
+SUITE_ID = __SUITE_ID_JSON__
+
+
+def test_suite_identifier_is_present() -> None:
+    assert SUITE_ID
+
+
+def test_conformance_vectors() -> None:
+    for vector in CONFORMANCE_VECTORS:
+        token = prepare_token(vector)
+        trusted_jwks = resolve_trusted_jwks(vector)
+
+        result = validate_jwt(
+            {
+                "token": token,
+                "invocationProfileId": vector["invocationProfileId"],
+                "runtimePolicy": vector.get("runtimePolicy", {}),
+                "validationContext": {
+                    **vector.get("validationContext", {}),
+                    "trustedJwks": trusted_jwks,
+                },
+            }
+        )
+
+        assert result["isValid"] == vector["expectedIsValid"], f"Vector {vector['id']} isValid mismatch"
+        assert result["outcomeClass"] == vector["expectedOutcomeClass"], f"Vector {vector['id']} outcomeClass mismatch"
+        assert result.get("primaryErrorCode") == vector.get("expectedPrimaryErrorCodeId"), f"Vector {vector['id']} primaryErrorCode mismatch"
+        assert result.get("failedRuleId") == vector.get("expectedFailedRuleId"), f"Vector {vector['id']} failedRuleId mismatch"
+        assert result.get("terminalStepId") == vector.get("expectedTerminalStepId"), f"Vector {vector['id']} terminalStepId mismatch"
+
+        if vector.get("expectedEvaluatedProfileId"):
+            assert result.get("evaluatedProfileId") == vector["expectedEvaluatedProfileId"], f"Vector {vector['id']} evaluatedProfileId mismatch"
+
+        assert result["keySelectionStatus"] == vector["expectedKeySelectionStatus"], f"Vector {vector['id']} keySelectionStatus mismatch"
+        assert result["trustDecision"] == vector["expectedTrustDecision"], f"Vector {vector['id']} trustDecision mismatch"
+        assert sorted(result.get("errorCodes", [])) == sorted(vector.get("expectsErrorCodeIds", [])), f"Vector {vector['id']} errorCodes mismatch"

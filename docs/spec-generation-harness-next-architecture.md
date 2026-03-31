@@ -4,6 +4,8 @@ Status: Proposed
 Parent documents:
 - [docs/spec-driven-implementation-bindings.md](./spec-driven-implementation-bindings.md)
 - [docs/spec-driven-implementation-bindings-phase-0.md](./spec-driven-implementation-bindings-phase-0.md)
+- [docs/spec-generation-harness-flow.md](./spec-generation-harness-flow.md)
+- [docs/opencode-builder-setup.md](./opencode-builder-setup.md)
 
 ## Purpose
 
@@ -32,6 +34,20 @@ Instead:
 - a fast builder model implements
 - a stronger critic model validates semantically
 - the harness orchestrates and records evidence
+
+The practical implication is:
+- MCP is primarily needed for **resolution**
+- the builder is primarily responsible for **implementation**
+
+If the harness has already materialized the resolved implementation packet, conformance packet, validation packet, and frozen tests, then the builder often does not need live MCP access anymore.
+
+That is not a loss of domain fidelity.
+It is a shift from:
+- live domain lookup during implementation
+to:
+- packet-driven implementation from frozen local artifacts
+
+This separation is desirable when it keeps the builder focused on writing code instead of re-exploring the same domain context.
 
 ## Problem Statement
 
@@ -63,7 +79,7 @@ That is acceptable for a pilot but wrong as a long-term architecture because:
 1. Harness requests a resolved implementation packet from MCP.
 2. Harness requests a resolved conformance packet from MCP.
 3. Harness writes those packets to the run workspace as immutable inputs.
-4. Builder model generates or repairs implementation artifacts.
+4. Builder model generates or repairs implementation artifacts from those frozen inputs.
 5. Harness runs deterministic commands such as install, build, and test.
 6. Critic model reviews generated code, frozen packets, and command outputs.
 7. Harness aggregates machine results plus critic findings into one final report.
@@ -134,6 +150,10 @@ Default policy:
 - use a stronger reasoning model than the builder
 - prefer `gemini-3-pro` class models for semantic validation
 - current harness default uses the CLI-available identifier `gemini-3-pro-preview`
+- support pluggable critic backends so the harness can switch between provider CLIs without changing bundle or MCP semantics
+- support a `critic-only` mode so an existing run directory can be re-evaluated without paying for regeneration again
+- when the critic backend supports structured output, enforce the verdict shape at the CLI layer rather than relying on prose-only instructions
+- if a critic session explores but does not finish, prefer bounded resume prompts over restarting from scratch
 - do not default the critic to the same model as the builder unless cost or availability forces it
 
 Inputs:
@@ -157,6 +177,50 @@ The critic should look for things like:
 - DTO drift
 - vectors that are technically present but semantically misrepresented
 
+Operational note:
+- stronger critics may require tighter review prompts than builders
+- if a critic spends too long spelunking artifacts, tighten the critic brief and packet set before adding more harness-specific logic
+- a practical bounded pattern is:
+  1. first pass with enforced output schema and a shallow packet-only review
+  2. if machine evidence is green and the shallow critic finds no concrete anomaly, stop there
+  3. only escalate to deep review when machine evidence or shallow findings justify it
+  4. if no final verdict appears, resume the same session with a short "finish now" prompt
+  5. cap retries and then mark the critic inconclusive
+
+Do not solve green-run critic stalls by just giving the critic more time.
+Prefer:
+- narrower evidence scope
+- bounded file-inspection budgets
+- shallow-then-deep escalation
+
+## OpenCode Builder Checkpoint
+
+The harness now supports:
+- pluggable builder backends
+- an OpenCode builder backend
+- a stricter OpenCode `packet-only` builder profile
+ - a GLM-specific `glm-strict` builder profile
+ - builder observability artifacts
+
+Current proven results with the binding harness using OpenCode with GLM-5 Turbo as builder and GPT-5.2 as critic:
+- Python JWT pilot:
+  - `glm-strict` completed a full `self-verify` run successfully
+  - install, build, tests, semantic audit, and critic all passed
+  - [report.json](/home/ivan/dev/sdd-bundle-editor/.scratch/binding-runs/2026-03-31T17-01-17-613Z-BIND-python-pyjwt-library/report.json)
+- Node JWT pilot:
+  - `glm-strict` completed a full `self-verify` run successfully
+  - frozen-test integrity, `pnpm install`, `pnpm build`, `pnpm test`, semantic audit, and critic all passed
+  - [report.json](/home/ivan/dev/sdd-bundle-editor/.scratch/binding-runs/2026-03-31T18-46-52-952Z-BIND-node-jose-library/report.json)
+
+That means the OpenCode/LiteLLM path is no longer just an experiment in harness wiring.
+It is now a validated execution path for multiple runtime-specific bindings.
+- session resume for finalization
+
+Over:
+- unbounded exploration
+- hour-long critic runs by default
+- broad workspace spelunking on already-green audits
+
 ## Generic Mechanical Guardrails
 
 These should remain deterministic and generic:
@@ -169,6 +233,150 @@ These should remain deterministic and generic:
 - semantic report storage
 
 These checks are allowed because they are not domain-specific.
+
+## Current Checkpoint
+
+The current JWT Node.js pilot has already proven the basic workflow:
+- bundle-defined binding prompts are served through MCP
+- the harness can run both `generate-only` and `self-verify`
+- a fresh Node.js pilot run can pass machine audit and semantic audit
+- critic-only replay now works with a bounded shallow-first Codex critic flow
+- deterministic frozen packs are now selected through manifest-declared compatibility metadata instead of one exact runtime triple
+
+That means the workflow is viable.
+
+The remaining work is no longer “can this work at all?”
+It is now mostly:
+- generalization
+- cleanup
+- second-runtime verification
+
+## Next Steps
+
+This section is the explicit handoff of the remaining work that has been discussed so far.
+
+### A. Finish Harness Generalization
+
+Goal:
+- keep the harness generic and evidence-oriented
+- remove remaining JS/TS-shaped assumptions where they are not truly generic
+
+Concrete work:
+- replace language-specific check names such as `typescript-typecheck` with more runtime-neutral names
+- prefer runtime-profile build commands for outer static/build validation, with TypeScript compiler checks only as a fallback
+- continue reducing JS/TS-shaped artifact-priority assumptions in critic workspace snapshot selection
+- derive more audit and critic-selection behavior from runtime profile, output contract, and validation packet data
+- continue shrinking pilot-specific template assumptions under `scripts/binding-harness-templates/*`
+- prefer declarative frozen-pack compatibility metadata such as package manager, runtime language, toolchain, and tags over one exact runtime-name convention
+- prefer manifest-declared frozen-pack directories and file outputs over hardcoded harness directory creation
+- prefer manifest-declared replacement keys over hardcoded replacement enums in harness code
+- prefer manifest-declared fixture/vector projection rules over hardcoded frozen-context shaping in harness code
+- prefer manifest-declared named context entries over harness-owned literal context keys like `fixtureMap` or `suiteId`
+- prefer pack-local template references over manifest paths that know the global harness template tree
+- allow small frozen-pack artifacts to live as inline templates in the manifest instead of requiring separate `.tmpl` files
+
+Why this matters:
+- the Node.js pilot is green, but the harness still reflects its first successful runtime family
+- a second runtime will be harder than necessary until this bias is reduced
+
+### B. Verify A Second Runtime
+
+Goal:
+- prove the architecture is not just a successful Node.js special case
+
+Recommended second runtime:
+- Python
+
+Concrete work:
+- add or tighten the Python binding profile
+- run the same harness pattern end to end for Python
+- verify:
+  - generation
+  - frozen-test workflow
+  - machine audit
+  - semantic audit
+  - critic replay
+
+Why Python:
+- already modeled as a high-priority family
+- different enough from Node.js to expose harness assumptions
+- still common enough to be a strong validation target
+
+Current checkpoint:
+- the harness can now materialize a deterministic Python frozen test pack for `BIND-python-pyjwt-library`
+- runtime command policy now supports `pip`
+- a fully automated Python `self-verify` run now exits cleanly end to end with:
+  - dependency install via `pip`
+  - `python -m compileall src`
+  - `pytest`
+  - passing semantic audit
+  - passing Codex critic verdict
+- the harness now has two generic long-run completion paths:
+  - builder quiescence handoff once real non-test artifacts exist and the builder goes quiet
+  - structured critic early-complete once a schema-valid verdict file has been written
+- default harness runs now resolve implementation and conformance packets through MCP packet types instead of calling prompt endpoints directly
+- a fresh-port non-green Python run proved the packet-tool path is live and that the shallow-first critic now fails correctly on concrete harness evidence
+- critic workspace snapshots now ignore common cache/build artifacts and prioritize runtime-relevant manifests plus source/test/docs more generically
+
+### C. Move From Prompt Names To Packet-Type Resolution
+
+Goal:
+- reduce harness awareness of runtime MCP prompt endpoint names
+
+Current state:
+- default harness runs now resolve `implementation` and `conformance` packets through MCP
+- legacy prompt-name overrides still exist for explicit fallback and debugging
+- run artifacts now keep raw prompt bodies under `prompt/` while packets store summaries and file references
+
+Target state:
+- the harness asks MCP for generic packet types such as:
+  - implementation packet
+  - conformance packet
+  - validation packet
+  - traceability packet
+
+Concrete work:
+- continue moving prompt-name selection behind MCP
+- keep packet contents summary-oriented and avoid duplicating raw prompt bodies outside the `prompt/` artifact area
+- keep prompt templates and prompt entities as MCP internals rather than harness concerns
+
+Why this matters:
+- it reduces prompt-serving leakage into the harness
+- it makes the harness simpler and more metamodel-agnostic
+
+### D. Continue Tightening The Critic Pattern
+
+Goal:
+- keep the critic bounded, structured, and useful
+
+Already done:
+- structured output
+- bounded resume loop
+- shallow-first critic flow
+- critic-only replay mode
+
+Remaining work:
+- make sure the deep critic path stays bounded and anomaly-driven
+- consider whether multiple critic backends should share one common report normalization layer
+
+Why this matters:
+- a critic that wanders is expensive and hard to trust
+- a critic that is too shallow may miss real semantic drift
+
+### E. Remove Remaining Transitional Pilot Seams
+
+Goal:
+- separate “working pilot” code from “target architecture” code
+
+Examples of transitional seams:
+- current packet contents still persist large resolved prompt responses
+- critic workspace snapshot is still partly driven by current project-shape assumptions
+- some conformance-generation behavior is still closer to the pilot path than the target packet-only path
+
+This work should be done carefully:
+- keep the working Node pilot path green
+- remove one seam at a time
+- validate after each slice
 
 ## Refactor Plan For The Current Harness
 
@@ -193,6 +401,8 @@ These should remain, but only as generic orchestration or evidence plumbing:
 | Current function or block | How to generalize |
 |---|---|
 | `runGeminiPhase()` | Rename conceptually to generic builder-model phase runner |
+| critic backend selection | Keep as generic provider/runtime selection, not bundle logic |
+| `critic-only` reuse path | Keep as generic evidence replay over an existing run directory |
 | `runAuditCommand()` | Keep as generic command executor |
 | audit report writing | Keep as generic evidence emission |
 | frozen manifest hashing and verification | Keep as generic immutable-input guard |

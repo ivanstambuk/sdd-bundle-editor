@@ -17,8 +17,12 @@ moduleSystem: package
 supportsAsync: false
 distributionFormats:
   - source
-recommendedBuildCommand: python -m build
+recommendedBuildCommand: python -m compileall src
 recommendedTestCommand: pytest
 platformNotes: |
   Prefer a small package layout with explicit type hints where practical. Keep
   the public API simple and avoid web-framework assumptions.
+implementationHints:
+  - If the generated workspace uses a source layout under `src/`, keep pytest imports working without relying on editable-install magic alone.
+  - For the pilot, include a plain `requirements.txt` or an equivalent install path that the harness can execute deterministically.
+  - Prefer a lightweight static build check such as `python -m compileall src` over packaging-focused build steps that require extra global tooling.

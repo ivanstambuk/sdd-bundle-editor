@@ -1,0 +1,112 @@
+{
+  "packId": "node-typescript-frozen-pack-v1",
+  "description": "Frozen conformance pack for Node.js library bindings that emit TypeScript or JavaScript tests.",
+  "priority": 20,
+  "match": {
+    "bindingLanguages": ["typescript", "javascript"],
+    "runtimeNames": ["node"],
+    "runtimeLanguages": ["typescript", "javascript"],
+    "packageManagers": ["pnpm", "npm", "yarn"],
+    "tagsAny": ["node", "typescript", "javascript"]
+  },
+  "context": {
+    "entries": [
+      {
+        "name": "jwtFixtureMap",
+        "kind": "fixtureMap",
+        "mapSpec": {
+          "idField": "id",
+          "fields": ["id", "jwks"]
+        }
+      },
+      {
+        "name": "conformanceVectors",
+        "kind": "normalizedVectors",
+        "listSpec": {
+          "fields": [
+            "id",
+            "title",
+            "description",
+            "invocationProfileId",
+            "expectedEvaluatedProfileId",
+            "rawJwtInput",
+            "payloadJson",
+            "headerJson",
+            "runtimePolicy",
+            "validationContext",
+            "expectedOutcomeClass",
+            "expectedKeySelectionStatus",
+            "expectedTrustDecision",
+            "expectedPrimaryErrorCodeId",
+            "expectedFailedRuleId",
+            "expectedTerminalStepId",
+            "expectsErrorCodeIds",
+            "usesMockKeyId"
+          ],
+          "defaults": {
+            "runtimePolicy": {},
+            "validationContext": {},
+            "expectsErrorCodeIds": []
+          },
+          "derived": [
+            {
+              "field": "expectedIsValid",
+              "op": "equals",
+              "sourceField": "expectedOutcomeClass",
+              "value": "accepted",
+              "whenTrue": true,
+              "whenFalse": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "selectedSuiteId",
+        "kind": "suiteId"
+      }
+    ]
+  },
+  "directories": [
+    "tests",
+    "tests/fixtures"
+  ],
+  "files": [
+    {
+      "path": "tests/fixtures/keysets.ts",
+      "template": "tests/fixtures/keysets.ts.tmpl",
+      "replacements": [
+        {
+          "token": "__FIXTURE_MAP_JSON__",
+          "source": "jwtFixtureMap",
+          "stringify": "pretty-js-literal"
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/vectors.ts",
+      "template": "tests/fixtures/vectors.ts.tmpl",
+      "replacements": [
+        {
+          "token": "__NORMALIZED_VECTORS_JSON__",
+          "source": "conformanceVectors",
+          "stringify": "pretty-js-literal"
+        }
+      ]
+    },
+    {
+      "path": "tests/test-utils.ts",
+      "template": "tests/test-utils.ts.tmpl"
+    },
+    {
+      "path": "tests/conformance.test.ts",
+      "template": "tests/conformance.test.ts.tmpl",
+      "replacements": [
+        {
+          "token": "__SUITE_ID_JSON__",
+          "source": "selectedSuiteId",
+          "stringify": "json-string"
+        }
+      ]
+    }
+  ]
+}

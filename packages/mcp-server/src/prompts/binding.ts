@@ -15,6 +15,9 @@ import { completableRequiredBundleId } from "./completion-helpers.js";
 import { PromptContext } from "./types.js";
 
 type EntityData = Record<string, unknown>;
+type BindingPacketType = "implementation" | "conformance";
+
+type BindingPacketResolverContext = Pick<PromptContext, "bundles" | "getBundle" | "getBundleIds">;
 
 interface PromptArgumentData {
     name: string;
@@ -49,6 +52,20 @@ interface ResolvedEntity {
     entityType: string;
     id: string;
     data: EntityData;
+}
+
+interface ResolvedBindingPacket {
+    kind: "implementation-packet" | "conformance-packet";
+    packetType: BindingPacketType;
+    bundleId: string;
+    promptName: string;
+    promptRole: string;
+    templateId: string;
+    arguments: Record<string, unknown>;
+    messages: Array<{
+        role: string;
+        content: { type: "text"; text: string };
+    }>;
 }
 
 /**
@@ -99,6 +116,62 @@ export function registerBindingPrompts(ctx: PromptContext): void {
     }
 }
 
+export function resolveBindingPacket(
+    ctx: BindingPacketResolverContext,
+    args: {
+        bundleId?: string;
+        packetType: BindingPacketType;
+        bindingId: string;
+        operationId?: string;
+        suiteId?: string;
+        artifactMode?: string;
+        promptName?: string;
+    }
+): ResolvedBindingPacket {
+    const loaded = ctx.getBundle(args.bundleId);
+    if (!loaded) {
+        const bundleSuffix = args.bundleId
+            ? `: ${args.bundleId}`
+            : `. Available bundles: ${ctx.getBundleIds().join(", ")}`;
+        throw new Error(`Bundle not found${bundleSuffix}`);
+    }
+
+    const template = selectTemplateForPacket(loaded, args.packetType, args.promptName);
+    if (!template) {
+        const selector = args.promptName ? `prompt ${args.promptName}` : `${args.packetType} packet`;
+        throw new Error(`No binding prompt template found for ${selector} in bundle ${loaded.id}`);
+    }
+
+    const invocationArgs: Record<string, unknown> = {
+        bundleId: loaded.id,
+        bindingId: args.bindingId,
+    };
+    if (typeof args.operationId === "string") {
+        invocationArgs.operationId = args.operationId;
+    }
+    if (typeof args.suiteId === "string") {
+        invocationArgs.suiteId = args.suiteId;
+    }
+    if (typeof args.artifactMode === "string") {
+        invocationArgs.artifactMode = args.artifactMode;
+    }
+
+    const text = buildPromptContent(loaded, template, invocationArgs);
+    return {
+        kind: args.packetType === "implementation" ? "implementation-packet" : "conformance-packet",
+        packetType: args.packetType,
+        bundleId: loaded.id,
+        promptName: template.mcpPromptName,
+        promptRole: template.promptRole,
+        templateId: template.id,
+        arguments: invocationArgs,
+        messages: [{
+            role: "user",
+            content: { type: "text", text },
+        }],
+    };
+}
+
 function discoverBindingPromptTemplates(ctx: PromptContext): Map<string, DiscoveredPromptTemplate> {
     const prompts = new Map<string, DiscoveredPromptTemplate>();
 
@@ -140,6 +213,23 @@ function resolveTemplateForInvocation(
         return discovered;
     }
     return discovered;
+}
+
+function selectTemplateForPacket(
+    loaded: LoadedBundle,
+    packetType: BindingPacketType,
+    promptName?: string
+): BindingPromptTemplateData | undefined {
+    const templates = Array.from(loaded.bundle.entities.get("BindingPromptTemplate")?.values() ?? [])
+        .map((entity) => entity.data as BindingPromptTemplateData)
+        .sort((a, b) => a.id.localeCompare(b.id));
+
+    if (promptName) {
+        return templates.find((template) => template.mcpPromptName === promptName);
+    }
+
+    const expectedRole = packetType === "implementation" ? "implement-binding" : "generate-binding-tests";
+    return templates.find((template) => template.promptRole === expectedRole);
 }
 
 function buildArgsSchema(ctx: PromptContext, discovered: DiscoveredPromptTemplate): ZodRawShapeCompat {

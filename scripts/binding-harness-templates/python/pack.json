@@ -1,0 +1,120 @@
+{
+  "packId": "python-frozen-pack-v1",
+  "description": "Frozen conformance pack for Python library bindings using a standard package and pytest-style tests.",
+  "priority": 20,
+  "match": {
+    "bindingLanguages": ["python"],
+    "runtimeNames": ["python"],
+    "runtimeLanguages": ["python"],
+    "packageManagers": ["pip", "uv", "poetry"],
+    "tagsAny": ["python"]
+  },
+  "context": {
+    "entries": [
+      {
+        "name": "jwtFixtureMap",
+        "kind": "fixtureMap",
+        "mapSpec": {
+          "idField": "id",
+          "fields": ["id", "jwks"]
+        }
+      },
+      {
+        "name": "conformanceVectors",
+        "kind": "normalizedVectors",
+        "listSpec": {
+          "fields": [
+            "id",
+            "title",
+            "description",
+            "invocationProfileId",
+            "expectedEvaluatedProfileId",
+            "rawJwtInput",
+            "payloadJson",
+            "headerJson",
+            "runtimePolicy",
+            "validationContext",
+            "expectedOutcomeClass",
+            "expectedKeySelectionStatus",
+            "expectedTrustDecision",
+            "expectedPrimaryErrorCodeId",
+            "expectedFailedRuleId",
+            "expectedTerminalStepId",
+            "expectsErrorCodeIds",
+            "usesMockKeyId"
+          ],
+          "defaults": {
+            "runtimePolicy": {},
+            "validationContext": {},
+            "expectsErrorCodeIds": []
+          },
+          "derived": [
+            {
+              "field": "expectedIsValid",
+              "op": "equals",
+              "sourceField": "expectedOutcomeClass",
+              "value": "accepted",
+              "whenTrue": true,
+              "whenFalse": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "selectedSuiteId",
+        "kind": "suiteId"
+      }
+    ]
+  },
+  "directories": [
+    "tests",
+    "tests/fixtures"
+  ],
+  "files": [
+    {
+      "path": "tests/__init__.py",
+      "literalContent": ""
+    },
+    {
+      "path": "tests/fixtures/__init__.py",
+      "literalContent": ""
+    },
+    {
+      "path": "tests/fixtures/keysets.py",
+      "template": "tests/fixtures/keysets.py.tmpl",
+      "replacements": [
+        {
+          "token": "__FIXTURE_MAP_JSON__",
+          "source": "jwtFixtureMap",
+          "stringify": "json-string"
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/vectors.py",
+      "inlineTemplate": "\"\"\"\nFrozen normative conformance vectors derived directly from bundle TestVector entities.\nDo not edit by hand; regenerate from the harness.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom typing import Any\n\nCONFORMANCE_VECTORS: list[dict[str, Any]] = json.loads(r'''__NORMALIZED_VECTORS_JSON__''')\n",
+      "replacements": [
+        {
+          "token": "__NORMALIZED_VECTORS_JSON__",
+          "source": "conformanceVectors",
+          "stringify": "json-string"
+        }
+      ]
+    },
+    {
+      "path": "tests/test_utils.py",
+      "template": "tests/test_utils.py.tmpl"
+    },
+    {
+      "path": "tests/test_conformance.py",
+      "template": "tests/test_conformance.py.tmpl",
+      "replacements": [
+        {
+          "token": "__SUITE_ID_JSON__",
+          "source": "selectedSuiteId",
+          "stringify": "json-string"
+        }
+      ]
+    }
+  ]
+}

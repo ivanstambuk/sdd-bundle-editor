@@ -9,6 +9,7 @@
  * - entity-tools.ts: read_entities, list_entities, list_entity_summaries
  * - schema-tools.ts: get_entity_schema, get_entity_relations
  * - context-tools.ts: get_context, get_conformance_context
+ * - packet-tools.ts: resolve_binding_packet
  * - search-tools.ts: search_entities
  * - validation-tools.ts: validate_bundle
  * - mutation-tools.ts: apply_changes
@@ -21,6 +22,7 @@ import { registerBundleTools } from "./bundle-tools.js";
 import { registerEntityTools } from "./entity-tools.js";
 import { registerSchemaTools } from "./schema-tools.js";
 import { registerContextTools } from "./context-tools.js";
+import { registerPacketTools } from "./packet-tools.js";
 import { registerSearchTools } from "./search-tools.js";
 import { registerValidationTools } from "./validation-tools.js";
 import { registerMutationTools } from "./mutation-tools.js";
@@ -50,6 +52,9 @@ export function setupAllTools(ctx: ToolContext): void {
 
     // Context gathering tools (graph traversal)
     registerContextTools(ctx);
+
+    // Packet-resolution tools
+    registerPacketTools(ctx);
 
     // Search tools
     registerSearchTools(ctx);

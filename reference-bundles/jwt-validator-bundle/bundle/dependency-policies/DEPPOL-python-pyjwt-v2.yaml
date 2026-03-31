@@ -17,8 +17,16 @@ allowedDependencies:
     purpose: JWT parsing and signature verification
     required: true
     packageSource: pypi
+  - name: cryptography
+    version: 42.x
+    purpose: Asymmetric signature verification and deterministic RSA fixture support
+    required: true
+    packageSource: pypi
 forbiddenDependencyNames:
   - python-jose
 securityNotes: |
   Keep the pilot binding on a single JWT library family to make cross-language
   conformance comparisons easier.
+implementationHints:
+  - For RS256 verification under PyJWT, include the `cryptography` package explicitly instead of assuming it is already present.
+  - Keep runtime dependencies separate from test-only helpers, but make sure the generated install path is sufficient for pytest-based conformance execution.

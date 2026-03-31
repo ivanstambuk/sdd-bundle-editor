@@ -24,34 +24,18 @@ describe(`JWT Conformance Suite: ${SUITE_ID}`, () => {
 
       expect(result.isValid, `Vector ${vector.id} isValid mismatch`).toBe(vector.expectedIsValid);
       expect(result.outcomeClass, `Vector ${vector.id} outcomeClass mismatch`).toBe(vector.expectedOutcomeClass);
+      expect(result.primaryErrorCode ?? undefined, `Vector ${vector.id} primaryErrorCode mismatch`).toBe(vector.expectedPrimaryErrorCodeId ?? undefined);
+      expect(result.failedRuleId ?? undefined, `Vector ${vector.id} failedRuleId mismatch`).toBe(vector.expectedFailedRuleId ?? undefined);
+      expect(result.terminalStepId ?? undefined, `Vector ${vector.id} terminalStepId mismatch`).toBe(vector.expectedTerminalStepId ?? undefined);
 
       if (vector.expectedEvaluatedProfileId) {
         expect(result.evaluatedProfileId, `Vector ${vector.id} evaluatedProfileId mismatch`).toBe(vector.expectedEvaluatedProfileId);
       }
 
-      if (vector.expectedKeySelectionStatus) {
-        expect(result.keySelectionStatus, `Vector ${vector.id} keySelectionStatus mismatch`).toBe(vector.expectedKeySelectionStatus);
-      }
+      expect(result.keySelectionStatus, `Vector ${vector.id} keySelectionStatus mismatch`).toBe(vector.expectedKeySelectionStatus);
 
-      if (vector.expectedTrustDecision) {
-        expect(result.trustDecision, `Vector ${vector.id} trustDecision mismatch`).toBe(vector.expectedTrustDecision);
-      }
-
-      if (vector.expectedPrimaryErrorCodeId) {
-        expect(result.primaryErrorCode, `Vector ${vector.id} primaryErrorCode mismatch`).toBe(vector.expectedPrimaryErrorCodeId);
-      }
-
-      if (vector.expectedFailedRuleId) {
-        expect(result.failedRuleId, `Vector ${vector.id} failedRuleId mismatch`).toBe(vector.expectedFailedRuleId);
-      }
-
-      if (vector.expectedTerminalStepId) {
-        expect(result.terminalStepId, `Vector ${vector.id} terminalStepId mismatch`).toBe(vector.expectedTerminalStepId);
-      }
-
-      for (const expectedErrorCode of vector.expectsErrorCodeIds) {
-        expect(result.errorCodes, `Vector ${vector.id} missing errorCode ${expectedErrorCode}`).toContain(expectedErrorCode);
-      }
+      expect(result.trustDecision, `Vector ${vector.id} trustDecision mismatch`).toBe(vector.expectedTrustDecision);
+      expect([...result.errorCodes].sort(), `Vector ${vector.id} errorCodes mismatch`).toEqual([...vector.expectsErrorCodeIds].sort());
     });
   }
 });

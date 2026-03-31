@@ -240,6 +240,13 @@ Current harness default on this repo:
 - builder: `gemini-3-flash-preview`
 - critic: `gemini-3-pro-preview`
 
+Operational extension:
+- critic backend choice is an execution concern, not a metamodel concern
+- it is acceptable for the builder and critic to use different provider CLIs if the bundle contract and outer evidence gates stay the same
+- prefer adding a generic critic-only replay mode before adding more runtime-specific harness logic
+- for critic backends that support it, prefer schema-enforced final output plus a bounded resume loop over open-ended retries
+- do not respond to critic stalls by simply increasing timeouts; prefer a shallow packet-only critic first, and only escalate to deeper artifact inspection when machine evidence or shallow findings justify it
+
 Do not collapse both phases onto the same weaker model by default unless
 availability or budget requires it.
 

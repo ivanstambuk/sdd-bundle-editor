@@ -11,6 +11,7 @@ This document proposes a Spec Studio workflow for generating implementation-read
 Concrete phase-0 modeling work lives in:
 - [docs/spec-driven-implementation-bindings-phase-0.md](./spec-driven-implementation-bindings-phase-0.md)
 - [docs/spec-generation-harness-next-architecture.md](./spec-generation-harness-next-architecture.md)
+- [docs/spec-generation-harness-flow.md](./spec-generation-harness-flow.md)
 
 The initial target is a JWT validation library:
 - abstract behavior stays in a spec bundle
@@ -21,6 +22,16 @@ The initial target is a JWT validation library:
 Default harness policy:
 - use a faster builder model for generation and repair loops
 - use a stronger critic model for semantic validation and final gating
+- allow the critic to use a different backend from the builder
+- support critic-only re-evaluation of an existing run directory without rerunning generation
+- keep the domain-resolution step separate from the implementation step:
+  - MCP resolves the authoritative run context first
+  - the harness freezes that context into packets and tests
+  - the builder can then implement from those local frozen artifacts without needing live MCP access
+- keep the critic bounded:
+  - shallow packet-only review first
+  - deep artifact review only when machine evidence or shallow findings justify it
+  - schema-enforced output plus bounded resume instead of unbounded exploration
 
 The architectural intent is to preserve Spec Studio as the single source of truth while making code generation deterministic enough to be useful for real platform teams.
 
@@ -358,12 +369,12 @@ Reason:
 
 ## Recommended Next Step
 
-Move from generation to verification:
-- harden the generated Node.js pilot against the current conformance suite
-- keep `generate-only` as phase-1 default while we reduce semantic drift
-- then use `self-verify` as phase 2 once the generated artifacts are close enough that install/build/test loops are meaningful
-- add a machine-readable conformance report for each run
-- repeat the same flow for the Python pilot once Node.js is stable
+Move from pilot proof to harness generalization:
+- keep the proven Node.js and Python pilot paths green
+- reduce harness awareness of runtime prompt endpoint names and move toward packet-type resolution
+- continue removing JS/TS-shaped audit and snapshot assumptions
+- validate the shallow-first critic pattern on failing and mixed runs, not only green runs
+- keep machine-readable conformance and critic reports as durable run artifacts
 
 ## Harness Pattern
 

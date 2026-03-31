@@ -10,6 +10,10 @@ tags:
   - validation
   - crypto
 severity: FATAL
+precedenceWithinStep: 40
 throwsErrorCodeId: ERR-kid-not-found
+failureProjection:
+  trustDecision: indeterminate
+  keySelectionStatus: missing
 implementsReferenceIds:
   - RFC-7515

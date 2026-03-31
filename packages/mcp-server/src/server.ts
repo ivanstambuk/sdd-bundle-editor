@@ -12,6 +12,7 @@ export class SddMcpServer {
     private server: McpServer;
     private bundleConfigs: BundleConfig[];
     private bundles: Map<string, LoadedBundle> = new Map();
+    private promptsInitialized = false;
 
     constructor(bundleConfigs: BundleConfig[]) {
         this.bundleConfigs = bundleConfigs;
@@ -48,7 +49,6 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
 
         this.setupResources();
         this.setupTools();
-        this.setupPrompts();
     }
 
     /**
@@ -385,13 +385,18 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
         setupAllTools(ctx);
     }
 
-    private setupPrompts() {
+    initializePrompts() {
+        if (this.promptsInitialized) {
+            return;
+        }
+
         setupAllPrompts({
             server: this.server,
             getBundle: (id) => this.getBundle(id),
             getBundleIds: () => this.getBundleIds(),
             bundles: this.bundles,
         });
+        this.promptsInitialized = true;
     }
 
     /**
@@ -433,6 +438,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
             throw new Error("No bundles loaded successfully.");
         }
 
+        this.initializePrompts();
         console.error(`\nLoaded ${this.bundles.size} bundle(s) successfully.`);
     }
 
@@ -456,6 +462,7 @@ Error codes: BAD_REQUEST, NOT_FOUND, VALIDATION_ERROR, REFERENCE_ERROR, DELETE_B
      * This is the primary mode for use with Claude Desktop and other MCP clients.
      */
     async startStdio(): Promise<void> {
+        this.initializePrompts();
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         console.error("SDD MCP Server running on stdio");

@@ -1,0 +1,29 @@
+id: RTPROF-node22-typescript5-pnpm
+kind: RuntimeProfile
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Node.js 22 + TypeScript 5 + pnpm
+description: Runtime profile for the primary TypeScript pilot binding.
+tags:
+  - node
+  - typescript
+language: typescript
+runtimeName: node
+runtimeVersion: "22"
+minimumLanguageVersion: "5"
+packageManager: pnpm
+toolchain: tsc
+moduleSystem: esm
+supportsAsync: true
+distributionFormats:
+  - source
+  - types
+recommendedBuildCommand: pnpm build
+recommendedTestCommand: pnpm test
+platformNotes: |
+  Prefer ESM-compatible output and explicit types. Keep the library consumable
+  as a normal TypeScript module rather than a framework plugin.
+implementationHints:
+  - If the generated workspace ships TypeScript tests, use a declared TypeScript-capable test path rather than relying on implicit loaders.
+  - Keep package build and test commands aligned with Node.js 22 ESM resolution rules.

@@ -9,6 +9,26 @@ Completed work belongs in:
 
 ## Priority View
 
+### P1 – Spec-Driven Implementation Bindings
+- [ ] JWT validator implementation-binding workflow
+
+Why it matters:
+- Demonstrates how Spec Studio can drive code generation from abstract spec plus platform binding policy.
+- Creates a reusable pattern for platform teams to define implementation-ready bindings without collapsing the abstract domain model.
+
+Current status:
+- Design docs are in place.
+- Bundle-defined binding prompts are served through MCP.
+- A local harness can resolve `implement-binding`, invoke Gemini CLI, and write a generated Node.js workspace under `.scratch/binding-runs/`.
+- The harness pattern is now explicit:
+  - `generate-only` for semantic-observability runs
+  - `self-verify` for autonomous test/build loops inside the generated workspace
+- `generate-only` now includes a post-generation audit layer so obviously non-usable runs fail immediately on missing vector coverage, placeholder markers, or failed local typecheck/test gates.
+- General harness rule is now frozen-test-first: generate normative tests from MCP context, freeze them, then implement against them.
+- The JWT pilot is intentionally still in `generate-only`.
+- The first isolated Node.js run installs and type-checks but fails most conformance tests, so the current bottleneck is semantic correctness rather than prompt delivery.
+- Remaining work is conformance execution, quality scoring, prompt/bundle tightening, and a second verified runtime.
+
 ### P1 – Reference Bundles
 - [ ] Protocol spec bundle (for example EC-OPRF/FHE-style)
 - [ ] Feature-based project bundle (for example EUDIW simulator)
@@ -34,6 +54,20 @@ Why it matters:
 - Good follow-up once backend priorities are settled.
 
 ## Detailed Backlog
+
+### Spec-Driven Implementation Bindings
+- [ ] JWT validator implementation-binding workflow
+  Scope:
+  - Design a workflow that combines an abstract JWT spec bundle with platform-specific binding profiles.
+  - Support MCP-served implementation prompts derived from bundle data through a generic server adapter.
+  - Pilot on library-only generation for Node.js and Python, while modeling Java, C#, Go, and Rust for later expansion.
+  Acceptance:
+  - Detailed design is captured in [docs/spec-driven-implementation-bindings.md](./docs/spec-driven-implementation-bindings.md).
+  - Concrete phase-0 entity modeling is captured in [docs/spec-driven-implementation-bindings-phase-0.md](./docs/spec-driven-implementation-bindings-phase-0.md).
+  - The target entity model, prompt-serving strategy, and phased plan are concrete enough to implement without redesign.
+  - MCP can serve bundle-defined binding prompts for the JWT pilot.
+  - A local generation harness can produce a pilot Node.js workspace from `implement-binding`.
+  - The workflow remains incomplete until generated outputs are executed and scored against conformance expectations.
 
 ### Reference Bundles
 - [ ] Protocol spec bundle

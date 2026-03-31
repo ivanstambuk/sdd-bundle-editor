@@ -12,6 +12,7 @@ tags:
   - policy
 schemaDefinition:
   type: object
+  description: Authoritative runtime policy values that the generated implementation or tests must pass into the operation under test.
   additionalProperties: false
   properties:
     expectedIssuer:

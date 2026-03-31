@@ -12,7 +12,11 @@ tags:
   - time
   - boundary
 severity: ERROR
+precedenceWithinStep: 30
 throwsErrorCodeId: ERR-expired
+failureProjection:
+  trustDecision: trusted
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7519
 implementsConstraintIds:

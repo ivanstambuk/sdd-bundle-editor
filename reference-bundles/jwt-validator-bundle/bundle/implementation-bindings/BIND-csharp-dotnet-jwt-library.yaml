@@ -1,0 +1,34 @@
+id: BIND-csharp-dotnet-jwt-library
+kind: ImplementationBinding
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: C# JWT Validation Library using System.IdentityModel.Tokens.Jwt
+description: Planned .NET binding profile for the core JWT validator.
+tags:
+  - csharp
+  - planned
+bindingFamily: library
+language: csharp
+bindingStatus: proposed
+stability: experimental
+verificationStatus: unverified
+runtimeProfileId: RTPROF-csharp-dotnet8-nuget
+dependencyPolicyId: DEPPOL-csharp-dotnet-jwt-v8
+outputContractId: OUTCON-library-core-v1
+implementsOperationIds:
+  - OP-validate-jwt
+targetProfileIds:
+  - PROF-JWT-CORE
+promptTemplateIds:
+  - BPROMPT-implement-binding-v1
+  - BPROMPT-generate-binding-tests-v1
+conformanceSuiteIds:
+  - SUITE-core-validation
+constraintIds:
+  - BCON-no-framework-integration
+  - BCON-no-remote-key-fetch-phase1
+  - BCON-structured-error-contract
+  - BCON-exact-vector-conformance
+  - BCON-exact-io-structure-contract
+  - BCON-runnable-generated-commands

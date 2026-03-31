@@ -12,8 +12,12 @@ tags:
   - format
   - boundary
 severity: FATAL
+precedenceWithinStep: 20
 ruleType: FormatCheck
 throwsErrorCodeId: ERR-unsupported-format
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsReferenceIds:
   - RFC-7515
   - RFC-7519
@@ -23,3 +27,6 @@ implementsConstraintIds:
 governedByAdrIds:
   - ADR-0002-compact-jws-only-v1
   - ADR-0015-unsupported-jose-variants-are-explicitly-modeled
+implementationHints:
+  - Reject nested JWT indicators such as cty=JWT at STEP-1 as unsupported format, even when the compact serialization itself parses.
+  - If the raw token begins with `{`, treat it as JOSE JSON serialization outside the compact contract and reject it here before compact-part counting would classify it as malformed syntax.

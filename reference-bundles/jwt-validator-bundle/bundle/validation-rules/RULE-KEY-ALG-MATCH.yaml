@@ -12,7 +12,11 @@ tags:
   - crypto
   - policy
 severity: FATAL
+precedenceWithinStep: 60
 throwsErrorCodeId: ERR-unsupported-alg
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7515
 implementsConstraintIds:

@@ -1,0 +1,282 @@
+{
+  "$id": "sdd-bundle:jwt-validator:ImplementationBinding",
+  "type": "object",
+  "title": "ImplementationBinding",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "bindingFamily",
+    "language",
+    "bindingStatus",
+    "stability",
+    "verificationStatus",
+    "runtimeProfileId",
+    "dependencyPolicyId",
+    "outputContractId",
+    "implementsOperationIds",
+    "targetProfileIds"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^BIND-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "ImplementationBinding",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
+    "bindingFamily": {
+      "type": "string",
+      "enum": [
+        "library",
+        "sdk",
+        "endpoint-example",
+        "cli",
+        "middleware"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "typescript",
+        "python",
+        "java",
+        "csharp",
+        "go",
+        "rust"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "bindingStatus": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "pilot",
+        "active",
+        "deprecated"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "stability": {
+      "type": "string",
+      "enum": [
+        "experimental",
+        "candidate",
+        "stable"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 13
+    },
+    "verificationStatus": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pilot-target",
+        "verified"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 14
+    },
+    "runtimeProfileId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "RuntimeProfile"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 10,
+      "format": "sdd-ref",
+      "title": "runtime profile"
+    },
+    "dependencyPolicyId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "DependencyPolicy"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 20,
+      "format": "sdd-ref",
+      "title": "dependency policy"
+    },
+    "outputContractId": {
+      "type": "string",
+      "x-sdd-refTargets": [
+        "OutputContract"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 30,
+      "format": "sdd-ref",
+      "title": "output contract"
+    },
+    "implementsOperationIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "Operation"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 40,
+      "title": "implements"
+    },
+    "targetProfileIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "TokenProfile"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 50,
+      "title": "targets profiles"
+    },
+    "promptTemplateIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "BindingPromptTemplate"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 60,
+      "title": "uses prompts"
+    },
+    "conformanceSuiteIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "ConformanceSuite"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 70,
+      "title": "validated by"
+    },
+    "constraintIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-refTargets": [
+        "BindingConstraint"
+      ],
+      "x-sdd-layoutGroup": "traceability",
+      "x-sdd-order": 80,
+      "title": "constrained by"
+    },
+    "platformNotes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "implementationHints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Advisory binding-specific generation hints. Use first-class fields and references for normative contract behavior.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Implementation Binding",
+    "displayNamePlural": "Implementation Bindings",
+    "icon": "🔌"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    },
+    "traceability": {
+      "title": "Relationships",
+      "order": 3
+    }
+  }
+}

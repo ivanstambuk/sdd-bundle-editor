@@ -16,6 +16,7 @@ import { registerImplementationPrompts } from "./implementation.js";
 import { registerAnalysisPrompts } from "./analysis.js";
 import { registerDocumentationPrompts } from "./documentation.js";
 import { registerQualityPrompts } from "./quality.js";
+import { registerBindingPrompts } from "./binding.js";
 
 // Re-export types for convenience
 export type { PromptContext, PromptRegistrar } from "./types.js";
@@ -39,4 +40,7 @@ export function setupAllPrompts(ctx: PromptContext): void {
 
     // Quality prompts (auditing & testing)
     registerQualityPrompts(ctx);
+
+    // Dynamic binding prompts (bundle-defined templates)
+    registerBindingPrompts(ctx);
 }

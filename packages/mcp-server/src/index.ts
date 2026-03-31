@@ -209,6 +209,7 @@ async function main() {
                 for (const [id, loaded] of loadedBundles) {
                     sessionServer.getLoadedBundles().set(id, loaded);
                 }
+                sessionServer.initializePrompts();
                 return sessionServer.getUnderlyingServer();
             },
         });
@@ -233,4 +234,3 @@ main().catch((err) => {
     console.error("Fatal error:", err);
     process.exit(1);
 });
-

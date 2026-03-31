@@ -1,0 +1,189 @@
+{
+  "$id": "sdd-bundle:jwt-validator:OutputContract",
+  "type": "object",
+  "title": "OutputContract",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "artifactMode",
+    "publicEntrypoints",
+    "requiredArtifactPaths"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^OUTCON-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "OutputContract",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
+    "artifactMode": {
+      "type": "string",
+      "enum": [
+        "library-only",
+        "library-and-examples"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "publicEntrypoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "required"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "function",
+              "class",
+              "module",
+              "command"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "requiredArtifactPaths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
+    },
+    "exampleArtifactPaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 22
+    },
+    "readmeSections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 23
+    },
+    "manifestFields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 24
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Output Contract",
+    "displayNamePlural": "Output Contracts",
+    "icon": "🧾"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    }
+  }
+}

@@ -199,6 +199,12 @@
       ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 55
+    },
+    "implementationNotes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 60
     }
   },
   "allOf": [

@@ -1,0 +1,41 @@
+id: OUTCON-library-core-v1
+kind: OutputContract
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Core Library Output Contract
+description: |
+  Stable artifact contract for a library-only JWT validator binding.
+  The generated output should prioritize a small public API, shared conformance
+  tests, and a predictable repo layout over framework-specific integration.
+tags:
+  - generation
+  - library
+  - phase-1
+artifactMode: library-only
+publicEntrypoints:
+  - name: validateJwt
+    kind: function
+    required: true
+    description: Validate a JWT against the selected profile and runtime policy.
+requiredArtifactPaths:
+  - src/validator.*
+  - src/types.*
+  - tests/conformance/*
+  - README.md
+  - binding-manifest.json
+  - CONFORMANCE.md
+exampleArtifactPaths:
+  - examples/basic-validation/*
+readmeSections:
+  - Installation
+  - Usage
+  - Validation behavior
+  - Error model
+  - Running tests
+manifestFields:
+  - bindingId
+  - runtimeProfileId
+  - dependencyPolicyId
+  - targetProfileIds
+  - conformanceSuiteIds

@@ -11,7 +11,11 @@ tags:
   - validation
   - policy
 severity: ERROR
+precedenceWithinStep: 10
 throwsErrorCodeId: ERR-missing-claim
+failureProjection:
+  trustDecision: trusted
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7519
 parameters:
@@ -19,3 +23,6 @@ parameters:
   claimRuntimePolicyField: requiredWhenRuntimePolicyFields
 governedByAdrIds:
   - ADR-0010-profile-governs-claim-requirements
+implementationHints:
+  - If a runtime policy expects iss, sub, or aud and that claim is absent, fail here with ERR-missing-claim before running the corresponding mismatch rule.
+  - If a claim is absent, do not fall through to issuer, subject, or audience mismatch rules; this rule wins for missing-claim scenarios.

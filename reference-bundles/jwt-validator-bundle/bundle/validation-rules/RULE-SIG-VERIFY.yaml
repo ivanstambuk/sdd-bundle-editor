@@ -12,6 +12,10 @@ tags:
   - security
   - crypto
 severity: FATAL
+precedenceWithinStep: 70
 throwsErrorCodeId: ERR-invalid-sig
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7515

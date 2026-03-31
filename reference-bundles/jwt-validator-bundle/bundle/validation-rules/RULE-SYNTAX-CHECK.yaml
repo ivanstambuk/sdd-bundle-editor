@@ -11,8 +11,15 @@ tags:
   - validation
   - parse
 severity: FATAL
+precedenceWithinStep: 10
 throwsErrorCodeId: ERR-malformed
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsReferenceIds:
   - RFC-7515
 implementsConstraintIds:
   - CON-safe-diagnostics
+implementationHints:
+  - Stop malformed raw input here when compact syntax or base64url decoding fails.
+  - Do not let downstream duplicate-key diagnostics override a syntax failure.

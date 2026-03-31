@@ -12,11 +12,17 @@ tags:
   - header
   - security
 severity: FATAL
+precedenceWithinStep: 30
 ruleType: HeaderPolicy
 throwsErrorCodeId: ERR-unsupported-header
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsReferenceIds:
   - RFC-8725
 bindsToContextPropertyId: STRUCT-runtime-policy
 governedByAdrIds:
   - ADR-0007-reject-untrusted-header-key-hints
   - ADR-0008-key-resolution-fails-closed
+implementationHints:
+  - Model this as a STEP-2 header-policy failure, not a STEP-1 syntax failure.

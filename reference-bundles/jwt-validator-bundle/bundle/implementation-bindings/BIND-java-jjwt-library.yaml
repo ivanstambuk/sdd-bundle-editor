@@ -1,0 +1,34 @@
+id: BIND-java-jjwt-library
+kind: ImplementationBinding
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Java JWT Validation Library using jjwt
+description: Planned Java binding profile for the core JWT validator.
+tags:
+  - java
+  - planned
+bindingFamily: library
+language: java
+bindingStatus: proposed
+stability: experimental
+verificationStatus: unverified
+runtimeProfileId: RTPROF-java21-maven
+dependencyPolicyId: DEPPOL-java-jjwt-v012
+outputContractId: OUTCON-library-core-v1
+implementsOperationIds:
+  - OP-validate-jwt
+targetProfileIds:
+  - PROF-JWT-CORE
+promptTemplateIds:
+  - BPROMPT-implement-binding-v1
+  - BPROMPT-generate-binding-tests-v1
+conformanceSuiteIds:
+  - SUITE-core-validation
+constraintIds:
+  - BCON-no-framework-integration
+  - BCON-no-remote-key-fetch-phase1
+  - BCON-structured-error-contract
+  - BCON-exact-vector-conformance
+  - BCON-exact-io-structure-contract
+  - BCON-runnable-generated-commands

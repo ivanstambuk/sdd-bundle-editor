@@ -1,0 +1,29 @@
+id: DEPPOL-java-jjwt-v012
+kind: DependencyPolicy
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Java jjwt 0.12.x Allowlist
+description: Planned dependency policy for a Java binding.
+tags:
+  - java
+  - jjwt
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review library upgrades before promoting the binding beyond planning.
+allowedDependencies:
+  - name: io.jsonwebtoken:jjwt-api
+    version: 0.12.x
+    purpose: JWT API surface
+    required: true
+    packageSource: maven
+  - name: io.jsonwebtoken:jjwt-impl
+    version: 0.12.x
+    purpose: JWT implementation
+    required: true
+    packageSource: maven
+  - name: io.jsonwebtoken:jjwt-jackson
+    version: 0.12.x
+    purpose: JSON support
+    required: true
+    packageSource: maven

@@ -12,8 +12,13 @@ tags:
   - header
   - policy
 severity: ERROR
+precedenceWithinStep: 50
 ruleType: HeaderPolicy
 throwsErrorCodeId: ERR-type-mismatch
+failureProjection:
+  outcomeClass: malformed
+  trustDecision: trusted
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-8725
   - OAUTH-RFC9068

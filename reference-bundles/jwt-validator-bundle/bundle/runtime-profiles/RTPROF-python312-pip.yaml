@@ -1,0 +1,24 @@
+id: RTPROF-python312-pip
+kind: RuntimeProfile
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Python 3.12 + pip
+description: Runtime profile for the primary Python pilot binding.
+tags:
+  - python
+language: python
+runtimeName: python
+runtimeVersion: "3.12"
+minimumLanguageVersion: "3.12"
+packageManager: pip
+toolchain: pytest
+moduleSystem: package
+supportsAsync: false
+distributionFormats:
+  - source
+recommendedBuildCommand: python -m build
+recommendedTestCommand: pytest
+platformNotes: |
+  Prefer a small package layout with explicit type hints where practical. Keep
+  the public API simple and avoid web-framework assumptions.

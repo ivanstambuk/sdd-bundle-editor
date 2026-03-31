@@ -1,0 +1,22 @@
+id: RTPROF-csharp-dotnet8-nuget
+kind: RuntimeProfile
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: .NET 8 + NuGet
+description: Planned runtime profile for a C# binding.
+tags:
+  - csharp
+  - dotnet
+language: csharp
+runtimeName: dotnet
+runtimeVersion: "8.0"
+minimumLanguageVersion: "12"
+packageManager: nuget
+toolchain: xunit
+moduleSystem: dll
+supportsAsync: true
+distributionFormats:
+  - package
+recommendedBuildCommand: dotnet build
+recommendedTestCommand: dotnet test

@@ -1,0 +1,190 @@
+{
+  "$id": "sdd-bundle:jwt-validator:RuntimeProfile",
+  "type": "object",
+  "title": "RuntimeProfile",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "language",
+    "runtimeName",
+    "runtimeVersion"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^RTPROF-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "RuntimeProfile",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "typescript",
+        "python",
+        "java",
+        "csharp",
+        "go",
+        "rust"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "runtimeName": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "runtimeVersion": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "minimumLanguageVersion": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 13
+    },
+    "packageManager": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 14
+    },
+    "toolchain": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 15
+    },
+    "moduleSystem": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 16
+    },
+    "supportsAsync": {
+      "type": "boolean",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 17
+    },
+    "distributionFormats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 18
+    },
+    "recommendedBuildCommand": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 19
+    },
+    "recommendedTestCommand": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "platformNotes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
+    },
+    "implementationHints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Advisory runtime-specific generation hints. Normative runtime constraints should be encoded in structured profile fields and referenced contracts.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 22
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Runtime Profile",
+    "displayNamePlural": "Runtime Profiles",
+    "icon": "🧰"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    }
+  }
+}

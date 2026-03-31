@@ -1,0 +1,18 @@
+id: DEPPOL-rust-jsonwebtoken-v9
+kind: DependencyPolicy
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Rust jsonwebtoken 9.x Allowlist
+description: Planned dependency policy for a Rust binding.
+tags:
+  - rust
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review major upgrades before promoting the binding beyond planning.
+allowedDependencies:
+  - name: jsonwebtoken
+    version: 9.x
+    purpose: JWT parsing and validation
+    required: true
+    packageSource: crates-io

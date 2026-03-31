@@ -1,0 +1,24 @@
+id: BCON-exact-io-structure-contract
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Exact Request And Result Structure Contract
+description: |
+  Generated bindings must preserve the modeled request and result structure
+  field names instead of inventing simplified aliases.
+tags:
+  - api-shape
+  - dto
+  - contract
+constraintType: api-shape
+enforcementLevel: required
+constraintStatement: |
+  The generated public API must follow the referenced DataStructure entities
+  exactly. Request fields such as runtimePolicy and validationContext, and
+  result fields such as outcomeClass, primaryErrorCode, keySelectionStatus,
+  trustDecision, and errorCodes, are normative contract names rather than
+  optional suggestions.
+verificationHint: |
+  Reject generated output that substitutes ad hoc aliases like policy/context or
+  custom result objects that omit required modeled fields.

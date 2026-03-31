@@ -144,6 +144,47 @@
       "type": "boolean",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 15
+    },
+    "successfulCompletionProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional public-result state that becomes established once this step completes successfully.",
+      "properties": {
+        "trustDecision": {
+          "type": "string",
+          "enum": [
+            "trusted",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "keySelectionStatus": {
+          "type": "string",
+          "enum": [
+            "not-applicable",
+            "resolved",
+            "missing",
+            "ambiguous"
+          ]
+        }
+      },
+      "minProperties": 1,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 16
+    },
+    "preserveProjectedFieldsOnLaterFailure": {
+      "type": "array",
+      "description": "Projected fields from this step that must be preserved if a later step fails without explicitly overriding them.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "trustDecision",
+          "keySelectionStatus"
+        ]
+      },
+      "uniqueItems": true,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 17
     }
   },
   "allOf": [

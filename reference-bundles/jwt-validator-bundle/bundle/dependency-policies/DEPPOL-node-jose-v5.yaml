@@ -1,0 +1,30 @@
+id: DEPPOL-node-jose-v5
+kind: DependencyPolicy
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Node jose 5.x Allowlist
+description: Dependency policy for the TypeScript pilot binding.
+tags:
+  - node
+  - jose
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review minor and major upgrades before changing the binding profile.
+allowedDependencies:
+  - name: jose
+    version: 5.x
+    purpose: JWT parsing and signature verification
+    required: true
+    packageSource: npm
+forbiddenDependencyNames:
+  - jsonwebtoken
+securityNotes: |
+  Keep verification behavior anchored to the jose library family during the
+  pilot so error behavior and supported algorithms remain predictable.
+  jose exception names are not the public API contract. The generated binding
+  must explicitly map runtime-library failures into the bundle's ErrorCode and
+  outcomeClass model, adding pre-checks or post-checks where necessary.
+implementationHints:
+  - For oct/HS256 verification, use the library's supported key form consistently for both signing and verification.
+  - Do not expose raw jose error codes directly; map them into the bundle's error contract.

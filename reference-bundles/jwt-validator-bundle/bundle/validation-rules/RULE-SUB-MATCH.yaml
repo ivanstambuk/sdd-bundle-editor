@@ -10,8 +10,12 @@ tags:
   - validation
   - security
 severity: ERROR
+precedenceWithinStep: 40
 ruleType: StringMatch
 throwsErrorCodeId: ERR-invalid-subject
+failureProjection:
+  trustDecision: trusted
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7519
 bindsToContextPropertyId: STRUCT-runtime-policy

@@ -1,0 +1,19 @@
+id: DEPPOL-csharp-dotnet-jwt-v8
+kind: DependencyPolicy
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: .NET JWT 8.x Allowlist
+description: Planned dependency policy for a C# binding.
+tags:
+  - csharp
+  - dotnet
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review major upgrades before promoting the binding beyond planning.
+allowedDependencies:
+  - name: System.IdentityModel.Tokens.Jwt
+    version: 8.x
+    purpose: JWT parsing and validation
+    required: true
+    packageSource: nuget

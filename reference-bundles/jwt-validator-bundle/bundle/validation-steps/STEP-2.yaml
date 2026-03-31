@@ -9,6 +9,12 @@ description: Enforce cryptographic prerequisites, reject unsafe trust-source
   claim-level policy checks run.
 abortOnFailure: true
 executionOrder: 2
+successfulCompletionProjection:
+  trustDecision: trusted
+  keySelectionStatus: resolved
+preserveProjectedFieldsOnLaterFailure:
+  - trustDecision
+  - keySelectionStatus
 executesRuleIds:
   - RULE-ALG-ALLOWLIST
   - RULE-CRIT-HEADER-POLICY

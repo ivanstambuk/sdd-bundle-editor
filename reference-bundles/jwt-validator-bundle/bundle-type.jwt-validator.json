@@ -194,6 +194,66 @@
       "category": "governance",
       "color": "#ff7c6a",
       "order": 2
+    },
+    {
+      "entityType": "ImplementationBinding",
+      "idField": "id",
+      "schemaPath": "schemas/ImplementationBinding.schema.json",
+      "directory": "bundle/implementation-bindings",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#7aa2f7",
+      "order": 1
+    },
+    {
+      "entityType": "RuntimeProfile",
+      "idField": "id",
+      "schemaPath": "schemas/RuntimeProfile.schema.json",
+      "directory": "bundle/runtime-profiles",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#89ddff",
+      "order": 2
+    },
+    {
+      "entityType": "DependencyPolicy",
+      "idField": "id",
+      "schemaPath": "schemas/DependencyPolicy.schema.json",
+      "directory": "bundle/dependency-policies",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#bb9af7",
+      "order": 3
+    },
+    {
+      "entityType": "OutputContract",
+      "idField": "id",
+      "schemaPath": "schemas/OutputContract.schema.json",
+      "directory": "bundle/output-contracts",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#7dcfff",
+      "order": 4
+    },
+    {
+      "entityType": "BindingPromptTemplate",
+      "idField": "id",
+      "schemaPath": "schemas/BindingPromptTemplate.schema.json",
+      "directory": "bundle/binding-prompt-templates",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#41a6b5",
+      "order": 5
+    },
+    {
+      "entityType": "BindingConstraint",
+      "idField": "id",
+      "schemaPath": "schemas/BindingConstraint.schema.json",
+      "directory": "bundle/binding-constraints",
+      "filePattern": "{id}.yaml",
+      "category": "bindings",
+      "color": "#ffc777",
+      "order": 6
     }
   ],
   "relations": [
@@ -202,6 +262,62 @@
       "fromEntity": "Actor",
       "toEntity": "ADR",
       "fromField": "governedByAdrIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ImplementationBindingToRuntimeProfile_runtimeProfileId",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "RuntimeProfile",
+      "fromField": "runtimeProfileId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ImplementationBindingToDependencyPolicy_dependencyPolicyId",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "DependencyPolicy",
+      "fromField": "dependencyPolicyId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ImplementationBindingToOutputContract_outputContractId",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "OutputContract",
+      "fromField": "outputContractId",
+      "multiplicity": "one"
+    },
+    {
+      "name": "ImplementationBindingToOperation_implementsOperationIds",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "Operation",
+      "fromField": "implementsOperationIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ImplementationBindingToTokenProfile_targetProfileIds",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "TokenProfile",
+      "fromField": "targetProfileIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ImplementationBindingToBindingPromptTemplate_promptTemplateIds",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "BindingPromptTemplate",
+      "fromField": "promptTemplateIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ImplementationBindingToConformanceSuite_conformanceSuiteIds",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "ConformanceSuite",
+      "fromField": "conformanceSuiteIds",
+      "multiplicity": "many"
+    },
+    {
+      "name": "ImplementationBindingToBindingConstraint_constraintIds",
+      "fromEntity": "ImplementationBinding",
+      "toEntity": "BindingConstraint",
+      "fromField": "constraintIds",
       "multiplicity": "many"
     },
     {
@@ -681,6 +797,13 @@
       "icon": "⚖️",
       "color": "#ff7c6a40",
       "order": 6
+    },
+    {
+      "name": "bindings",
+      "displayName": "Bindings & Generation",
+      "icon": "🔌",
+      "color": "#7aa2f740",
+      "order": 7
     }
   ]
 }

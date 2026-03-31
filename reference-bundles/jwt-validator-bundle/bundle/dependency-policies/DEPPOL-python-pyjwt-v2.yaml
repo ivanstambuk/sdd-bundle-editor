@@ -1,0 +1,24 @@
+id: DEPPOL-python-pyjwt-v2
+kind: DependencyPolicy
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Python PyJWT 2.x Allowlist
+description: Dependency policy for the Python pilot binding.
+tags:
+  - python
+  - pyjwt
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review major upgrades before changing the binding profile.
+allowedDependencies:
+  - name: PyJWT
+    version: 2.x
+    purpose: JWT parsing and signature verification
+    required: true
+    packageSource: pypi
+forbiddenDependencyNames:
+  - python-jose
+securityNotes: |
+  Keep the pilot binding on a single JWT library family to make cross-language
+  conformance comparisons easier.

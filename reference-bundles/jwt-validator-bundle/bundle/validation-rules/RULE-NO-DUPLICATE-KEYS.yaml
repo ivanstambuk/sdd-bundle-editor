@@ -12,7 +12,11 @@ tags:
   - parse
   - security
 severity: FATAL
+precedenceWithinStep: 30
 throwsErrorCodeId: ERR-malformed
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsReferenceIds:
   - RFC-8725
 governedByAdrIds:

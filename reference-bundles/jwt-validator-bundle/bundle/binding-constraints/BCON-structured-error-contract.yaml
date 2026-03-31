@@ -1,0 +1,20 @@
+id: BCON-structured-error-contract
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Structured Error Contract
+description: |
+  Generated bindings must surface stable, structured validation failures instead
+  of leaking raw library exceptions as the primary API contract.
+tags:
+  - api-shape
+  - error-model
+constraintType: api-shape
+enforcementLevel: required
+constraintStatement: |
+  Map library-specific parsing or verification failures into a structured result
+  aligned with the referenced JWT error codes and validation-result model.
+verificationHint: |
+  Reject generated implementations whose public API exposes untyped third-party
+  exceptions as the main failure channel.

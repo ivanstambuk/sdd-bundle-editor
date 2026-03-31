@@ -1,0 +1,50 @@
+id: BIND-node-jose-library
+kind: ImplementationBinding
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Node.js JWT Validation Library using jose
+description: |
+  Pilot implementation binding for a library-only JWT validator in Node.js.
+  This binding targets the core static-key profile and is intended to be one of
+  the first generated and verified runtimes.
+rationale: Establishes the primary TypeScript pilot for spec-driven generation.
+tags:
+  - node
+  - pilot
+  - library
+bindingFamily: library
+language: typescript
+bindingStatus: pilot
+stability: experimental
+verificationStatus: pilot-target
+runtimeProfileId: RTPROF-node22-typescript5-pnpm
+dependencyPolicyId: DEPPOL-node-jose-v5
+outputContractId: OUTCON-library-core-v1
+implementsOperationIds:
+  - OP-validate-jwt
+targetProfileIds:
+  - PROF-JWT-CORE
+promptTemplateIds:
+  - BPROMPT-implement-binding-v1
+  - BPROMPT-generate-binding-tests-v1
+conformanceSuiteIds:
+  - SUITE-core-validation
+constraintIds:
+  - BCON-no-framework-integration
+  - BCON-no-remote-key-fetch-phase1
+  - BCON-structured-error-contract
+  - BCON-exact-vector-conformance
+  - BCON-exact-io-structure-contract
+  - BCON-runnable-generated-commands
+platformNotes: |
+  Keep the pilot binding focused on the one authoritative validation operation.
+  Do not widen scope into middleware or endpoint scaffolding yet.
+  Preserve exact outcome and primary-error semantics from the conformance
+  vectors. Do not treat third-party library exception names as the public API
+  contract.
+implementationHints:
+  - If the frozen tests are authored in TypeScript, make the generated workspace compatible with them instead of replacing the test runner.
+  - In jose v5, decodeProtectedHeader() returns ProtectedHeaderParameters; do not over-constrain it to JWTHeaderParameters in generated TypeScript.
+  - Use actual exported jose error names only; do not invent library exception classes.
+  - When key selection and signature verification succeed but a later claim or policy check fails, preserve trustDecision as trusted.

@@ -1,0 +1,101 @@
+id: BPROMPT-implement-binding-v1
+kind: BindingPromptTemplate
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Implement Binding
+description: |
+  Generic MCP-served implementation prompt for building a platform-specific JWT
+  validation library from an abstract profile and a binding policy.
+tags:
+  - prompt
+  - generation
+  - implementation
+mcpPromptName: implement-binding
+promptRole: implement-binding
+templateVersion: 1.0.0
+arguments:
+  - name: bindingId
+    type: string
+    required: true
+    description: Target ImplementationBinding ID.
+  - name: operationId
+    type: string
+    required: true
+    description: Operation to implement, normally OP-validate-jwt.
+  - name: artifactMode
+    type: enum
+    required: false
+    description: Override artifact mode if a narrower subset is needed.
+    allowedValues:
+      - library-only
+      - library-and-examples
+includesEntityTypes:
+  - ImplementationBinding
+  - RuntimeProfile
+  - DependencyPolicy
+  - OutputContract
+  - Operation
+  - TokenProfile
+  - ConformanceSuite
+  - TestVector
+  - ErrorCode
+  - SecurityConstraint
+followsReferenceFields:
+  - runtimeProfileId
+  - dependencyPolicyId
+  - outputContractId
+  - implementsOperationIds
+  - targetProfileIds
+  - conformanceSuiteIds
+  - constraintIds
+outputExpectations:
+  - Produce only the artifacts required by the output contract.
+  - Use only dependencies allowed by the dependency policy.
+  - Keep behavior aligned to the referenced profile, suites, vectors, and constraints.
+  - Return structured validation failures rather than raw third-party exceptions.
+  - Treat modeled expected outcomes and primary errors as normative.
+  - Preserve modeled vector IDs in generated conformance tests rather than inventing substitute scenarios.
+  - Use modeled rawJwtInput, runtimePolicy, validationContext, and fixture payloads directly in generated conformance tests unless a vector explicitly requires derivation.
+  - Emit one generated conformance test per TestVector ID in the bound ConformanceSuite; do not silently omit vectors.
+  - Add explicit pre-checks or post-checks when the runtime library does not expose enough detail to satisfy the bundle contract.
+  - Follow the referenced request and result contracts exactly; do not invent aliases or omit required fields.
+  - Add concise traceability comments for non-obvious generated functions, branches, and checks, linking them back to the governing steps, rules, vectors, or contract semantics that justify their existence.
+  - When a modeled scenario is expressed by an intentionally omitted field or a partial payload/header overlay, preserve that omission; do not seed defaults that erase the scenario.
+  - Ensure the declared build and test commands are runnable with the generated files and declared dependencies only.
+  - For TypeScript bindings, ensure the generated workspace passes `npx tsc -p tsconfig.json --noEmit` without type errors.
+  - If a frozen normative test pack already exists under `tests/`, treat it as authoritative and immutable.
+  - Write the required files directly; a prose-only plan is not a valid completion.
+  - Do not stop before every required artifact path from the output contract exists.
+defaultModelClass: fast-structured
+maxContextBudget: 40000
+templateBody: |
+  Implement the selected operation using the referenced implementation binding.
+
+  Rules:
+  - follow the runtime profile exactly
+  - use only approved dependencies and version policy
+  - produce only the required output contract artifacts
+  - honor all binding constraints
+  - implement the selected token profile rather than general JWT behavior
+  - follow the conformance suite and test vectors as the verification source
+  - treat modeled expected outcomes and primary errors as normative, not advisory
+  - do not collapse distinct failure modes into one generic library-error mapping
+  - if the third-party runtime library is too coarse, add explicit checks so the public result still matches the bundle
+  - when generating tests, encode the modeled vector IDs and expected results directly
+  - follow the referenced request and result contracts exactly; do not invent aliases or omit required fields
+  - for non-obvious implementation paths, add concise comments that explain which modeled steps, rules, vectors, or result semantics the code is satisfying
+  - when generating tokens or helper fixtures from partial modeled inputs, treat omissions as authoritative and avoid backfilling fields that would negate the scenario
+  - use modeled rawJwtInput values directly in conformance tests rather than synthesizing substitute tokens for convenience
+  - emit one generated conformance test per modeled TestVector ID in the bound suite
+  - ensure the declared build and test commands work in the generated workspace without undeclared loaders or missing tooling
+  - for TypeScript bindings, ensure `npx tsc -p tsconfig.json --noEmit` would pass in the generated workspace
+  - if a frozen normative test pack already exists under tests/, do not modify it; make package.json, tsconfig.json, and src/ compatible with that pack
+  - use entity-derived guidance and matrices as the bundle-specific narrowing source; do not rely on bundle-specific prose embedded in this template
+  - when entity-derived guidance and broad runtime-library defaults differ, the entity-derived guidance wins
+  - keep handwritten prompt logic generic so the same template can be reused across bundles; treat specific vectors, rules, and fixtures as data supplied by the resolver
+  - write the required files directly in the workspace; do not stop at a prose-only implementation plan
+  - do not stop after partial scaffolding; finish every required artifact in the output contract before exiting
+
+  Output should be implementation-ready for the target runtime and easy to test
+  locally without extra framework wiring.

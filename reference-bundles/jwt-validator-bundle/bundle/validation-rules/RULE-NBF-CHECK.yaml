@@ -10,9 +10,13 @@ tags:
   - validation
   - time
 severity: ERROR
+precedenceWithinStep: 20
 implementsConstraintIds:
   - CON-timing-attack
 throwsErrorCodeId: ERR-premature
+failureProjection:
+  trustDecision: trusted
+  keySelectionStatus: resolved
 bindsToContextPropertyId: STRUCT-validation-context
 governedByAdrIds:
   - ADR-0011-time-validation-uses-injected-clock

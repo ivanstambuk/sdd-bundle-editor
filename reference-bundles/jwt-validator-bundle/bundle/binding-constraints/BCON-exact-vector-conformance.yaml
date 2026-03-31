@@ -1,0 +1,28 @@
+id: BCON-exact-vector-conformance
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Exact Vector Conformance
+description: |
+  Generated bindings must implement the modeled conformance vectors exactly
+  rather than approximating them with nearby runtime-library behavior.
+tags:
+  - testing
+  - conformance
+  - correctness
+constraintType: testing
+enforcementLevel: required
+constraintStatement: |
+  Treat each modeled TestVector as normative. The generated implementation and
+  generated tests must preserve exact vector IDs, expectedOutcomeClass values,
+  expectedPrimaryErrorCodeId values, and the distinction between malformed,
+  rejected, indeterminate, and accepted outcomes. Every TestVector ID listed in
+  the bound ConformanceSuite must appear in the generated conformance tests;
+  omitting vectors or silently collapsing multiple vectors into one test is not
+  conformant.
+verificationHint: |
+  Reject generated output if it invents substitute test cases, drops modeled
+  vectors, emits fewer vector tests than the suite defines, or collapses
+  multiple bundle-defined failure modes into a single generic runtime-library
+  error result.

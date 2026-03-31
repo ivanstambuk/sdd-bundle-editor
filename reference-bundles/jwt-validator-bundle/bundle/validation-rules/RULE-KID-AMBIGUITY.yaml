@@ -11,6 +11,10 @@ tags:
   - validation
   - crypto
 severity: FATAL
+precedenceWithinStep: 50
 throwsErrorCodeId: ERR-kid-ambiguous
+failureProjection:
+  trustDecision: indeterminate
+  keySelectionStatus: ambiguous
 governedByAdrIds:
   - ADR-0008-key-resolution-fails-closed

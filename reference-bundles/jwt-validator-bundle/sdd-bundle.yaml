@@ -29,6 +29,12 @@ spec:
       NormativeReference: schemas/NormativeReference.schema.json
       ADR: schemas/ADR.schema.json
       Actor: schemas/Actor.schema.json
+      ImplementationBinding: schemas/ImplementationBinding.schema.json
+      RuntimeProfile: schemas/RuntimeProfile.schema.json
+      DependencyPolicy: schemas/DependencyPolicy.schema.json
+      OutputContract: schemas/OutputContract.schema.json
+      BindingPromptTemplate: schemas/BindingPromptTemplate.schema.json
+      BindingConstraint: schemas/BindingConstraint.schema.json
 
   layout:
     documents:
@@ -88,6 +94,24 @@ spec:
         filePattern: "{id}.yaml"
       Actor:
         dir: bundle/actors
+        filePattern: "{id}.yaml"
+      ImplementationBinding:
+        dir: bundle/implementation-bindings
+        filePattern: "{id}.yaml"
+      RuntimeProfile:
+        dir: bundle/runtime-profiles
+        filePattern: "{id}.yaml"
+      DependencyPolicy:
+        dir: bundle/dependency-policies
+        filePattern: "{id}.yaml"
+      OutputContract:
+        dir: bundle/output-contracts
+        filePattern: "{id}.yaml"
+      BindingPromptTemplate:
+        dir: bundle/binding-prompt-templates
+        filePattern: "{id}.yaml"
+      BindingConstraint:
+        dir: bundle/binding-constraints
         filePattern: "{id}.yaml"
 
   domainKnowledge:

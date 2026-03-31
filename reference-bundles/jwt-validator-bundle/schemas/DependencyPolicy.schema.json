@@ -1,0 +1,195 @@
+{
+  "$id": "sdd-bundle:jwt-validator:DependencyPolicy",
+  "type": "object",
+  "title": "DependencyPolicy",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "dependencyMode",
+    "pinningPolicy",
+    "allowedDependencies"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^DEPPOL-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "DependencyPolicy",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
+    "dependencyMode": {
+      "type": "string",
+      "enum": [
+        "allowlist-only",
+        "allowlist-with-optional-extras"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "pinningPolicy": {
+      "type": "string",
+      "enum": [
+        "exact",
+        "minor-range",
+        "major-range"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "upgradePolicy": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "allowedDependencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "version",
+          "purpose",
+          "required"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "packageSource": {
+            "type": "string"
+          }
+        }
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "forbiddenDependencyNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
+    },
+    "securityNotes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 22
+    },
+    "installationNotes": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 23
+    },
+    "implementationHints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Advisory package-manager or library-usage hints. Normative allowlists, versions, and dependency constraints should remain in structured policy fields.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 24
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Dependency Policy",
+    "displayNamePlural": "Dependency Policies",
+    "icon": "📦"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    }
+  }
+}

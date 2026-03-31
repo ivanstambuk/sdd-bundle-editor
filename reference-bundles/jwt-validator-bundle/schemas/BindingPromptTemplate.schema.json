@@ -1,0 +1,215 @@
+{
+  "$id": "sdd-bundle:jwt-validator:BindingPromptTemplate",
+  "type": "object",
+  "title": "BindingPromptTemplate",
+  "required": [
+    "id",
+    "kind",
+    "title",
+    "executionStatus",
+    "artifactClass",
+    "lifecycleStatus",
+    "mcpPromptName",
+    "promptRole",
+    "templateVersion",
+    "arguments",
+    "templateBody"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^BPROMPT-[a-z0-9-]+$",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "kind": {
+      "type": "string",
+      "const": "BindingPromptTemplate",
+      "x-sdd-displayHint": "hidden",
+      "x-sdd-layoutGroup": "overview"
+    },
+    "title": {
+      "type": "string",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 10
+    },
+    "description": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "primary",
+      "x-sdd-prominenceLabel": "Description",
+      "x-sdd-order": 20
+    },
+    "rationale": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-prominence": "secondary",
+      "x-sdd-prominenceLabel": "Rationale",
+      "x-sdd-order": 30
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "overview",
+      "x-sdd-order": 99
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "advisory",
+        "planned"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 1
+    },
+    "artifactClass": {
+      "type": "string",
+      "enum": [
+        "contract",
+        "support",
+        "fixture",
+        "documentation"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 2
+    },
+    "lifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "superseded"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 3
+    },
+    "mcpPromptName": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 10
+    },
+    "promptRole": {
+      "type": "string",
+      "enum": [
+        "implement-binding",
+        "generate-binding-tests",
+        "binding-gap-analysis",
+        "explain-binding"
+      ],
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
+    },
+    "templateVersion": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 12
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "required",
+          "description"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "integer",
+              "boolean",
+              "enum"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allowedValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 20
+    },
+    "includesEntityTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
+    },
+    "followsReferenceFields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-displayHint": "chips",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 22
+    },
+    "outputExpectations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 23
+    },
+    "defaultModelClass": {
+      "type": "string",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 24
+    },
+    "maxContextBudget": {
+      "type": "integer",
+      "minimum": 1000,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 25
+    },
+    "templateBody": {
+      "type": "string",
+      "x-sdd-displayHint": "markdown",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 30
+    }
+  },
+  "x-sdd-ui": {
+    "displayName": "Binding Prompt Template",
+    "displayNamePlural": "Binding Prompt Templates",
+    "icon": "🪄"
+  },
+  "x-sdd-layoutGroups": {
+    "overview": {
+      "title": "Overview",
+      "order": 1
+    },
+    "details": {
+      "title": "Properties & Configuration",
+      "order": 2
+    }
+  }
+}

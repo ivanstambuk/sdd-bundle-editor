@@ -1,0 +1,21 @@
+id: RTPROF-go123-mod
+kind: RuntimeProfile
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Go 1.23 + Go Modules
+description: Planned runtime profile for a Go binding.
+tags:
+  - go
+language: go
+runtimeName: go
+runtimeVersion: "1.23"
+minimumLanguageVersion: "1.23"
+packageManager: go-mod
+toolchain: go-test
+moduleSystem: module
+supportsAsync: false
+distributionFormats:
+  - module
+recommendedBuildCommand: go build ./...
+recommendedTestCommand: go test ./...

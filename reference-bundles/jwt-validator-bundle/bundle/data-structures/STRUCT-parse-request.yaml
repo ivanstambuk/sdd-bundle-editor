@@ -18,5 +18,7 @@ schemaDefinition:
   properties:
     token:
       type: string
+      description: Authoritative raw token input for operations that consume a
+        JWT string directly.
   required:
     - token

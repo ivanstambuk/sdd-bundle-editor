@@ -2,6 +2,10 @@
 
 > Reference documentation for creating schemas that work with the Spec Studio
 
+For cross-cutting modeling guidance about where semantics should live, how to
+design metamodels, and how prompt/generator contracts should be structured, see
+[metamodel-modeling-guide.md](./metamodel-modeling-guide.md).
+
 This document defines all custom JSON Schema extension keywords (`x-sdd-*`) recognized by the Spec Studio. When creating new entity type schemas, use these properties to control how fields are displayed and validated.
 
 ---
@@ -761,4 +765,3 @@ When adding new `x-sdd-*` keywords:
 2. **Document here** - Add to this reference
 3. **Follow naming** - Use `x-sdd-` prefix, camelCase name
 4. **Keep generic** - Avoid entity-specific logic in the editor
-

@@ -104,10 +104,20 @@
       "title": "Governed By Adr References",
       "description": "References related ADR entity."
     },
-    "rawJwtInput": {
-      "type": "string",
+    "implementationHints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Advisory implementation-time hints for generators. Do not use this field as the sole source of normative behavior; encode contract semantics in first-class fields and relationships.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 10
+    },
+    "rawJwtInput": {
+      "type": "string",
+      "description": "Authoritative raw token input for operations that consume a JWT string directly.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 11
     },
     "headerJson": {
       "type": "string",
@@ -163,6 +173,7 @@
       "required": [
         "allowedClockSkewSeconds"
       ],
+      "description": "Authoritative runtime policy values that the generated implementation or tests must pass into the operation under test.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 20
     },
@@ -176,6 +187,34 @@
         },
         "selectedKeyStrategyId": {
           "type": "string"
+        },
+        "trustedJwks": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keys": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                  "kty": {
+                    "type": "string"
+                  },
+                  "kid": {
+                    "type": "string"
+                  },
+                  "alg": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kty"
+                ]
+              }
+            }
+          }
         },
         "tenantId": {
           "type": "string"
@@ -201,6 +240,7 @@
         "currentTimeEpochSeconds",
         "invocationSource"
       ],
+      "description": "Authoritative invocation context for a validation run, including current time and key material when applicable.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 21
     },
@@ -261,7 +301,7 @@
       "x-sdd-order": 32,
       "format": "sdd-ref",
       "title": "Expected Primary Error Code Reference",
-      "description": "References related ErrorCode entity."
+      "description": "Normative primary error that should be surfaced for this vector when one is expected."
     },
     "expectedOutcomeClass": {
       "type": "string",
@@ -272,6 +312,7 @@
         "indeterminate",
         "diagnostic"
       ],
+      "description": "Normative terminal outcome classification for this vector.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 25
     },
@@ -283,6 +324,7 @@
         "missing",
         "ambiguous"
       ],
+      "description": "Normative key-selection status expected from the public result for this vector when applicable.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 26
     },
@@ -293,6 +335,7 @@
         "rejected",
         "indeterminate"
       ],
+      "description": "Normative trust decision expected from the public result for this vector when applicable.",
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 27
     },
@@ -305,7 +348,7 @@
       "x-sdd-order": 35,
       "format": "sdd-ref",
       "title": "Expected Evaluated Profile Reference",
-      "description": "References related TokenProfile entity."
+      "description": "Normative evaluated profile expected from the public result for this vector when one should be reported."
     },
     "expectedFailedRuleId": {
       "type": "string",
@@ -316,7 +359,7 @@
       "x-sdd-order": 36,
       "format": "sdd-ref",
       "title": "Expected Failed Rule Reference",
-      "description": "References related ValidationRule entity."
+      "description": "Normative failed rule expected from the public result for this vector when one should be reported."
     },
     "expectedTerminalStepId": {
       "type": "string",
@@ -327,7 +370,7 @@
       "x-sdd-order": 37,
       "format": "sdd-ref",
       "title": "Expected Terminal Step Reference",
-      "description": "References related ValidationStep entity."
+      "description": "Normative terminal validation step expected for this vector when the execution model exposes it."
     },
     "usesMockKeyId": {
       "type": "string",

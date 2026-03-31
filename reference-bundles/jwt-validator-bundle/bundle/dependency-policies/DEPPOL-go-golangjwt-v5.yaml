@@ -1,0 +1,18 @@
+id: DEPPOL-go-golangjwt-v5
+kind: DependencyPolicy
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Go golang-jwt 5.x Allowlist
+description: Planned dependency policy for a Go binding.
+tags:
+  - go
+dependencyMode: allowlist-only
+pinningPolicy: major-range
+upgradePolicy: Review major upgrades before promoting the binding beyond planning.
+allowedDependencies:
+  - name: github.com/golang-jwt/jwt/v5
+    version: 5.x
+    purpose: JWT parsing and validation
+    required: true
+    packageSource: go-module

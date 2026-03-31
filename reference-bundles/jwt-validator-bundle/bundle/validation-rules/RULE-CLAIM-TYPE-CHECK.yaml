@@ -11,6 +11,11 @@ tags:
   - validation
   - parse
 severity: ERROR
+precedenceWithinStep: 20
 throwsErrorCodeId: ERR-type-mismatch
+failureProjection:
+  outcomeClass: malformed
+  trustDecision: trusted
+  keySelectionStatus: resolved
 implementsReferenceIds:
   - RFC-7519

@@ -1,0 +1,21 @@
+id: RTPROF-java21-maven
+kind: RuntimeProfile
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Java 21 + Maven
+description: Planned runtime profile for a Java binding.
+tags:
+  - java
+language: java
+runtimeName: jvm
+runtimeVersion: "21"
+minimumLanguageVersion: "21"
+packageManager: maven
+toolchain: junit
+moduleSystem: jar
+supportsAsync: false
+distributionFormats:
+  - jar
+recommendedBuildCommand: mvn package
+recommendedTestCommand: mvn test

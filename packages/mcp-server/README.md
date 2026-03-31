@@ -142,6 +142,41 @@ All tools include MCP annotations that help AI agents understand their behavior 
 | `diff-bundles` | Compare two bundles and highlight differences |
 | `create-roadmap` | Generate implementation roadmap from specifications |
 | `bundle-health` | Analyze bundle health and generate a report |
+| `implement-binding` | Generate a platform-specific implementation brief from binding entities |
+| `generate-binding-tests` | Generate runtime-native tests from binding conformance entities |
+
+### Binding Harness Pattern
+
+The repo-level harness at `scripts/run-binding-harness.ts` consumes these prompt outputs and currently supports two execution modes:
+
+- `generate-only`: resolve MCP prompt context and let the model generate files only, then run a post-generation audit from the outer harness. Use this first to observe semantic drift and DTO mismatches without giving the model an autonomous execution loop.
+- `self-verify`: let the model run a compact spec-driven loop inside the generated workspace: write or refine tests first, implement code, install dependencies, run build/test, and iterate.
+
+Default harness policy:
+- generate a frozen normative test pack from `generate-binding-tests` first
+- treat that pack as immutable contract input
+- implement against it with `implement-binding`
+- keep structural and semantic guardrails outside the model loop
+- keep handwritten prompt templates generic
+- move bundle-specific narrowing guidance into entity-level fields
+- let the MCP resolver render entity-derived guidance at invocation time instead
+  of hardcoding bundle-specific IDs or exception cases into reusable prompt prose
+- keep handwritten template prose plain-English; exact field lists, contract
+  shapes, vector IDs, and rule IDs should come from resolver-generated sections
+- keep required semantics in first-class structured fields and relations;
+  free-form hint fields are advisory only and should not be the sole source of
+  normative behavior
+- generated code should include concise traceability comments for non-obvious
+  logic so reviewers can map branches back to modeled steps, rules, vectors, or
+  result semantics
+- keep Step 1 focused on generic domain semantics; do not turn
+  library-specific exception names or runtime API quirks into metamodel rules
+- use Step 2 `self-verify` for library/runtime repair once the domain semantics
+  are modeled tightly enough
+
+Current JWT pilot policy:
+- stay in `generate-only` until the generated Node.js binding is close to the modeled conformance semantics
+- then move to `self-verify` for autonomous red/green refinement
 
 ---
 
@@ -1255,4 +1290,3 @@ if (ctx.sampling) {
   // Provide alternative (e.g., prompt-based analysis)
 }
 ```
-

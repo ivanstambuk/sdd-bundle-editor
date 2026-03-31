@@ -13,6 +13,7 @@ tags:
   - context
 schemaDefinition:
   type: object
+  description: Authoritative invocation context for a validation run, including current time and key material when applicable.
   additionalProperties: false
   properties:
     currentTimeEpochSeconds:
@@ -20,6 +21,25 @@ schemaDefinition:
       minimum: 0
     selectedKeyStrategyId:
       type: string
+    trustedJwks:
+      type: object
+      additionalProperties: false
+      properties:
+        keys:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              kty:
+                type: string
+              kid:
+                type: string
+              alg:
+                type: string
+            required:
+              - kty
     tenantId:
       type: string
     replayStateMode:

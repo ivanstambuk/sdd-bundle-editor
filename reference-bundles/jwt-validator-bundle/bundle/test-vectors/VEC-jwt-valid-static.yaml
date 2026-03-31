@@ -6,6 +6,8 @@ lifecycleStatus: active
 title: Valid Static-Key JWT
 description: A correctly signed compact JWT validated under the local static-key
   baseline with all required checks passing.
+implementationHints:
+  - This raw compact HS256 token is authoritative and should verify against MOCK-hs256-static-1 exactly as modeled.
 tags:
   - test
   - success
@@ -13,7 +15,7 @@ tags:
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
-rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.XbP_rZEDQk7_wXJ_I6i3gE8fA11D3lX2z0VmV_x-N48
+rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.veVtxc_mGHx7j3aA-HEnhvvRTIINjHdl9MKsWLq1ocw
 runtimePolicy:
   allowedClockSkewSeconds: 0
 validationContext:

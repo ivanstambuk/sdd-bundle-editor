@@ -1,0 +1,52 @@
+id: BPROMPT-generate-binding-tests-v1
+kind: BindingPromptTemplate
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Generate Binding Tests
+description: |
+  Generic MCP-served prompt for emitting conformance-oriented tests for a target
+  JWT implementation binding.
+tags:
+  - prompt
+  - generation
+  - testing
+mcpPromptName: generate-binding-tests
+promptRole: generate-binding-tests
+templateVersion: 1.0.0
+arguments:
+  - name: bindingId
+    type: string
+    required: true
+    description: Target ImplementationBinding ID.
+  - name: suiteId
+    type: string
+    required: true
+    description: Conformance suite to translate into runtime-native tests.
+includesEntityTypes:
+  - ImplementationBinding
+  - RuntimeProfile
+  - DependencyPolicy
+  - ConformanceSuite
+  - TestVector
+  - MockKeySet
+  - ErrorCode
+followsReferenceFields:
+  - conformanceSuiteIds
+  - targetProfileIds
+  - dependencyPolicyId
+outputExpectations:
+  - Translate the referenced suite into runtime-native test files.
+  - Preserve expected error-code assertions and failure semantics.
+  - Keep test fixtures traceable back to source vectors.
+defaultModelClass: fast-structured
+maxContextBudget: 20000
+templateBody: |
+  Generate tests for the selected implementation binding from the referenced
+  conformance suite and vectors.
+
+  Rules:
+  - preserve the expected outcome of each vector
+  - use the binding dependency policy and runtime profile conventions
+  - name fixtures and tests so they remain traceable to vector IDs
+  - avoid inventing extra behavioral requirements outside the bundle

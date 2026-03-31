@@ -26,6 +26,7 @@ Please keep the structure and internal dependencies consistent with what is alre
 | **Project Structure & Build** | [.agent/docs/architecture/project-structure.md](.agent/docs/architecture/project-structure.md) |
 | **React Development** | [.agent/docs/architecture/react-patterns.md](.agent/docs/architecture/react-patterns.md) |
 | **Schema Authoring** | [.agent/docs/schema/schema-authoring-guide.md](.agent/docs/schema/schema-authoring-guide.md) |
+| **Metamodel Modeling** | [.agent/docs/schema/metamodel-modeling-guide.md](.agent/docs/schema/metamodel-modeling-guide.md) |
 | **UI Layout Guidelines** | [.agent/docs/ui/layout-guidelines.md](.agent/docs/ui/layout-guidelines.md) |
 | **Git Workflow** | [.agent/docs/protocols/git-workflow.md](.agent/docs/protocols/git-workflow.md) |
 | **UI Changes Protocol** | [.agent/docs/protocols/ui-changes.md](.agent/docs/protocols/ui-changes.md) |

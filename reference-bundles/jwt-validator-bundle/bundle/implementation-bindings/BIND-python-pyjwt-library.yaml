@@ -1,0 +1,40 @@
+id: BIND-python-pyjwt-library
+kind: ImplementationBinding
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Python JWT Validation Library using PyJWT
+description: |
+  Pilot implementation binding for a library-only JWT validator in Python.
+  This is the second runtime targeted for generated conformance verification.
+rationale: Provides a cross-language comparison point for the Node.js pilot.
+tags:
+  - python
+  - pilot
+  - library
+bindingFamily: library
+language: python
+bindingStatus: pilot
+stability: experimental
+verificationStatus: pilot-target
+runtimeProfileId: RTPROF-python312-pip
+dependencyPolicyId: DEPPOL-python-pyjwt-v2
+outputContractId: OUTCON-library-core-v1
+implementsOperationIds:
+  - OP-validate-jwt
+targetProfileIds:
+  - PROF-JWT-CORE
+promptTemplateIds:
+  - BPROMPT-implement-binding-v1
+  - BPROMPT-generate-binding-tests-v1
+conformanceSuiteIds:
+  - SUITE-core-validation
+constraintIds:
+  - BCON-no-framework-integration
+  - BCON-no-remote-key-fetch-phase1
+  - BCON-structured-error-contract
+  - BCON-exact-vector-conformance
+  - BCON-exact-io-structure-contract
+  - BCON-runnable-generated-commands
+platformNotes: |
+  Keep the public API small and test-oriented. Avoid web-framework assumptions.

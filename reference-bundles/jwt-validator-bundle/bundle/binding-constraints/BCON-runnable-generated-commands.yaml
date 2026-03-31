@@ -1,0 +1,26 @@
+id: BCON-runnable-generated-commands
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: Runnable Generated Build And Test Commands
+description: |
+  Generated bindings must declare build and test commands that execute
+  successfully using only the generated workspace files and declared
+  dependencies or toolchain assumptions.
+tags:
+  - testing
+  - packaging
+  - executability
+constraintType: packaging
+enforcementLevel: required
+constraintStatement: |
+  The generated package manifest and project configuration must define runnable
+  build and test commands for the generated sources. Do not emit a test command
+  that requires an undeclared loader, runner, or transpilation step. If tests
+  are authored in TypeScript, the command must either compile them first or use
+  an explicitly declared TypeScript-capable test runner.
+verificationHint: |
+  Reject generated output when the declared build or test command fails because
+  of missing loaders, missing declared dependencies, or an unusable source/test
+  execution strategy.

@@ -187,6 +187,59 @@
       ],
       "x-sdd-layoutGroup": "details",
       "x-sdd-order": 5
+    },
+    "precedenceWithinStep": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional evaluation priority among rules executed within the same ValidationStep. Lower numbers run first.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 6
+    },
+    "failureProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional public-result projection to apply when this rule fails. Use this only for semantics that are not already fully implied by the referenced ErrorCode and surrounding step behavior.",
+      "properties": {
+        "outcomeClass": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "rejected",
+            "malformed",
+            "indeterminate",
+            "diagnostic"
+          ]
+        },
+        "trustDecision": {
+          "type": "string",
+          "enum": [
+            "trusted",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "keySelectionStatus": {
+          "type": "string",
+          "enum": [
+            "not-applicable",
+            "resolved",
+            "missing",
+            "ambiguous"
+          ]
+        }
+      },
+      "minProperties": 1,
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 7
+    },
+    "implementationHints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Advisory implementation-time hints for generators. Do not rely on this field as the sole source of rule semantics; normative behavior belongs in structured rule fields and related entities.",
+      "x-sdd-layoutGroup": "details",
+      "x-sdd-order": 21
     }
   },
   "allOf": [

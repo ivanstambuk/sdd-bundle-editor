@@ -1,0 +1,20 @@
+id: BCON-no-framework-integration
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: No Framework Integration in Phase 1
+description: |
+  The phase-1 generator must produce a library-only validator module rather than
+  framework middleware, server scaffolding, or endpoint wiring.
+tags:
+  - phase-1
+  - scope-control
+constraintType: packaging
+enforcementLevel: required
+constraintStatement: |
+  Emit only library artifacts and small usage examples. Do not generate Express,
+  FastAPI, Spring, ASP.NET, Go HTTP, or Axum bindings in the pilot phase.
+verificationHint: |
+  Fail verification if the generated artifact contract introduces framework
+  dependencies or framework-specific directories.

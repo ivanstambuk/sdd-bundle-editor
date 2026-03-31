@@ -1,0 +1,21 @@
+id: RTPROF-rust184-cargo
+kind: RuntimeProfile
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Rust 1.84 + Cargo
+description: Planned runtime profile for a Rust binding.
+tags:
+  - rust
+language: rust
+runtimeName: rust
+runtimeVersion: "1.84"
+minimumLanguageVersion: "1.84"
+packageManager: cargo
+toolchain: cargo-test
+moduleSystem: crate
+supportsAsync: false
+distributionFormats:
+  - crate
+recommendedBuildCommand: cargo build
+recommendedTestCommand: cargo test

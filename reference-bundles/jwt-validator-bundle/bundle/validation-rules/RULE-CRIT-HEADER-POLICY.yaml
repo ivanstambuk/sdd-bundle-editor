@@ -12,8 +12,14 @@ tags:
   - header
   - security
 severity: FATAL
+precedenceWithinStep: 20
 ruleType: HeaderPolicy
 throwsErrorCodeId: ERR-unsupported-header
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsReferenceIds:
   - RFC-7515
   - RFC-8725
+implementationHints:
+  - Model this as a STEP-2 header-policy failure, not a STEP-1 syntax failure.

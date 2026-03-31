@@ -9,8 +9,12 @@ description: The "alg" header must match one of the algorithms explicitly
   explicitly allowed.
 rationale: Prevents algorithm confusion attacks and bypasses via alg=none.
 severity: FATAL
+precedenceWithinStep: 10
 ruleType: StringMatch
 throwsErrorCodeId: ERR-unsupported-alg
+failureProjection:
+  trustDecision: rejected
+  keySelectionStatus: not-applicable
 implementsConstraintIds:
   - CON-timing-attack
 implementsReferenceIds:

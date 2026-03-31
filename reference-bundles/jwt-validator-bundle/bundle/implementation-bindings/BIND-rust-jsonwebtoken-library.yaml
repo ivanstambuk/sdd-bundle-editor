@@ -1,0 +1,34 @@
+id: BIND-rust-jsonwebtoken-library
+kind: ImplementationBinding
+executionStatus: planned
+artifactClass: support
+lifecycleStatus: draft
+title: Rust JWT Validation Library using jsonwebtoken
+description: Planned Rust binding profile for the core JWT validator.
+tags:
+  - rust
+  - planned
+bindingFamily: library
+language: rust
+bindingStatus: proposed
+stability: experimental
+verificationStatus: unverified
+runtimeProfileId: RTPROF-rust184-cargo
+dependencyPolicyId: DEPPOL-rust-jsonwebtoken-v9
+outputContractId: OUTCON-library-core-v1
+implementsOperationIds:
+  - OP-validate-jwt
+targetProfileIds:
+  - PROF-JWT-CORE
+promptTemplateIds:
+  - BPROMPT-implement-binding-v1
+  - BPROMPT-generate-binding-tests-v1
+conformanceSuiteIds:
+  - SUITE-core-validation
+constraintIds:
+  - BCON-no-framework-integration
+  - BCON-no-remote-key-fetch-phase1
+  - BCON-structured-error-contract
+  - BCON-exact-vector-conformance
+  - BCON-exact-io-structure-contract
+  - BCON-runnable-generated-commands

@@ -19,5 +19,10 @@ staleKeyBehavior: reject
 rolloverBehavior: manual-only
 networkFailureBehavior: fail-closed
 issuerBindingMode: none
+implementationNotes: |
+  For generated phase-1 bindings, invoker-provided static key material should be
+  passed through `validationContext.trustedJwks`. Conformance fixtures with
+  `fixtureMode: static-keyset` should map their `jwks` payload into that field
+  without renaming it.
 governedByAdrIds:
   - ADR-0004-static-jwks-as-baseline-trust-source

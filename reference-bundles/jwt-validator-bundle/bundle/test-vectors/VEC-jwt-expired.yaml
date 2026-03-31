@@ -9,7 +9,7 @@ description: A token signed correctly with the static hs256 mock key, but its
 invocationProfileId: PROF-JWT-CORE
 invokesOperationId: OP-validate-jwt
 expectedEvaluatedProfileId: PROF-JWT-CORE
-rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.XbP_rZEDQk7_wXJ_I6i3gE8fA11D3lX2z0VmV_x-N48
+rawJwtInput: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.qAFQlMyx9P3uErUnw682StI-e81B3RF5eVe1W7oHU9E
 runtimePolicy:
   allowedClockSkewSeconds: 0
 validationContext:

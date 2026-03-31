@@ -1,0 +1,20 @@
+id: BCON-no-remote-key-fetch-phase1
+kind: BindingConstraint
+executionStatus: active
+artifactClass: support
+lifecycleStatus: active
+title: No Remote Key Fetch in Core Pilot
+description: |
+  The initial binding pilot targets the core static-key JWT profile only.
+  Remote JWKS and OIDC discovery are deferred until the prompt adapter and
+  conformance flow are stable.
+tags:
+  - phase-1
+  - security
+constraintType: networking
+enforcementLevel: required
+constraintStatement: |
+  Do not implement remote JWKS fetch or OIDC discovery in the first pilot
+  bindings. Stay within the static-key execution model of PROF-JWT-CORE.
+verificationHint: |
+  Pilot bindings should reference PROF-JWT-CORE and SUITE-core-validation only.

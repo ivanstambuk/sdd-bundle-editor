@@ -219,6 +219,26 @@ Good minimal additions:
 Avoid jumping straight to a large orchestration model if vectors plus one small
 explicit layer are sufficient.
 
+### 12. Use Fast Builders And Stronger Critics
+
+In spec-driven generation workflows, do not assume one model should do every job.
+
+Default policy:
+- use a faster model for builder/generation loops
+- use a stronger model for critic/semantic-validation passes
+
+Why:
+- generation benefits from speed and lower cost
+- criticism benefits from stronger reasoning and better adversarial review
+- separating builder and critic reduces correlated failure modes
+
+Example default:
+- builder: `gemini-3-flash` class model
+- critic: `gemini-3-pro` class model
+
+Do not collapse both phases onto the same weaker model by default unless
+availability or budget requires it.
+
 ### 12. Do Not Model Library-Specific Runtime Quirks
 
 Metamodels should capture domain semantics, contracts, precedence, and

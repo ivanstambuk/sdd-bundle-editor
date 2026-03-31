@@ -42,5 +42,8 @@ tools/plantuml/plantuml.jar
 # Local scripts (personal convenience, not pushed)
 scripts/local/
 
+# Local-only docs (deployment credentials, personal notes)
+*.local.md
+
 # Temporary local analysis artifacts
 .scratch/

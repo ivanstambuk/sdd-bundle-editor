@@ -10,12 +10,17 @@ This document proposes a Spec Studio workflow for generating implementation-read
 
 Concrete phase-0 modeling work lives in:
 - [docs/spec-driven-implementation-bindings-phase-0.md](./spec-driven-implementation-bindings-phase-0.md)
+- [docs/spec-generation-harness-next-architecture.md](./spec-generation-harness-next-architecture.md)
 
 The initial target is a JWT validation library:
 - abstract behavior stays in a spec bundle
 - platform/runtime policy stays in a binding bundle
 - MCP assembles the relevant context
 - a CLI-accessible model generates code, tests, and conformance artifacts
+
+Default harness policy:
+- use a faster builder model for generation and repair loops
+- use a stronger critic model for semantic validation and final gating
 
 The architectural intent is to preserve Spec Studio as the single source of truth while making code generation deterministic enough to be useful for real platform teams.
 

@@ -2,6 +2,7 @@
 
 Status: Implemented for pilot modeling
 Parent design: [docs/spec-driven-implementation-bindings.md](./spec-driven-implementation-bindings.md)
+Next harness architecture: [docs/spec-generation-harness-next-architecture.md](./spec-generation-harness-next-architecture.md)
 Focus: Concrete entity model and MCP prompt-serving architecture
 
 ## Purpose

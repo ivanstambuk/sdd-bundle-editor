@@ -70,10 +70,26 @@ type SemanticAuditReport = {
     mismatchByCategory: Record<string, number>;
 };
 
+type CriticFinding = {
+    severity: "critical" | "high" | "medium" | "low";
+    category: string;
+    path?: string;
+    evidence: string;
+    reason: string;
+};
+
+type CriticReport = {
+    status: "passed" | "failed" | "inconclusive" | "skipped";
+    summary: string;
+    recommendedGate: "pass" | "fail" | "defer";
+    findings: CriticFinding[];
+};
+
 const REPO_ROOT = path.resolve(__dirname, "..");
 const DEFAULT_OUTPUT_ROOT = path.join(REPO_ROOT, ".scratch", "binding-runs");
 const DEFAULT_PORT = 3001;
 const DEFAULT_MODEL = "gemini-3-flash-preview";
+const DEFAULT_CRITIC_MODEL = "gemini-3-pro";
 const DEFAULT_BUNDLE = "jwt";
 const DEFAULT_BINDING = "BIND-node-jose-library";
 const DEFAULT_OPERATION = "OP-validate-jwt";
@@ -85,6 +101,13 @@ const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_MODE = "generate-only";
 
 type HarnessMode = "generate-only" | "self-verify";
+
+const DEFAULT_CRITIC_STATUS: CriticReport = {
+    status: "skipped",
+    summary: "Critic phase not executed.",
+    recommendedGate: "defer",
+    findings: [],
+};
 
 function parseSseJson(text: string): JsonRpcResponse | null {
     for (const line of text.split("\n")) {
@@ -289,6 +312,60 @@ async function readUtf8(filePath: string): Promise<string> {
 async function hashFileSha256(filePath: string): Promise<string> {
     const content = await readFile(filePath);
     return createHash("sha256").update(content).digest("hex");
+}
+
+async function writeJsonFile(filePath: string, value: unknown): Promise<void> {
+    await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function normalizeRelativePath(relativePath: string): string {
+    return relativePath.split(path.sep).join("/");
+}
+
+function isWorkspaceArtifact(relativePath: string): boolean {
+    const normalized = normalizeRelativePath(relativePath);
+    return !normalized.startsWith("node_modules/");
+}
+
+function isRelevantCriticArtifact(relativePath: string): boolean {
+    const normalized = normalizeRelativePath(relativePath);
+    if (!isWorkspaceArtifact(normalized)) {
+        return false;
+    }
+    return /^(src|tests|dist)\//.test(normalized)
+        || /^(README\.md|CONFORMANCE\.md|binding-manifest\.json|package\.json|tsconfig\.json)$/.test(normalized);
+}
+
+async function createWorkspaceManifest(rootDir: string, relativePaths: string[]): Promise<FrozenFileRecord[]> {
+    const records: FrozenFileRecord[] = [];
+
+    for (const relativePath of relativePaths) {
+        records.push({
+            path: normalizeRelativePath(relativePath),
+            sha256: await hashFileSha256(path.join(rootDir, relativePath)),
+        });
+    }
+
+    return records.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+async function detectWorkspaceMutations(rootDir: string, manifest: FrozenFileRecord[]): Promise<string[]> {
+    const mutations: string[] = [];
+
+    for (const record of manifest) {
+        const fullPath = path.join(rootDir, record.path);
+        if (!await fileExists(fullPath)) {
+            mutations.push(`${record.path}: deleted`);
+            continue;
+        }
+
+        const currentHash = await hashFileSha256(fullPath);
+        if (currentHash !== record.sha256) {
+            mutations.push(`${record.path}: modified`);
+        }
+    }
+
+    return mutations;
 }
 
 function uniqueStrings(values: string[]): string[] {
@@ -1350,6 +1427,199 @@ async function runPostGenerationAudit(
     return { audit: { status, checks }, semanticAudit };
 }
 
+async function writeRunPackets(params: {
+    runDir: string;
+    bundleId: string;
+    bindingId: string;
+    operationId: string;
+    suiteId: string;
+    promptName: string;
+    testPromptName: string;
+    artifactMode: string;
+    mode: HarnessMode;
+    model: string;
+    criticModel?: string;
+    freezeTests: boolean;
+    skipAudit: boolean;
+    implementationPromptResponse: PromptGetResult;
+    testPromptResponse: PromptGetResult | null;
+    frozenTestsManifest: FrozenFileRecord[] | null;
+    executionPolicy: string;
+}): Promise<void> {
+    const packetsDir = path.join(params.runDir, "packets");
+    await mkdir(packetsDir, { recursive: true });
+
+    await writeJsonFile(path.join(packetsDir, "run-settings.json"), {
+        bundleId: params.bundleId,
+        bindingId: params.bindingId,
+        operationId: params.operationId,
+        suiteId: params.suiteId,
+        promptName: params.promptName,
+        testPromptName: params.testPromptName,
+        artifactMode: params.artifactMode,
+        mode: params.mode,
+        model: params.model,
+        criticModel: params.criticModel ?? null,
+        freezeTests: params.freezeTests,
+        skipAudit: params.skipAudit,
+    });
+
+    await writeJsonFile(path.join(packetsDir, "implementation-packet.json"), {
+        kind: "implementation-packet",
+        bundleId: params.bundleId,
+        bindingId: params.bindingId,
+        operationId: params.operationId,
+        artifactMode: params.artifactMode,
+        promptName: params.promptName,
+        promptResponse: params.implementationPromptResponse,
+    });
+
+    await writeJsonFile(path.join(packetsDir, "conformance-packet.json"), {
+        kind: "conformance-packet",
+        bundleId: params.bundleId,
+        bindingId: params.bindingId,
+        suiteId: params.suiteId,
+        testPromptName: params.testPromptName,
+        freezeTests: params.freezeTests,
+        promptResponse: params.testPromptResponse,
+        frozenTestsManifest: params.frozenTestsManifest,
+    });
+
+    await writeJsonFile(path.join(packetsDir, "validation-packet.json"), {
+        kind: "validation-packet",
+        mode: params.mode,
+        executionPolicy: params.executionPolicy,
+        genericMechanicalChecks: [
+            "generated-files-present",
+            "frozen-test-integrity",
+            "vector-coverage",
+            "placeholder-scan",
+            "npm-install",
+            "typescript-typecheck",
+            "npm-test",
+        ],
+    });
+}
+
+async function createCriticWorkspaceSnapshot(
+    generatedDir: string,
+    generatedFiles: string[]
+): Promise<Array<{ path: string; content: string }>> {
+    const textLikePattern = /\.(ts|tsx|js|jsx|mjs|cjs|json|md|yaml|yml|toml|txt)$/i;
+    const candidates = generatedFiles
+        .map(normalizeRelativePath)
+        .filter((relativePath) => isWorkspaceArtifact(relativePath))
+        .filter((relativePath) => !relativePath.startsWith("node_modules/"))
+        .filter((relativePath) => !relativePath.startsWith("dist/"))
+        .filter((relativePath) => textLikePattern.test(relativePath));
+
+    const prioritized = candidates.sort((a, b) => criticArtifactPriority(a) - criticArtifactPriority(b) || a.localeCompare(b));
+    const snapshot: Array<{ path: string; content: string }> = [];
+    let totalChars = 0;
+
+    for (const relativePath of prioritized) {
+        if (snapshot.length >= 20 || totalChars >= 120000) {
+            break;
+        }
+        const content = await readUtf8(path.join(generatedDir, relativePath));
+        const trimmed = content.length > 12000 ? `${content.slice(0, 12000)}\n/* truncated */\n` : content;
+        snapshot.push({ path: relativePath, content: trimmed });
+        totalChars += trimmed.length;
+    }
+
+    return snapshot;
+}
+
+function criticArtifactPriority(relativePath: string): number {
+    if (relativePath === "package.json") return 0;
+    if (relativePath === "tsconfig.json") return 1;
+    if (relativePath === "binding-manifest.json") return 2;
+    if (relativePath === "README.md") return 3;
+    if (relativePath === "CONFORMANCE.md") return 4;
+    if (relativePath.startsWith("src/")) return 5;
+    if (relativePath.startsWith("tests/")) return 6;
+    return 10;
+}
+
+function buildCriticInstructions(): string {
+    return `You are the critic model for a spec-driven code generation harness.
+
+Review the provided packets, machine-audit evidence, and generated workspace snapshot.
+- Do not modify any files.
+- Do not weaken tests or redefine the contract.
+- Detect semantic drift, cheating, frozen-asset mutation, weak assertions, or suspicious shortcuts.
+- Prefer concrete evidence over speculation.
+- Return only the requested delimited JSON payload.
+
+Output format:
+BEGIN_CRITIC_JSON
+{
+  "status": "passed" | "failed" | "inconclusive",
+  "summary": "short summary",
+  "recommendedGate": "pass" | "fail" | "defer",
+  "findings": [
+    {
+      "severity": "critical" | "high" | "medium" | "low",
+      "category": "short-category",
+      "path": "optional/path",
+      "evidence": "specific evidence",
+      "reason": "why this matters"
+    }
+  ]
+}
+END_CRITIC_JSON`;
+}
+
+function parseCriticReportFromText(text: string): CriticReport {
+    const match = text.match(/BEGIN_CRITIC_JSON\s*([\s\S]*?)\s*END_CRITIC_JSON/);
+    if (!match) {
+        return {
+            status: "inconclusive",
+            summary: "Critic output did not contain a delimited JSON payload.",
+            recommendedGate: "defer",
+            findings: [],
+        };
+    }
+
+    try {
+        const parsed = JSON.parse(match[1]) as Partial<CriticReport>;
+        const findings = Array.isArray(parsed.findings) ? parsed.findings : [];
+        const status = parsed.status === "passed" || parsed.status === "failed" || parsed.status === "inconclusive"
+            ? parsed.status
+            : "inconclusive";
+        const recommendedGate = parsed.recommendedGate === "pass" || parsed.recommendedGate === "fail" || parsed.recommendedGate === "defer"
+            ? parsed.recommendedGate
+            : "defer";
+
+        return {
+            status,
+            summary: typeof parsed.summary === "string" ? parsed.summary : "Critic completed without a summary.",
+            recommendedGate,
+            findings: findings
+                .filter((finding) => Boolean(finding && typeof finding === "object"))
+                .map((finding) => {
+                    const record = finding as Record<string, unknown>;
+                    return {
+                    severity: record.severity === "critical" || record.severity === "high" || record.severity === "medium" || record.severity === "low"
+                        ? record.severity
+                        : "medium",
+                    category: typeof record.category === "string" ? record.category : "unspecified",
+                    path: typeof record.path === "string" ? record.path : undefined,
+                    evidence: typeof record.evidence === "string" ? record.evidence : "",
+                    reason: typeof record.reason === "string" ? record.reason : "",
+                };
+                }),
+        };
+    } catch (error) {
+        return {
+            status: "inconclusive",
+            summary: `Critic JSON could not be parsed: ${error instanceof Error ? error.message : String(error)}`,
+            recommendedGate: "defer",
+            findings: [],
+        };
+    }
+}
+
 async function main() {
     const { values } = parseArgs({
         options: {
@@ -1361,6 +1631,7 @@ async function main() {
             testPrompt: { type: "string", default: DEFAULT_TEST_PROMPT },
             artifactMode: { type: "string", default: DEFAULT_ARTIFACT_MODE },
             model: { type: "string", default: DEFAULT_MODEL },
+            criticModel: { type: "string" },
             port: { type: "string", default: String(DEFAULT_PORT) },
             outputRoot: { type: "string", default: DEFAULT_OUTPUT_ROOT },
             timeoutSeconds: { type: "string", default: String(DEFAULT_TIMEOUT_SECONDS) },
@@ -1368,6 +1639,7 @@ async function main() {
             executeCommands: { type: "boolean", default: false },
             freezeTests: { type: "boolean", default: true },
             skipAudit: { type: "boolean", default: false },
+            skipCritic: { type: "boolean", default: false },
             keepServer: { type: "boolean", default: false },
             clean: { type: "boolean", default: false },
             help: { type: "boolean", short: "h", default: false },
@@ -1386,7 +1658,8 @@ Options:
   --suite <id>           ConformanceSuite ID for frozen test generation (default: ${DEFAULT_SUITE})
   --testPrompt <name>    MCP prompt name for frozen test generation (default: ${DEFAULT_TEST_PROMPT})
   --artifactMode <mode>  Artifact mode (default: ${DEFAULT_ARTIFACT_MODE})
-  --model <name>         Gemini model (default: ${DEFAULT_MODEL})
+  --model <name>         Builder model (default: ${DEFAULT_MODEL})
+  --criticModel <name>   Critic model (default: ${DEFAULT_CRITIC_MODEL})
   --port <n>             MCP HTTP port (default: ${DEFAULT_PORT})
   --outputRoot <dir>     Run output root (default: ${DEFAULT_OUTPUT_ROOT})
   --timeoutSeconds <n>   Gemini timeout in seconds (default: ${DEFAULT_TIMEOUT_SECONDS})
@@ -1394,6 +1667,7 @@ Options:
   --executeCommands      Legacy alias for --mode self-verify
   --freezeTests          Generate and freeze a normative test pack before implementation (default: true)
   --skipAudit            Skip post-generation audit checks
+  --skipCritic           Skip AI critic phase after machine audit
   --keepServer           Do not stop MCP server if harness started it
   --clean                Remove generated workspace before running
 `);
@@ -1408,6 +1682,7 @@ Options:
     const testPromptName = values.testPrompt!;
     const artifactMode = values.artifactMode!;
     const model = values.model!;
+    const criticModel = values.criticModel ?? DEFAULT_CRITIC_MODEL;
     const port = Number(values.port);
     const outputRoot = path.resolve(values.outputRoot!);
     const timeoutSeconds = Number(values.timeoutSeconds);
@@ -1415,6 +1690,7 @@ Options:
     const mode = resolveHarnessMode(requestedMode, values.executeCommands ?? false);
     const freezeTests = values.freezeTests ?? true;
     const skipAudit = values.skipAudit ?? false;
+    const skipCritic = values.skipCritic ?? false;
 
     const runId = `${timestampSlug()}-${bindingId}`;
     const runDir = path.join(outputRoot, runId);
@@ -1426,6 +1702,8 @@ Options:
     const testGeminiStderrPath = path.join(logsDir, "gemini.tests.stderr.log");
     const implementationGeminiStdoutPath = path.join(logsDir, "gemini.implementation.stdout.log");
     const implementationGeminiStderrPath = path.join(logsDir, "gemini.implementation.stderr.log");
+    const criticGeminiStdoutPath = path.join(logsDir, "gemini.critic.stdout.log");
+    const criticGeminiStderrPath = path.join(logsDir, "gemini.critic.stderr.log");
 
     if (values.clean) {
         await rm(runDir, { recursive: true, force: true });
@@ -1462,9 +1740,10 @@ Options:
 
     const session = await initSession(port);
     let frozenTestsManifest: FrozenFileRecord[] | null = null;
+    let testPromptResponse: PromptGetResult | null = null;
 
     if (freezeTests) {
-        const testPromptResponse = await getPrompt(session, testPromptName, {
+        testPromptResponse = await getPrompt(session, testPromptName, {
             bundleId,
             bindingId,
             suiteId,
@@ -1611,6 +1890,26 @@ ${executionPolicy}
         JSON.stringify(promptResponse, null, 2)
     );
 
+    await writeRunPackets({
+        runDir,
+        bundleId,
+        bindingId,
+        operationId,
+        suiteId,
+        promptName,
+        testPromptName,
+        artifactMode,
+        mode,
+        model,
+        criticModel,
+        freezeTests,
+        skipAudit,
+        implementationPromptResponse: promptResponse,
+        testPromptResponse,
+        frozenTestsManifest,
+        executionPolicy,
+    });
+
     const startedAt = new Date().toISOString();
     const implementationPhase = await runGeminiPhase({
         model,
@@ -1640,9 +1939,98 @@ ${executionPolicy}
         : await runPostGenerationAudit(runDir, generatedDir, generatedFiles, promptText, frozenTestsManifest);
     const audit = auditResults.audit;
     const semanticAudit = auditResults.semanticAudit;
+    let criticReport: CriticReport = DEFAULT_CRITIC_STATUS;
+
+    if (!skipCritic && !skipAudit) {
+        const packetsDir = path.join(runDir, "packets");
+        const criticWorkspaceSnapshot = await createCriticWorkspaceSnapshot(generatedDir, generatedFiles);
+        await writeJsonFile(path.join(packetsDir, "critic-workspace-snapshot.json"), criticWorkspaceSnapshot);
+
+        const preCriticManifest = await createWorkspaceManifest(
+            generatedDir,
+            generatedFiles.filter((relativePath) => isWorkspaceArtifact(relativePath))
+        );
+
+        const criticPrompt = [
+            "# Critic Input",
+            "",
+            "## Run Settings",
+            await readUtf8(path.join(packetsDir, "run-settings.json")),
+            "",
+            "## Validation Packet",
+            await readUtf8(path.join(packetsDir, "validation-packet.json")),
+            "",
+            "## Machine Audit Report",
+            JSON.stringify(audit, null, 2),
+            "",
+            "## Semantic Audit Report",
+            JSON.stringify(semanticAudit, null, 2),
+            "",
+            "## Workspace Snapshot",
+            JSON.stringify(criticWorkspaceSnapshot, null, 2),
+        ].join("\n");
+
+        const criticPhase = await runGeminiPhase({
+            model: criticModel,
+            cwd: runDir,
+            promptText: criticPrompt,
+            instructions: buildCriticInstructions(),
+            stdoutPath: criticGeminiStdoutPath,
+            stderrPath: criticGeminiStderrPath,
+            timeoutSeconds,
+            errorLogPath: path.join(logsDir, "critic-error.txt"),
+        });
+
+        const criticStdout = await readUtf8(criticGeminiStdoutPath).catch(() => "");
+        criticReport = parseCriticReportFromText(criticStdout);
+
+        const criticMutations = await detectWorkspaceMutations(generatedDir, preCriticManifest);
+        audit.checks.push({
+            name: "critic-workspace-integrity",
+            status: criticMutations.length === 0 ? "passed" : "failed",
+            details: criticMutations.length === 0
+                ? "Critic phase did not mutate generated workspace artifacts."
+                : criticMutations.join("\n"),
+        });
+
+        if (criticPhase.exitCode !== 0 && criticReport.status === "skipped") {
+            criticReport = {
+                status: "inconclusive",
+                summary: `Critic phase exited with ${criticPhase.exitCode ?? "null"} and did not produce a parseable report.`,
+                recommendedGate: "defer",
+                findings: [],
+            };
+        }
+
+        if (criticMutations.length > 0) {
+            criticReport = {
+                status: "failed",
+                summary: "Critic mutated generated workspace artifacts, which is not allowed.",
+                recommendedGate: "fail",
+                findings: [
+                    {
+                        severity: "high",
+                        category: "critic-workspace-mutation",
+                        evidence: criticMutations.join("; "),
+                        reason: "Critic phase must be read-only with respect to generated artifacts.",
+                    },
+                ],
+            };
+        }
+
+        await writeJsonFile(path.join(runDir, "critic-report.json"), criticReport);
+    }
+
+    if (audit.status !== "skipped") {
+        audit.status = audit.checks.some((check) => check.status === "failed") ? "failed" : "passed";
+    }
+
     const finalExitCode = exitCode === null
         ? null
-        : ((audit.status === "failed" || semanticAudit.status === "failed") ? 2 : exitCode);
+        : ((audit.checks.some((check) => check.status === "failed")
+            || semanticAudit.status === "failed"
+            || criticReport.status === "failed"
+            || criticReport.recommendedGate === "fail") ? 2 : exitCode);
 
     const report = {
         runId,
@@ -1666,6 +2054,7 @@ ${executionPolicy}
         generatedFiles,
         audit,
         semanticAudit,
+        critic: criticReport,
     };
 
     await writeFile(path.join(runDir, "report.json"), JSON.stringify(report, null, 2));
@@ -1686,6 +2075,7 @@ ${executionPolicy}
         `- Final exit code: \`${finalExitCode === null ? "timeout-or-error" : finalExitCode}\``,
         `- Audit status: \`${audit.status}\``,
         `- Semantic audit status: \`${semanticAudit.status}\``,
+        `- Critic status: \`${criticReport.status}\``,
         `- Frozen tests: \`${freezeTests ? "enabled" : "disabled"}\``,
         `- Generated files: ${generatedFiles.length}`,
         ``,
@@ -1699,6 +2089,12 @@ ${executionPolicy}
         `- Status: \`${semanticAudit.status}\``,
         `- Failing vectors: ${semanticAudit.failingVectors}`,
         ...Object.entries(semanticAudit.mismatchByCategory).map(([category, count]) => `- ${category}: ${count}`),
+        ``,
+        `## Critic`,
+        `- Status: \`${criticReport.status}\``,
+        `- Recommended gate: \`${criticReport.recommendedGate}\``,
+        `- Summary: ${criticReport.summary}`,
+        ...criticReport.findings.map((finding) => `- [${finding.severity}] ${finding.category}${finding.path ? ` (${finding.path})` : ""}: ${finding.reason} Evidence: ${finding.evidence}`),
     ];
     await writeFile(path.join(runDir, "summary.md"), `${summaryLines.join("\n")}\n`);
 

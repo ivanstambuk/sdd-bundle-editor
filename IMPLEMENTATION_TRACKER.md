@@ -25,9 +25,10 @@ Current status:
   - `self-verify` for autonomous test/build loops inside the generated workspace
 - `generate-only` now includes a post-generation audit layer so obviously non-usable runs fail immediately on missing vector coverage, placeholder markers, or failed local typecheck/test gates.
 - General harness rule is now frozen-test-first: generate normative tests from MCP context, freeze them, then implement against them.
-- The JWT pilot is intentionally still in `generate-only`.
-- The first isolated Node.js run installs and type-checks but fails most conformance tests, so the current bottleneck is semantic correctness rather than prompt delivery.
-- Remaining work is conformance execution, quality scoring, prompt/bundle tightening, and a second verified runtime.
+- Step 2 `self-verify` now works for the Node.js pilot after a frozen-pack omission fix in the harness.
+- The next architectural move is to remove pilot-specific runtime scaffolding from the harness and replace it with generic packet resolution plus a separate AI critic pass.
+- Harness policy is now builder-fast / critic-strong by default: use a cheaper generation model and a stronger semantic-validation model.
+- Remaining work is harness generalization, critic-pass design, and a second verified runtime.
 
 ### P1 – Reference Bundles
 - [ ] Protocol spec bundle (for example EC-OPRF/FHE-style)
@@ -64,10 +65,11 @@ Why it matters:
   Acceptance:
   - Detailed design is captured in [docs/spec-driven-implementation-bindings.md](./docs/spec-driven-implementation-bindings.md).
   - Concrete phase-0 entity modeling is captured in [docs/spec-driven-implementation-bindings-phase-0.md](./docs/spec-driven-implementation-bindings-phase-0.md).
+  - Next harness refactor target is captured in [docs/spec-generation-harness-next-architecture.md](./docs/spec-generation-harness-next-architecture.md).
   - The target entity model, prompt-serving strategy, and phased plan are concrete enough to implement without redesign.
   - MCP can serve bundle-defined binding prompts for the JWT pilot.
   - A local generation harness can produce a pilot Node.js workspace from `implement-binding`.
-  - The workflow remains incomplete until generated outputs are executed and scored against conformance expectations.
+  - The workflow remains incomplete until the harness is generalized away from embedded runtime scaffolding and gains a separate critic phase.
 
 ### Reference Bundles
 - [ ] Protocol spec bundle
